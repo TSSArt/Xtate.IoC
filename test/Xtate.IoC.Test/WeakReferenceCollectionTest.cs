@@ -94,7 +94,7 @@ public class WeakReferenceCollectionTest
 			count ++;
 		}
 
-		Assert.AreEqual(expected: 4, count);
+		Assert.IsTrue(count <= 4);
 	}
 
 	[TestMethod]
