@@ -17,14 +17,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.1.1
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v1.5.0
       with:
         dotnet-version: 8.0.100
         source-url: https://nuget.pkg.github.com/TSSArt/index.json
     - name: Setup NuGet.exe
-      uses: NuGet/setup-nuget@v1.0.5
+      uses: NuGet/setup-nuget@v1.2.0
     - name: Restore
       run: dotnet restore -v detailed
     - name: Build
@@ -50,7 +50,7 @@ jobs:
 
     steps:
     - name: Trigger Publish Dependencies
-      uses: benc-uk/workflow-dispatch@v1
+      uses: benc-uk/workflow-dispatch@v1.2.2
       with:
         workflow: Publish Dependencies
         token: ${{ secrets.BOT_ACTION_TOKEN }}
