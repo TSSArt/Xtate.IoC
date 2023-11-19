@@ -20,4 +20,8 @@
   <Import Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))"
                    Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
+  <PropertyGroup>
+    <LangVersion Condition="$(LangVersion)==''">12</LangVersion>
+  </PropertyGroup>
+
 </Project>
