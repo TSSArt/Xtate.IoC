@@ -17,13 +17,8 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 // ReSharper disable UnusedType.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -35,9 +30,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 // ReSharper disable UnusedVariable
 // ReSharper disable ClassNeverInstantiated.Global
 
-#pragma warning disable CA1822 // Mark members as static
-#pragma warning disable CA2012 // Use ValueTasks correctly
 namespace Xtate.IoC.Test.DI;
+
+#pragma warning disable CA2012 // Use ValueTasks correctly
+#pragma warning disable CA1822 // Mark members as static
 
 [TestClass]
 public class DiTest

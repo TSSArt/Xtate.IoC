@@ -26,4 +26,6 @@ global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Runtime.CompilerServices;
+global using JetBrains.Annotations;
 global using Empty = System.ValueTuple;
+global using NotNullAttribute = System.Diagnostics.CodeAnalysis.NotNullAttribute;

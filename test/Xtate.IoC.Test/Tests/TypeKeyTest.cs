@@ -17,9 +17,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Empty = System.ValueTuple;
 
 namespace Xtate.IoC.Test;
@@ -86,7 +83,7 @@ public class TypeKeyTest
 		var key = TypeKey.ServiceKey<GenericClass<object>, int>();
 
 		// Assert
-		Assert.AreEqual("SRV:GenericClass<object>(int)", key.ToString());
+		Assert.AreEqual(expected: "SRV:GenericClass<object>(int)", key.ToString());
 	}
 
 	[TestMethod]
@@ -96,7 +93,7 @@ public class TypeKeyTest
 		var key = TypeKey.ImplementationKey<GenericClass<object>, int>();
 
 		// Assert
-		Assert.AreEqual("IMP:GenericClass<object>(int)", key.ToString());
+		Assert.AreEqual(expected: "IMP:GenericClass<object>(int)", key.ToString());
 	}
 
 	[TestMethod]
@@ -106,7 +103,7 @@ public class TypeKeyTest
 		var key = TypeKey.ServiceKey<object, Empty>();
 
 		// Assert
-		Assert.AreEqual("SRV:object", key.ToString());
+		Assert.AreEqual(expected: "SRV:object", key.ToString());
 	}
 
 	[TestMethod]
@@ -116,7 +113,7 @@ public class TypeKeyTest
 		var key = TypeKey.ImplementationKey<object, Empty>();
 
 		// Assert
-		Assert.AreEqual("IMP:object", key.ToString());
+		Assert.AreEqual(expected: "IMP:object", key.ToString());
 	}
 
 	[TestMethod]
@@ -141,7 +138,11 @@ public class TypeKeyTest
 
 	private class TypedActionClass : ITypeKeyAction
 	{
+#region Interface ITypeKeyAction
+
 		public void TypedAction<T, TArg>(TypeKey typeKey) { }
+
+#endregion
 	}
 
 	[UsedImplicitly]

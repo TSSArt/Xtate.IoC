@@ -17,14 +17,10 @@
 
 #endregion
 
-using System;
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 // ReSharper disable All
 namespace Xtate.IoC.Test;
+
+#pragma warning disable CA1822 // Mark members as static
 
 [TestClass]
 public class FactoryProviderTest

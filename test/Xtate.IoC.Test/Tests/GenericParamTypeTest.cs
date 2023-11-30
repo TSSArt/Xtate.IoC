@@ -17,8 +17,6 @@
 
 #endregion
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 // ReSharper disable ClassNeverInstantiated.Local
 namespace Xtate.IoC.Test;
 

@@ -17,12 +17,6 @@
 
 #endregion
 
-using System;
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 // ReSharper disable ClassNeverInstantiated.Local
 namespace Xtate.IoC.Test;
 
@@ -1025,22 +1019,26 @@ public class ServiceCollectionExtensionsTest
 		public override string ToString() => "a8";
 	}
 
-#pragma warning disable CA1822 // Mark members as static
 	private class FactoryNoArg : IService
 	{
+#pragma warning disable CA1822 // Mark members as static
 		public IService CreateService() => new ClassNoArg();
+#pragma warning restore CA1822 // Mark members as static
 	}
 
 	private class FactoryArg : IService
 	{
+#pragma warning disable CA1822 // Mark members as static
 		public IService CreateService(Arg1 arg1) => new ClassArg(arg1);
+#pragma warning restore CA1822 // Mark members as static
 	}
 
 	private class FactoryMultiArg : IService
 	{
+#pragma warning disable CA1822 // Mark members as static
 		public IService CreateService(Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2);
-	}
 #pragma warning restore CA1822 // Mark members as static
+	}
 
 	private class ClassNoArg : IService
 	{

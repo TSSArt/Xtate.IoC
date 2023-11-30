@@ -17,16 +17,11 @@
 
 #endregion
 
-#if !NET6_0_OR_GREATER
-
-namespace System.Runtime.CompilerServices
-{
-	[AttributeUsage(AttributeTargets.Parameter)]
-	[ExcludeFromCodeCoverage]
-	internal sealed class CallerArgumentExpressionAttribute(string parameterName) : Attribute
-	{
-		[UsedImplicitly]
-		public string ParameterName { get; } = parameterName;
-	}
-}
-#endif
+global using System;
+global using System.Collections;
+global using System.Collections.Generic;
+global using System.Linq.Expressions;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Threading.Tasks;
+global using JetBrains.Annotations;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;

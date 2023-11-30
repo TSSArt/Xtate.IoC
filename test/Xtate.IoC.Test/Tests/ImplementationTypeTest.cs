@@ -17,11 +17,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 #pragma warning disable CA1822 // Mark members as static
 namespace Xtate.IoC.Test;
 

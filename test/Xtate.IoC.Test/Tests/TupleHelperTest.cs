@@ -17,10 +17,6 @@
 
 #endregion
 
-using System;
-using System.Linq.Expressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Xtate.IoC.Test;
 
 [TestClass]

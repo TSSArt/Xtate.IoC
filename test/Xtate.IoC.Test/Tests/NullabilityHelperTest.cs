@@ -17,16 +17,11 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 // ReSharper disable UnusedParameter.Local
-#pragma warning disable CS8321 // Local function is declared but never used
+
 namespace Xtate.IoC.Test;
 
 [TestClass]
@@ -36,15 +31,17 @@ public class NullabilityHelperTest
 	private static ParameterInfo GetParameterInfo([CallerMemberName] string? member = default) =>
 		typeof(NullabilityHelperTest)
 			.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
-			.Single(m => m.Name != member && m.Name.IndexOf(member!, StringComparison.Ordinal) >= 0)
+			.Single(m => m.Name != member && m.Name.Contains(member!))
 			.GetParameters()
 			.Single();
 
 	[TestMethod]
 	public void SimpleTypeNotFoundTest()
 	{
+#pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
 		static void Method(int _) { }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 		// Arrange
 		var parameterInfo = GetParameterInfo();
@@ -59,8 +56,10 @@ public class NullabilityHelperTest
 	[TestMethod]
 	public void GenericTypeNotFoundTest()
 	{
+#pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
 		static void Method(List<int> _) { }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 		// Arrange
 		var parameterInfo = GetParameterInfo();
@@ -75,8 +74,10 @@ public class NullabilityHelperTest
 	[TestMethod]
 	public void GenericNullableTypeNotFoundTest()
 	{
+#pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
 		static void Method(int? _) { }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 		// Arrange
 		var parameterInfo = GetParameterInfo();
@@ -91,8 +92,10 @@ public class NullabilityHelperTest
 	[TestMethod]
 	public void NullableIntTest()
 	{
+#pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
 		static void Method(int? _) { }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 		// Arrange
 		var parameterInfo = GetParameterInfo();
@@ -107,8 +110,11 @@ public class NullabilityHelperTest
 	[TestMethod]
 	public void NestedTest()
 	{
+#pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
+		// ReSharper disable once UnusedParameter.Local
 		static void Method(List<List<int>> _) { }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 		// Arrange
 		var parameterInfo = GetParameterInfo();
@@ -123,8 +129,10 @@ public class NullabilityHelperTest
 	[TestMethod]
 	public void GenericNullabilityDisabledTest()
 	{
+#pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
 		static void Method(List<List<int>> _) { }
+#pragma warning restore CS8321 // Local function is declared but never used
 
 		// Arrange
 		var parameterInfo = GetParameterInfo();

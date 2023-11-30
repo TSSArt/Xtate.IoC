@@ -17,9 +17,6 @@
 
 #endregion
 
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Xtate.IoC.Test;
 
 [TestClass]

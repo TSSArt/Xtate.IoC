@@ -17,11 +17,6 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Xtate.IoC.Test;
 
 [TestClass]
@@ -30,7 +25,7 @@ public class HelpersTest
 	[TestMethod]
 	public void ObjectDisposedExceptionTest()
 	{
-		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => XtateObjectDisposedException.ThrowIf(true, "44"));
+		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => XtateObjectDisposedException.ThrowIf(condition: true, instance: "44"));
 	}
 
 	[TestMethod]

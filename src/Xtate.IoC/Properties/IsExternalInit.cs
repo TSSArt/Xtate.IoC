@@ -19,7 +19,6 @@
 
 #if !NET6_0_OR_GREATER
 using System.ComponentModel;
-using Xtate;
 
 namespace System.Runtime.CompilerServices
 {

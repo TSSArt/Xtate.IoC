@@ -17,12 +17,6 @@
 
 #endregion
 
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#if NET6_0
-#pragma warning disable SYSLIB0011 // Type or member is obsolete
-#endif
-
 namespace Xtate.IoC.Test;
 
 [TestClass]

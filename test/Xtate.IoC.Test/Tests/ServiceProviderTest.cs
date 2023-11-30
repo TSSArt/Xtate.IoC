@@ -17,12 +17,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Xtate.IoC.Test;
 
 public static class AsyncEnumExt
@@ -265,7 +259,7 @@ public class ServiceProviderTest
 		public void Dispose()
 		{
 			Disposed = true;
-			GC.SuppressFinalize(true);
+			GC.SuppressFinalize(this);
 		}
 
 #endregion
