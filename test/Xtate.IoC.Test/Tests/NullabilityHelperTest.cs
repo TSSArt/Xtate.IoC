@@ -1,5 +1,5 @@
-﻿#region Copyright © 2019-2023 Sergii Artemenko
-
+﻿// Copyright © 2019-2023 Sergii Artemenko
+// 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#endregion
-
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
 // ReSharper disable UnusedParameter.Local
 
 namespace Xtate.IoC.Test;
@@ -112,6 +111,7 @@ public class NullabilityHelperTest
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
+
 		// ReSharper disable once UnusedParameter.Local
 		static void Method(List<List<int>> _) { }
 #pragma warning restore CS8321 // Local function is declared but never used

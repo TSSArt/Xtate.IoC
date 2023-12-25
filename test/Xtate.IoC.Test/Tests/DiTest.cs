@@ -1,5 +1,5 @@
-﻿#region Copyright © 2019-2023 Sergii Artemenko
-
+﻿// Copyright © 2019-2023 Sergii Artemenko
+// 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,8 +14,6 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-#endregion
 
 using System.Collections.Immutable;
 using System.Threading;
@@ -503,7 +501,7 @@ public async Task RecursionTest()
 
 	public class ClassAsyncInit1 : ClassA1, IAsyncInitialization
 	{
-#region Interface IAsyncInitialization
+	#region Interface IAsyncInitialization
 
 		public Task Initialization
 		{
@@ -514,7 +512,7 @@ public async Task RecursionTest()
 			}
 		}
 
-#endregion
+	#endregion
 	}
 
 	public class Class1;
@@ -614,11 +612,11 @@ public async Task RecursionTest()
 
 		public Class2 PropClass2 { get; set; } = default!;
 
-#region Interface IAsyncInitialization
+	#region Interface IAsyncInitialization
 
 		public Task Initialization { get; }
 
-#endregion
+	#endregion
 
 		private async Task Initialize()
 		{
@@ -692,11 +690,11 @@ public async Task RecursionTest()
 
 		public Class2? PropClass2 { get; set; }
 
-#region Interface IAsyncInitialization
+	#region Interface IAsyncInitialization
 
 		public Task Initialization { get; }
 
-#endregion
+	#endregion
 
 		[ExcludeFromCodeCoverage]
 		private async Task Initialize()
@@ -727,40 +725,40 @@ public async Task RecursionTest()
 
 	public class DecoratedClass : IForDecoration
 	{
-#region Interface IForDecoration
+	#region Interface IForDecoration
 
 		public string Value => "DecoratedClass";
 
-#endregion
+	#endregion
 	}
 
 	public class DecoratorClass(IForDecoration decorated) : IForDecoration
 	{
 		public IForDecoration Decorated { get; } = decorated;
 
-#region Interface IForDecoration
+	#region Interface IForDecoration
 
 		public string Value => "[" + Decorated.Value + "]";
 
-#endregion
+	#endregion
 	}
 
 	public class DecoratedClassSync : IForDecorationSync
 	{
-#region Interface IForDecorationSync
+	#region Interface IForDecorationSync
 
 		public string Value => "DecoratedClassSync";
 
-#endregion
+	#endregion
 	}
 
 	public class DecoratorClassSync(IForDecorationSync decorated) : IForDecorationSync
 	{
-#region Interface IForDecorationSync
+	#region Interface IForDecorationSync
 
 		public string Value => "[" + decorated.Value + "]";
 
-#endregion
+	#endregion
 	}
 
 	public interface IGenericInterface<TI0, TI1, TI2>
@@ -771,12 +769,12 @@ public async Task RecursionTest()
 
 	public class GenericClass<TC1, TC2> : IGenericInterface<byte, TC2, TC1>, IGenericInterface<TC1, sbyte, TC2>
 	{
-#region Interface IGenericInterface<byte,TC2,TC1>
+	#region Interface IGenericInterface<byte,TC2,TC1>
 
 		public Type ArgType1 => typeof(TC1);
 		public Type ArgType2 => typeof(TC2);
 
-#endregion
+	#endregion
 	}
 
 	public class Class7;
@@ -844,21 +842,21 @@ public async Task RecursionTest()
 	{
 		public bool Disposed;
 
-#region Interface IDisposable
+	#region Interface IDisposable
 
 		public void Dispose()
 		{
 			Disposed = true;
 		}
 
-#endregion
+	#endregion
 	}
 
 	public sealed class AsyncDisposableClass : IAsyncDisposable
 	{
 		public bool Disposed;
 
-#region Interface IAsyncDisposable
+	#region Interface IAsyncDisposable
 
 		public ValueTask DisposeAsync()
 		{
@@ -867,6 +865,6 @@ public async Task RecursionTest()
 			return default;
 		}
 
-#endregion
+	#endregion
 	}
 }

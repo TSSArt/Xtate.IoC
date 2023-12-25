@@ -1,5 +1,5 @@
-﻿#region Copyright © 2019-2023 Sergii Artemenko
-
+﻿// Copyright © 2019-2023 Sergii Artemenko
+// 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,8 +14,6 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-#endregion
 
 namespace Xtate.IoC;
 
@@ -395,25 +393,25 @@ public abstract class ImplementationEntry
 
 	public struct Chain(ImplementationEntry lastEntry) : IEnumerable<ImplementationEntry>, IEnumerator<ImplementationEntry>
 	{
-#region Interface IDisposable
+	#region Interface IDisposable
 
 		readonly void IDisposable.Dispose() { }
 
-#endregion
+	#endregion
 
-#region Interface IEnumerable
+	#region Interface IEnumerable
 
 		readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-#endregion
+	#endregion
 
-#region Interface IEnumerable<ImplementationEntry>
+	#region Interface IEnumerable<ImplementationEntry>
 
 		readonly IEnumerator<ImplementationEntry> IEnumerable<ImplementationEntry>.GetEnumerator() => GetEnumerator();
 
-#endregion
+	#endregion
 
-#region Interface IEnumerator
+	#region Interface IEnumerator
 
 		public bool MoveNext()
 		{
@@ -427,13 +425,13 @@ public abstract class ImplementationEntry
 
 		readonly object IEnumerator.Current => Current;
 
-#endregion
+	#endregion
 
-#region Interface IEnumerator<ImplementationEntry>
+	#region Interface IEnumerator<ImplementationEntry>
 
 		public ImplementationEntry Current { get; private set; } = default!;
 
-#endregion
+	#endregion
 
 		public readonly Chain GetEnumerator()
 		{

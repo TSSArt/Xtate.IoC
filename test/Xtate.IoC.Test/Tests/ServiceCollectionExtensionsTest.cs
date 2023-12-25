@@ -1,5 +1,5 @@
-﻿#region Copyright © 2019-2023 Sergii Artemenko
-
+﻿// Copyright © 2019-2023 Sergii Artemenko
+// 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#endregion
-
 // ReSharper disable ClassNeverInstantiated.Local
 
 #if NET6_0_OR_GREATER
-#pragma warning disable CA1822 // Mark members as static
-#pragma warning disable CA1859
+#pragma warning disable CA1822  // Mark members as static
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1859  // Use concrete types when possible for improved performance
 #endif
 
 namespace Xtate.IoC.Test;
@@ -91,7 +90,7 @@ public class ServiceCollectionExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(-1, count);
+		Assert.AreEqual(expected: -1, count);
 	}
 
 	[TestMethod]
@@ -1044,17 +1043,17 @@ public class ServiceCollectionExtensionsTest
 
 	private class FactoryNoArg : IService
 	{
-		public IService CreateService() => new ClassNoArg();
+		public IService CreateService() => (IService) (object) new ClassNoArg();
 	}
 
 	private class FactoryArg : IService
 	{
-		public IService CreateService(Arg1 arg1) => new ClassArg(arg1);
+		public IService CreateService(Arg1 arg1) => (IService) (object) new ClassArg(arg1);
 	}
 
 	private class FactoryMultiArg : IService
 	{
-		public IService CreateService(Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2);
+		public IService CreateService(Arg1 arg1, Arg2 arg2) => (IService) (object) new ClassMultiArg(arg1, arg2);
 	}
 
 	private class ClassNoArg : IService
@@ -1071,7 +1070,7 @@ public class ServiceCollectionExtensionsTest
 
 	private class ClassMultiArg(Arg1 arg1, Arg2 arg2) : IService
 	{
-		private readonly string _val = $"c2:{arg1}:{arg2}";
+		private readonly string   _val = $"c2:{arg1}:{arg2}";
 
 		public override string ToString() => _val;
 	}

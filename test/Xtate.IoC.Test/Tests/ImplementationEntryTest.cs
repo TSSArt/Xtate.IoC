@@ -1,5 +1,5 @@
-﻿#region Copyright © 2019-2023 Sergii Artemenko
-
+﻿// Copyright © 2019-2023 Sergii Artemenko
+// 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -14,8 +14,6 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-#endregion
 
 using System.Linq;
 
@@ -596,51 +594,51 @@ public class ImplementationEntryTest
 
 	public class ClassAsyncInit : IAsyncInitialization
 	{
-#region Interface IAsyncInitialization
+	#region Interface IAsyncInitialization
 
 		[ExcludeFromCodeCoverage]
 		public Task Initialization => Task.CompletedTask;
 
-#endregion
+	#endregion
 	}
 
 	public class CustomAsyncInit : IInitializationHandler
 	{
 		public static readonly IInitializationHandler Instance = new CustomAsyncInit();
 
-#region Interface IInitializationHandler
+	#region Interface IInitializationHandler
 
 		public bool Initialize<T>(T instance) => true;
 
 		public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
 
-#endregion
+	#endregion
 	}
 
 	public class CustomSyncInit : IInitializationHandler
 	{
 		public static readonly IInitializationHandler Instance = new CustomSyncInit();
 
-#region Interface IInitializationHandler
+	#region Interface IInitializationHandler
 
 		public bool Initialize<T>(T instance) => false;
 
 		[ExcludeFromCodeCoverage]
 		public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
 
-#endregion
+	#endregion
 	}
 
 	public class DisposableClass : IDisposable
 	{
-#region Interface IDisposable
+	#region Interface IDisposable
 
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
 		}
 
-#endregion
+	#endregion
 	}
 
 	public class ClassGeneric<T> { }
