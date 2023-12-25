@@ -18,6 +18,12 @@
 #endregion
 
 // ReSharper disable ClassNeverInstantiated.Local
+
+#if NET6_0_OR_GREATER
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA1859
+#endif
+
 namespace Xtate.IoC.Test;
 
 [TestClass]
@@ -69,6 +75,23 @@ public class ServiceCollectionExtensionsTest
 
 		// Assert
 		Assert.IsTrue(registered);
+	}
+
+	[TestMethod]
+	public void EnumeratorTest()
+	{
+		// Arrange	
+		_services.AddType<ClassArg>();
+
+		// Act
+		var count = 0;
+		foreach (var _ in _services)
+		{
+			count --;
+		}
+
+		// Assert
+		Assert.AreEqual(-1, count);
 	}
 
 	[TestMethod]
@@ -1021,23 +1044,17 @@ public class ServiceCollectionExtensionsTest
 
 	private class FactoryNoArg : IService
 	{
-#pragma warning disable CA1822 // Mark members as static
 		public IService CreateService() => new ClassNoArg();
-#pragma warning restore CA1822 // Mark members as static
 	}
 
 	private class FactoryArg : IService
 	{
-#pragma warning disable CA1822 // Mark members as static
 		public IService CreateService(Arg1 arg1) => new ClassArg(arg1);
-#pragma warning restore CA1822 // Mark members as static
 	}
 
 	private class FactoryMultiArg : IService
 	{
-#pragma warning disable CA1822 // Mark members as static
 		public IService CreateService(Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2);
-#pragma warning restore CA1822 // Mark members as static
 	}
 
 	private class ClassNoArg : IService

@@ -30,7 +30,7 @@ internal static class DecoratorAsyncFactoryProvider<TImplementation, TService, T
 			return ClassAsyncFactoryProvider<TImplementation, TService>.GetDecoratorServiceDelegate<TArg>();
 		}
 
-		throw new DependencyInjectionException(string.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
+		throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
 	}
 
 	private static class Nested

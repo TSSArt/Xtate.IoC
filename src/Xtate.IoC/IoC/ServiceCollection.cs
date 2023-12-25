@@ -25,13 +25,13 @@ public class ServiceCollection : IServiceCollection
 
 #region Interface IEnumerable
 
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => _registrations.GetEnumerator();
 
 #endregion
 
 #region Interface IEnumerable<ServiceEntry>
 
-	IEnumerator<ServiceEntry> IEnumerable<ServiceEntry>.GetEnumerator() => GetEnumerator();
+	IEnumerator<ServiceEntry> IEnumerable<ServiceEntry>.GetEnumerator() => _registrations.GetEnumerator();
 
 #endregion
 

@@ -30,10 +30,12 @@ using System.Threading;
 // ReSharper disable UnusedVariable
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Xtate.IoC.Test.DI;
-
+#if NET6_0_OR_GREATER
 #pragma warning disable CA2012 // Use ValueTasks correctly
 #pragma warning disable CA1822 // Mark members as static
+#endif
+
+namespace Xtate.IoC.Test.DI;
 
 [TestClass]
 public class DiTest

@@ -32,7 +32,7 @@ internal class ForwardSyncFactoryProvider<TImplementation, TService, TArg> : Fac
 			return ServiceType.TypeOf<TService>().IsGeneric ? Resolver.GetResolver : GetService;
 		}
 
-		throw new DependencyInjectionException(string.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
+		throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
 	}
 
 	private static TService GetService(IServiceProvider serviceProvider, TArg argument)
