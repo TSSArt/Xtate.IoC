@@ -1,6 +1,24 @@
-﻿#define INTERNAL_NULLABLE_ATTRIBUTES
+﻿// Copyright © 2019-2024 Sergii Artemenko
+// 
+// This file is part of the Xtate project. <https://xtate.net/>
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+// 
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#define INTERNAL_NULLABLE_ATTRIBUTES
 
 #if NETSTANDARD2_0 || NETCOREAPP2_0 || NETCOREAPP2_1 || NETCOREAPP2_2 || NET45 || NET451 || NET452 || NET6 || NET461 || NET462 || NET47 || NET471 || NET472 || NET48
+
 // https://github.com/dotnet/corefx/blob/48363ac826ccf66fbe31a5dcb1dc2aab9a7dd768/src/Common/src/CoreLib/System/Diagnostics/CodeAnalysis/NullableAttributes.cs
 
 // Licensed to the .NET Foundation under one or more agreements.
@@ -18,45 +36,41 @@
 
 namespace System.Diagnostics.CodeAnalysis
 {
-    /// <summary>Specifies that null is allowed as an input even if the corresponding type disallows it.</summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false)]
+	/// <summary>Specifies that null is allowed as an input even if the corresponding type disallows it.</summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false)]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class AllowNullAttribute : Attribute
-    { }
+		sealed class AllowNullAttribute : Attribute { }
 
-    /// <summary>Specifies that null is disallowed as an input even if the corresponding type allows it.</summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false)]
+	/// <summary>Specifies that null is disallowed as an input even if the corresponding type allows it.</summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, Inherited = false)]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class DisallowNullAttribute : Attribute
-    { }
+		sealed class DisallowNullAttribute : Attribute { }
 
-    /// <summary>Specifies that an output may be null even if the corresponding type disallows it.</summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false)]
+	/// <summary>Specifies that an output may be null even if the corresponding type disallows it.</summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false)]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class MaybeNullAttribute : Attribute
-    { }
+		sealed class MaybeNullAttribute : Attribute { }
 
-    /// <summary>Specifies that an output will not be null even if the corresponding type allows it.</summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false)]
+	/// <summary>Specifies that an output will not be null even if the corresponding type allows it.</summary>
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false)]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class NotNullAttribute : Attribute
-    { }
+		sealed class NotNullAttribute : Attribute { }
 
 	/// <summary>Specifies that when a method returns <see cref="ReturnValue"/>, the parameter may be null even if the corresponding type disallows it.</summary>
 	/// <remarks>Initializes the attribute with the specified return value condition.</remarks>
@@ -65,13 +79,12 @@ namespace System.Diagnostics.CodeAnalysis
 	/// </param>
 	[AttributeUsage(AttributeTargets.Parameter, Inherited = false), ExcludeFromCodeCoverage]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class MaybeNullWhenAttribute(bool returnValue) : Attribute
-    {
-
+		sealed class MaybeNullWhenAttribute(bool returnValue) : Attribute
+	{
 		/// <summary>Gets the return value condition.</summary>
 		public bool ReturnValue { get; } = returnValue;
 	}
@@ -83,13 +96,12 @@ namespace System.Diagnostics.CodeAnalysis
 	/// </param>
 	[AttributeUsage(AttributeTargets.Parameter, Inherited = false), ExcludeFromCodeCoverage]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class NotNullWhenAttribute(bool returnValue) : Attribute
-    {
-
+		sealed class NotNullWhenAttribute(bool returnValue) : Attribute
+	{
 		/// <summary>Gets the return value condition.</summary>
 		public bool ReturnValue { get; } = returnValue;
 	}
@@ -102,26 +114,24 @@ namespace System.Diagnostics.CodeAnalysis
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue, AllowMultiple = true, Inherited = false)]
 	[ExcludeFromCodeCoverage]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class NotNullIfNotNullAttribute(string parameterName) : Attribute
-    {
-
+		sealed class NotNullIfNotNullAttribute(string parameterName) : Attribute
+	{
 		/// <summary>Gets the associated parameter name.</summary>
 		public string ParameterName { get; } = parameterName;
 	}
 
-    /// <summary>Applied to a method that will never return under any circumstance.</summary>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false), ExcludeFromCodeCoverage]
+	/// <summary>Applied to a method that will never return under any circumstance.</summary>
+	[AttributeUsage(AttributeTargets.Method, Inherited = false), ExcludeFromCodeCoverage]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class DoesNotReturnAttribute : Attribute
-    { }
+		sealed class DoesNotReturnAttribute : Attribute { }
 
 	/// <summary>Specifies that the method will not return if the associated Boolean parameter is passed the specified value.</summary>
 	/// <remarks>Initializes the attribute with the specified parameter value.</remarks>
@@ -131,13 +141,12 @@ namespace System.Diagnostics.CodeAnalysis
 	/// </param>
 	[AttributeUsage(AttributeTargets.Parameter, Inherited = false), ExcludeFromCodeCoverage]
 #if INTERNAL_NULLABLE_ATTRIBUTES
-    internal
+	internal
 #else
     public
 #endif
-        sealed class DoesNotReturnIfAttribute(bool parameterValue) : Attribute
-    {
-
+		sealed class DoesNotReturnIfAttribute(bool parameterValue) : Attribute
+	{
 		/// <summary>Gets the condition parameter value.</summary>
 		public bool ParameterValue { get; } = parameterValue;
 	}

@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2023 Sergii Artemenko
+﻿// Copyright © 2019-2024 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -1070,7 +1070,7 @@ public class ServiceCollectionExtensionsTest
 
 	private class ClassMultiArg(Arg1 arg1, Arg2 arg2) : IService
 	{
-		private readonly string   _val = $"c2:{arg1}:{arg2}";
+		private readonly string _val = $"c2:{arg1}:{arg2}";
 
 		public override string ToString() => _val;
 	}

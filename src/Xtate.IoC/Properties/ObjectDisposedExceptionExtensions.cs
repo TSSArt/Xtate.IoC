@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2023 Sergii Artemenko
+﻿// Copyright © 2019-2024 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -23,7 +23,6 @@ public static class XtateObjectDisposedException
 	public static void ThrowIf([DoesNotReturnIf(true)] bool condition, object? instance)
 	{
 #if NET8_0_OR_GREATER
-
 		ObjectDisposedException.ThrowIf(condition, instance!);
 
 #else
