@@ -441,11 +441,9 @@ public abstract class ImplementationEntry
 		}
 	}
 
-	private abstract class DelegateEntry
+	private abstract class DelegateEntry(DelegateEntry? next)
 	{
-		protected DelegateEntry(DelegateEntry? next) => Next = next;
-
-		public DelegateEntry? Next { get; }
+		public DelegateEntry? Next { get; } = next;
 	}
 
 	private class ServicesDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)

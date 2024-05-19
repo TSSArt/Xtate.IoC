@@ -32,7 +32,7 @@ internal sealed class FactoryAsyncFactoryProvider<TImplementation, TService, TAr
 		var argPrm = Expression.Parameter(typeof(TArg));
 
 		var parameters = methodInfo.GetParameters();
-		var args = parameters.Length is var length and > 0 ? new Expression[length] : Array.Empty<Expression>();
+		var args = parameters.Length is var length and > 0 ? new Expression[length] : [];
 
 		for (var i = 0; i < parameters.Length; i ++)
 		{

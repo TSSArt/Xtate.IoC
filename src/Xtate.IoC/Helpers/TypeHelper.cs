@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2023 Sergii Artemenko
+﻿// Copyright © 2019-2024 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -44,36 +44,28 @@ internal static class TypeHelper
 
 	private static string? TryGetSimpleName(Type type)
 	{
-		switch (Type.GetTypeCode(type))
+		var name = Type.GetTypeCode(type) switch
+				   {
+					   TypeCode.Boolean => @"bool",
+					   TypeCode.Byte    => @"byte",
+					   TypeCode.Char    => @"char",
+					   TypeCode.Decimal => @"decimal",
+					   TypeCode.Double  => @"double",
+					   TypeCode.Int16   => @"short",
+					   TypeCode.Int32   => @"int",
+					   TypeCode.Int64   => @"long",
+					   TypeCode.SByte   => @"sbyte",
+					   TypeCode.Single  => @"float",
+					   TypeCode.String  => @"string",
+					   TypeCode.UInt16  => @"ushort",
+					   TypeCode.UInt32  => @"uint",
+					   TypeCode.UInt64  => @"ulong",
+					   _                => default
+				   };
+
+		if (name is not null)
 		{
-			case TypeCode.Boolean:
-				return @"bool";
-			case TypeCode.Byte:
-				return @"byte";
-			case TypeCode.Char:
-				return @"char";
-			case TypeCode.Decimal:
-				return @"decimal";
-			case TypeCode.Double:
-				return @"double";
-			case TypeCode.Int16:
-				return @"short";
-			case TypeCode.Int32:
-				return @"int";
-			case TypeCode.Int64:
-				return @"long";
-			case TypeCode.SByte:
-				return @"sbyte";
-			case TypeCode.Single:
-				return @"float";
-			case TypeCode.String:
-				return @"string";
-			case TypeCode.UInt16:
-				return @"ushort";
-			case TypeCode.UInt32:
-				return @"uint";
-			case TypeCode.UInt64:
-				return @"ulong";
+			return name;
 		}
 
 		if (type == typeof(object))
