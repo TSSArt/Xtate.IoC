@@ -28,7 +28,7 @@ public class ServiceCollectionTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var serviceScope = await sp.GetRequiredService<IServiceScope>();
+		var serviceScope = await sp.GetRequiredService<IServiceScopeFactory>();
 
 		// Assert
 		Assert.IsNotNull(serviceScope);
