@@ -47,5 +47,6 @@ public class ServiceCollection : IServiceCollection
 
 	public List<ServiceEntry>.Enumerator GetEnumerator() => _registrations.GetEnumerator();
 
+	
 	public virtual IServiceProvider BuildProvider() => new ServiceProvider(this);
 }
