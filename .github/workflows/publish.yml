@@ -26,11 +26,11 @@ jobs:
     - name: Setup NuGet.exe
       uses: NuGet/setup-nuget@v2.0.0
     - name: Restore
-      run: dotnet restore -v detailed
+      run: dotnet restore
     - name: Build
       run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore -p:Version=${{ env.VERSION }}
     - name: Test
-      run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-restore --no-build --verbosity normal
+      run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-restore --no-build
     - name: Pack
       run: dotnet pack --configuration ${{ env.CONFIGURATION }} --no-restore --no-build -p:PackageVersion=${{ env.VERSION }} --include-symbols -p:SymbolPackageFormat=snupkg -o bin\packages
     - name: Publish to GitHub
