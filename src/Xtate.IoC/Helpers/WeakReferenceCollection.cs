@@ -45,6 +45,8 @@ internal class WeakReferenceCollection
 		}
 	}
 
+	public int Purge() => RemoveOrphanedNodes(ref _node);
+
 	private static int RemoveOrphanedNodes(ref WeakReferenceNode? node)
 	{
 		var count = 0;

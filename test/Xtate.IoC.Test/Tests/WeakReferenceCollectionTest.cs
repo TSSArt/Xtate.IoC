@@ -47,14 +47,13 @@ public class WeakReferenceCollectionTest
 		}
 	}
 
-	private static void GC_Collect()
+	private static void PurgeUntil(WeakReferenceCollection wrc, int count)
 	{
-		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-		GC.WaitForPendingFinalizers();
-
-		var notificationStatus = GC.WaitForFullGCComplete();
-
-		Assert.AreEqual(GCNotificationStatus.Succeeded, notificationStatus);
+		while (wrc.Purge() != count)
+		{
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+			GC.WaitForPendingFinalizers();
+		}
 	}
 
 	[DataTestMethod]
@@ -68,7 +67,7 @@ public class WeakReferenceCollectionTest
 
 		PutList(wrc, Enumerable.Range(start: 0, n).Select(_ => new object()));
 
-		GC_Collect();
+		PurgeUntil(wrc, 0);
 		
 		var result = wrc.TryTake(out _);
 
@@ -80,6 +79,7 @@ public class WeakReferenceCollectionTest
 	{
 		var wrc = new WeakReferenceCollection();
 		var list = Enumerable.Range(start: 0, count: 8).Select(_ => new object()).ToList();
+		
 		PutList(wrc, list);
 
 		list[0] = null!;
@@ -88,9 +88,11 @@ public class WeakReferenceCollectionTest
 		list[5] = null!;
 		list[7] = null!;
 
-		GC_Collect();
+		PurgeUntil(wrc, 3);
 
-		wrc.Put(new object());
+		var t = new object();
+
+		wrc.Put(t);
 
 		var count = 0;
 		while (wrc.TryTake(out _))
@@ -98,7 +100,7 @@ public class WeakReferenceCollectionTest
 			count ++;
 		}
 
-		Assert.IsTrue(count <= 4);
+		Assert.AreEqual(4, count);
 	}
 
 	[TestMethod]
