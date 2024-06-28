@@ -24,7 +24,8 @@ internal static class ConvertHelper<TFrom, TTo>
 	private static Func<TFrom, TTo> GetConverter()
 	{
 		var arg = Expression.Parameter(typeof(TFrom));
+		var body = Expression.Convert(arg, typeof(TTo));
 
-		return Expression.Lambda<Func<TFrom, TTo>>(arg, arg).Compile();
+		return Expression.Lambda<Func<TFrom, TTo>>(body, arg).Compile();
 	}
 }
