@@ -11,16 +11,13 @@
 		<PackageId>Xtate.IoC</PackageId>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net462'">
-		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net462'">
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
 		<PackageReference Include="System.Buffers" Version="4.5.1" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Xtate.SharedContent" Version="0.1.8" />
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="all" />
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0.1" PrivateAssets="all" />
 	</ItemGroup>
