@@ -47,6 +47,12 @@ public class WeakReferenceCollectionTest
 		}
 	}
 
+	private static void GC_Collect()
+	{
+		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+		GC.WaitForPendingFinalizers();
+	}
+
 	[DataTestMethod]
 	[DataRow(0)]
 	[DataRow(1)]
@@ -58,9 +64,8 @@ public class WeakReferenceCollectionTest
 
 		PutList(wrc, Enumerable.Range(start: 0, n).Select(_ => new object()));
 
-		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-		GC.WaitForPendingFinalizers();
-
+		GC_Collect();
+		
 		var result = wrc.TryTake(out _);
 
 		Assert.IsFalse(result);
@@ -79,7 +84,7 @@ public class WeakReferenceCollectionTest
 		list[5] = null!;
 		list[7] = null!;
 
-		GC.Collect();
+		GC_Collect();
 
 		wrc.Put(new object());
 
