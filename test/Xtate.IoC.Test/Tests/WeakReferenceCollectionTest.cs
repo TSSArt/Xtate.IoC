@@ -51,6 +51,10 @@ public class WeakReferenceCollectionTest
 	{
 		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
 		GC.WaitForPendingFinalizers();
+
+		var notificationStatus = GC.WaitForFullGCComplete();
+
+		Assert.AreEqual(GCNotificationStatus.Succeeded, notificationStatus);
 	}
 
 	[DataTestMethod]
