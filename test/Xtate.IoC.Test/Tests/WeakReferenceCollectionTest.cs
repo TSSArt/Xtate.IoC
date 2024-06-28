@@ -49,10 +49,18 @@ public class WeakReferenceCollectionTest
 
 	private static void PurgeUntil(WeakReferenceCollection wrc, int count)
 	{
+		var i = 0;
+
 		while (wrc.Purge() != count)
 		{
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+			GC.AddMemoryPressure(20 * 1048576);
 			GC.WaitForPendingFinalizers();
+
+			if (i ++ == 1000)
+			{
+				Assert.Fail($"Collection can be purged. Still {wrc.Purge()} elements are present");
+			}
 		}
 	}
 
