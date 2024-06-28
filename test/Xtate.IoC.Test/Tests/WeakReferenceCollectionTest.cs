@@ -29,7 +29,10 @@ public class WeakReferenceCollectionTest
 		var wrc = new WeakReferenceCollection();
 		var objects = Enumerable.Range(start: 0, count: 16).Select(_ => new object()).ToList();
 
-		PutList(wrc, objects);
+		foreach (var o in objects)
+		{
+			wrc.Put(o);
+		}
 
 		while (wrc.TryTake(out var obj))
 		{
@@ -39,11 +42,11 @@ public class WeakReferenceCollectionTest
 		Assert.AreEqual(expected: 0, objects.Count);
 	}
 
-	private static void PutList(WeakReferenceCollection weakReferenceCollection, IEnumerable<object> objects)
+	private static void AddObjects(WeakReferenceCollection wrc, int count)
 	{
-		foreach (var o in objects)
+		for (var i = 0; i < count; i ++)
 		{
-			weakReferenceCollection.Put(o);
+			wrc.Put(new object());
 		}
 	}
 
@@ -59,7 +62,7 @@ public class WeakReferenceCollectionTest
 
 			if (i ++ == 1000)
 			{
-				Assert.Fail($"Collection can be purged. Still {wrc.Purge()} elements are present");
+				Assert.Fail($"Collection can't be purged. Still {wrc.Purge()} elements are present");
 			}
 		}
 	}
@@ -73,7 +76,7 @@ public class WeakReferenceCollectionTest
 	{
 		var wrc = new WeakReferenceCollection();
 
-		PutList(wrc, Enumerable.Range(start: 0, n).Select(_ => new object()));
+		AddObjects(wrc, n);
 
 		PurgeUntil(wrc, 0);
 		
@@ -86,21 +89,15 @@ public class WeakReferenceCollectionTest
 	public void CollectSomeTest()
 	{
 		var wrc = new WeakReferenceCollection();
-		var list = Enumerable.Range(start: 0, count: 8).Select(_ => new object()).ToList();
-		
-		PutList(wrc, list);
+		var list = new List<object>();
 
-		list[0] = null!;
-		list[1] = null!;
-		list[4] = null!;
-		list[5] = null!;
-		list[7] = null!;
+		FillList(wrc, list, 8);
+
+		NewMethod(list);
 
 		PurgeUntil(wrc, 3);
 
-		var t = new object();
-
-		wrc.Put(t);
+		AddObjects(wrc, 1);
 
 		var count = 0;
 		while (wrc.TryTake(out _))
@@ -109,6 +106,25 @@ public class WeakReferenceCollectionTest
 		}
 
 		Assert.AreEqual(4, count);
+	}
+
+	private static void NewMethod(List<object> list)
+	{
+		list[0] = null!;
+		list[1] = null!;
+		list[4] = null!;
+		list[5] = null!;
+		list[7] = null!;
+	}
+
+	private static void FillList(WeakReferenceCollection wrc, List<object> list, int count)
+	{
+		for (var i = 0; i < count; i ++)
+		{
+			var item = new object();
+			wrc.Put(item);
+			list.Add(item);
+		}
 	}
 
 	[TestMethod]
