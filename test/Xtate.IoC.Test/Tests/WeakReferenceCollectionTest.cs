@@ -58,7 +58,8 @@ public class WeakReferenceCollectionTest
 
 		PutList(wrc, Enumerable.Range(start: 0, n).Select(_ => new object()));
 
-		GC.Collect();
+		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+		GC.WaitForPendingFinalizers();
 
 		var result = wrc.TryTake(out _);
 
