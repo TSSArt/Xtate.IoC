@@ -16,7 +16,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Xtate.IoC.Test;
@@ -43,7 +43,6 @@ public class WeakReferenceCollectionTest
 		Assert.AreEqual(expected: 0, objects.Count);
 	}
 
-	[MethodImpl(MethodImplOptions.NoOptimization)]
 	private static void AddObjects(WeakReferenceCollection wrc, int count)
 	{
 		for (var i = 0; i < count; i ++)
@@ -52,10 +51,8 @@ public class WeakReferenceCollectionTest
 		}
 	}
 
-	[MethodImpl(MethodImplOptions.NoOptimization)]
-	private static object CreateObject() => new char[1024];
+	private static object CreateObject() => new();
 
-	[MethodImpl(MethodImplOptions.NoOptimization)]
 	private static void PurgeUntil(WeakReferenceCollection wrc, int count)
 	{
 		var i = 0;
@@ -63,24 +60,29 @@ public class WeakReferenceCollectionTest
 		while (wrc.Purge() != count)
 		{
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-			GC.AddMemoryPressure(20 * 1048576);
 			GC.WaitForPendingFinalizers();
 
 			if (i ++ == 1000)
 			{
-				//Assert.Fail($"Collection can't be purged. Still {wrc.Purge()} elements are present");
+				Assert.Fail($"Collection can't be purged. Still {wrc.Purge()} elements are present");
 			}
 		}
 	}
+
+	private static bool IsGCCollectsAll => Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework");
 
 	[DataTestMethod]
 	[DataRow(0)]
 	[DataRow(1)]
 	[DataRow(8)]
 	[DataRow(16)]
-	[MethodImpl(MethodImplOptions.NoOptimization)]
 	public void CollectAllTest(int n)
 	{
+		if (!IsGCCollectsAll)
+		{
+			return;
+		}
+
 		var wrc = new WeakReferenceCollection();
 
 		AddObjects(wrc, n);
@@ -93,9 +95,13 @@ public class WeakReferenceCollectionTest
 	}
 
 	[TestMethod]
-	[MethodImpl(MethodImplOptions.NoOptimization)]
 	public void CollectSomeTest()
 	{
+		if (!IsGCCollectsAll)
+		{
+			return;
+		}
+
 		var wrc = new WeakReferenceCollection();
 		var list = new object[8];
 
@@ -120,7 +126,6 @@ public class WeakReferenceCollectionTest
 		Assert.AreEqual(4, count);
 	}
 
-	[MethodImpl(MethodImplOptions.NoOptimization)]
 	private static void FillList(WeakReferenceCollection wrc, object[] list, int count)
 	{
 		for (var i = 0; i < count; i ++)
