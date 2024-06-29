@@ -27,7 +27,7 @@ public class WeakReferenceCollectionTest
 	public void BasicTest()
 	{
 		var wrc = new WeakReferenceCollection();
-		var objects = Enumerable.Range(start: 0, count: 16).Select(_ => new object()).ToList();
+		var objects = Enumerable.Range(start: 0, count: 16).Select(_ => CreateObject()).ToList();
 
 		foreach (var o in objects)
 		{
@@ -46,9 +46,11 @@ public class WeakReferenceCollectionTest
 	{
 		for (var i = 0; i < count; i ++)
 		{
-			wrc.Put(new object());
+			wrc.Put(CreateObject());
 		}
 	}
+
+	private static object CreateObject() => new char[1024];
 
 	private static void PurgeUntil(WeakReferenceCollection wrc, int count)
 	{
@@ -89,11 +91,15 @@ public class WeakReferenceCollectionTest
 	public void CollectSomeTest()
 	{
 		var wrc = new WeakReferenceCollection();
-		var list = new List<object>();
+		var list = new object[8];
 
 		FillList(wrc, list, 8);
 
-		NewMethod(list);
+		list[0] = null!;
+		list[1] = null!;
+		list[4] = null!;
+		list[5] = null!;
+		list[7] = null!;
 
 		PurgeUntil(wrc, 3);
 
@@ -108,22 +114,12 @@ public class WeakReferenceCollectionTest
 		Assert.AreEqual(4, count);
 	}
 
-	private static void NewMethod(List<object> list)
-	{
-		list[0] = null!;
-		list[1] = null!;
-		list[4] = null!;
-		list[5] = null!;
-		list[7] = null!;
-	}
-
-	private static void FillList(WeakReferenceCollection wrc, List<object> list, int count)
+	private static void FillList(WeakReferenceCollection wrc, object[] list, int count)
 	{
 		for (var i = 0; i < count; i ++)
 		{
-			var item = new object();
-			wrc.Put(item);
-			list.Add(item);
+			list[i] = CreateObject();
+			wrc.Put(list[i]);
 		}
 	}
 
