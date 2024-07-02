@@ -1,23 +1,19 @@
 ﻿<Project>
 
-  <Import Project="SubRepos.props" />
-  <Import Project="GlobalVersion.props" />
-
   <PropertyGroup>
-    <UseProjectReference>true</UseProjectReference>
-    <LangVersion Condition="$(LangVersion)==''">12</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
-    <NoWarn Condition="!$(NoWarn.Contains(';8600'))">$(NoWarn);8600</NoWarn>
-    <NoWarn Condition="!$(NoWarn.Contains(';8601'))">$(NoWarn);8601</NoWarn>
-    <NoWarn Condition="!$(NoWarn.Contains(';8602'))">$(NoWarn);8602</NoWarn>
-    <NoWarn Condition="!$(NoWarn.Contains(';8603'))">$(NoWarn);8603</NoWarn>
-    <NoWarn Condition="!$(NoWarn.Contains(';8604'))">$(NoWarn);8604</NoWarn>
-    <NoWarn Condition="!$(NoWarn.Contains(';8619'))">$(NoWarn);8619</NoWarn>
+    <LangVersion>12</LangVersion>
+    <Product>Xtate</Product>
+    <Company>T.S.S.Art</Company>
+    <Authors>Sergii Artemenko</Authors>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>xtate;state;machine;statemachine;scxml;fsm</PackageTags>
+    <Description>State Machine Framework</Description>
+    <Copyright>Copyright © 2019-2024 Sergii Artemenko</Copyright>
+    <PackageProjectUrl>https://xtate.net</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <Import Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))"
                    Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
-
 </Project>

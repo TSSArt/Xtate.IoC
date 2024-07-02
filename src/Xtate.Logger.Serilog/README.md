@@ -1,1 +1,0 @@
-# Xtate.Logger.Serilog

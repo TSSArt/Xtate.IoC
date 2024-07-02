@@ -1,7 +1,0 @@
-﻿<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0">
-  <parallel>
-    <state id="dialog">
-      <invoke id="dialog" type="scxml" src="dialog.scxml" />
-    </state>
-  </parallel>
-</scxml>
