@@ -24,6 +24,8 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class WeakReferenceCollectionTest
 {
+	private static bool IsGCCollectsAll => Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework");
+
 	[TestMethod]
 	public void BasicTest()
 	{
@@ -59,7 +61,7 @@ public class WeakReferenceCollectionTest
 
 		while (wrc.Purge() != count)
 		{
-			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true);
 			GC.WaitForPendingFinalizers();
 
 			if (i ++ == 1000)
@@ -68,8 +70,6 @@ public class WeakReferenceCollectionTest
 			}
 		}
 	}
-
-	private static bool IsGCCollectsAll => Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework");
 
 	[DataTestMethod]
 	[DataRow(0)]
@@ -87,8 +87,8 @@ public class WeakReferenceCollectionTest
 
 		AddObjects(wrc, n);
 
-		PurgeUntil(wrc, 0);
-		
+		PurgeUntil(wrc, count: 0);
+
 		var result = wrc.TryTake(out _);
 
 		Assert.IsFalse(result);
@@ -105,7 +105,7 @@ public class WeakReferenceCollectionTest
 		var wrc = new WeakReferenceCollection();
 		var list = new object[8];
 
-		FillList(wrc, list, 8);
+		FillList(wrc, list, count: 8);
 
 		list[0] = null!;
 		list[1] = null!;
@@ -113,9 +113,9 @@ public class WeakReferenceCollectionTest
 		list[5] = null!;
 		list[7] = null!;
 
-		PurgeUntil(wrc, 3);
+		PurgeUntil(wrc, count: 3);
 
-		AddObjects(wrc, 1);
+		AddObjects(wrc, count: 1);
 
 		var count = 0;
 		while (wrc.TryTake(out _))
@@ -123,7 +123,7 @@ public class WeakReferenceCollectionTest
 			count ++;
 		}
 
-		Assert.AreEqual(4, count);
+		Assert.AreEqual(expected: 4, count);
 	}
 
 	private static void FillList(WeakReferenceCollection wrc, object[] list, int count)
