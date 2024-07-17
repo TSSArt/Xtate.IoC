@@ -17,7 +17,7 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProvider
+public interface IServiceProvider : IDisposable, IAsyncDisposable
 {
 	CancellationToken DisposeToken { get; }
 

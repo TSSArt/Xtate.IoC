@@ -37,6 +37,31 @@ public class GenericParamTypeTest
 		Assert.AreEqual(expected: 6, service.Val);
 	}
 
+	[TestMethod]
+	public async Task GenericParticularTest()
+	{
+		// Arrange
+		var services = new ServiceCollection();
+		services.AddForwarding<IInterface<string>>(_ => new Class<string>());
+		var serviceProvider = services.BuildProvider();
+
+		// Act
+		var service = serviceProvider.GetRequiredService<IInterface<string>>();
+
+		// Assert
+		Assert.IsNotNull(service);
+	}
+
+	private interface IInterface<T>
+	{
+		
+	}
+
+	private class Class<T> : IInterface<T>
+	{
+
+	}
+
 	private class Gen<T>(T val)
 	{
 		public T Val { get; } = val;

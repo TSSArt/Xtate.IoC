@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+
 namespace Xtate.IoC;
 
 public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyAction, IDisposable, IAsyncDisposable
@@ -277,8 +279,17 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		{
 			foreach (var entry in genericEntry.AsChain())
 			{
-				var delegateFactory = (Func<DelegateFactory>) entry.Factory;
-				if (delegateFactory().GetDelegate<T, TArg>() is { } factory)
+				var factory = entry.Factory switch
+							  {
+								  Func<DelegateFactory> func                          => func().GetDelegate<T, TArg>(),
+								  Func<IServiceProvider, TArg, ValueTask<T?>> func    => func,
+								  Func<IServiceProvider, TArg, T?> func               => func,
+								  Func<IServiceProvider, T, TArg, ValueTask<T?>> func => func,
+								  Func<IServiceProvider, T, TArg, T?> func            => func,
+								  _                                                   => default
+							  };
+
+				if (factory is not null)
 				{
 					entry.CreateNew(this, factory).AddToChain(ref lastEntry);
 				}
