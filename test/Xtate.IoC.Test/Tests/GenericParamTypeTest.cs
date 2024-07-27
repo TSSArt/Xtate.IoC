@@ -52,15 +52,9 @@ public class GenericParamTypeTest
 		Assert.IsNotNull(service);
 	}
 
-	private interface IInterface<T>
-	{
-		
-	}
+	private interface IInterface<T> { }
 
-	private class Class<T> : IInterface<T>
-	{
-
-	}
+	private class Class<T> : IInterface<T> { }
 
 	private class Gen<T>(T val)
 	{

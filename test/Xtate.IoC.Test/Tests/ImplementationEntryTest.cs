@@ -430,7 +430,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		((IDisposable) sp).Dispose();
+		sp.Dispose();
 
 		// Assert
 		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
@@ -446,7 +446,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		((IDisposable) sp).Dispose();
+		sp.Dispose();
 
 		// Assert
 		Assert.ThrowsException<ObjectDisposedException>(
@@ -463,7 +463,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		((IDisposable) sp).Dispose();
+		sp.Dispose();
 
 		// Assert
 		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
@@ -508,7 +508,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		((IDisposable) sp).Dispose();
+		sp.Dispose();
 
 		// Assert
 		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
@@ -524,7 +524,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		((IDisposable) sp).Dispose();
+		sp.Dispose();
 
 		// Assert
 		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry!.GetRequiredServiceSync<DisposableClass, ValueTuple>(default));
