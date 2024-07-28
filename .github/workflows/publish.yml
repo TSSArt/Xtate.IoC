@@ -31,7 +31,7 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.XTATE_GITHUB_TOKEN }}
     - name: Restore
-      run: dotnet restore --verbosity detailed
+      run: dotnet restore
     - name: Build
       run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore -p:Version=${{ env.VERSION }}
     - name: Test
