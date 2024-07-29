@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Linq;
 
 namespace Xtate.IoC.Test;
@@ -430,7 +431,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
@@ -446,7 +447,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		sp.Dispose();
+		Disposer.Dispose(sp);
 
 		// Assert
 		Assert.ThrowsException<ObjectDisposedException>(
@@ -463,7 +464,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
@@ -508,7 +509,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
@@ -524,7 +525,7 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
-		sp.Dispose();
+		Disposer.Dispose(sp);
 
 		// Assert
 		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry!.GetRequiredServiceSync<DisposableClass, ValueTuple>(default));

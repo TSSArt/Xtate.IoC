@@ -76,7 +76,7 @@ public class ServiceProviderTest
 
 		// Act
 		var service = await sp.GetRequiredService<object>();
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		Assert.AreSame(service, sp);
@@ -93,7 +93,7 @@ public class ServiceProviderTest
 
 		// Act
 		var service = await sp.GetRequiredService<object>();
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		Assert.AreSame(service, sp);
@@ -110,7 +110,7 @@ public class ServiceProviderTest
 
 		// Act
 		var service = await sp.GetRequiredService<object>();
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		Assert.AreSame(service, sp);
@@ -219,7 +219,7 @@ public class ServiceProviderTest
 		var service = await sp.GetRequiredService<DisposableClass>();
 
 		// Act
-		sp.Dispose();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		Assert.IsTrue(service.Disposed);
@@ -235,7 +235,7 @@ public class ServiceProviderTest
 		var service = await sp.GetRequiredService<DisposableClass>();
 
 		// Act
-		await sp.DisposeAsync();
+		await Disposer.DisposeAsync(sp);
 
 		// Assert
 		Assert.IsTrue(service.Disposed);

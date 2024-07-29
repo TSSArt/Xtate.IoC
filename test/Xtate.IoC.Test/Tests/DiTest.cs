@@ -421,7 +421,7 @@ public async Task RecursionTest()
 
 		var class1 = await serviceProvider.GetRequiredService<DisposableClass>();
 
-		await serviceProvider.DisposeAsync();
+		await Disposer.DisposeAsync(serviceProvider);
 
 		Assert.IsTrue(class1.Disposed);
 	}
@@ -435,7 +435,7 @@ public async Task RecursionTest()
 
 		var class1 = await serviceProvider.GetRequiredService<DisposableClass>();
 
-		serviceProvider.Dispose();
+		await Disposer.DisposeAsync(serviceProvider);
 
 		Assert.IsTrue(class1.Disposed);
 	}
@@ -449,7 +449,7 @@ public async Task RecursionTest()
 
 		var class1 = await serviceProvider.GetRequiredService<AsyncDisposableClass>();
 
-		await serviceProvider.DisposeAsync();
+		await Disposer.DisposeAsync(serviceProvider);
 
 		Assert.IsTrue(class1.Disposed);
 	}
@@ -463,7 +463,7 @@ public async Task RecursionTest()
 
 		var class1 = await serviceProvider.GetRequiredService<AsyncDisposableClass>();
 
-		serviceProvider.Dispose();
+		await Disposer.DisposeAsync(serviceProvider);
 
 		Assert.IsTrue(class1.Disposed);
 	}
