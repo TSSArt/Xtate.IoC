@@ -22,7 +22,7 @@ public static class XtateObjectDisposedException
 	[ExcludeFromCodeCoverage]
 	public static void ThrowIf([DoesNotReturnIf(true)] bool condition, object? instance)
 	{
-#if NET8_0_OR_GREATER
+#if NET7_0_OR_GREATER
 		ObjectDisposedException.ThrowIf(condition, instance!);
 
 #else
