@@ -275,7 +275,7 @@ internal abstract class ClassFactoryProvider
 		throw new DependencyInjectionException(Resources.Exception_NoConstructorFound);
 	}
 
-	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Res.Format(Resources.Exception_FactoryOfRaisedException, Delegate.Method.ReturnParameter), ex);
+	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Res.Format(Resources.Exception_FactoryOfRaisedException, Delegate.Method.ReturnType), ex);
 
 	protected object?[] RentArray()
 	{
