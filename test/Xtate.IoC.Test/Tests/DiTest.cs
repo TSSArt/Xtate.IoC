@@ -517,16 +517,9 @@ public async Task RecursionTest()
 
 	public class Class1;
 
-	public class Class2
+	public class Class2(Class1 class1)
 	{
-		public Class2(Class1 class1)
-		{
-			Infra.Requires(class1);
-
-			Class1 = class1;
-		}
-
-		public Class1 Class1 { get; }
+		public Class1 Class1 { get; } = class1;
 	}
 
 	public class Class2Opt(Class1? class1)

@@ -62,7 +62,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 		}
 	}
 
-	protected override ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
+	private protected override ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
 	{
 		lock (_singletonContainer)
 		{
@@ -82,7 +82,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 		}
 	}
 
-	protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
+	private protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
 	{
 		EnsureSynchronousContext<T, TArg>();
 

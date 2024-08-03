@@ -29,8 +29,6 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public ServiceProvider(IServiceCollection services)
 	{
-		Infra.Requires(services);
-
 		_sourceServiceProvider = default;
 		_singletonContainer = new SingletonContainer();
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
@@ -40,8 +38,6 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	protected ServiceProvider(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = default)
 	{
-		Infra.Requires(sourceServiceProvider);
-
 		_sourceServiceProvider = sourceServiceProvider;
 		_singletonContainer = sourceServiceProvider._singletonContainer;
 		_singletonContainer.AddReference();
@@ -91,8 +87,6 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			return _services.GetOrAdd(typeKey, CopyEntries(simpleKey));
 		}
 
-		Infra.Requires(typeKey);
-
 		typeKey.DoTypedAction(this);
 
 		_services.TryGetValue(typeKey, out entry);
@@ -114,8 +108,6 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	IServiceScope IServiceScopeFactory.CreateScope(Action<IServiceCollection> configureServices)
 	{
-		Infra.Requires(configureServices);
-
 		var additionalServices = new ServiceCollection();
 		configureServices(additionalServices);
 

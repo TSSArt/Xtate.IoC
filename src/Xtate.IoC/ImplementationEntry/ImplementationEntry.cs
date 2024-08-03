@@ -25,16 +25,12 @@ public abstract class ImplementationEntry
 
 	protected ImplementationEntry(Delegate factory)
 	{
-		Infra.Requires(factory);
-
 		Factory = factory;
 		_nextEntry = this;
 	}
 
 	protected ImplementationEntry(ImplementationEntry sourceImplementationEntry)
 	{
-		Infra.Requires(sourceImplementationEntry);
-
 		Factory = sourceImplementationEntry.Factory;
 		_nextEntry = this;
 	}
@@ -49,7 +45,7 @@ public abstract class ImplementationEntry
 
 	internal abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory);
 
-	public void AddToChain([NotNull] ref ImplementationEntry? lastEntry)
+	internal void AddToChain([NotNull] ref ImplementationEntry? lastEntry)
 	{
 		Infra.Assert(_previousEntry is null);
 		Infra.Assert(ReferenceEquals(_nextEntry, this));
@@ -64,7 +60,7 @@ public abstract class ImplementationEntry
 		lastEntry = this;
 	}
 
-	public Chain AsChain() => new(this);
+	internal Chain AsChain() => new(this);
 
 	public async ValueTask<T> GetRequiredService<T, TArg>(TArg argument) where T : notnull
 	{
@@ -200,9 +196,9 @@ public abstract class ImplementationEntry
 		}
 	}
 
-	public static ValueTask<T> MissedServiceExceptionTask<T, TArg>() => new(Task.FromException<T>(MissedServiceException<T, TArg>()));
+	internal static ValueTask<T> MissedServiceExceptionTask<T, TArg>() => new(Task.FromException<T>(MissedServiceException<T, TArg>()));
 
-	public static DependencyInjectionException MissedServiceException<T, TArg>() =>
+	internal static DependencyInjectionException MissedServiceException<T, TArg>() =>
 		ArgumentType.TypeOf<TArg>().IsEmpty
 			? new DependencyInjectionException(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T)))
 			: new DependencyInjectionException(Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), ArgumentType.TypeOf<TArg>()));
@@ -211,7 +207,7 @@ public abstract class ImplementationEntry
 
 	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Res.Format(Resources.Exception_ServiceNotAvailableInSynchronousContext, typeof(T)));
 
-	protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument)
+	private protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument)
 	{
 		ServiceProvider.Debugger?.FactoryCalled(TypeKey.ServiceKeyFast<T, TArg>());
 
@@ -225,7 +221,7 @@ public abstract class ImplementationEntry
 			   };
 	}
 
-	protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument)
+	private protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument)
 	{
 		ServiceProvider.Debugger?.FactoryCalled(TypeKey.ServiceKeyFast<T, TArg>());
 
@@ -239,7 +235,7 @@ public abstract class ImplementationEntry
 			   };
 	}
 
-	protected void EnsureSynchronousContext<T, TArg>()
+	private protected void EnsureSynchronousContext<T, TArg>()
 	{
 		switch (Factory)
 		{
@@ -391,7 +387,7 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
-	public struct Chain(ImplementationEntry lastEntry) : IEnumerable<ImplementationEntry>, IEnumerator<ImplementationEntry>
+	internal struct Chain(ImplementationEntry lastEntry) : IEnumerable<ImplementationEntry>, IEnumerator<ImplementationEntry>
 	{
 	#region Interface IDisposable
 

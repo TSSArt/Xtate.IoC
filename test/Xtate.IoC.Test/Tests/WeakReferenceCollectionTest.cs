@@ -24,7 +24,7 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class WeakReferenceCollectionTest
 {
-	private static bool IsGCCollectsAll => Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework");
+	private static bool IsGcCollectsAll => Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework");
 
 	[TestMethod]
 	public void BasicTest()
@@ -78,7 +78,7 @@ public class WeakReferenceCollectionTest
 	[DataRow(16)]
 	public void CollectAllTest(int n)
 	{
-		if (!IsGCCollectsAll)
+		if (!IsGcCollectsAll)
 		{
 			return;
 		}
@@ -97,7 +97,7 @@ public class WeakReferenceCollectionTest
 	[TestMethod]
 	public void CollectSomeTest()
 	{
-		if (!IsGCCollectsAll)
+		if (!IsGcCollectsAll)
 		{
 			return;
 		}
@@ -140,7 +140,7 @@ public class WeakReferenceCollectionTest
 	{
 		var wrc = new WeakReferenceCollection();
 
-		Assert.ThrowsException<ArgumentNullException>([ExcludeFromCodeCoverage]() => wrc.Put(default!));
+		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => wrc.Put(default!));
 	}
 
 	[TestMethod]

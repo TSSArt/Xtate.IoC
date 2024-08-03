@@ -41,8 +41,6 @@ internal static class StubType
 
 	public static bool IsResolvedType(Type type)
 	{
-		Infra.Requires(type);
-
 		if (type.HasElementType)
 		{
 			return IsResolvedType(type.GetElementType()!);

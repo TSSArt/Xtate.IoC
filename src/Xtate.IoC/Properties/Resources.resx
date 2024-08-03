@@ -141,9 +141,6 @@
   <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
     <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously.</value>
   </data>
-  <data name="Exception_SingletonScopedTypesDoesNotSupportedForSynchronousInstantiation" xml:space="preserve">
-    <value>Singleton/scoped types does not supported for synchronous instantiation.</value>
-  </data>
   <data name="Exception_CantCastForwardDelegate" xml:space="preserve">
     <value>Can't cast/forward delegate {0} to {1}.</value>
   </data>
@@ -152,9 +149,6 @@
   </data>
   <data name="Exception_ServiceNotAvailableInSynchronousContext" xml:space="preserve">
     <value>Service [{0}] not available in synchronous context.</value>
-  </data>
-  <data name="Exception_ServiceCantBeInstantiatedSinceAtLeastOneParameterRequiredAsynchronousCall" xml:space="preserve">
-    <value>Service can't be instantiated since at least one parameter required asynchronous call.</value>
   </data>
   <data name="Exception_ServiceMissedInContainer" xml:space="preserve">
     <value>Service [{0}] missed in container.</value>
@@ -165,23 +159,11 @@
   <data name="Exception_InvalidType" xml:space="preserve">
     <value>Invalid type.</value>
   </data>
-  <data name="Exception_ThisExceptionShouldNeverHappen" xml:space="preserve">
-    <value>This exception should never happen.</value>
-  </data>
   <data name="Exception_AssertionFailed" xml:space="preserve">
     <value>Assertion failed.</value>
   </data>
   <data name="Exception_UnexpectedValue" xml:space="preserve">
     <value>Unexpected value.</value>
-  </data>
-  <data name="Exception_CantMatchArgumentsForImplementationClass" xml:space="preserve">
-    <value>Can't match arguments for implementation class.</value>
-  </data>
-  <data name="Exception_DelegateCreationFailed" xml:space="preserve">
-    <value>Delegate creation failed.</value>
-  </data>
-  <data name="Exception_ProviderCreationFailed" xml:space="preserve">
-    <value>Provider creation failed.</value>
   </data>
   <data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
 	  <value>More than one method found.</value>

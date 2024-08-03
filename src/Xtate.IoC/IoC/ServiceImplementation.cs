@@ -24,8 +24,6 @@ public readonly struct ServiceImplementation<TImplementation, TArg> where TImple
 
 	public ServiceImplementation(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous)
 	{
-		Infra.Requires(serviceCollection);
-
 		_serviceCollection = serviceCollection;
 		_synchronous = synchronous;
 

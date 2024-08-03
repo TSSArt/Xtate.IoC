@@ -25,29 +25,11 @@ internal static class NullabilityHelper
 	private const string NullableAttr        = @"System.Runtime.CompilerServices.NullableAttribute";
 	private const string NullableContextAttr = @"System.Runtime.CompilerServices.NullableContextAttribute";
 
-	public static bool IsNullable(ParameterInfo parameter, string path)
-	{
-		Infra.Requires(parameter);
-		Infra.Requires(path);
+	public static bool IsNullable(ParameterInfo parameter, string path) => IsNullable(parameter.ParameterType, parameter.CustomAttributes, parameter.Member, path);
 
-		return IsNullable(parameter.ParameterType, parameter.CustomAttributes, parameter.Member, path);
-	}
+	public static bool IsNullable(FieldInfo field, string path) => IsNullable(field.FieldType, field.CustomAttributes, field.DeclaringType, path);
 
-	public static bool IsNullable(FieldInfo field, string path)
-	{
-		Infra.Requires(field);
-		Infra.Requires(path);
-
-		return IsNullable(field.FieldType, field.CustomAttributes, field.DeclaringType, path);
-	}
-
-	public static bool IsNullable(PropertyInfo property, string path)
-	{
-		Infra.Requires(property);
-		Infra.Requires(path);
-
-		return IsNullable(property.PropertyType, property.CustomAttributes, property.DeclaringType, path);
-	}
+	public static bool IsNullable(PropertyInfo property, string path) => IsNullable(property.PropertyType, property.CustomAttributes, property.DeclaringType, path);
 
 	private static bool IsNullable(Type memberType,
 								   IEnumerable<CustomAttributeData> attributes,

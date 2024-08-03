@@ -24,8 +24,6 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 
 	public FactoryImplementation(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous)
 	{
-		Infra.Requires(serviceCollection);
-
 		_serviceCollection = serviceCollection;
 		_synchronous = synchronous;
 

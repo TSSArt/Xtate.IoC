@@ -17,21 +17,11 @@
 
 namespace Xtate.IoC;
 
-public readonly struct ServiceEntry
+public readonly struct ServiceEntry(TypeKey key, InstanceScope instanceScope, Delegate factory)
 {
-	public ServiceEntry(TypeKey key, InstanceScope instanceScope, Delegate factory)
-	{
-		Infra.Requires(key);
-		Infra.Requires(factory);
+	public TypeKey Key { get; } = key;
 
-		Key = key;
-		Factory = factory;
-		InstanceScope = instanceScope;
-	}
+	public InstanceScope InstanceScope { get; } = instanceScope;
 
-	public TypeKey Key { get; }
-
-	public InstanceScope InstanceScope { get; }
-
-	public Delegate Factory { get; }
+	public Delegate Factory { get; } = factory;
 }

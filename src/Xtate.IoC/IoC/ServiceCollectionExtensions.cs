@@ -21,8 +21,6 @@ public static class ServiceCollectionExtensions
 {
 	private static bool IsRegistered(IServiceCollection services, TypeKey serviceKey)
 	{
-		Infra.Requires(services);
-
 		foreach (var entry in services)
 		{
 			if (entry.Key == serviceKey)
@@ -45,12 +43,8 @@ public static class ServiceCollectionExtensions
 	private static void AddEntry(IServiceCollection services,
 								 TypeKey serviceKey,
 								 InstanceScope instanceScope,
-								 Delegate factory)
-	{
-		Infra.Requires(services);
-
+								 Delegate factory) =>
 		services.Add(new ServiceEntry(serviceKey, instanceScope, factory));
-	}
 
 	public static bool IsRegistered<T, TArg>(this IServiceCollection services) => IsRegistered(services, TypeKey.ServiceKey<T, TArg>());
 

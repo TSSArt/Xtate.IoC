@@ -46,15 +46,15 @@ public class GenericParamTypeTest
 		var serviceProvider = services.BuildProvider();
 
 		// Act
-		var service = serviceProvider.GetRequiredService<IInterface<string>>();
+		var service = await serviceProvider.GetRequiredService<IInterface<string>>();
 
 		// Assert
 		Assert.IsNotNull(service);
 	}
 
-	private interface IInterface<T> { }
+	private interface IInterface<[UsedImplicitly] T>;
 
-	private class Class<T> : IInterface<T> { }
+	private class Class<T> : IInterface<T>;
 
 	private class Gen<T>(T val)
 	{

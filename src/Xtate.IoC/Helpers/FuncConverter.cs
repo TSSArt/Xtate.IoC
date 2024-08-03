@@ -59,8 +59,6 @@ internal static class FuncConverter
 
 	private static Delegate Cast(Delegate func, Type toType)
 	{
-		Infra.Requires(func);
-
 		if (func.GetType() == toType)
 		{
 			return func;

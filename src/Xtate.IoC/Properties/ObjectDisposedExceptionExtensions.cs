@@ -17,7 +17,7 @@
 
 namespace Xtate.IoC;
 
-public static class XtateObjectDisposedException
+internal static class XtateObjectDisposedException
 {
 	[ExcludeFromCodeCoverage]
 	public static void ThrowIf([DoesNotReturnIf(true)] bool condition, object? instance)

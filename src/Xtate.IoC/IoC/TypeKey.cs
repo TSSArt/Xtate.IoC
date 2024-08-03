@@ -36,10 +36,10 @@ public abstract class TypeKey
 	public static TypeKey ImplementationKey<T, TArg>() => Infra.TypeInitHandle(() => Implementation<T, TArg>.Value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static TypeKey ServiceKeyFast<T, TArg>() => Service<T, TArg>.Value;
+	internal static TypeKey ServiceKeyFast<T, TArg>() => Service<T, TArg>.Value;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static TypeKey ImplementationKeyFast<T, TArg>() => Implementation<T, TArg>.Value;
+	internal static TypeKey ImplementationKeyFast<T, TArg>() => Implementation<T, TArg>.Value;
 
 	[ExcludeFromCodeCoverage]
 	internal virtual void DoTypedAction(ITypeKeyAction typeKeyAction) => Infra.Assert(false);

@@ -32,20 +32,6 @@ public class InfraTest
 	}
 
 	[TestMethod]
-	public void RequiresFailureTest()
-	{
-		// Arrange
-		[ExcludeFromCodeCoverage]
-		static void Method(object argument1) => Infra.Requires(argument1);
-
-		// Act
-
-		// Assert
-		var ex = Assert.ThrowsException<ArgumentNullException>([ExcludeFromCodeCoverage]() => Method(null!));
-		Assert.AreEqual(expected: "argument1", ex.ParamName);
-	}
-
-	[TestMethod]
 	public void NotNullFailureTest()
 	{
 		// Arrange

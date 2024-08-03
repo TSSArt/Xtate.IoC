@@ -31,7 +31,7 @@ internal class WeakReferenceCollection
 
 	public void Put(object instance)
 	{
-		Infra.Requires(instance);
+		Infra.NotNull(instance);
 
 		if (-- _counter < -8)
 		{

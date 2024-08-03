@@ -106,24 +106,6 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t match arguments for implementation class..
-        /// </summary>
-        internal static string Exception_CantMatchArgumentsForImplementationClass {
-            get {
-                return ResourceManager.GetString("Exception_CantMatchArgumentsForImplementationClass", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delegate creation failed..
-        /// </summary>
-        internal static string Exception_DelegateCreationFailed {
-            get {
-                return ResourceManager.GetString("Exception_DelegateCreationFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Factory of [{0}] raised exception..
         /// </summary>
         internal static string Exception_FactoryOfRaisedException {
@@ -178,30 +160,11 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provider creation failed..
-        /// </summary>
-        internal static string Exception_ProviderCreationFailed {
-            get {
-                return ResourceManager.GetString("Exception_ProviderCreationFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Service [{0} (Argument: {1})] missed in container..
         /// </summary>
         internal static string Exception_ServiceArgMissedInContainer {
             get {
                 return ResourceManager.GetString("Exception_ServiceArgMissedInContainer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Service can&apos;t be instantiated since at least one parameter required asynchronous call..
-        /// </summary>
-        internal static string Exception_ServiceCantBeInstantiatedSinceAtLeastOneParameterRequiredAsynchronousCall {
-            get {
-                return ResourceManager.GetString("Exception_ServiceCantBeInstantiatedSinceAtLeastOneParameterRequiredAsynchronousCa" +
-                        "ll", resourceCulture);
             }
         }
         
@@ -229,24 +192,6 @@ namespace Xtate.IoC {
         internal static string Exception_ServiceTypeNotInitialized {
             get {
                 return ResourceManager.GetString("Exception_ServiceTypeNotInitialized", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Singleton/scoped types does not supported for synchronous instantiation..
-        /// </summary>
-        internal static string Exception_SingletonScopedTypesDoesNotSupportedForSynchronousInstantiation {
-            get {
-                return ResourceManager.GetString("Exception_SingletonScopedTypesDoesNotSupportedForSynchronousInstantiation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This exception should never happen..
-        /// </summary>
-        internal static string Exception_ThisExceptionShouldNeverHappen {
-            get {
-                return ResourceManager.GetString("Exception_ThisExceptionShouldNeverHappen", resourceCulture);
             }
         }
         
