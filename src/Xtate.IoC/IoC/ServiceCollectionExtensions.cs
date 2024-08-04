@@ -19,11 +19,11 @@ namespace Xtate.IoC;
 
 public static class ServiceCollectionExtensions
 {
-	private static bool IsRegistered(IServiceCollection services, TypeKey serviceKey)
+	private static bool IsRegistered(IServiceCollection services, TypeKey key)
 	{
 		foreach (var entry in services)
 		{
-			if (entry.Key == serviceKey)
+			if (entry.Key == key)
 			{
 				return true;
 			}
@@ -45,6 +45,16 @@ public static class ServiceCollectionExtensions
 								 InstanceScope instanceScope,
 								 Delegate factory) =>
 		services.Add(new ServiceEntry(serviceKey, instanceScope, factory));
+
+	public static void AddModule<TModule>(this IServiceCollection services) where TModule : IModule, new()
+	{
+		if (!IsRegistered(services, TypeKey.ImplementationKeyFast<TModule, Empty>()))
+		{
+			new TModule { Services = services }.AddServices();
+
+			services.AddImplementationSync<TModule>().For<IModule>();
+		}
+	}
 
 	public static bool IsRegistered<T, TArg>(this IServiceCollection services) => IsRegistered(services, TypeKey.ServiceKey<T, TArg>());
 
@@ -251,4 +261,7 @@ public static class ServiceCollectionExtensions
 
 	public static void AddForwarding<T, TArg1, TArg2>(this IServiceCollection services, Func<IServiceProvider, TArg1, TArg2, T> factory) =>
 		AddEntry(services, TypeKey.ServiceKey<T, (TArg1, TArg2)>(), InstanceScope.Forwarding, new Func<IServiceProvider, (TArg1, TArg2), T>((sp, arg) => factory(sp, arg.Item1, arg.Item2)));
+
+	public static void AddConstant<T>(this IServiceCollection services, T value) =>
+		AddEntry(services, TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, T>((_, _) => value));
 }
