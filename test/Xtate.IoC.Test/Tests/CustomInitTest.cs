@@ -25,7 +25,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => null!);
+		sc.AddConstant<IInitializationHandler>(null!);
 		sc.AddType<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -41,7 +41,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => null!);
+		sc.AddConstant<IInitializationHandler>(null!);
 		sc.AddTypeSync<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -57,7 +57,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => null!);
+		sc.AddConstant<IInitializationHandler>(null!);
 		sc.AddType<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -73,7 +73,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => new CustomInitializationHandler(false));
+		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
 		sc.AddType<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -89,7 +89,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => new CustomInitializationHandler(false));
+		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
 		sc.AddType<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -105,7 +105,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => new CustomInitializationHandler(true));
+		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
 		sc.AddType<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -121,7 +121,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => new CustomInitializationHandler(false));
+		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
 		sc.AddTypeSync<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -137,7 +137,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => new CustomInitializationHandler(true));
+		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
 		sc.AddTypeSync<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
@@ -152,7 +152,7 @@ public class CustomInitTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => new CustomInitializationHandler(true));
+		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
 		sc.AddType<Temp>();
 		var serviceProvider = sc.BuildProvider();
 

@@ -27,7 +27,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding(_ => CustomAsyncInit.Instance);
+		sc.AddConstant(CustomAsyncInit.Instance);
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
 
@@ -43,7 +43,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<Class>(_ => null!);
+		sc.AddConstant<Class>(null!);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -57,7 +57,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding(_ => CustomAsyncInit.Instance);
+		sc.AddConstant(CustomAsyncInit.Instance);
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
 
@@ -73,7 +73,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<Class>(_ => null!);
+		sc.AddConstant<Class>(null!);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -88,7 +88,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding(_ => CustomSyncInit.Instance);
+		sc.AddConstant(CustomSyncInit.Instance);
 		sc.AddTypeSync<Class>();
 		var sp = sc.BuildProvider();
 
@@ -104,7 +104,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<Class>(_ => null!);
+		sc.AddConstant<Class>(null!);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -118,7 +118,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding(_ => CustomSyncInit.Instance);
+		sc.AddConstant(CustomSyncInit.Instance);
 		sc.AddTypeSync<Class>();
 		var sp = sc.BuildProvider();
 
@@ -134,7 +134,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<Class>(_ => null!);
+		sc.AddConstant<Class>(null!);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -163,7 +163,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding(_ => CustomAsyncInit.Instance);
+		sc.AddConstant(CustomAsyncInit.Instance);
 		sc.AddTypeSync<Class>();
 		var sp = sc.BuildProvider();
 
@@ -192,7 +192,7 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding(_ => CustomAsyncInit.Instance);
+		sc.AddConstant(CustomAsyncInit.Instance);
 		sc.AddTypeSync<Class>();
 		var sp = sc.BuildProvider();
 

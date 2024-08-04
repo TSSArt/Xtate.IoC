@@ -42,7 +42,7 @@ public class GenericParamTypeTest
 	{
 		// Arrange
 		var services = new ServiceCollection();
-		services.AddForwarding<IInterface<string>>(_ => new Class<string>());
+		services.AddConstant<IInterface<string>>(new Class<string>());
 		var serviceProvider = services.BuildProvider();
 
 		// Act

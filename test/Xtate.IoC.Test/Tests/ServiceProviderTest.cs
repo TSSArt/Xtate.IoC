@@ -155,7 +155,7 @@ public class ServiceProviderTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddForwarding<IInitializationHandler>(_ => null!);
+		sc.AddConstant<IInitializationHandler>(null!);
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
 
