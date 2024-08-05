@@ -70,7 +70,9 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2>(Action<IServiceCollection>? addServices = default) where TModule1 : IModule, new() where TModule2 : IModule, new()
+	public static Container Create<TModule1, TModule2>(Action<IServiceCollection>? addServices = default) 
+		where TModule1 : IModule, new() 
+		where TModule2 : IModule, new()
 	{
 		var services = new ServiceCollection();
 		services.AddModule<TModule1>();
@@ -82,12 +84,33 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2, TModule3>(Action<IServiceCollection>? addServices = default) where TModule1 : IModule, new() where TModule2 : IModule, new() where TModule3 : IModule, new()
+	public static Container Create<TModule1, TModule2, TModule3>(Action<IServiceCollection>? addServices = default) 
+		where TModule1 : IModule, new() 
+		where TModule2 : IModule, new() 
+		where TModule3 : IModule, new()
 	{
 		var services = new ServiceCollection();
 		services.AddModule<TModule1>();
 		services.AddModule<TModule2>();
 		services.AddModule<TModule3>();
+
+		addServices?.Invoke(services);
+
+		return new Container(services.BuildProvider());
+	}
+
+	[MustDisposeResource]
+	public static Container Create<TModule1, TModule2, TModule3, TModule4>(Action<IServiceCollection>? addServices = default) 
+		where TModule1 : IModule, new() 
+		where TModule2 : IModule, new() 
+		where TModule3 : IModule, new()
+		where TModule4 : IModule, new()
+	{
+		var services = new ServiceCollection();
+		services.AddModule<TModule1>();
+		services.AddModule<TModule2>();
+		services.AddModule<TModule3>();
+		services.AddModule<TModule4>();
 
 		addServices?.Invoke(services);
 
