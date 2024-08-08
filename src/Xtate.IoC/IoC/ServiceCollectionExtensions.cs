@@ -265,7 +265,7 @@ public static class ServiceCollectionExtensions
 	public static void AddConstant<T>(this IServiceCollection services, T value) =>
 		AddEntry(services, TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, T>((_, _) => value));
 
-	[Obsolete("ValueTask<> shouldn't be passed as a constant. Pass Result or Convert ValueTask<> to Task<>.", error: true)]
-	public static void AddConstant<T>(this IServiceCollection services, ValueTask<T> value) => 
+	[Obsolete(message: "ValueTask<> shouldn't be passed as a constant. Pass Result or Convert ValueTask<> to Task<>.", error: true)]
+	public static void AddConstant<T>(this IServiceCollection services, ValueTask<T> value) =>
 		AddEntry(services, TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>((_, _) => value));
 }
