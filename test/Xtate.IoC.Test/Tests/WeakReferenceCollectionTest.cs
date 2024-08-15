@@ -18,7 +18,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Xtate.IoC.Test;
 
@@ -26,16 +25,7 @@ namespace Xtate.IoC.Test;
 public class WeakReferenceCollectionTest
 {
 	[ExcludeFromCodeCoverage]
-	private static bool IsGcCollectsAll => !(Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework"));
-
-	[TestMethod]
-	public void a1Test() => throw new Exception($"IsGcCollectsAll: {IsGcCollectsAll}");
-
-	[TestMethod]
-	public void a2Test() => throw new Exception($"Environment.OSVersion.Platform: {Environment.OSVersion.Platform}");
-
-	[TestMethod]
-	public void a3Test() => throw new Exception($"RuntimeInformation.FrameworkDescription: {RuntimeInformation.FrameworkDescription}");
+	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith("Mono", StringComparison.OrdinalIgnoreCase);
 
 	[TestMethod]
 	public void BasicTest()
