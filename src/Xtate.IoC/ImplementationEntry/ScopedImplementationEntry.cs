@@ -36,7 +36,6 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 
 	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedImplementationEntry(serviceProvider, factory);
 
-	[ExcludeFromCodeCoverage]
 	private async ValueTask<T?> ExecuteFactoryInternal<T, TArg>(TArg argument)
 	{
 		var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);

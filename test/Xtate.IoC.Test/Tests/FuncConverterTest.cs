@@ -23,69 +23,76 @@ public class FuncConverterTest
 	[TestMethod]
 	public void CastWrongType1Test()
 	{
+		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
+		return;
+
 		[ExcludeFromCodeCoverage]
 		static bool MyFunc(ValueTuple _) => false;
-
-		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
 	}
 
 	[TestMethod]
 	public void CastWrongType2Test()
 	{
+		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
+		return;
+
 		[ExcludeFromCodeCoverage]
 		static bool MyFunc(ValueTuple _) => false;
-
-		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
 	}
 
 	[TestMethod]
 	public void Cast1Test()
 	{
-		static string MyFunc(ValueTuple _) => "test";
-
 		var f = FuncConverter.Cast<Func<string>>(new Func<ValueTuple, string>(MyFunc));
 
 		Assert.AreEqual(expected: "test", f());
+		return;
+
+		static string MyFunc(ValueTuple _) => "test";
 	}
 
 	[TestMethod]
 	public void Cast2Test()
 	{
-		static string MyFunc(string v) => v;
-
 		var f = FuncConverter.Cast<Func<string, string>>(new Func<string, string>(MyFunc));
 
 		Assert.AreEqual(expected: "test", f("test"));
+		return;
+
+		static string MyFunc(string v) => v;
 	}
 
 	[TestMethod]
 	public void Cast2ATest()
 	{
+		Assert.ThrowsException<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
+		return;
+
 		[ExcludeFromCodeCoverage]
 		static string MyFunc(string v) => v;
-
-		Assert.ThrowsException<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
 	}
 
 	[TestMethod]
 	public void Cast3Test()
 	{
-		static string MyFunc((string v1, string v2) arg) => arg.v1 + arg.v2;
-
 		var f = FuncConverter.Cast<Func<string, string, string>>(new Func<(string, string), string>(MyFunc));
 
 		Assert.AreEqual(expected: "ab", f(arg1: "a", arg2: "b"));
+		return;
+
+		static string MyFunc((string v1, string v2) arg) => arg.v1 + arg.v2;
 	}
 
 	[TestMethod]
 	public void Cast1_9Test()
 	{
-		static string MyFunc((string v1, string v2, string v3, string v4, string v5, string v6, string v7, string v8, string v9) arg) =>
-			arg.v1 + arg.v2 + arg.v3 + arg.v4 + arg.v5 + arg.v6 + arg.v7 + arg.v8 + arg.v9;
-
 		var f = FuncConverter.Cast<Func<string, string, string, string, string, string, string, string, string, string>>(
 			new Func<(string, string, string, string, string, string, string, string, string), string>(MyFunc));
 
 		Assert.AreEqual(expected: "123456789", f(arg1: "1", arg2: "2", arg3: "3", arg4: "4", arg5: "5", arg6: "6", arg7: "7", arg8: "8", arg9: "9"));
+		return;
+
+		static string MyFunc((string v1, string v2, string v3, string v4, string v5, string v6, string v7, string v8, string v9) arg) =>
+			arg.v1 + arg.v2 + arg.v3 + arg.v4 + arg.v5 + arg.v6 + arg.v7 + arg.v8 + arg.v9;
 	}
 }

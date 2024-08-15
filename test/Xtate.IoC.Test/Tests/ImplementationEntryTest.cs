@@ -425,15 +425,17 @@ public class ImplementationEntryTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddTransient(_ => new DisposableClass());
+		sc.AddTransient(_ => new AsyncDisposableClass());
 		var sp = sc.BuildProvider();
 
 		// Act
-		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<AsyncDisposableClass, ValueTuple>());
+		var inst = await entry!.GetRequiredService<AsyncDisposableClass, ValueTuple>(default);
 		await Disposer.DisposeAsync(sp);
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+		Assert.IsTrue(inst.Disposed);
+		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry.GetRequiredService<AsyncDisposableClass, ValueTuple>(default));
 	}
 
 	[TestMethod]
@@ -446,11 +448,12 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		var inst = entry!.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default);
 		Disposer.Dispose(sp);
 
 		// Assert
-		Assert.ThrowsException<ObjectDisposedException>(
-			[ExcludeFromCodeCoverage]() => entry!.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
+		Assert.IsTrue(inst.Disposed);
+		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
 	}
 
 	[TestMethod]
@@ -463,10 +466,11 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		var inst = await entry!.GetRequiredService<DisposableClass, ValueTuple>(default);
 		await Disposer.DisposeAsync(sp);
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+		Assert.IsTrue(inst.Disposed);
 	}
 
 	[TestMethod]
@@ -508,10 +512,11 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		var inst = await entry!.GetRequiredService<DisposableClass, ValueTuple>(default);
 		await Disposer.DisposeAsync(sp);
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+		Assert.IsTrue(inst.Disposed);
 	}
 
 	[TestMethod]
@@ -524,10 +529,11 @@ public class ImplementationEntryTest
 
 		// Act
 		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		var inst = entry!.GetRequiredServiceSync<DisposableClass, ValueTuple>(default);
 		Disposer.Dispose(sp);
 
 		// Assert
-		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry!.GetRequiredServiceSync<DisposableClass, ValueTuple>(default));
+		Assert.IsTrue(inst.Disposed);
 	}
 
 	[TestMethod]
@@ -631,11 +637,33 @@ public class ImplementationEntryTest
 
 	public class DisposableClass : IDisposable
 	{
+		public bool Disposed { get; private set; }
+
 	#region Interface IDisposable
 
 		public void Dispose()
 		{
+			Disposed = true;
+
 			GC.SuppressFinalize(this);
+		}
+
+	#endregion
+	}
+
+	public class AsyncDisposableClass : IAsyncDisposable
+	{
+		public bool Disposed { get; private set; }
+
+	#region Interface IAsyncDisposable
+
+		public ValueTask DisposeAsync()
+		{
+			Disposed = true;
+
+			GC.SuppressFinalize(this);
+
+			return default;
 		}
 
 	#endregion

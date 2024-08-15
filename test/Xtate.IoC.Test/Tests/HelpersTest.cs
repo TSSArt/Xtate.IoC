@@ -44,6 +44,23 @@ public class HelpersTest
 	}
 
 	[TestMethod]
+	public void TaskExtensions_SynchronousWaitCompletedTaskTest()
+	{
+		// Arrange
+		var task = Task.CompletedTask;
+		var valueTask = new ValueTask(task);
+
+		// PreAssert
+		Assert.IsTrue(valueTask.IsCompleted);
+
+		// Act
+		valueTask.SynchronousWait();
+
+		// Assert
+		Assert.IsTrue(valueTask.IsCompleted);
+	}
+
+	[TestMethod]
 	public async Task AsyncEnumerable_EmptyCurrentTest()
 	{
 		// Arrange
@@ -55,5 +72,34 @@ public class HelpersTest
 
 		// Assert
 		Assert.AreEqual(expected: 0, current);
+	}
+
+	[TestMethod]
+	public void TestDisposeAsync()
+	{
+		// Arrange
+		var c = new AsyncDisposableClass();
+
+		// Act
+		Disposer.Dispose(c);
+
+		// Assert
+		Assert.IsTrue(c.Disposed);
+	}
+
+	private sealed class AsyncDisposableClass : IAsyncDisposable
+	{
+		public bool Disposed { get; private set; }
+
+	#region Interface IAsyncDisposable
+
+		public ValueTask DisposeAsync()
+		{
+			Disposed = true;
+
+			return default;
+		}
+
+	#endregion
 	}
 }

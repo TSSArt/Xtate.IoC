@@ -24,7 +24,8 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class WeakReferenceCollectionTest
 {
-	private static bool IsGcCollectsAll => Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework");
+	[ExcludeFromCodeCoverage]
+	private static bool IsGcCollectsAll => !(Environment.OSVersion.Platform == PlatformID.Unix && RuntimeInformation.FrameworkDescription.Contains(".NET Framework"));
 
 	[TestMethod]
 	public void BasicTest()

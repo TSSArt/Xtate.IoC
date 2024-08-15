@@ -196,17 +196,16 @@ public class ServiceProviderTest
 	public void WrongInstanceScopeTest()
 	{
 		// Arrange
-		var sc = new ServiceCollection();
-
-		[ExcludeFromCodeCoverage]
-		static int Factory() => 33;
-
-		sc.Add(new ServiceEntry(TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory));
+		var sc = new ServiceCollection { new (TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
 
 		// Act
 
 		// Assert
 		Assert.ThrowsException<InfrastructureException>(sc.BuildProvider);
+		return;
+
+		[ExcludeFromCodeCoverage]
+		static int Factory() => 33;
 	}
 
 	[TestMethod]

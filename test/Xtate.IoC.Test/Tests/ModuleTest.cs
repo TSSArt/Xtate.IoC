@@ -28,6 +28,19 @@ public class ModuleTest
 	}
 
 	[TestMethod]
+	public async Task ModuleSimpleAsyncTest()
+	{
+		// Arrange
+		await using var container = Container.Create(services => services.AddModule<MyModule<short>>());
+
+		// Act
+		var val = await container.GetRequiredService<short>();
+
+		// Assert
+		Assert.AreEqual(expected: 0, val);
+	}
+
+	[TestMethod]
 	public void ModuleSimpleTest()
 	{
 		// Arrange
@@ -44,7 +57,8 @@ public class ModuleTest
 	public void ModuleSimple1Test()
 	{
 		// Arrange
-		using var container = Container.Create<MyModule1>();
+		using var containerNo = Container.Create<MyModule1>();
+		using var container = Container.Create<MyModule1>(_ => { });
 
 		// Act
 		var val = container.GetRequiredServiceSync<int>();
@@ -59,7 +73,8 @@ public class ModuleTest
 	public void ModuleSimple2Test()
 	{
 		// Arrange
-		using var container = Container.Create<MyModule2, MyModule<object>>();
+		using var containerNo = Container.Create<MyModule2, MyModule<object>>();
+		using var container = Container.Create<MyModule2, MyModule<object>>(_ => { });
 
 		// Act
 		var val1 = container.GetRequiredServiceSync<int>();
@@ -76,7 +91,8 @@ public class ModuleTest
 	public void ModuleSimple3Test()
 	{
 		// Arrange
-		using var container = Container.Create<MyModule3, MyModule<object>, MyModule<object>>();
+		using var containerNo = Container.Create<MyModule3, MyModule<object>, MyModule<object>>();
+		using var container = Container.Create<MyModule3, MyModule<object>, MyModule<object>>(_ => { });
 
 		// Act
 		var val1 = container.GetRequiredServiceSync<int>();
@@ -95,7 +111,8 @@ public class ModuleTest
 	public void ModuleSimple4Test()
 	{
 		// Arrange
-		using var container = Container.Create<MyModule4, MyModule<object>, MyModule<object>, MyModule<object>>();
+		using var containerNo = Container.Create<MyModule4, MyModule<object>, MyModule<object>, MyModule<object>>();
+		using var container = Container.Create<MyModule4, MyModule<object>, MyModule<object>, MyModule<object>>(_ => { });
 
 		// Act
 		var val1 = container.GetRequiredServiceSync<int>();

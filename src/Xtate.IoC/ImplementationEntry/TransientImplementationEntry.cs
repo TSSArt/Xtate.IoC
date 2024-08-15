@@ -31,7 +31,6 @@ internal sealed class TransientImplementationEntry : ImplementationEntry
 
 	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new TransientImplementationEntry(serviceProvider, factory);
 
-	[ExcludeFromCodeCoverage]
 	private protected override async ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
 	{
 		var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);

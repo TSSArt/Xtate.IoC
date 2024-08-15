@@ -18,36 +18,8 @@
 namespace Xtate.IoC;
 
 [MustDisposeResource]
-public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
+public sealed class Container(IServiceCollection services) : ServiceProvider(services)
 {
-	private readonly IServiceProvider _serviceProvider;
-
-	private Container(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
-
-#region Interface IAsyncDisposable
-
-	public ValueTask DisposeAsync() => Disposer.DisposeAsync(_serviceProvider);
-
-#endregion
-
-#region Interface IDisposable
-
-	public void Dispose() => Disposer.Dispose(_serviceProvider);
-
-#endregion
-
-#region Interface IServiceProvider
-
-	public ImplementationEntry? GetImplementationEntry(TypeKey typeKey) => _serviceProvider.GetImplementationEntry(typeKey);
-
-	public CancellationToken DisposeToken => _serviceProvider.DisposeToken;
-
-	public IInitializationHandler? InitializationHandler => _serviceProvider.InitializationHandler;
-
-	public IServiceProviderDebugger? Debugger => _serviceProvider.Debugger;
-
-#endregion
-
 	[MustDisposeResource]
 	public static Container Create(Action<IServiceCollection> addServices)
 	{
@@ -55,7 +27,7 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 
 		addServices(services);
 
-		return new Container(services.BuildProvider());
+		return new Container(services);
 	}
 
 	[MustDisposeResource]
@@ -66,12 +38,12 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 
 		addServices?.Invoke(services);
 
-		return new Container(services.BuildProvider());
+		return new Container(services);
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2>(Action<IServiceCollection>? addServices = default) 
-		where TModule1 : IModule, new() 
+	public static Container Create<TModule1, TModule2>(Action<IServiceCollection>? addServices = default)
+		where TModule1 : IModule, new()
 		where TModule2 : IModule, new()
 	{
 		var services = new ServiceCollection();
@@ -80,13 +52,13 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 
 		addServices?.Invoke(services);
 
-		return new Container(services.BuildProvider());
+		return new Container(services);
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2, TModule3>(Action<IServiceCollection>? addServices = default) 
-		where TModule1 : IModule, new() 
-		where TModule2 : IModule, new() 
+	public static Container Create<TModule1, TModule2, TModule3>(Action<IServiceCollection>? addServices = default)
+		where TModule1 : IModule, new()
+		where TModule2 : IModule, new()
 		where TModule3 : IModule, new()
 	{
 		var services = new ServiceCollection();
@@ -96,13 +68,13 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 
 		addServices?.Invoke(services);
 
-		return new Container(services.BuildProvider());
+		return new Container(services);
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2, TModule3, TModule4>(Action<IServiceCollection>? addServices = default) 
-		where TModule1 : IModule, new() 
-		where TModule2 : IModule, new() 
+	public static Container Create<TModule1, TModule2, TModule3, TModule4>(Action<IServiceCollection>? addServices = default)
+		where TModule1 : IModule, new()
+		where TModule2 : IModule, new()
 		where TModule3 : IModule, new()
 		where TModule4 : IModule, new()
 	{
@@ -114,6 +86,6 @@ public sealed class Container : IServiceProvider, IDisposable, IAsyncDisposable
 
 		addServices?.Invoke(services);
 
-		return new Container(services.BuildProvider());
+		return new Container(services);
 	}
 }
