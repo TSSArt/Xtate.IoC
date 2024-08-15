@@ -46,7 +46,7 @@ public class InfraTest
 	public void UnexpectedNullTest()
 	{
 		// Arrange
-		var ex = Infra.UnexpectedValueException((object?) null);
+		var ex = Infra.UnexpectedValueException<object?>(null);
 
 		// Act
 

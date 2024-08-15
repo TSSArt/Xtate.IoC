@@ -163,7 +163,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	{
 		if (services?.Count is not ({ } count and > 0))
 		{
-			return Array.Empty<KeyValuePair<TypeKey, ImplementationEntry?>>();
+			return [];
 		}
 
 		var groupedServices = new Dictionary<TypeKey, ImplementationEntry?>(count);
@@ -173,7 +173,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			AddRegistration(groupedServices, sourceServiceProvider, registration);
 		}
 
-		return groupedServices;
+		return groupedServices.AsEnumerable();
 	}
 
 	private void AddRegistration(Dictionary<TypeKey, ImplementationEntry?> services, ServiceProvider? sourceServiceProvider, in ServiceEntry service)

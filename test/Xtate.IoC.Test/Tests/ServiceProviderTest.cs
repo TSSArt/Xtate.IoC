@@ -71,7 +71,7 @@ public class ServiceProviderTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddTransient(sp => (object) sp);
+		sc.AddTransient<object>(sp => sp);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -88,7 +88,7 @@ public class ServiceProviderTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddShared(SharedWithin.Container, sp => (object) sp);
+		sc.AddShared<object>(SharedWithin.Container, sp => sp);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -105,7 +105,7 @@ public class ServiceProviderTest
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddShared(SharedWithin.Scope, sp => (object) sp);
+		sc.AddShared<object>(SharedWithin.Scope, sp => sp);
 		var sp = sc.BuildProvider();
 
 		// Act
@@ -126,7 +126,7 @@ public class ServiceProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => sc.AddShared((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => (object) sp));
+		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
 	}
 
 	[TestMethod]

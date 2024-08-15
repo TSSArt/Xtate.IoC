@@ -277,15 +277,7 @@ internal abstract class ClassFactoryProvider
 
 	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Res.Format(Resources.Exception_FactoryOfRaisedException, Delegate.Method.ReturnType), ex);
 
-	protected object?[] RentArray()
-	{
-		if (Parameters.Length == 0)
-		{
-			return [];
-		}
-
-		return ArrayPool<object?>.Shared.Rent(Parameters.Length);
-	}
+	protected object?[] RentArray() => Parameters.Length > 0 ? ArrayPool<object?>.Shared.Rent(Parameters.Length) : [];
 
 	protected void ReturnArray(object?[] array)
 	{

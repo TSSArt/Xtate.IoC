@@ -63,7 +63,7 @@ public static class ServiceProviderExtensions
 	public static IEnumerable<T> GetServicesSync<T>(this IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSync<T, Empty>(default);
 
 	public static IEnumerable<T> GetServicesSync<T, TArg>(this IServiceProvider serviceProvider, TArg arg) where T : notnull =>
-		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServicesSync<T, TArg>(arg) ?? Array.Empty<T>();
+		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServicesSync<T, TArg>(arg) ?? [];
 
 	public static IEnumerable<T> GetServicesSync<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) where T : notnull =>
 		serviceProvider.GetServicesSync<T, (TArg1, TArg2)>((arg1, arg2));
@@ -81,10 +81,10 @@ public static class ServiceProviderExtensions
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServicesSyncDelegate<T, TArg, TDelegate>() ?? emptyDelegate;
 
 	public static Func<TArg, IEnumerable<T>> GetServicesSyncFactory<T, TArg>(this IServiceProvider serviceProvider) where T : notnull =>
-		serviceProvider.GetServicesSyncFactoryBase<T, TArg, Func<TArg, IEnumerable<T>>>(static _ => Array.Empty<T>());
+		serviceProvider.GetServicesSyncFactoryBase<T, TArg, Func<TArg, IEnumerable<T>>>(static _ => []);
 
 	public static Func<TArg1, TArg2, IEnumerable<T>> GetServicesSyncFactory<T, TArg1, TArg2>(this IServiceProvider serviceProvider) where T : notnull =>
-		serviceProvider.GetServicesSyncFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, IEnumerable<T>>>(static (_, _) => Array.Empty<T>());
+		serviceProvider.GetServicesSyncFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, IEnumerable<T>>>(static (_, _) => []);
 
 	private static TDelegate GetRequiredFactoryBase<T, TArg, TDelegate>(this IServiceProvider serviceProvider) where T : notnull where TDelegate : Delegate =>
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredServiceDelegate<T, TArg, TDelegate>() ?? throw ImplementationEntry.MissedServiceException<T, TArg>();

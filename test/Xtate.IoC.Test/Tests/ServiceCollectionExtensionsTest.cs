@@ -17,11 +17,9 @@
 
 // ReSharper disable ClassNeverInstantiated.Local
 
-#if NET6_0_OR_GREATER
 #pragma warning disable CA1822  // Mark members as static
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1859  // Use concrete types when possible for improved performance
-#endif
 
 namespace Xtate.IoC.Test;
 

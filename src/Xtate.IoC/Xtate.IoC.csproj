@@ -1,12 +1,9 @@
-﻿<!--EXTERNAL_PROPERTIES: Version-->
-<!--EXTERNAL_PROPERTIES: TargetFramework-->
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Condition="'$(Version)'==''" Project="..\..\Version.props" />
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;netstandard2.0;net462</TargetFrameworks>
-		<Nullable>enable</Nullable>
 		<RepositoryUrl>https://github.com/TSSArt/Xtate.IoC</RepositoryUrl>
 		<PackageId>Xtate.IoC</PackageId>
 	</PropertyGroup>
@@ -18,7 +15,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Xtate.SharedContent" Version="0.*" />
-		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="all" />
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0.1" PrivateAssets="all" />
 	</ItemGroup>
 
@@ -29,20 +25,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-			<CustomToolNamespace>Xtate.IoC</CustomToolNamespace>
-			<SubType>Designer</SubType>
-		</EmbeddedResource>
+		<Compile Update="Properties\Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
+		<EmbeddedResource Update="Properties\Resources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" CustomToolNamespace="Xtate.IoC" SubType="Designer" />
 	</ItemGroup>
 
 </Project>

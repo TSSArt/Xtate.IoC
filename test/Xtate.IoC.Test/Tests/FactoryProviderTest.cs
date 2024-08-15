@@ -19,9 +19,7 @@
 
 namespace Xtate.IoC.Test;
 
-#if NET6_0_OR_GREATER
 #pragma warning disable CA1822 // Mark members as static
-#endif
 
 [TestClass]
 public class FactoryProviderTest
