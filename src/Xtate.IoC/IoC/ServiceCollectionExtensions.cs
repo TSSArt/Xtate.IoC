@@ -37,7 +37,7 @@ public static class ServiceCollectionExtensions
 		{
 			SharedWithin.Container => InstanceScope.Singleton,
 			SharedWithin.Scope     => InstanceScope.Scoped,
-			_                      => throw Infra.UnexpectedValueException(sharedWithin)
+			_                      => throw Infra.Unmatched(sharedWithin)
 		};
 
 	private static void AddEntry(IServiceCollection services,

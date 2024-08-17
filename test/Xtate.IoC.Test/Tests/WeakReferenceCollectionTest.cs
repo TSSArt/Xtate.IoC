@@ -25,7 +25,7 @@ namespace Xtate.IoC.Test;
 public class WeakReferenceCollectionTest
 {
 	[ExcludeFromCodeCoverage]
-	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith("Mono", StringComparison.OrdinalIgnoreCase);
+	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith(value: "Mono", StringComparison.OrdinalIgnoreCase);
 
 	[TestMethod]
 	public void BasicTest()
@@ -56,20 +56,10 @@ public class WeakReferenceCollectionTest
 
 	private static object CreateObject() => new();
 
-	private static void PurgeUntil(WeakReferenceCollection wrc, int count)
+	private static void GcCollect()
 	{
-		var i = 0;
-
-		while (wrc.Purge() != count)
-		{
-			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true);
-			GC.WaitForPendingFinalizers();
-
-			if (i ++ == 1000)
-			{
-				Assert.Fail($"Collection can't be purged. Still {wrc.Purge()} elements are present");
-			}
-		}
+		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+		GC.WaitForPendingFinalizers();
 	}
 
 	[DataTestMethod]
@@ -88,7 +78,7 @@ public class WeakReferenceCollectionTest
 
 		AddObjects(wrc, n);
 
-		PurgeUntil(wrc, count: 0);
+		GcCollect();
 
 		var result = wrc.TryTake(out _);
 
@@ -114,7 +104,7 @@ public class WeakReferenceCollectionTest
 		list[5] = null!;
 		list[7] = null!;
 
-		PurgeUntil(wrc, count: 3);
+		GcCollect();
 
 		AddObjects(wrc, count: 1);
 
@@ -141,7 +131,7 @@ public class WeakReferenceCollectionTest
 	{
 		var wrc = new WeakReferenceCollection();
 
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => wrc.Put(default!));
+		wrc.Put(default!);
 	}
 
 	[TestMethod]

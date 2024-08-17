@@ -70,20 +70,11 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} ({1})..
+        ///   Looks up a localized string similar to Unmatched value ({0}:{1})..
         /// </summary>
-        internal static string Exception_AssertUnexpected {
+        internal static string Exception_AssertUnmatched {
             get {
-                return ResourceManager.GetString("Exception_AssertUnexpected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} ({1}:{2})..
-        /// </summary>
-        internal static string Exception_AssertUnexpectedWithType {
-            get {
-                return ResourceManager.GetString("Exception_AssertUnexpectedWithType", resourceCulture);
+                return ResourceManager.GetString("Exception_AssertUnmatched", resourceCulture);
             }
         }
         
@@ -214,11 +205,11 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} does not contains method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter..
+        ///   Looks up a localized string similar to Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter..
         /// </summary>
-        internal static string Exception_TypeDoesNotContainsMethodWithSignatureMethodCancellationToken {
+        internal static string Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken {
             get {
-                return ResourceManager.GetString("Exception_TypeDoesNotContainsMethodWithSignatureMethodCancellationToken", resourceCulture);
+                return ResourceManager.GetString("Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken", resourceCulture);
             }
         }
         
@@ -228,15 +219,6 @@ namespace Xtate.IoC {
         internal static string Exception_TypeUsedInSynchronousInstantiation {
             get {
                 return ResourceManager.GetString("Exception_TypeUsedInSynchronousInstantiation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected value..
-        /// </summary>
-        internal static string Exception_UnexpectedValue {
-            get {
-                return ResourceManager.GetString("Exception_UnexpectedValue", resourceCulture);
             }
         }
     }

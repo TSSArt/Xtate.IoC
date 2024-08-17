@@ -43,13 +43,16 @@ public class GenericParamTypeTest
 		// Arrange
 		var services = new ServiceCollection();
 		services.AddConstant<IInterface<string>>(new Class<string>());
+		services.AddConstant<IInterface<Version>>(new Class<Version>());
 		var serviceProvider = services.BuildProvider();
 
 		// Act
-		var service = await serviceProvider.GetRequiredService<IInterface<string>>();
+		var service1 = await serviceProvider.GetRequiredService<IInterface<string>>();
+		var service2 = await serviceProvider.GetRequiredService<IInterface<Version>>();
 
 		// Assert
-		Assert.IsNotNull(service);
+		Assert.IsNotNull(service1);
+		Assert.IsNotNull(service2);
 	}
 
 	private interface IInterface<[UsedImplicitly] T>;

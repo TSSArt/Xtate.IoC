@@ -22,10 +22,4 @@ internal static class Res
 	public static string Format(string format, object? arg) => string.Format(Resources.Culture, format, arg);
 
 	public static string Format(string format, object? arg0, object? arg1) => string.Format(Resources.Culture, format, arg0, arg1);
-
-	public static string Format(string format,
-								object? arg0,
-								object? arg1,
-								object? arg2) =>
-		string.Format(Resources.Culture, format, arg0, arg1, arg2);
 }

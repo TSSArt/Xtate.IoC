@@ -126,7 +126,7 @@ public class ServiceProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
+		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
 	}
 
 	[TestMethod]
@@ -196,12 +196,12 @@ public class ServiceProviderTest
 	public void WrongInstanceScopeTest()
 	{
 		// Arrange
-		var sc = new ServiceCollection { new (TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
+		var sc = new ServiceCollection { new(TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
 
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>(sc.BuildProvider);
+		Assert.ThrowsException<InvalidOperationException>(sc.BuildProvider);
 		return;
 
 		[ExcludeFromCodeCoverage]

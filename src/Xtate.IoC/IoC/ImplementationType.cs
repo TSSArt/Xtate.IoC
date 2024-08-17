@@ -38,12 +38,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		_openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : default;
 	}
 
-	private ImplementationType(Type? openGenericType)
-	{
-		Infra.NotNull(openGenericType);
-
-		_type = _openGenericType = openGenericType;
-	}
+	private ImplementationType(Type openGenericType) => _type = _openGenericType = openGenericType;
 
 	public Type Type => _type ?? throw new InvalidOperationException(Resources.Exception_ServiceTypeNotInitialized);
 
@@ -163,7 +158,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		}
 		catch (Exception ex)
 		{
-			throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeDoesNotContainsMethodWithSignatureMethodCancellationToken, _type, typeof(TService)), ex);
+			throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken, _type, typeof(TService)), ex);
 		}
 	}
 

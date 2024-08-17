@@ -270,7 +270,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			foreach (var entry in genericEntry.AsChain())
 			{
 				var factory = entry.Factory switch
-							  {
+				{
 								  Func<DelegateFactory> func                          => func().GetDelegate<T, TArg>(),
 								  Func<IServiceProvider, TArg, ValueTask<T?>> func    => func,
 								  Func<IServiceProvider, TArg, T?> func               => func,
@@ -296,7 +296,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			InstanceScope.Scoped     => new ScopedImplementationEntry(this, service.Factory),
 			InstanceScope.Transient  => new TransientImplementationEntry(this, service.Factory),
 			InstanceScope.Forwarding => new ForwardingImplementationEntry(this, service.Factory),
-			_                        => throw Infra.UnexpectedValueException(service.InstanceScope)
+			_                        => throw Infra.Unmatched(service.InstanceScope)
 		};
 
 	private void AddForDispose(object instance)

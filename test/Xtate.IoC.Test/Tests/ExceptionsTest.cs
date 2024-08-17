@@ -21,10 +21,10 @@ namespace Xtate.IoC.Test;
 public class ExceptionsTest
 {
 	[TestMethod]
-	public void InfrastructureException0Test()
+	public void InvalidOperationException0Test()
 	{
 		// Arrange
-		var ex = new InfrastructureException();
+		var ex = new InvalidOperationException();
 
 		// Act
 
@@ -34,10 +34,10 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void InfrastructureException1Test()
+	public void InvalidOperationException1Test()
 	{
 		// Arrange
-		var ex = new InfrastructureException(@"text");
+		var ex = new InvalidOperationException(@"text");
 
 		// Act
 
@@ -47,11 +47,11 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void InfrastructureException2Test()
+	public void InvalidOperationException2Test()
 	{
 		// Arrange
 		var exInner = new ApplicationException();
-		var ex = new InfrastructureException(message: @"text", exInner);
+		var ex = new InvalidOperationException(message: @"text", exInner);
 
 		// Act
 

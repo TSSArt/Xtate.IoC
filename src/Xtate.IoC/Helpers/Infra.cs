@@ -44,13 +44,13 @@ internal static class Infra
 
 	/// <summary>
 	///     Checks for a condition; if the condition is <see langword="false" />, throws
-	///     <see cref="InfrastructureException" /> exception.
+	///     <see cref="InvalidOperationException" /> exception.
 	/// </summary>
 	/// <param name="condition">
 	///     The conditional expression to evaluate. If the condition is <see langword="true" />, execution
 	///     returned to caller.
 	/// </param>
-	/// <exception cref="InfrastructureException"></exception>
+	/// <exception cref="InvalidOperationException"></exception>
 	[AssertionMethod]
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void Assert([AssertionCondition(AssertionConditionType.IS_TRUE)] [DoesNotReturnIf(false)] bool condition)
@@ -63,13 +63,13 @@ internal static class Infra
 
 	/// <summary>
 	///     Checks value for a null; if the value is <see langword="null" />, throws
-	///     <see cref="InfrastructureException" /> exception.
+	///     <see cref="InvalidOperationException" /> exception.
 	/// </summary>
 	/// <param name="value">
 	///     The value to check for null. If the value is not <see langword="null" />, execution returned to
 	///     caller.
 	/// </param>
-	/// <exception cref="InfrastructureException"></exception>
+	/// <exception cref="InvalidOperationException"></exception>
 	[AssertionMethod]
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void NotNull([AssertionCondition(AssertionConditionType.IS_NOT_NULL)] [NotNull] object? value)
@@ -81,28 +81,7 @@ internal static class Infra
 	}
 
 	[DoesNotReturn]
-	private static void ThrowAssertion() => throw new InfrastructureException(Resources.Exception_AssertionFailed);
+	private static void ThrowAssertion() => throw new InvalidOperationException(Resources.Exception_AssertionFailed);
 
-	private static InfrastructureException GetUnexpectedException<T>(T value, string message)
-	{
-		if (value is null)
-		{
-			return new InfrastructureException(Res.Format(Resources.Exception_AssertUnexpected, message, arg1: @"null"));
-		}
-
-		var type = value.GetType();
-		if (type.IsPrimitive || type.IsEnum)
-		{
-			return new InfrastructureException(Res.Format(Resources.Exception_AssertUnexpectedWithType, message, type, value));
-		}
-
-		if (value is Delegate)
-		{
-			return new InfrastructureException(Res.Format(Resources.Exception_AssertUnexpectedWithType, message, arg1: @"Delegate", value));
-		}
-
-		return new InfrastructureException(Res.Format(Resources.Exception_AssertUnexpected, message, type));
-	}
-
-	public static InfrastructureException UnexpectedValueException<T>(T value) => GetUnexpectedException(value, Resources.Exception_UnexpectedValue);
+	public static InvalidOperationException Unmatched<T>(T value) => new(Res.Format(Resources.Exception_AssertUnmatched, typeof(T).FullName, value));
 }

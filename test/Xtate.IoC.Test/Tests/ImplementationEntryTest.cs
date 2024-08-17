@@ -229,7 +229,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<InfrastructureException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
+		await Assert.ThrowsExceptionAsync<InvalidOperationException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
 	}
 
 	[TestMethod]
@@ -245,7 +245,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -261,7 +261,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -453,11 +453,27 @@ public class ImplementationEntryTest
 
 		// Assert
 		Assert.IsTrue(inst.Disposed);
-		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
+		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage] () => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
 	}
 
 	[TestMethod]
 	public async Task SingletonImplementationEntryAsyncTest()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddShared(SharedWithin.Container, _ => new DisposableClass());
+		var sp = sc.BuildProvider();
+
+		// Act
+		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		await Disposer.DisposeAsync(sp);
+
+		// Assert
+		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+	}
+
+	[TestMethod]
+	public async Task SingletonImplementationEntryAsync2Test()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -504,6 +520,22 @@ public class ImplementationEntryTest
 
 	[TestMethod]
 	public async Task ScopedImplementationEntryAsyncTest()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddShared(SharedWithin.Scope, _ => new DisposableClass());
+		var sp = sc.BuildProvider();
+
+		// Act
+		var entry = sp.GetImplementationEntry(TypeKey.ServiceKey<DisposableClass, ValueTuple>());
+		await Disposer.DisposeAsync(sp);
+
+		// Assert
+		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+	}
+
+	[TestMethod]
+	public async Task ScopedImplementationEntryAsync2Test()
 	{
 		// Arrange
 		var sc = new ServiceCollection();

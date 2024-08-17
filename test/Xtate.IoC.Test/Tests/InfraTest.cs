@@ -28,7 +28,7 @@ public class InfraTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => Infra.Assert(false));
+		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.Assert(false));
 	}
 
 	[TestMethod]
@@ -39,26 +39,14 @@ public class InfraTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InfrastructureException>([ExcludeFromCodeCoverage]() => Infra.NotNull(null!));
-	}
-
-	[TestMethod]
-	public void UnexpectedNullTest()
-	{
-		// Arrange
-		var ex = Infra.UnexpectedValueException<object?>(null);
-
-		// Act
-
-		// Assert
-		Assert.IsTrue(ex.Message.Contains("null"));
+		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.NotNull(null!));
 	}
 
 	[TestMethod]
 	public void UnexpectedPrimitiveTest()
 	{
 		// Arrange
-		var ex = Infra.UnexpectedValueException(456789123);
+		var ex = Infra.Unmatched(456789123);
 
 		// Act
 
@@ -70,7 +58,7 @@ public class InfraTest
 	public void UnexpectedEnumTest()
 	{
 		// Arrange
-		var ex = Infra.UnexpectedValueException(UnexpectedEnumTestEnum.Val1);
+		var ex = Infra.Unmatched(UnexpectedEnumTestEnum.Val1);
 
 		// Act
 
@@ -82,7 +70,7 @@ public class InfraTest
 	public void UnexpectedDelegateTest()
 	{
 		// Arrange
-		var ex = Infra.UnexpectedValueException([ExcludeFromCodeCoverage]() => { });
+		var ex = Infra.Unmatched<Delegate>([ExcludeFromCodeCoverage]() => { });
 
 		// Act
 
@@ -94,7 +82,7 @@ public class InfraTest
 	public void UnexpectedOtherTypeTest()
 	{
 		// Arrange
-		var ex = Infra.UnexpectedValueException(new Version());
+		var ex = Infra.Unmatched(new Version());
 
 		// Act
 

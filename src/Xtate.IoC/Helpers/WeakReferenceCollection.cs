@@ -31,7 +31,10 @@ internal class WeakReferenceCollection
 
 	public void Put(object instance)
 	{
-		Infra.NotNull(instance);
+		if (instance is null)
+		{
+			return;
+		}
 
 		if (-- _counter < -8)
 		{
@@ -44,8 +47,6 @@ internal class WeakReferenceCollection
 			newNode.NextNode = _node;
 		}
 	}
-
-	public int Purge() => RemoveOrphanedNodes(ref _node);
 
 	private static int RemoveOrphanedNodes(ref WeakReferenceNode? node)
 	{

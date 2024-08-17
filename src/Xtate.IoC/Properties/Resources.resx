@@ -129,14 +129,11 @@
   <data name="Exception_TypeCantBeConstructedBasedOnServiceType" xml:space="preserve">
     <value>Type {0} can't be constructed based on service type {1}.</value>
   </data>
-  <data name="Exception_AssertUnexpected" xml:space="preserve">
-    <value>{0} ({1}).</value>
+  <data name="Exception_AssertUnmatched" xml:space="preserve">
+    <value>Unmatched value ({0}:{1}).</value>
   </data>
-  <data name="Exception_AssertUnexpectedWithType" xml:space="preserve">
-    <value>{0} ({1}:{2}).</value>
-  </data>
-  <data name="Exception_TypeDoesNotContainsMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contains method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter.</value>
+  <data name="Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken" xml:space="preserve">
+    <value>Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter.</value>
   </data>
   <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
     <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously.</value>
@@ -161,9 +158,6 @@
   </data>
   <data name="Exception_AssertionFailed" xml:space="preserve">
     <value>Assertion failed.</value>
-  </data>
-  <data name="Exception_UnexpectedValue" xml:space="preserve">
-    <value>Unexpected value.</value>
   </data>
   <data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
 	  <value>More than one method found.</value>

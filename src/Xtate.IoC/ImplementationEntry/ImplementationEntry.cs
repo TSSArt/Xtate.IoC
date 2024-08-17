@@ -211,14 +211,16 @@ public abstract class ImplementationEntry
 	{
 		ServiceProvider.Debugger?.FactoryCalled(TypeKey.ServiceKeyFast<T, TArg>());
 
+#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
 		return Factory switch
 			   {
 				   Func<IServiceProvider, TArg, ValueTask<T?>> factory    => factory(ServiceProvider, argument),
 				   Func<IServiceProvider, TArg, T?> factory               => new ValueTask<T?>(factory(ServiceProvider, argument)),
 				   Func<IServiceProvider, T, TArg, ValueTask<T?>> factory => GetDecoratorAsync(factory, argument),
 				   Func<IServiceProvider, T, TArg, T?> factory            => GetDecoratorAsync(factory, argument),
-				   _                                                      => throw Infra.UnexpectedValueException(Factory)
+				   _                                                      => throw Infra.Unmatched(Factory)
 			   };
+#pragma warning restore CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
 	}
 
 	private protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument)
@@ -231,7 +233,7 @@ public abstract class ImplementationEntry
 				   Func<IServiceProvider, T, TArg, T?> factory    => GetDecoratorSync(factory, argument),
 				   Func<IServiceProvider, TArg, ValueTask<T?>>    => throw ServiceNotAvailableInSynchronousContextException<T>(),
 				   Func<IServiceProvider, T, TArg, ValueTask<T?>> => throw ServiceNotAvailableInSynchronousContextException<T>(),
-				   _                                              => throw Infra.UnexpectedValueException(Factory)
+				   _                                              => throw Infra.Unmatched(Factory)
 			   };
 	}
 
@@ -248,7 +250,7 @@ public abstract class ImplementationEntry
 				throw ServiceNotAvailableInSynchronousContextException<T>();
 
 			default:
-				throw Infra.UnexpectedValueException(Factory);
+				throw Infra.Unmatched(Factory);
 		}
 	}
 
