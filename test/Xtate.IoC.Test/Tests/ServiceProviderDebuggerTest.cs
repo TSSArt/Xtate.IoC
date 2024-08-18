@@ -32,9 +32,9 @@ public class ServiceProviderDebuggerTest
 
 		// Act
 		var rService = await sp.GetRequiredService<IServiceProviderDebugger>();
-		var oService = await sp.GetOptionalService<IServiceProviderDebugger>();
+		var oService = await sp.GetService<IServiceProviderDebugger>();
 		var rServiceSync = sp.GetRequiredServiceSync<IServiceProviderDebugger>();
-		var oServiceSync = sp.GetOptionalServiceSync<IServiceProviderDebugger>();
+		var oServiceSync = sp.GetServiceSync<IServiceProviderDebugger>();
 
 		// Assert
 		Assert.AreSame(rService, dbg);

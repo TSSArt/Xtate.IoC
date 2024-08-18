@@ -21,22 +21,22 @@ namespace Xtate.IoC;
 
 internal sealed class ClassSyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
 {
-	private static readonly MethodInfo GetOptionalSyncService;
+	private static readonly MethodInfo GetSyncService;
 	private static readonly MethodInfo GetRequiredSyncService;
 
 	static ClassSyncFactoryProvider()
 	{
-		GetOptionalSyncService = GetMethodInfo<ClassSyncFactoryProvider>(nameof(GetOptionalServiceSyncWrapper));
+		GetSyncService = GetMethodInfo<ClassSyncFactoryProvider>(nameof(GetServiceSyncWrapper));
 		GetRequiredSyncService = GetMethodInfo<ClassSyncFactoryProvider>(nameof(GetRequiredServiceSyncWrapper));
 	}
 
-	protected override MethodInfo GetOptionalService => GetOptionalSyncService;
+	protected override MethodInfo GetServiceMethodInfo => GetSyncService;
 
-	protected override MethodInfo GetRequiredService => GetRequiredSyncService;
+	protected override MethodInfo GetRequiredServiceMethodInfo => GetRequiredSyncService;
 
 	private static object GetRequiredServiceSyncWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredServiceSync<T>();
 
-	private static object GetOptionalServiceSyncWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalServiceSync<T>()!;
+	private static object GetServiceSyncWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetServiceSync<T>()!;
 
 	private void FillParameters<TArg>(object?[] args, IServiceProvider serviceProvider, ref TArg? arg)
 	{

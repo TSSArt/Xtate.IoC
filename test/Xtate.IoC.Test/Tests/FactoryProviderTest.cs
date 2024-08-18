@@ -40,7 +40,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = await sp.GetOptionalService<Class<string>>();
+		var obj = await sp.GetService<Class<string>>();
 
 		// Assert
 		Assert.IsNull(obj);
@@ -68,7 +68,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = sp.GetOptionalSyncFactory<Class<string>>()();
+		var obj = sp.GetSyncFactory<Class<string>>()();
 
 		// Assert
 		Assert.IsNull(obj);
@@ -132,7 +132,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = await sp.GetOptionalService<IService<string>>();
+		var obj = await sp.GetService<IService<string>>();
 
 		// Assert
 		Assert.IsNull(obj);
@@ -146,7 +146,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = await sp.GetOptionalService<IService<Integer>, int>(3);
+		var obj = await sp.GetService<IService<Integer>, int>(3);
 
 		// Assert
 		Assert.IsNull(obj);
@@ -160,7 +160,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = sp.GetOptionalServiceSync<IService<string>>();
+		var obj = sp.GetServiceSync<IService<string>>();
 
 		// Assert
 		Assert.IsNull(obj);
@@ -174,7 +174,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = sp.GetOptionalServiceSync<IService<Integer>, int>(4);
+		var obj = sp.GetServiceSync<IService<Integer>, int>(4);
 
 		// Assert
 		Assert.IsNull(obj);
@@ -204,7 +204,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetOptionalService<IService<Integer>>().AsTask());
+		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetService<IService<Integer>>().AsTask());
 	}
 
 	[TestMethod]
@@ -217,7 +217,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetOptionalServiceSync<IService<Integer>>());
+		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetServiceSync<IService<Integer>>());
 	}
 
 	[TestMethod]
@@ -292,7 +292,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalService<IService<string>, string>("D");
+		var service = await sp.GetService<IService<string>, string>("D");
 
 		// Assert
 		Assert.IsNull(service);
@@ -306,7 +306,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalService<IService<Integer>, int>(55);
+		var service = await sp.GetService<IService<Integer>, int>(55);
 
 		// Assert
 		Assert.IsNull(service);
@@ -320,7 +320,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalServiceSync<IService<string>, string>("D");
+		var service = sp.GetServiceSync<IService<string>, string>("D");
 
 		// Assert
 		Assert.IsNull(service);
@@ -334,7 +334,7 @@ public class FactoryProviderTest
 		var sp = _services.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalServiceSync<IService<Integer>, int>(33);
+		var service = sp.GetServiceSync<IService<Integer>, int>(33);
 
 		// Assert
 		Assert.IsNull(service);

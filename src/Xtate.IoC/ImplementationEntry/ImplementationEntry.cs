@@ -96,7 +96,7 @@ public abstract class ImplementationEntry
 		}
 	}
 
-	public async ValueTask<T?> GetOptionalService<T, TArg>(TArg argument)
+	public async ValueTask<T?> GetService<T, TArg>(TArg argument)
 	{
 		var debugger = ServiceProvider.Debugger;
 
@@ -163,7 +163,7 @@ public abstract class ImplementationEntry
 		}
 	}
 
-	public T? GetOptionalServiceSync<T, TArg>(TArg argument)
+	public T? GetServiceSync<T, TArg>(TArg argument)
 	{
 		var debugger = ServiceProvider.Debugger;
 
@@ -255,17 +255,17 @@ public abstract class ImplementationEntry
 	}
 
 	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) =>
-		_previousEntry is not null && await _previousEntry.GetOptionalService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
+		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
 			? await factory(ServiceProvider, decoratedService, argument).ConfigureAwait(false)
 			: default;
 
 	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
-		_previousEntry is not null && await _previousEntry.GetOptionalService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
+		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
 			? factory(ServiceProvider, decoratedService, argument)
 			: default;
 
 	private T? GetDecoratorSync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
-		_previousEntry is not null && _previousEntry.GetOptionalServiceSync<T, TArg>(argument) is { } decoratedService
+		_previousEntry is not null && _previousEntry.GetServiceSync<T, TArg>(argument) is { } decoratedService
 			? factory(ServiceProvider, decoratedService, argument)
 			: default;
 
@@ -273,7 +273,7 @@ public abstract class ImplementationEntry
 	{
 		foreach (var entry in AsChain())
 		{
-			var result = await entry.GetOptionalService<T, TArg>(argument).ConfigureAwait(false);
+			var result = await entry.GetService<T, TArg>(argument).ConfigureAwait(false);
 
 			if (result is not null)
 			{
@@ -286,7 +286,7 @@ public abstract class ImplementationEntry
 	{
 		foreach (var entry in AsChain())
 		{
-			if (entry.GetOptionalServiceSync<T, TArg>(argument) is { } instance)
+			if (entry.GetServiceSync<T, TArg>(argument) is { } instance)
 			{
 				yield return instance;
 			}
@@ -341,18 +341,18 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
-	public TDelegate GetOptionalServiceDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
+	public TDelegate GetServiceDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
 		{
-			if (entry is OptionalServiceDelegateEntry<TDelegate> optionalServiceDelegateEntry)
+			if (entry is ServiceDelegateEntry<TDelegate> serviceDelegateEntry)
 			{
-				return optionalServiceDelegateEntry.Delegate;
+				return serviceDelegateEntry.Delegate;
 			}
 		}
 
-		var newDelegate = FuncConverter.Cast<TDelegate>(new Func<TArg, ValueTask<T?>>(GetOptionalService<T, TArg>));
-		_delegateEntry = new OptionalServiceDelegateEntry<TDelegate>(newDelegate, _delegateEntry);
+		var newDelegate = FuncConverter.Cast<TDelegate>(new Func<TArg, ValueTask<T?>>(GetService<T, TArg>));
+		_delegateEntry = new ServiceDelegateEntry<TDelegate>(newDelegate, _delegateEntry);
 
 		return newDelegate;
 	}
@@ -373,18 +373,18 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
-	public TDelegate GetOptionalServiceSyncDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
+	public TDelegate GetServiceSyncDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
 		{
-			if (entry is OptionalServiceSyncDelegateEntry<TDelegate> optionalServiceSyncDelegateEntry)
+			if (entry is ServiceSyncDelegateEntry<TDelegate> serviceSyncDelegateEntry)
 			{
-				return optionalServiceSyncDelegateEntry.Delegate;
+				return serviceSyncDelegateEntry.Delegate;
 			}
 		}
 
-		var newDelegate = FuncConverter.Cast<TDelegate>(new Func<TArg, T?>(GetOptionalServiceSync<T, TArg>));
-		_delegateEntry = new OptionalServiceSyncDelegateEntry<TDelegate>(newDelegate, _delegateEntry);
+		var newDelegate = FuncConverter.Cast<TDelegate>(new Func<TArg, T?>(GetServiceSync<T, TArg>));
+		_delegateEntry = new ServiceSyncDelegateEntry<TDelegate>(newDelegate, _delegateEntry);
 
 		return newDelegate;
 	}
@@ -454,7 +454,7 @@ public abstract class ImplementationEntry
 		public T Delegate { get; } = @delegate;
 	}
 
-	private class OptionalServiceDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
+	private class ServiceDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
 		public T Delegate { get; } = @delegate;
 	}
@@ -464,7 +464,7 @@ public abstract class ImplementationEntry
 		public T Delegate { get; } = @delegate;
 	}
 
-	private class OptionalServiceSyncDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
+	private class ServiceSyncDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
 		public T Delegate { get; } = @delegate;
 	}

@@ -24,12 +24,12 @@ internal abstract class ClassFactoryProvider
 {
 	private const string RequiredMemberAttr = @"System.Runtime.CompilerServices.RequiredMemberAttribute";
 
-	private static readonly MethodInfo GetOptionalFactory;
-	private static readonly MethodInfo GetOptionalFactoryArg;
-	private static readonly MethodInfo GetOptionalFactoryArg2;
-	private static readonly MethodInfo GetOptionalSyncFactory;
-	private static readonly MethodInfo GetOptionalSyncFactoryArg;
-	private static readonly MethodInfo GetOptionalSyncFactoryArg2;
+	private static readonly MethodInfo GetFactory;
+	private static readonly MethodInfo GetFactoryArg;
+	private static readonly MethodInfo GetFactoryArg2;
+	private static readonly MethodInfo GetSyncFactory;
+	private static readonly MethodInfo GetSyncFactoryArg;
+	private static readonly MethodInfo GetSyncFactoryArg2;
 	private static readonly MethodInfo GetRequiredFactory;
 	private static readonly MethodInfo GetRequiredFactoryArg;
 	private static readonly MethodInfo GetRequiredFactoryArg2;
@@ -51,27 +51,27 @@ internal abstract class ClassFactoryProvider
 	{
 		GetServices = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesWrapper));
 		GetServicesSync = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesSyncWrapper));
-		GetOptionalFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetOptionalFactoryWrapper));
+		GetFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetFactoryWrapper));
 		GetRequiredFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredFactoryWrapper));
-		GetOptionalSyncFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetOptionalSyncFactoryWrapper));
+		GetSyncFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetSyncFactoryWrapper));
 		GetRequiredSyncFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredSyncFactoryWrapper));
 		GetServicesFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesFactoryArgWrapper));
 		GetServicesSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesSyncFactoryArgWrapper));
-		GetOptionalFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetOptionalFactoryArgWrapper));
+		GetFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetFactoryArgWrapper));
 		GetRequiredFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredFactoryArgWrapper));
-		GetOptionalSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetOptionalSyncFactoryArgWrapper));
+		GetSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetSyncFactoryArgWrapper));
 		GetRequiredSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredSyncFactoryArgWrapper));
 		GetServicesFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesFactoryArg2Wrapper));
 		GetServicesSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesSyncFactoryArg2Wrapper));
-		GetOptionalFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetOptionalFactoryArg2Wrapper));
+		GetFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetFactoryArg2Wrapper));
 		GetRequiredFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredFactoryArg2Wrapper));
-		GetOptionalSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetOptionalSyncFactoryArg2Wrapper));
+		GetSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetSyncFactoryArg2Wrapper));
 		GetRequiredSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredSyncFactoryArg2Wrapper));
 	}
 
 	protected ClassFactoryProvider(Type implementationType)
 	{
-		var factory = GetFactory(implementationType);
+		var factory = GetConstructor(implementationType);
 		var parameters = factory.GetParameters();
 
 		Delegate = CreateDelegate(factory, parameters);
@@ -95,9 +95,9 @@ internal abstract class ClassFactoryProvider
 		RequiredMembers = EnumerateRequiredMembers(implementationType).ToArray();
 	}
 
-	protected abstract MethodInfo GetOptionalService { get; }
+	protected abstract MethodInfo GetServiceMethodInfo { get; }
 
-	protected abstract MethodInfo GetRequiredService { get; }
+	protected abstract MethodInfo GetRequiredServiceMethodInfo { get; }
 
 	protected static MethodInfo GetMethodInfo<T>(string name)
 	{
@@ -119,10 +119,10 @@ internal abstract class ClassFactoryProvider
 		{
 			if (IsValueTask(resultType) is { } serviceType)
 			{
-				return CreateDelegate(member.IsNotNull(@"00") ? GetRequiredFactory : GetOptionalFactory, serviceType);
+				return CreateDelegate(member.IsNotNull(@"00") ? GetRequiredFactory : GetFactory, serviceType);
 			}
 
-			return CreateDelegate(member.IsNotNull(@"0") ? GetRequiredSyncFactory : GetOptionalSyncFactory, resultType);
+			return CreateDelegate(member.IsNotNull(@"0") ? GetRequiredSyncFactory : GetSyncFactory, resultType);
 		}
 
 		if (IsFunc2(member.Type) is { Type: { } resultType2, ArgType: { } argType })
@@ -134,10 +134,10 @@ internal abstract class ClassFactoryProvider
 
 			if (IsValueTask(resultType2) is { } serviceType3)
 			{
-				return CreateDelegate(member.IsNotNull(@"10") ? GetRequiredFactoryArg : GetOptionalFactoryArg, serviceType3, argType);
+				return CreateDelegate(member.IsNotNull(@"10") ? GetRequiredFactoryArg : GetFactoryArg, serviceType3, argType);
 			}
 
-			return CreateDelegate(member.IsNotNull(@"1") ? GetRequiredSyncFactoryArg : GetOptionalSyncFactoryArg, resultType2, argType);
+			return CreateDelegate(member.IsNotNull(@"1") ? GetRequiredSyncFactoryArg : GetSyncFactoryArg, resultType2, argType);
 		}
 
 		if (IsFunc3(member.Type) is { Type: { } resultType3, ArgType1: { } argType1, ArgType2: { } argType2 })
@@ -149,13 +149,13 @@ internal abstract class ClassFactoryProvider
 
 			if (IsValueTask(resultType3) is { } serviceType3)
 			{
-				return CreateDelegate(member.IsNotNull(@"20") ? GetRequiredFactoryArg2 : GetOptionalFactoryArg2, serviceType3, argType1, argType2);
+				return CreateDelegate(member.IsNotNull(@"20") ? GetRequiredFactoryArg2 : GetFactoryArg2, serviceType3, argType1, argType2);
 			}
 
-			return CreateDelegate(member.IsNotNull(@"2") ? GetRequiredSyncFactoryArg2 : GetOptionalSyncFactoryArg2, resultType3, argType1, argType2);
+			return CreateDelegate(member.IsNotNull(@"2") ? GetRequiredSyncFactoryArg2 : GetSyncFactoryArg2, resultType3, argType1, argType2);
 		}
 
-		return CreateDelegate(member.IsNotNull() ? GetRequiredService : GetOptionalService, member.Type);
+		return CreateDelegate(member.IsNotNull() ? GetRequiredServiceMethodInfo : GetServiceMethodInfo, member.Type);
 	}
 
 	private static Type? IsEnumerable(Type type, out bool async)
@@ -215,7 +215,7 @@ internal abstract class ClassFactoryProvider
 		}
 	}
 
-	private static ConstructorInfo GetFactory(Type implementationType)
+	private static ConstructorInfo GetConstructor(Type implementationType)
 	{
 		try
 		{
@@ -388,19 +388,19 @@ internal abstract class ClassFactoryProvider
 
 	private static object GetRequiredFactoryWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T>();
 
-	private static object GetOptionalFactoryWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalFactory<T>();
+	private static object GetFactoryWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T>();
 
 	private static object GetRequiredSyncFactoryWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T>();
 
-	private static object GetOptionalSyncFactoryWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalSyncFactory<T>();
+	private static object GetSyncFactoryWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T>();
 
 	private static object GetRequiredFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T, TArg>();
 
-	private static object GetOptionalFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalFactory<T, TArg>();
+	private static object GetFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T, TArg>();
 
 	private static object GetRequiredSyncFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T, TArg>();
 
-	private static object GetOptionalSyncFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalSyncFactory<T, TArg>();
+	private static object GetSyncFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T, TArg>();
 
 	private static object GetServicesFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg>();
 
@@ -408,11 +408,11 @@ internal abstract class ClassFactoryProvider
 
 	private static object GetRequiredFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T, TArg1, TArg2>();
 
-	private static object GetOptionalFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalFactory<T, TArg1, TArg2>();
+	private static object GetFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T, TArg1, TArg2>();
 
 	private static object GetRequiredSyncFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T, TArg1, TArg2>();
 
-	private static object GetOptionalSyncFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) => serviceProvider.GetOptionalSyncFactory<T, TArg1, TArg2>();
+	private static object GetSyncFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T, TArg1, TArg2>();
 
 	private static object GetServicesFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg1, TArg2>();
 

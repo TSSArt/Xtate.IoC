@@ -29,7 +29,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalService<Service, int, int>(arg1: 1, arg2: 2);
+		var service = await sp.GetService<Service, int, int>(arg1: 1, arg2: 2);
 
 		// Assert
 		Assert.IsNotNull(service);
@@ -44,7 +44,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalServiceSync<Service, int, int>(arg1: 1, arg2: 2);
+		var service = sp.GetServiceSync<Service, int, int>(arg1: 1, arg2: 2);
 
 		// Assert
 		Assert.IsNotNull(service);
@@ -58,7 +58,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalServiceSync<Service>();
+		var service = sp.GetServiceSync<Service>();
 
 		// Assert
 		Assert.IsNull(service);
@@ -271,7 +271,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalFactory<Service, int, int>()(arg1: 1, arg2: 2);
+		var service = await sp.GetFactory<Service, int, int>()(arg1: 1, arg2: 2);
 
 		// Assert
 		Assert.IsNotNull(service);
@@ -285,7 +285,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalFactory<Service, int, int>()(arg1: 1, arg2: 2);
+		var service = await sp.GetFactory<Service, int, int>()(arg1: 1, arg2: 2);
 
 		// Assert
 		Assert.IsNull(service);
@@ -312,7 +312,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalSyncFactory<Service, int>()(3);
+		var service = sp.GetSyncFactory<Service, int>()(3);
 
 		// Assert
 		Assert.IsNull(service);
@@ -326,7 +326,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalSyncFactory<Service, int, int>()(arg1: 3, arg2: 3);
+		var service = sp.GetSyncFactory<Service, int, int>()(arg1: 3, arg2: 3);
 
 		// Assert
 		Assert.IsNull(service);

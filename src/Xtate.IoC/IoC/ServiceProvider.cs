@@ -212,14 +212,14 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 		Infra.NotNull(entry);
 
-		return entry.GetOptionalServiceSync<IInitializationHandler, Empty>(default);
+		return entry.GetServiceSync<IInitializationHandler, Empty>(default);
 	}
 
 	private IServiceProviderDebugger? GetServiceProviderDebuggerService()
 	{
 		var entry = GetImplementationEntry((SimpleTypeKey) TypeKey.ServiceKeyFast<IServiceProviderDebugger, Empty>());
 
-		return entry?.GetOptionalServiceSync<IServiceProviderDebugger, Empty>(default);
+		return entry?.GetServiceSync<IServiceProviderDebugger, Empty>(default);
 	}
 
 	internal void RegisterInstanceForDispose<T>(T? instance)

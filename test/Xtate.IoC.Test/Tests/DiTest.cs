@@ -146,7 +146,7 @@ public class DiTest
 		var serviceProvider = serviceCollection.BuildProvider();
 		var interface1 = await serviceProvider.GetRequiredService<IInterface1>();
 		var interface2 = await serviceProvider.GetRequiredService<IInterface2>();
-		var class3Instance = await serviceProvider.GetOptionalService<Class3>();
+		var class3Instance = await serviceProvider.GetService<Class3>();
 
 		Assert.IsNotNull(interface1);
 		Assert.IsNotNull(interface2);
@@ -323,7 +323,7 @@ public class DiTest
 		serviceCollection.AddFactory<Class8>().For<Class7>();
 		var serviceProvider = serviceCollection.BuildProvider();
 		var class7 = await serviceProvider.GetRequiredService<Class7>();
-		var class8 = await serviceProvider.GetOptionalService<Class8>();
+		var class8 = await serviceProvider.GetService<Class8>();
 
 		Assert.IsNotNull(class7);
 		Assert.IsNull(class8);

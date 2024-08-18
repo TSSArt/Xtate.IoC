@@ -62,7 +62,7 @@ public class ImplementationEntryTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalService<Class>();
+		var service = await sp.GetService<Class>();
 
 		// Assert
 		Assert.IsNotNull(service);
@@ -77,7 +77,7 @@ public class ImplementationEntryTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = await sp.GetOptionalService<Class>();
+		var service = await sp.GetService<Class>();
 
 		// Assert
 		Assert.IsNull(service);
@@ -123,7 +123,7 @@ public class ImplementationEntryTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalSyncFactory<Class>()();
+		var service = sp.GetSyncFactory<Class>()();
 
 		// Assert
 		Assert.IsNotNull(service);
@@ -138,7 +138,7 @@ public class ImplementationEntryTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var service = sp.GetOptionalSyncFactory<Class>()();
+		var service = sp.GetSyncFactory<Class>()();
 
 		// Assert
 		Assert.IsNull(service);
@@ -199,7 +199,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetOptionalSyncFactory<Class>()());
+		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -213,7 +213,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetOptionalSyncFactory<ClassAsyncInit>()());
+		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetSyncFactory<ClassAsyncInit>()());
 	}
 
 	[TestMethod]
@@ -363,16 +363,16 @@ public class ImplementationEntryTest
 		var factory0A = sp.GetServicesFactory<Class, int>();
 		var factory1A = sp.GetServicesSyncFactory<Class, int>();
 		var factory2A = sp.GetRequiredFactory<Class, int>();
-		var factory3A = sp.GetOptionalFactory<Class, int>();
+		var factory3A = sp.GetFactory<Class, int>();
 		var factory4A = sp.GetRequiredSyncFactory<Class, int>();
-		var factory5A = sp.GetOptionalSyncFactory<Class, int>();
+		var factory5A = sp.GetSyncFactory<Class, int>();
 
 		var factory0B = sp.GetServicesFactory<Class, int>();
 		var factory1B = sp.GetServicesSyncFactory<Class, int>();
 		var factory2B = sp.GetRequiredFactory<Class, int>();
-		var factory3B = sp.GetOptionalFactory<Class, int>();
+		var factory3B = sp.GetFactory<Class, int>();
 		var factory4B = sp.GetRequiredSyncFactory<Class, int>();
-		var factory5B = sp.GetOptionalSyncFactory<Class, int>();
+		var factory5B = sp.GetSyncFactory<Class, int>();
 
 		// Assert
 		Assert.AreSame(factory0A, factory0B);

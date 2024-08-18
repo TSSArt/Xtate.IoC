@@ -21,22 +21,22 @@ namespace Xtate.IoC;
 
 internal sealed class ClassAsyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
 {
-	private static readonly MethodInfo GetOptionalAsyncService;
+	private static readonly MethodInfo GetAsyncService;
 	private static readonly MethodInfo GetRequiredAsyncService;
 
 	static ClassAsyncFactoryProvider()
 	{
-		GetOptionalAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetOptionalServiceWrapper));
+		GetAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetServiceWrapper));
 		GetRequiredAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetRequiredServiceWrapper));
 	}
 
-	protected override MethodInfo GetOptionalService => GetOptionalAsyncService;
+	protected override MethodInfo GetServiceMethodInfo => GetAsyncService;
 
-	protected override MethodInfo GetRequiredService => GetRequiredAsyncService;
+	protected override MethodInfo GetRequiredServiceMethodInfo => GetRequiredAsyncService;
 
 	private static async ValueTask<object> GetRequiredServiceWrapper<T>(IServiceProvider serviceProvider) where T : notnull => await serviceProvider.GetRequiredService<T>().ConfigureAwait(false);
 
-	private static async ValueTask<object?> GetOptionalServiceWrapper<T>(IServiceProvider serviceProvider) => await serviceProvider.GetOptionalService<T>().ConfigureAwait(false);
+	private static async ValueTask<object?> GetServiceWrapper<T>(IServiceProvider serviceProvider) => await serviceProvider.GetService<T>().ConfigureAwait(false);
 
 	private async ValueTask FillParameters<TArg>(object?[] args, IServiceProvider serviceProvider, TArg? arg)
 	{

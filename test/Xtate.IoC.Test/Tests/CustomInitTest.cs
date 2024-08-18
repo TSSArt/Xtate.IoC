@@ -62,7 +62,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetOptionalService<Temp>();
+		var obj = serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
@@ -94,7 +94,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetOptionalService<Temp>();
+		var obj = serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
@@ -157,7 +157,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetOptionalService<Temp>();
+		var obj = serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
