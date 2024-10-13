@@ -20,7 +20,8 @@ namespace Xtate.IoC;
 public readonly struct ServiceImplementation<TImplementation, TArg> where TImplementation : notnull
 {
 	private readonly IServiceCollection _serviceCollection;
-	private readonly bool               _synchronous;
+
+	private readonly bool _synchronous;
 
 	public ServiceImplementation(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous)
 	{
@@ -34,13 +35,20 @@ public readonly struct ServiceImplementation<TImplementation, TArg> where TImple
 		serviceCollection.Add(new ServiceEntry(TypeKey.ImplementationKey<TImplementation, TArg>(), instanceScope, factory));
 	}
 
-	public ServiceImplementation<TImplementation, TArg> For<TService>() where TService : class
+	public ServiceImplementation<TImplementation, TArg> For<TService>(Option option = Option.Default)
 	{
-		var factory = _synchronous
-			? ForwardSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
-			: ForwardAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+		option.Validate(Option.IfNotRegistered);
 
-		_serviceCollection.Add(new ServiceEntry(TypeKey.ServiceKey<TService, TArg>(), InstanceScope.Forwarding, factory));
+		var key = TypeKey.ServiceKey<TService, TArg>();
+
+		if (!option.Has(Option.IfNotRegistered) || !_serviceCollection.IsRegistered(key))
+		{
+			var factory = _synchronous
+				? ForwardSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
+				: ForwardAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+
+			_serviceCollection.Add(new ServiceEntry(key, InstanceScope.Forwarding, factory));
+		}
 
 		return this;
 	}

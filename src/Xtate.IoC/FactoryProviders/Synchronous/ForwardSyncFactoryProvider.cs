@@ -17,7 +17,7 @@
 
 namespace Xtate.IoC;
 
-internal class ForwardSyncFactoryProvider<TImplementation, TService, TArg> : FactoryProviderBase where TImplementation : notnull where TService : class
+internal class ForwardSyncFactoryProvider<TImplementation, TService, TArg> : FactoryProviderBase where TImplementation : notnull
 {
 	public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
 

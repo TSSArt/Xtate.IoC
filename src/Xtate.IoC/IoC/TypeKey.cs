@@ -44,6 +44,8 @@ public abstract class TypeKey
 	[ExcludeFromCodeCoverage]
 	internal virtual void DoTypedAction(ITypeKeyAction typeKeyAction) => Infra.Assert(false);
 
+	public virtual bool IsEmptyArg => true;
+
 	private static class Service<T, TArg>
 	{
 		private static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
@@ -57,6 +59,8 @@ public abstract class TypeKey
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
+
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 
 		private class Generic : GenericTypeKey
@@ -66,6 +70,8 @@ public abstract class TypeKey
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
+
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 	}
 
@@ -82,6 +88,8 @@ public abstract class TypeKey
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
+
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 
 		private class Generic : GenericTypeKey
@@ -91,6 +99,8 @@ public abstract class TypeKey
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
+
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 	}
 
@@ -101,6 +111,8 @@ public abstract class TypeKey
 		public override int GetHashCode() => _openGeneric.GetHashCode();
 
 		public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is DefinitionServiceTypeKey other && _openGeneric.Equals(other._openGeneric));
+
+		public override string ToString() => @$"SRV:{_openGeneric}";
 	}
 
 	private class DefinitionImplementationTypeKey(in ImplementationType openGeneric) : SimpleTypeKey
@@ -110,5 +122,7 @@ public abstract class TypeKey
 		public override int GetHashCode() => _openGeneric.GetHashCode();
 
 		public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is DefinitionImplementationTypeKey other && _openGeneric.Equals(other._openGeneric));
+
+		public override string ToString() => @$"IMP:{_openGeneric}";
 	}
 }

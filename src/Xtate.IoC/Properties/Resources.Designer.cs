@@ -151,6 +151,15 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options {0} does not supported..
+        /// </summary>
+        internal static string Exception_OptionsDoesNotSupported {
+            get {
+                return ResourceManager.GetString("Exception_OptionsDoesNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service [{0} (Argument: {1})] missed in container..
         /// </summary>
         internal static string Exception_ServiceArgMissedInContainer {

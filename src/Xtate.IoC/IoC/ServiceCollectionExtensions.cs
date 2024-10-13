@@ -19,7 +19,7 @@ namespace Xtate.IoC;
 
 public static class ServiceCollectionExtensions
 {
-	private static bool IsRegistered(IServiceCollection services, TypeKey key)
+	internal static bool IsRegistered(this IServiceCollection services, TypeKey key)
 	{
 		foreach (var entry in services)
 		{

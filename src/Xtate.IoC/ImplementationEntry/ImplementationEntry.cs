@@ -64,47 +64,24 @@ public abstract class ImplementationEntry
 
 	public async ValueTask<T> GetRequiredService<T, TArg>(TArg argument) where T : notnull
 	{
-		var debugger = ServiceProvider.Debugger;
+		var instance = await GetService<T, TArg>(argument).ConfigureAwait(false);
 
-		debugger?.BeforeFactory(TypeKey.ServiceKeyFast<T, TArg>());
-
-		var instance = await ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
-
-		debugger?.AfterFactory(TypeKey.ServiceKeyFast<T, TArg>());
-
-		var initTask = instance is not null && IsAsyncInitializationHandlerUsed()
-			? AsyncInitializationHandler.InitializeAsync(instance)
-			: CustomInitialize(ServiceProvider, instance);
-
-		await initTask.ConfigureAwait(false);
+		if (instance is null)
+		{
+			throw MissedServiceException<T, TArg>();
+		}
 
 		return instance;
-
-		static Task CustomInitialize(IServiceProvider serviceProvider, [NotNull] T? obj)
-		{
-			if (obj is null)
-			{
-				throw MissedServiceException<T, TArg>();
-			}
-
-			if (serviceProvider.InitializationHandler is { } handler && handler.Initialize(obj))
-			{
-				return handler.InitializeAsync(obj);
-			}
-
-			return Task.CompletedTask;
-		}
 	}
 
-	public async ValueTask<T?> GetService<T, TArg>(TArg argument)
+	public ValueTask<T?> GetService<T, TArg>(TArg argument) =>
+		ServiceProvider.Actions is not { } actions
+			? GetServiceNoActions<T, TArg>(argument)
+			: GetServiceWithActions<T, TArg>(argument, actions);
+
+	private async ValueTask<T?> GetServiceNoActions<T, TArg>(TArg argument)
 	{
-		var debugger = ServiceProvider.Debugger;
-
-		debugger?.BeforeFactory(TypeKey.ServiceKeyFast<T, TArg>());
-
 		var instance = await ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
-
-		debugger?.AfterFactory(TypeKey.ServiceKeyFast<T, TArg>());
 
 		var initTask = IsAsyncInitializationHandlerUsed()
 			? AsyncInitializationHandler.InitializeAsync(instance)
@@ -125,15 +102,28 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	private async ValueTask<T?> GetServiceWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	{
+		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+		foreach (var action in actions)
+		{
+			action.ServiceRequesting(typeKey)?.ServiceRequesting<T, TArg>(argument);
+		}
+
+		var instance = await GetServiceNoActions<T, TArg>(argument).ConfigureAwait(false);
+
+		for (var i = actions.Length - 1; i >= 0; i --)
+		{
+			actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
+		}
+
+		return instance;
+	}
+
 	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull
 	{
-		var debugger = ServiceProvider.Debugger;
-
-		debugger?.BeforeFactory(TypeKey.ServiceKeyFast<T, TArg>());
-
 		var instance = ExecuteFactorySync<T, TArg>(argument);
-
-		debugger?.AfterFactory(TypeKey.ServiceKeyFast<T, TArg>());
 
 		if (instance is not null && IsAsyncInitializationHandlerUsed())
 		{
@@ -165,13 +155,7 @@ public abstract class ImplementationEntry
 
 	public T? GetServiceSync<T, TArg>(TArg argument)
 	{
-		var debugger = ServiceProvider.Debugger;
-
-		debugger?.BeforeFactory(TypeKey.ServiceKeyFast<T, TArg>());
-
 		var instance = ExecuteFactorySync<T, TArg>(argument);
-
-		debugger?.AfterFactory(TypeKey.ServiceKeyFast<T, TArg>());
 
 		if (IsAsyncInitializationHandlerUsed())
 		{
@@ -195,10 +179,8 @@ public abstract class ImplementationEntry
 			}
 		}
 	}
-
-	internal static ValueTask<T> MissedServiceExceptionTask<T, TArg>() => new(Task.FromException<T>(MissedServiceException<T, TArg>()));
-
-	internal static DependencyInjectionException MissedServiceException<T, TArg>() =>
+	
+	public static DependencyInjectionException MissedServiceException<T, TArg>() =>
 		ArgumentType.TypeOf<TArg>().IsEmpty
 			? new DependencyInjectionException(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T)))
 			: new DependencyInjectionException(Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), ArgumentType.TypeOf<TArg>()));
@@ -207,34 +189,72 @@ public abstract class ImplementationEntry
 
 	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Res.Format(Resources.Exception_ServiceNotAvailableInSynchronousContext, typeof(T)));
 
-	private protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument)
-	{
-		ServiceProvider.Debugger?.FactoryCalled(TypeKey.ServiceKeyFast<T, TArg>());
+	private protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) =>
+		ServiceProvider.Actions is not { } actions
+			? ExecuteFactoryNoActions<T, TArg>(argument)
+			: ExecuteFactoryWithActions<T, TArg>(argument, actions);
 
-#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
-		return Factory switch
-			   {
-				   Func<IServiceProvider, TArg, ValueTask<T?>> factory    => factory(ServiceProvider, argument),
-				   Func<IServiceProvider, TArg, T?> factory               => new ValueTask<T?>(factory(ServiceProvider, argument)),
-				   Func<IServiceProvider, T, TArg, ValueTask<T?>> factory => GetDecoratorAsync(factory, argument),
-				   Func<IServiceProvider, T, TArg, T?> factory            => GetDecoratorAsync(factory, argument),
-				   _                                                      => throw Infra.Unmatched(Factory)
-			   };
-#pragma warning restore CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+	private ValueTask<T?> ExecuteFactoryNoActions<T, TArg>(TArg argument) =>
+		Factory switch
+		{
+			Func<IServiceProvider, TArg, ValueTask<T?>> factory    => factory(ServiceProvider, argument),
+			Func<IServiceProvider, TArg, T?> factory               => new ValueTask<T?>(factory(ServiceProvider, argument)),
+			Func<IServiceProvider, T, TArg, ValueTask<T?>> factory => GetDecoratorAsync(factory, argument),
+			Func<IServiceProvider, T, TArg, T?> factory            => GetDecoratorAsync(factory, argument),
+			_                                                      => throw Infra.Unmatched(Factory)
+		};
+
+	private async ValueTask<T?> ExecuteFactoryWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	{
+		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+		foreach (var action in actions)
+		{
+			action.FactoryCalling(typeKey)?.FactoryCalling<T, TArg>(argument);
+		}
+
+		var instance = await ExecuteFactoryNoActions<T, TArg>(argument).ConfigureAwait(false);
+
+		for (var i = actions.Length - 1; i >= 0; i --)
+		{
+			actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+		}
+
+		return instance;
 	}
 
-	private protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument)
-	{
-		ServiceProvider.Debugger?.FactoryCalled(TypeKey.ServiceKeyFast<T, TArg>());
+	private protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument) =>
+		ServiceProvider.Actions is not { } actions
+			? ExecuteFactorySyncNoActions<T, TArg>(argument)
+			: ExecuteFactorySyncWithActions<T, TArg>(argument, actions);
 
-		return Factory switch
-			   {
-				   Func<IServiceProvider, TArg, T?> factory       => factory(ServiceProvider, argument),
-				   Func<IServiceProvider, T, TArg, T?> factory    => GetDecoratorSync(factory, argument),
-				   Func<IServiceProvider, TArg, ValueTask<T?>>    => throw ServiceNotAvailableInSynchronousContextException<T>(),
-				   Func<IServiceProvider, T, TArg, ValueTask<T?>> => throw ServiceNotAvailableInSynchronousContextException<T>(),
-				   _                                              => throw Infra.Unmatched(Factory)
-			   };
+	private T? ExecuteFactorySyncNoActions<T, TArg>(TArg argument) =>
+		Factory switch
+		{
+			Func<IServiceProvider, TArg, T?> factory       => factory(ServiceProvider, argument),
+			Func<IServiceProvider, T, TArg, T?> factory    => GetDecoratorSync(factory, argument),
+			Func<IServiceProvider, TArg, ValueTask<T?>>    => throw ServiceNotAvailableInSynchronousContextException<T>(),
+			Func<IServiceProvider, T, TArg, ValueTask<T?>> => throw ServiceNotAvailableInSynchronousContextException<T>(),
+			_                                              => throw Infra.Unmatched(Factory)
+		};
+
+	private T? ExecuteFactorySyncWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	{
+		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+		foreach (var action in actions)
+		{
+			action.FactoryCalling(typeKey)?.FactoryCalling<T, TArg>(argument);
+		}
+
+		var instance = ExecuteFactorySyncNoActions<T, TArg>(argument);
+
+		for (var i = actions.Length - 1; i >= 0; i --)
+		{
+			actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+		}
+
+		return instance;
 	}
 
 	private protected void EnsureSynchronousContext<T, TArg>()

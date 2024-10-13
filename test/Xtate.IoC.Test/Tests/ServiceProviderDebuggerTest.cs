@@ -24,17 +24,17 @@ public class ServiceProviderDebuggerTest
 	public async Task RegisterServiceProviderDebuggerTest()
 	{
 		// Arrange
-		var dbg = new Debugger();
+		var dbg = new Actions();
 		var sc = new ServiceCollection();
-		sc.AddTransient<IServiceProviderDebugger>(_ => dbg);
+		sc.AddTransient<IServiceProviderActions>(_ => dbg);
 		sc.AddType<ServiceProviderDebuggerTest>();
 		var sp = sc.BuildProvider();
 
 		// Act
-		var rService = await sp.GetRequiredService<IServiceProviderDebugger>();
-		var oService = await sp.GetService<IServiceProviderDebugger>();
-		var rServiceSync = sp.GetRequiredServiceSync<IServiceProviderDebugger>();
-		var oServiceSync = sp.GetServiceSync<IServiceProviderDebugger>();
+		var rService = await sp.GetRequiredService<IServiceProviderActions>();
+		var oService = await sp.GetService<IServiceProviderActions>();
+		var rServiceSync = sp.GetRequiredServiceSync<IServiceProviderActions>();
+		var oServiceSync = sp.GetServiceSync<IServiceProviderActions>();
 
 		// Assert
 		Assert.AreSame(rService, dbg);
@@ -43,17 +43,33 @@ public class ServiceProviderDebuggerTest
 		Assert.AreSame(oServiceSync, dbg);
 	}
 
-	private class Debugger : IServiceProviderDebugger
+	private class Actions : IServiceProviderActions, IServiceProviderDataActions
 	{
-	#region Interface IServiceProviderDebugger
+	#region Interface IServiceProviderActions
 
-		public void AfterFactory(TypeKey serviceKey) { }
+		public IServiceProviderDataActions RegisterServices() => this;
 
-		public void BeforeFactory(TypeKey serviceKey) { }
+		public IServiceProviderDataActions ServiceRequesting(TypeKey typeKey) => this;
 
-		public void FactoryCalled(TypeKey serviceKey) { }
+		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => this;
+
+		public IServiceProviderDataActions FactoryCalling(TypeKey typeKey) => this;
+
+		public IServiceProviderDataActions FactoryCalled(TypeKey typeKey) => this;
+
+	#endregion
+
+	#region Interface IServiceProviderDataActions
 
 		public void RegisterService(ServiceEntry serviceEntry) { }
+
+		public void ServiceRequesting<T, TArg>(TArg argument) { }
+
+		public void ServiceRequested<T, TArg>(T? instance) { }
+
+		public void FactoryCalling<T, TArg>(TArg argument) { }
+
+		public void FactoryCalled<T, TArg>(T? instance) { }
 
 	#endregion
 	}

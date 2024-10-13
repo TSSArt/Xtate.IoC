@@ -171,4 +171,7 @@
   <data name="Exception_NoConstructorFound" xml:space="preserve">
 	  <value>No constructor found.</value>
   </data>
+  <data name="Exception_OptionsDoesNotSupported" xml:space="preserve">
+	  <value>Options {0} does not supported.</value>
+  </data>
 </root>

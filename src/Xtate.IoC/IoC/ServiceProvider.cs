@@ -96,7 +96,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public IInitializationHandler? InitializationHandler { get; private set; }
 
-	public IServiceProviderDebugger? Debugger { get; private set; }
+	public IServiceProviderActions[]? Actions { get; private set; }
 
 	public CancellationToken DisposeToken => _disposeTokenSource.Token;
 
@@ -126,13 +126,19 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	{
 		InitializationHandler = GetInitializationHandlerService();
 
-		if (GetServiceProviderDebuggerService() is { } debugger)
+		if (GetActionsService() is { } actions)
 		{
-			Debugger = debugger;
+			Actions = actions;
 
-			foreach (var service in services)
+			foreach (var action in actions)
 			{
-				debugger.RegisterService(service);
+				if (action.RegisterServices() is { } serviceProviderDataActions)
+				{
+					foreach (var service in services)
+					{
+						serviceProviderDataActions.RegisterService(service);
+					}
+				}
 			}
 		}
 	}
@@ -183,7 +189,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 		if (!services.TryGetValue(key, out var lastEntry))
 		{
-			if (simpleKey is not null && sourceServiceProvider?.GetImplementationEntry(simpleKey) is { } sourceEntry)
+			if (sourceServiceProvider?.GetImplementationEntry(key) is { } sourceEntry)
 			{
 				foreach (var entry in sourceEntry.AsChain())
 				{
@@ -215,11 +221,11 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		return entry.GetServiceSync<IInitializationHandler, Empty>(default);
 	}
 
-	private IServiceProviderDebugger? GetServiceProviderDebuggerService()
+	private IServiceProviderActions[]? GetActionsService()
 	{
-		var entry = GetImplementationEntry((SimpleTypeKey) TypeKey.ServiceKeyFast<IServiceProviderDebugger, Empty>());
+		var entry = GetImplementationEntry((SimpleTypeKey) TypeKey.ServiceKeyFast<IServiceProviderActions, Empty>());
 
-		return entry?.GetServiceSync<IServiceProviderDebugger, Empty>(default);
+		return entry?.GetServicesSync<IServiceProviderActions, Empty>(default).ToArray();
 	}
 
 	internal void RegisterInstanceForDispose<T>(T? instance)
@@ -257,20 +263,12 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	{
 		ImplementationEntry? lastEntry = default;
 
-		if (_sourceServiceProvider?.GetImplementationEntry(typeKey) is { } sourceEntry)
-		{
-			foreach (var entry in sourceEntry.AsChain())
-			{
-				entry.CreateNew(this).AddToChain(ref lastEntry);
-			}
-		}
-
 		if (GetImplementationEntry(typeKey.DefinitionKey) is { } genericEntry)
 		{
 			foreach (var entry in genericEntry.AsChain())
 			{
 				var factory = entry.Factory switch
-				{
+							  {
 								  Func<DelegateFactory> func                          => func().GetDelegate<T, TArg>(),
 								  Func<IServiceProvider, TArg, ValueTask<T?>> func    => func,
 								  Func<IServiceProvider, TArg, T?> func               => func,

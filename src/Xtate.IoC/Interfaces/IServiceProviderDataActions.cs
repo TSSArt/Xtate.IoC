@@ -17,13 +17,15 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProvider
+public interface IServiceProviderDataActions
 {
-	CancellationToken DisposeToken { get; }
+	void RegisterService(ServiceEntry serviceEntry);
 
-	IInitializationHandler? InitializationHandler { get; }
+	void ServiceRequesting<T, TArg>(TArg argument);
 
-	IServiceProviderActions[]? Actions { get; }
+	void ServiceRequested<T, TArg>(T? instance);
 
-	ImplementationEntry? GetImplementationEntry(TypeKey typeKey);
+	void FactoryCalling<T, TArg>(TArg argument);
+
+	void FactoryCalled<T, TArg>(T? instance);
 }

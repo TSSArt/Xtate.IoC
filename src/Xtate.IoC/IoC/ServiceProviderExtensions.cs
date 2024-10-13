@@ -22,7 +22,8 @@ public static class ServiceProviderExtensions
 	public static ValueTask<T> GetRequiredService<T>(this IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredService<T, Empty>(default);
 
 	public static ValueTask<T> GetRequiredService<T, TArg>(this IServiceProvider serviceProvider, TArg arg) where T : notnull =>
-		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredService<T, TArg>(arg) ?? ImplementationEntry.MissedServiceExceptionTask<T, TArg>();
+		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredService<T, TArg>(arg) ??
+		new ValueTask<T>(Task.FromException<T>(ImplementationEntry.MissedServiceException<T, TArg>()));
 
 	public static ValueTask<T> GetRequiredService<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) where T : notnull =>
 		serviceProvider.GetRequiredService<T, (TArg1, TArg2)>((arg1, arg2));

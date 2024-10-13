@@ -17,13 +17,16 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProvider
+internal static class OptionExtensions
 {
-	CancellationToken DisposeToken { get; }
+	public static void Validate(this Option option, Option allowedOptions)
+	{
+		if ((option & ~allowedOptions) is var notSupportedOptions && notSupportedOptions != 0)
+		{
+			throw new ArgumentException(string.Format(Resources.Exception_OptionsDoesNotSupported, notSupportedOptions));
+		}
+	}
 
-	IInitializationHandler? InitializationHandler { get; }
-
-	IServiceProviderActions[]? Actions { get; }
-
-	ImplementationEntry? GetImplementationEntry(TypeKey typeKey);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static bool Has(this Option option, Option toCheck) => (option & toCheck) == toCheck;
 }

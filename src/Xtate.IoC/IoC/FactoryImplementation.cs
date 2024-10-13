@@ -20,7 +20,8 @@ namespace Xtate.IoC;
 public readonly struct FactoryImplementation<TImplementation> where TImplementation : notnull
 {
 	private readonly IServiceCollection _serviceCollection;
-	private readonly bool               _synchronous;
+
+	private readonly bool _synchronous;
 
 	public FactoryImplementation(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous)
 	{
@@ -34,18 +35,27 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 		serviceCollection.Add(new ServiceEntry(TypeKey.ImplementationKey<TImplementation, Empty>(), instanceScope, factory));
 	}
 
-	public FactoryImplementation<TImplementation> For<TService>() where TService : class => For<TService, Empty>();
+	public FactoryImplementation<TImplementation> For<TService>(Option option = Option.Default) => For<TService, Empty>(option);
 
-	public FactoryImplementation<TImplementation> For<TService, TArg>() where TService : class
+	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default)
 	{
-		var factory = _synchronous
-			? FactorySyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
-			: FactoryAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+		option.Validate(Option.IfNotRegistered | Option.DoNotDispose);
 
-		_serviceCollection.Add(new ServiceEntry(TypeKey.ServiceKey<TService, TArg>(), InstanceScope.Forwarding, factory));
+		var key = TypeKey.ServiceKey<TService, TArg>();
+
+		if (!option.Has(Option.IfNotRegistered) || !_serviceCollection.IsRegistered(key))
+		{
+			var factory = _synchronous
+				? FactorySyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
+				: FactoryAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+
+			var scope = option.Has(Option.DoNotDispose) ? InstanceScope.Forwarding : InstanceScope.Transient;
+
+			_serviceCollection.Add(new ServiceEntry(key, scope, factory));
+		}
 
 		return this;
 	}
 
-	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>() where TService : class => For<TService, (TArg1, TArg2)>();
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => For<TService, (TArg1, TArg2)>(option);
 }

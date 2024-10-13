@@ -17,13 +17,10 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProvider
+[Flags]
+public enum Option
 {
-	CancellationToken DisposeToken { get; }
-
-	IInitializationHandler? InitializationHandler { get; }
-
-	IServiceProviderActions[]? Actions { get; }
-
-	ImplementationEntry? GetImplementationEntry(TypeKey typeKey);
+	Default         = 0,
+	IfNotRegistered = 1,
+	DoNotDispose    = 2
 }

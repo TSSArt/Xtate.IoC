@@ -167,7 +167,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task ScopePropagationFroGenericsTest()
+	public async Task ScopePropagationForGenericsTest()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -209,16 +209,16 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task SingletonSyncDisposeTest()
+	public void SingletonSyncDisposeTest()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
-		sc.AddSharedType<DisposableClass>(SharedWithin.Container);
+		sc.AddSharedTypeSync<DisposableClass>(SharedWithin.Container);
 		var sp = sc.BuildProvider();
-		var service = await sp.GetRequiredService<DisposableClass>();
+		var service = sp.GetRequiredServiceSync<DisposableClass>();
 
 		// Act
-		await Disposer.DisposeAsync(sp);
+		Disposer.Dispose(sp);
 
 		// Assert
 		Assert.IsTrue(service.Disposed);

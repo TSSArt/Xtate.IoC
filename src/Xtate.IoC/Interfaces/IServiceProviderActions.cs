@@ -17,13 +17,15 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProviderDebugger
+public interface IServiceProviderActions
 {
-	void RegisterService(ServiceEntry serviceEntry);
+	IServiceProviderDataActions? RegisterServices();
 
-	void BeforeFactory(TypeKey serviceKey);
+	IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey);
 
-	void AfterFactory(TypeKey serviceKey);
+	IServiceProviderDataActions? ServiceRequested(TypeKey typeKey);
 
-	void FactoryCalled(TypeKey serviceKey);
+	IServiceProviderDataActions? FactoryCalling(TypeKey typeKey);
+
+	IServiceProviderDataActions? FactoryCalled(TypeKey typeKey);
 }
