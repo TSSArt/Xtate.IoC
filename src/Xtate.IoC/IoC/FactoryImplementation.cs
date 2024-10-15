@@ -35,11 +35,21 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 		serviceCollection.Add(new ServiceEntry(TypeKey.ImplementationKey<TImplementation, Empty>(), instanceScope, factory));
 	}
 
-	public FactoryImplementation<TImplementation> For<TService>(Option option = Option.Default) => For<TService, Empty>(option);
+	public FactoryImplementation<TImplementation> For<TService>(Option option = Option.Default) => Register<TService, Empty>(default, option);
 
-	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default)
+	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default) => Register<TService, TArg>(default, Option.Default);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(default, option);
+
+	public FactoryImplementation<TImplementation> For<TService>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, Empty>(sharedWithin, option);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, TArg>(sharedWithin, Option.Default);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(sharedWithin, option);
+
+	private FactoryImplementation<TImplementation> Register<TService, TArg>(SharedWithin? sharedWithin, Option option)
 	{
-		option.Validate(Option.IfNotRegistered | Option.DoNotDispose);
+		option.Validate(sharedWithin is null ? Option.IfNotRegistered | Option.DoNotDispose : Option.IfNotRegistered);
 
 		var key = TypeKey.ServiceKey<TService, TArg>();
 
@@ -49,13 +59,17 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 				? FactorySyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
 				: FactoryAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
 
-			var scope = option.Has(Option.DoNotDispose) ? InstanceScope.Forwarding : InstanceScope.Transient;
+			var scope = sharedWithin switch
+						{
+							null                   => option.Has(Option.DoNotDispose) ? InstanceScope.Forwarding : InstanceScope.Transient,
+							SharedWithin.Container => InstanceScope.Singleton,
+							SharedWithin.Scope     => InstanceScope.Scoped,
+							_                      => throw Infra.Unmatched(sharedWithin)
+						};
 
 			_serviceCollection.Add(new ServiceEntry(key, scope, factory));
 		}
 
 		return this;
 	}
-
-	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => For<TService, (TArg1, TArg2)>(option);
 }
