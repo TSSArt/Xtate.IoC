@@ -21,83 +21,91 @@ namespace Xtate.IoC.Test;
 public class ServiceTypeTest
 {
 	[TestMethod]
-	public void ServiceTypeEmptyTest()
+	public void ServiceType_WhenEmpty_ThrowsInvalidOperationException()
 	{
 		// Arrange
 		var empty = new ServiceType();
 
-		// Act
-
-		// Assert
+		// Act & Assert
 		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => empty.Type);
 	}
 
 	[TestMethod]
-	public void ServiceTypeDefinitionTest()
+	public void ServiceType_WhenIntType_ReturnsCorrectDefinition()
 	{
 		// Arrange
 		var intType = ServiceType.TypeOf<int>();
 
 		// Act
+		var definition = intType.Definition;
 
 		// Assert
-		Assert.AreEqual(new ServiceType(), intType.Definition);
+		Assert.AreEqual(new ServiceType(), definition);
 	}
 
 	[TestMethod]
-	public void ServiceTypeGenericDefinitionTest()
+	public void ServiceType_WhenGenericTypes_HaveSameDefinition()
 	{
 		// Arrange
 		var listIntType = ServiceType.TypeOf<List<int>>();
 		var listLongType = ServiceType.TypeOf<List<long>>();
 
 		// Act
+		var listIntDefinition = listIntType.Definition;
+		var listLongDefinition = listLongType.Definition;
 
 		// Assert
-		Assert.IsTrue(listIntType.Definition.Equals(listIntType.Definition));
-		Assert.IsTrue(listIntType.Definition.Equals(listLongType.Definition));
-		Assert.IsTrue(listIntType.Definition.Equals((object) listIntType.Definition));
-		Assert.IsTrue(listIntType.Definition.Equals((object) listLongType.Definition));
-		Assert.IsFalse(listIntType.Definition.Equals(new object()));
+		Assert.IsTrue(listIntDefinition.Equals(listIntDefinition));
+		Assert.IsTrue(listIntDefinition.Equals(listLongDefinition));
+		Assert.IsTrue(listIntDefinition.Equals((object) listIntDefinition));
+		Assert.IsTrue(listIntDefinition.Equals((object) listLongDefinition));
+		Assert.IsFalse(listIntDefinition.Equals(new object()));
 	}
 
 	[TestMethod]
-	public void ServiceTypeEmptyBaseMethodsTest()
+	public void ServiceType_WhenEmpty_HasCorrectBaseMethodsBehavior()
 	{
 		// Arrange
 		var empty = new ServiceType();
 
 		// Act
+		var equalsSelf = empty.Equals(empty);
+		var toString = empty.ToString();
+		var hashCode = empty.GetHashCode();
 
 		// Assert
-		Assert.IsTrue(empty.Equals(empty));
-		Assert.AreEqual(expected: "", empty.ToString());
-		Assert.AreEqual(expected: 0, empty.GetHashCode());
+		Assert.IsTrue(equalsSelf);
+		Assert.AreEqual(expected: "", toString);
+		Assert.AreEqual(expected: 0, hashCode);
 	}
 
 	[TestMethod]
-	public void ServiceTypeBaseMethodsTest()
+	public void ServiceType_WhenIntType_HasCorrectBaseMethodsBehavior()
 	{
 		// Arrange
 		var intType = ServiceType.TypeOf<int>();
 
 		// Act
+		var equalsSelf = intType.Equals(intType);
+		var toString = intType.ToString();
+		var hashCode = intType.GetHashCode();
 
 		// Assert
-		Assert.IsTrue(intType.Equals(intType));
-		Assert.IsFalse(string.IsNullOrEmpty(intType.ToString()));
-		Assert.AreNotEqual(long.MaxValue, intType.GetHashCode());
+		Assert.IsTrue(equalsSelf);
+		Assert.IsFalse(string.IsNullOrEmpty(toString));
+		Assert.AreNotEqual(long.MaxValue, hashCode);
 	}
 
 	[TestMethod]
-	public void ArgumentTypeEmptyBaseMethodsTest()
+	public void ArgumentType_WhenEmpty_HasCorrectToString()
 	{
 		// Arrange
 		var empty = new ArgumentType();
 
 		// Act
+		var toString = empty.ToString();
 
 		// Assert
-		Assert.AreEqual(expected: "(empty)", empty.ToString());
+		Assert.AreEqual(expected: "(empty)", toString);
 	}
 }

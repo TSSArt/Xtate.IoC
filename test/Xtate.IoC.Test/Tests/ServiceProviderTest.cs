@@ -41,7 +41,135 @@ public static class AsyncEnumExt
 public class ServiceProviderTest
 {
 	[TestMethod]
-	public async Task NewScopeTest()
+	public void IsRegistered_Should_Return_True_When_Service_Is_Registered()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<Class>();
+		var sp = sc.BuildProvider();
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsTrue(isRegistered);
+	}
+
+	[TestMethod]
+	public void IsRegistered_Should_Return_False_When_Service_Is_Not_Registered()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		var sp = sc.BuildProvider();
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsFalse(isRegistered);
+	}
+
+	[TestMethod]
+	public void IsRegistered_Should_Return_True_When_Service_Is_Registered_In_SourceProvider()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<Class>();
+		var sp = sc.BuildProvider();
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsTrue(isRegistered);
+	}
+
+	[TestMethod]
+	public void IsRegistered_Should_Return_True_When_Service_Is_Registered_In_ParentProvider()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<Class>();
+		var sp = sc.BuildProvider();
+		var childSp = sp.GetRequiredServiceSync<IServiceScopeFactory>().CreateScope().ServiceProvider;
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) childSp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsTrue(isRegistered);
+	}
+
+	[TestMethod]
+	public void SourceServiceCollection_Should_Register_Service()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<Class>();
+		var sp = sc.BuildProvider();
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsTrue(isRegistered);
+	}
+
+	[TestMethod]
+	public void SourceServiceCollection_Should_Not_Register_Service()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		var sp = sc.BuildProvider();
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsFalse(isRegistered);
+	}
+
+	[TestMethod]
+	public void SourceServiceCollection_Should_Register_Service_From_SourceProvider()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<Class>();
+		var sp = sc.BuildProvider();
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsTrue(isRegistered);
+	}
+
+	[TestMethod]
+	public void SourceServiceCollection_Should_Register_Service_From_Parent_Provider()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		var sp = sc.BuildProvider();
+		var childSp = sp.GetRequiredServiceSync<IServiceScopeFactory>().CreateScope().ServiceProvider;
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) childSp);
+		sourceServiceCollection.AddType<Class>();
+
+		// Act
+		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+
+		// Assert
+		Assert.IsTrue(isRegistered);
+	}
+
+	[TestMethod]
+	public async Task Should_Create_New_Scope()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -67,7 +195,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task SelfRegisterTest()
+	public async Task Should_Self_Register()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -84,7 +212,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task SelfRegisterSingletonTest()
+	public async Task Should_Self_Register_Singleton()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -101,7 +229,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task SelfRegisterScopeTest()
+	public async Task Should_Self_Register_Scope()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -118,19 +246,17 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public void IncorrectTypeTest()
+	public void Should_Throw_Exception_For_Incorrect_Type()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
 
-		// Act
-
-		// Assert
+		// Act & Assert
 		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
 	}
 
 	[TestMethod]
-	public async Task MultipleGenericsTest()
+	public async Task Should_Handle_Multiple_Generics()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -151,7 +277,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task EmptyInitAsyncTest()
+	public async Task Should_Handle_Empty_Init_Async()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -167,7 +293,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task ScopePropagationForGenericsTest()
+	public async Task Should_Propagate_Scope_For_Generics()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -193,14 +319,12 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public void WrongInstanceScopeTest()
+	public void Should_Throw_Exception_For_Wrong_Instance_Scope()
 	{
 		// Arrange
-		var sc = new ServiceCollection { new(TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
+		var sc = new ServiceCollection { new ServiceEntry(TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
 
-		// Act
-
-		// Assert
+		// Act & Assert
 		Assert.ThrowsException<InvalidOperationException>(sc.BuildProvider);
 		return;
 
@@ -209,7 +333,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public void SingletonSyncDisposeTest()
+	public void Should_Dispose_Singleton_Sync()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -225,7 +349,7 @@ public class ServiceProviderTest
 	}
 
 	[TestMethod]
-	public async Task SingletonAsyncDisposeTest()
+	public async Task Should_Dispose_Singleton_Async()
 	{
 		// Arrange
 		var sc = new ServiceCollection();

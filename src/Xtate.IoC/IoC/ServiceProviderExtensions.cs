@@ -33,8 +33,7 @@ public static class ServiceProviderExtensions
 	public static ValueTask<T?> GetService<T, TArg>(this IServiceProvider serviceProvider, TArg arg) =>
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetService<T, TArg>(arg) ?? default;
 
-	public static ValueTask<T?> GetService<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) =>
-		serviceProvider.GetService<T, (TArg1, TArg2)>((arg1, arg2));
+	public static ValueTask<T?> GetService<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) => serviceProvider.GetService<T, (TArg1, TArg2)>((arg1, arg2));
 
 	public static T GetRequiredServiceSync<T>(this IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredServiceSync<T, Empty>(default);
 
@@ -103,8 +102,7 @@ public static class ServiceProviderExtensions
 
 	public static Func<ValueTask<T?>> GetFactory<T>(this IServiceProvider serviceProvider) => serviceProvider.GetFactoryBase<T, Empty, Func<ValueTask<T?>>>(static () => default);
 
-	public static Func<TArg, ValueTask<T?>> GetFactory<T, TArg>(this IServiceProvider serviceProvider) =>
-		serviceProvider.GetFactoryBase<T, TArg, Func<TArg, ValueTask<T?>>>(static _ => default);
+	public static Func<TArg, ValueTask<T?>> GetFactory<T, TArg>(this IServiceProvider serviceProvider) => serviceProvider.GetFactoryBase<T, TArg, Func<TArg, ValueTask<T?>>>(static _ => default);
 
 	public static Func<TArg1, TArg2, ValueTask<T?>> GetFactory<T, TArg1, TArg2>(this IServiceProvider serviceProvider) =>
 		serviceProvider.GetFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, ValueTask<T?>>>(static (_, _) => default);

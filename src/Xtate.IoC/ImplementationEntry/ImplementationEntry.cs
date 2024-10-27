@@ -17,18 +17,34 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Represents a base class for entries in the IoC container per service.
+///     Derived classes should implement specific behaviors for service entries.
+/// </summary>
 public abstract class ImplementationEntry
 {
 	private DelegateEntry?       _delegateEntry;
 	private ImplementationEntry  _nextEntry;
 	private ImplementationEntry? _previousEntry;
 
+	/// <summary>
+	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class with the specified factory delegate.
+	/// </summary>
+	/// <param name="factory">The factory delegate used to create instances of the service.</param>
 	protected ImplementationEntry(Delegate factory)
 	{
 		Factory = factory;
 		_nextEntry = this;
 	}
 
+	/// <summary>
+	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class by copying the factory delegate from
+	///     another <see cref="ImplementationEntry" /> instance.
+	/// </summary>
+	/// <param name="sourceImplementationEntry">
+	///     The source <see cref="ImplementationEntry" /> instance to copy the factory
+	///     delegate from.
+	/// </param>
 	protected ImplementationEntry(ImplementationEntry sourceImplementationEntry)
 	{
 		Factory = sourceImplementationEntry.Factory;
@@ -62,6 +78,15 @@ public abstract class ImplementationEntry
 
 	internal Chain AsChain() => new(this);
 
+	/// <summary>
+	///     Gets the required service of type <typeparamref name="T" /> with the specified argument.
+	///     Throws an exception if the service is not found.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the required service.</returns>
+	/// <exception cref="DependencyInjectionException">Thrown if the service is not found.</exception>
 	public async ValueTask<T> GetRequiredService<T, TArg>(TArg argument) where T : notnull
 	{
 		var instance = await GetService<T, TArg>(argument).ConfigureAwait(false);
@@ -69,6 +94,14 @@ public abstract class ImplementationEntry
 		return instance is not null ? instance : throw MissedServiceException<T, TArg>();
 	}
 
+	/// <summary>
+	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
+	///     Returns null if the service is not found.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the service or null if not found.</returns>
 	public ValueTask<T?> GetService<T, TArg>(TArg argument) =>
 		ServiceProvider.Actions is not { } actions
 			? GetServiceNoActions<T, TArg>(argument)
@@ -116,6 +149,15 @@ public abstract class ImplementationEntry
 		return instance;
 	}
 
+	/// <summary>
+	///     Gets the required service of type <typeparamref name="T" /> with the specified argument.
+	///     Throws an exception if the service is not found.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>The required service.</returns>
+	/// <exception cref="DependencyInjectionException">Thrown if the service is not found.</exception>
 	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull
 	{
 		var instance = ExecuteFactorySync<T, TArg>(argument);
@@ -148,6 +190,14 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
+	///     Returns null if the service is not found.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>The service or null if not found.</returns>
 	public T? GetServiceSync<T, TArg>(TArg argument)
 	{
 		var instance = ExecuteFactorySync<T, TArg>(argument);
@@ -174,7 +224,7 @@ public abstract class ImplementationEntry
 			}
 		}
 	}
-	
+
 	public static DependencyInjectionException MissedServiceException<T, TArg>() =>
 		ArgumentType.TypeOf<TArg>().IsEmpty
 			? new DependencyInjectionException(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T)))
@@ -284,6 +334,13 @@ public abstract class ImplementationEntry
 			? factory(ServiceProvider, decoratedService, argument)
 			: default;
 
+	/// <summary>
+	///     Asynchronously gets all services of type <typeparamref name="T" /> with the specified argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the services to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>An asynchronous enumerable of the services.</returns>
 	public async IAsyncEnumerable<T> GetServices<T, TArg>(TArg argument)
 	{
 		foreach (var entry in AsChain())
@@ -297,6 +354,13 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Synchronously gets all services of type <typeparamref name="T" /> with the specified argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the services to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>An enumerable of the services.</returns>
 	public IEnumerable<T> GetServicesSync<T, TArg>(TArg argument)
 	{
 		foreach (var entry in AsChain())
@@ -308,6 +372,14 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Gets a delegate that asynchronously gets all services of type <typeparamref name="T" /> with the specified
+	///     argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the services to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
+	/// <returns>A delegate that asynchronously gets all services.</returns>
 	public TDelegate GetServicesDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
@@ -324,6 +396,13 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
+	/// <summary>
+	///     Gets a delegate that synchronously gets all services of type <typeparamref name="T" /> with the specified argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the services to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
+	/// <returns>A delegate that synchronously gets all services.</returns>
 	public TDelegate GetServicesSyncDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
@@ -340,6 +419,14 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
+	/// <summary>
+	///     Gets a delegate that asynchronously gets the required service of type <typeparamref name="T" /> with the specified
+	///     argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
+	/// <returns>A delegate that asynchronously gets the required service.</returns>
 	public TDelegate GetRequiredServiceDelegate<T, TArg, TDelegate>() where T : notnull where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
@@ -356,6 +443,13 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
+	/// <summary>
+	///     Gets a delegate that asynchronously gets the service of type <typeparamref name="T" /> with the specified argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
+	/// <returns>A delegate that asynchronously gets the service.</returns>
 	public TDelegate GetServiceDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
@@ -372,6 +466,14 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
+	/// <summary>
+	///     Gets a delegate that synchronously gets the required service of type <typeparamref name="T" /> with the specified
+	///     argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
+	/// <returns>A delegate that synchronously gets the required service.</returns>
 	public TDelegate GetRequiredServiceSyncDelegate<T, TArg, TDelegate>() where T : notnull where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
@@ -388,6 +490,13 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
+	/// <summary>
+	///     Gets a delegate that synchronously gets the service of type <typeparamref name="T" /> with the specified argument.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
+	/// <returns>A delegate that synchronously gets the service.</returns>
 	public TDelegate GetServiceSyncDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)

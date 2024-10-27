@@ -61,7 +61,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assertion failed..
+        ///   Looks up a localized string similar to Assertion failed.
         /// </summary>
         internal static string Exception_AssertionFailed {
             get {
@@ -70,7 +70,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unmatched value ({0}:{1})..
+        ///   Looks up a localized string similar to Unmatched value ({0}:{1}).
         /// </summary>
         internal static string Exception_AssertUnmatched {
             get {
@@ -79,7 +79,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t cast/forward delegate {0} to {1}..
+        ///   Looks up a localized string similar to Can&apos;t cast/forward delegate {0} to {1}.
         /// </summary>
         internal static string Exception_CantCastForwardDelegate {
             get {
@@ -88,7 +88,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t find factory for type [{0}]..
+        ///   Looks up a localized string similar to Can&apos;t find factory for type [{0}].
         /// </summary>
         internal static string Exception_CantFindFactoryForType {
             get {
@@ -97,7 +97,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Factory of [{0}] raised exception..
+        ///   Looks up a localized string similar to Factory of [{0}] raised exception.
         /// </summary>
         internal static string Exception_FactoryOfRaisedException {
             get {
@@ -106,7 +106,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid type..
+        ///   Looks up a localized string similar to Invalid type.
         /// </summary>
         internal static string Exception_InvalidType {
             get {
@@ -115,7 +115,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one constructor found..
+        ///   Looks up a localized string similar to More than one constructor found.
         /// </summary>
         internal static string Exception_MoreThanOneConstructorFound {
             get {
@@ -124,7 +124,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More than one method found..
+        ///   Looks up a localized string similar to More than one method found.
         /// </summary>
         internal static string Exception_MoreThanOneMethodFound {
             get {
@@ -133,7 +133,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No constructor found..
+        ///   Looks up a localized string similar to No constructor found.
         /// </summary>
         internal static string Exception_NoConstructorFound {
             get {
@@ -142,7 +142,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No method found..
+        ///   Looks up a localized string similar to No method found.
         /// </summary>
         internal static string Exception_NoMethodFound {
             get {
@@ -151,7 +151,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Options {0} does not supported..
+        ///   Looks up a localized string similar to Options {0} does not supported.
         /// </summary>
         internal static string Exception_OptionsDoesNotSupported {
             get {
@@ -160,7 +160,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Service [{0} (Argument: {1})] missed in container..
+        ///   Looks up a localized string similar to Service [{0} (Argument: {1})] missed in container.
         /// </summary>
         internal static string Exception_ServiceArgMissedInContainer {
             get {
@@ -169,7 +169,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Service [{0}] missed in container..
+        ///   Looks up a localized string similar to Service [{0}] missed in container.
         /// </summary>
         internal static string Exception_ServiceMissedInContainer {
             get {
@@ -178,7 +178,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Service [{0}] not available in synchronous context..
+        ///   Looks up a localized string similar to Service [{0}] not available in synchronous context.
         /// </summary>
         internal static string Exception_ServiceNotAvailableInSynchronousContext {
             get {
@@ -187,7 +187,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ServiceType not initialized..
+        ///   Looks up a localized string similar to ServiceType not initialized.
         /// </summary>
         internal static string Exception_ServiceTypeNotInitialized {
             get {
@@ -196,7 +196,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} can&apos;t be cast to {1}..
+        ///   Looks up a localized string similar to Type {0} can&apos;t be cast to {1}.
         /// </summary>
         internal static string Exception_TypeCantBeCastedTo {
             get {
@@ -205,7 +205,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} can&apos;t be constructed based on service type {1}..
+        ///   Looks up a localized string similar to Type {0} can&apos;t be constructed based on service type {1}.
         /// </summary>
         internal static string Exception_TypeCantBeConstructedBasedOnServiceType {
             get {
@@ -214,7 +214,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter..
+        ///   Looks up a localized string similar to Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter.
         /// </summary>
         internal static string Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken {
             get {
@@ -223,7 +223,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} used in synchronous instantiation and can&apos;t be initialized asynchronously..
+        ///   Looks up a localized string similar to Type {0} used in synchronous instantiation and can&apos;t be initialized asynchronously.
         /// </summary>
         internal static string Exception_TypeUsedInSynchronousInstantiation {
             get {

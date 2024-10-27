@@ -449,7 +449,7 @@ public class ServiceCollectionExtensionsTest
 	public void AddValidOptionTest()
 	{
 		// Arrange
-		
+
 		// Act
 
 		// Assert

@@ -21,7 +21,7 @@ namespace Xtate.IoC.Test;
 public class InfraTest
 {
 	[TestMethod]
-	public void AssertFailureTest()
+	public void Assert_ShouldThrowInvalidOperationException_WhenConditionIsFalse()
 	{
 		// Arrange
 
@@ -32,7 +32,7 @@ public class InfraTest
 	}
 
 	[TestMethod]
-	public void NotNullFailureTest()
+	public void NotNull_ShouldThrowInvalidOperationException_WhenArgumentIsNull()
 	{
 		// Arrange
 
@@ -43,48 +43,52 @@ public class InfraTest
 	}
 
 	[TestMethod]
-	public void UnexpectedPrimitiveTest()
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingPrimitiveValue()
 	{
 		// Arrange
-		var ex = Infra.Unmatched(456789123);
+		var value = 456789123;
 
 		// Act
+		var ex = Infra.Unmatched(value);
 
 		// Assert
-		Assert.IsTrue(ex.Message.Contains("456789123"));
+		Assert.IsTrue(ex.Message.Contains(value.ToString()));
 	}
 
 	[TestMethod]
-	public void UnexpectedEnumTest()
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingEnumValue()
 	{
 		// Arrange
-		var ex = Infra.Unmatched(UnexpectedEnumTestEnum.Val1);
+		var value = UnexpectedEnumTestEnum.Val1;
 
 		// Act
+		var ex = Infra.Unmatched(value);
 
 		// Assert
-		Assert.IsTrue(ex.Message.Contains("Val1"));
+		Assert.IsTrue(ex.Message.Contains(value.ToString()));
 	}
 
 	[TestMethod]
-	public void UnexpectedDelegateTest()
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingDelegateType()
 	{
 		// Arrange
-		var ex = Infra.Unmatched<Delegate>([ExcludeFromCodeCoverage]() => { });
+		Delegate value = [ExcludeFromCodeCoverage]() => { };
 
 		// Act
+		var ex = Infra.Unmatched(value);
 
 		// Assert
 		Assert.IsTrue(ex.Message.Contains("Delegate"));
 	}
 
 	[TestMethod]
-	public void UnexpectedOtherTypeTest()
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingOtherType()
 	{
 		// Arrange
-		var ex = Infra.Unmatched(new Version());
+		var value = new Version();
 
 		// Act
+		var ex = Infra.Unmatched(value);
 
 		// Assert
 		Assert.IsTrue(ex.Message.Contains("Version"));

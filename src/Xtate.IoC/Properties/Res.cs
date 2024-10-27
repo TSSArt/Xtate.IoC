@@ -17,9 +17,25 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Provides methods for formatting strings using the specified culture.
+/// </summary>
 internal static class Res
 {
+	/// <summary>
+	///     Formats a string using the specified format and a single argument.
+	/// </summary>
+	/// <param name="format">The format string.</param>
+	/// <param name="arg">The argument to format.</param>
+	/// <returns>A formatted string.</returns>
 	public static string Format(string format, object? arg) => string.Format(Resources.Culture, format, arg);
 
+	/// <summary>
+	///     Formats a string using the specified format and two arguments.
+	/// </summary>
+	/// <param name="format">The format string.</param>
+	/// <param name="arg0">The first argument to format.</param>
+	/// <param name="arg1">The second argument to format.</param>
+	/// <returns>A formatted string.</returns>
 	public static string Format(string format, object? arg0, object? arg1) => string.Format(Resources.Culture, format, arg0, arg1);
 }

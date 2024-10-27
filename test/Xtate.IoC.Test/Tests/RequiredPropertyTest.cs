@@ -91,7 +91,7 @@ namespace Xtate.IoC.Test
 	public class RequiredPropertyTest
 	{
 		[TestMethod]
-		public async Task BasicPropertyTest()
+		public async Task Should_ResolveRequiredProperties_When_UsingAsyncFactories()
 		{
 			// Arrange
 			var serviceCollection = new ServiceCollection();
@@ -118,7 +118,7 @@ namespace Xtate.IoC.Test
 		}
 
 		[TestMethod]
-		public async Task BasicSyncPropertyTest()
+		public async Task Should_ResolveRequiredProperties_When_UsingSyncFactories()
 		{
 			// Arrange
 			var serviceCollection = new ServiceCollection();
@@ -143,7 +143,7 @@ namespace Xtate.IoC.Test
 		}
 
 		[TestMethod]
-		public async Task InvalidSyncPropertyTest()
+		public async Task Should_ThrowException_When_RequiredSyncPropertyIsMissing()
 		{
 			// Arrange
 			var serviceCollection = new ServiceCollection();
@@ -151,14 +151,12 @@ namespace Xtate.IoC.Test
 			serviceCollection.AddType<DepSyncClass>();
 			var serviceProvider = serviceCollection.BuildProvider();
 
-			// Act
-
-			// Assert
+			// Act & Assert
 			await Assert.ThrowsExceptionAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await serviceProvider.GetRequiredService<Sync2Class>());
 		}
 
 		[TestMethod]
-		public async Task ArgAsyncPropertyTest()
+		public async Task Should_ResolveRequiredProperties_When_UsingAsyncFactoryWithArguments()
 		{
 			// Arrange
 			var serviceCollection = new ServiceCollection();
@@ -173,7 +171,7 @@ namespace Xtate.IoC.Test
 		}
 
 		[TestMethod]
-		public async Task ArgPropertyTest()
+		public async Task Should_ResolveRequiredProperties_When_UsingSyncFactoryWithArguments()
 		{
 			// Arrange
 			var serviceCollection = new ServiceCollection();

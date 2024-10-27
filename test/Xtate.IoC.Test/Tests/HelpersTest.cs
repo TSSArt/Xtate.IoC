@@ -21,13 +21,14 @@ namespace Xtate.IoC.Test;
 public class HelpersTest
 {
 	[TestMethod]
-	public void ObjectDisposedExceptionTest()
+	public void ThrowIf_ObjectDisposedException_ThrownWhenConditionIsTrue()
 	{
+		// Arrange & Act & Assert
 		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => XtateObjectDisposedException.ThrowIf(condition: true, instance: "44"));
 	}
 
 	[TestMethod]
-	public void TaskExtensions_SynchronousWaitNotCompletedTaskTest()
+	public void SynchronousWait_WaitsForNotCompletedTask_TaskIsCompleted()
 	{
 		// Arrange
 		var task = Task.Delay(1);
@@ -44,7 +45,7 @@ public class HelpersTest
 	}
 
 	[TestMethod]
-	public void TaskExtensions_SynchronousWaitCompletedTaskTest()
+	public void SynchronousWait_WaitsForCompletedTask_TaskRemainsCompleted()
 	{
 		// Arrange
 		var task = Task.CompletedTask;
@@ -61,7 +62,7 @@ public class HelpersTest
 	}
 
 	[TestMethod]
-	public async Task AsyncEnumerable_EmptyCurrentTest()
+	public async Task GetAsyncEnumerator_EmptyAsyncEnumerable_CurrentIsDefault()
 	{
 		// Arrange
 		var asyncEnum = AsyncEnumerable.Empty<int>();
@@ -75,7 +76,7 @@ public class HelpersTest
 	}
 
 	[TestMethod]
-	public void TestDisposeAsync()
+	public void DisposeAsync_DisposesAsyncDisposableClass_DisposedIsTrue()
 	{
 		// Arrange
 		var c = new AsyncDisposableClass();

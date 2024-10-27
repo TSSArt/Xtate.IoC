@@ -564,9 +564,8 @@ public class FactoryProviderTest
 	[ExcludeFromCodeCoverage]
 	public class Decorator<T>(IService<T> decorated) : IService<T>
 	{
-		public IService<T> Decorated { get; } = decorated;
-
-		public override string ToString() => $"{typeof(T).Name}:{Decorated}";
+		public          IService<T> Decorated  { get; } = decorated;
+		public override string      ToString() => $"{typeof(T).Name}:{Decorated}";
 	}
 
 	[ExcludeFromCodeCoverage]

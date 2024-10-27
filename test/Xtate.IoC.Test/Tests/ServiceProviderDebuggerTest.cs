@@ -21,7 +21,7 @@ namespace Xtate.IoC.Test;
 public class ServiceProviderDebuggerTest
 {
 	[TestMethod]
-	public async Task RegisterServiceProviderDebuggerTest()
+	public async Task RegisterServiceProviderDebugger_ShouldRegisterAndResolveServicesCorrectly()
 	{
 		// Arrange
 		var dbg = new Actions();

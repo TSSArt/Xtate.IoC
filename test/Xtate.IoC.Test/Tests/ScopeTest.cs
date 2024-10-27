@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Xtate.IoC.Test.Tests;
+namespace Xtate.IoC.Test;
 
 [TestClass]
 public class ScopeTest
@@ -26,14 +26,14 @@ public class ScopeTest
 
 		await foreach (var svc in asyncEnumerable)
 		{
-			list.Add(((ISomeValue)svc!).Value);
+			list.Add(((ISomeValue) svc!).Value);
 		}
 
 		return [.. list];
 	}
 
 	[TestMethod]
-	public async Task NoScopeAnyTest()
+	public async Task NoScope_AnyType_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var container = Container.Create(
@@ -57,7 +57,7 @@ public class ScopeTest
 	}
 
 	[TestMethod]
-	public async Task NoScopeSpecTest()
+	public async Task NoScope_SpecificTypes_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var container = Container.Create(
@@ -82,7 +82,7 @@ public class ScopeTest
 	}
 
 	[TestMethod]
-	public async Task ScopeAnyTest()
+	public async Task Scoped_AnyType_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var parentContainer = Container.Create(
@@ -109,7 +109,7 @@ public class ScopeTest
 	}
 
 	[TestMethod]
-	public async Task ScopeSpecTest()
+	public async Task Scoped_SpecificTypes_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var parentContainer = Container.Create(
@@ -137,7 +137,7 @@ public class ScopeTest
 	}
 
 	[TestMethod]
-	public async Task ScopeAnyAnyTest()
+	public async Task Scoped_AnyTypeInScope_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var parentContainer = Container.Create(
@@ -148,10 +148,12 @@ public class ScopeTest
 			});
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-		var container = serviceScopeFactory.CreateScope(s =>
-														{
-															s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-														}).ServiceProvider;
+		var container = serviceScopeFactory.CreateScope(
+											   s =>
+											   {
+												   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+											   })
+										   .ServiceProvider;
 
 		// Act
 		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
@@ -167,7 +169,7 @@ public class ScopeTest
 	}
 
 	[TestMethod]
-	public async Task ScopeSpecAnyTest()
+	public async Task Scoped_SpecificTypesInScope_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var parentContainer = Container.Create(
@@ -179,10 +181,12 @@ public class ScopeTest
 			});
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-		var container = serviceScopeFactory.CreateScope(s =>
-														{
-															s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-														}).ServiceProvider;
+		var container = serviceScopeFactory.CreateScope(
+											   s =>
+											   {
+												   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+											   })
+										   .ServiceProvider;
 
 		// Act
 		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
@@ -198,7 +202,7 @@ public class ScopeTest
 	}
 
 	[TestMethod]
-	public async Task ScopeAnySpecTest()
+	public async Task Scoped_AnyTypeWithSpecificTypesInScope_ReturnsExpectedValues()
 	{
 		// Arrange
 		await using var parentContainer = Container.Create(
@@ -209,11 +213,13 @@ public class ScopeTest
 			});
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-		var container = serviceScopeFactory.CreateScope(s =>
-														{
-															s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-															s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-														}).ServiceProvider;
+		var container = serviceScopeFactory.CreateScope(
+											   s =>
+											   {
+												   s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+												   s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+											   })
+										   .ServiceProvider;
 
 		// Act
 		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
@@ -240,12 +246,20 @@ public class ScopeTest
 	[UsedImplicitly]
 	private class NonGeneric : INonGeneric, ISomeValue
 	{
+	#region Interface ISomeValue
+
 		public string Value => "";
+
+	#endregion
 	}
 
 	[UsedImplicitly]
 	private class Generic<T> : IGeneric<T>, ISomeValue
 	{
+	#region Interface ISomeValue
+
 		public string Value => typeof(T).Name;
+
+	#endregion
 	}
 }

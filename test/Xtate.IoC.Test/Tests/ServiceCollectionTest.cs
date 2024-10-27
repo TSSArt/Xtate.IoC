@@ -21,7 +21,7 @@ namespace Xtate.IoC.Test;
 public class ServiceCollectionTest
 {
 	[TestMethod]
-	public async Task NewServiceCollectionTest()
+	public async Task ServiceCollection_ShouldBuildProvider_WithRequiredServiceScopeFactory()
 	{
 		// Arrange
 		var sc = new ServiceCollectionNew();

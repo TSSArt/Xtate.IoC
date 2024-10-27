@@ -17,6 +17,9 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Provides helper methods for working with tuples and value tuples.
+/// </summary>
 internal static class TupleHelper
 {
 	private static readonly Dictionary<Type, Type> ValueTupleMap = new()

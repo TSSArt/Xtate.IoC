@@ -21,6 +21,9 @@ namespace Xtate.IoC;
 
 internal static class FuncConverter
 {
+	/// <summary>
+	///     A set of Func types with varying numbers of generic parameters.
+	/// </summary>
 	private static readonly Type[] FuncSet =
 	[
 		typeof(Func<>),
@@ -42,6 +45,9 @@ internal static class FuncConverter
 		typeof(Func<,,,,,,,,,,,,,,,,>)
 	];
 
+	/// <summary>
+	///     A map of ValueTuple types with varying numbers of generic parameters.
+	/// </summary>
 	private static readonly Type[] NumToValueTupleMap =
 	[
 		typeof(ValueTuple),
@@ -55,8 +61,22 @@ internal static class FuncConverter
 		typeof(ValueTuple<,,,,,,,>)
 	];
 
+	/// <summary>
+	///     Casts a delegate to a specified delegate type.
+	/// </summary>
+	/// <typeparam name="TDelegate">The type of the delegate to cast to.</typeparam>
+	/// <param name="func">The delegate to cast.</param>
+	/// <returns>The cast delegate.</returns>
+	/// <exception cref="InvalidCastException">Thrown when the delegate cannot be cast to the specified type.</exception>
 	public static TDelegate Cast<TDelegate>(Delegate func) where TDelegate : Delegate => (TDelegate) Cast(func, typeof(TDelegate));
 
+	/// <summary>
+	///     Casts a delegate to a specified type.
+	/// </summary>
+	/// <param name="func">The delegate to cast.</param>
+	/// <param name="toType">The type to cast the delegate to.</param>
+	/// <returns>The cast delegate.</returns>
+	/// <exception cref="InvalidCastException">Thrown when the delegate cannot be cast to the specified type.</exception>
 	private static Delegate Cast(Delegate func, Type toType)
 	{
 		if (func.GetType() == toType)
@@ -87,6 +107,12 @@ internal static class FuncConverter
 		return Expression.Lambda(Expression.Invoke(Expression.Constant(func), arg), args).Compile();
 	}
 
+	/// <summary>
+	///     Creates a single argument expression from an array of parameter expressions.
+	/// </summary>
+	/// <param name="args">The array of parameter expressions.</param>
+	/// <param name="start">The starting index in the array.</param>
+	/// <returns>A NewExpression representing the single argument.</returns>
 	private static NewExpression CreateSingleArgument(ParameterExpression[] args, int start)
 	{
 		Expression[] valueTupleArgs;

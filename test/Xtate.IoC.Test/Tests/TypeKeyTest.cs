@@ -23,114 +23,133 @@ namespace Xtate.IoC.Test;
 public class TypeKeyTest
 {
 	[TestMethod]
-	public void SimpleTypeKeyTest()
+	public void ServiceKey_SameType_ReturnsSameInstance()
 	{
-		// Assert
-
+		// Assert  
 		Assert.AreSame(TypeKey.ServiceKey<int, Empty>(), TypeKey.ServiceKey<int, Empty>());
 		Assert.AreSame(TypeKey.ServiceKey<DateTime, sbyte>(), TypeKey.ServiceKey<DateTime, sbyte>());
+	}
+
+	[TestMethod]
+	public void ServiceKey_DifferentTypes_ReturnsDifferentInstances()
+	{
+		// Assert  
 		Assert.AreNotEqual(TypeKey.ServiceKey<int, Empty>(), TypeKey.ServiceKey<long, Empty>());
 		Assert.AreNotEqual(TypeKey.ServiceKey<int, Empty>(), TypeKey.ServiceKey<int, byte>());
+	}
 
+	[TestMethod]
+	public void ImplementationKey_SameType_ReturnsSameInstance()
+	{
+		// Assert  
 		Assert.AreSame(TypeKey.ImplementationKey<int, Empty>(), TypeKey.ImplementationKey<int, Empty>());
 		Assert.AreSame(TypeKey.ImplementationKey<DateTime, sbyte>(), TypeKey.ImplementationKey<DateTime, sbyte>());
+	}
+
+	[TestMethod]
+	public void ImplementationKey_DifferentTypes_ReturnsDifferentInstances()
+	{
+		// Assert  
 		Assert.AreNotEqual(TypeKey.ImplementationKey<int, Empty>(), TypeKey.ImplementationKey<long, Empty>());
 		Assert.AreNotEqual(TypeKey.ImplementationKey<int, Empty>(), TypeKey.ImplementationKey<int, byte>());
+	}
 
+	[TestMethod]
+	public void ServiceKey_ImplementationKey_DifferentInstances()
+	{
+		// Assert  
 		Assert.AreNotEqual(TypeKey.ServiceKey<int, Empty>(), TypeKey.ImplementationKey<int, Empty>());
 		Assert.AreNotEqual(TypeKey.ServiceKey<object, string>(), TypeKey.ImplementationKey<object, string>());
 	}
 
 	[TestMethod]
-	public void DefinitionImplementationTypeKeyTest()
+	public void ImplementationKey_DefinitionKey_Equals()
 	{
-		// Arrange
+		// Arrange  
 		var key1 = ((GenericTypeKey) TypeKey.ImplementationKey<GenericClass<int>, int>()).DefinitionKey;
 		var key2 = ((GenericTypeKey) TypeKey.ImplementationKey<GenericClass<long>, int>()).DefinitionKey;
 
-		// Act
+		// Act  
 		object key3 = key1;
 
-		// Assert
-
+		// Assert  
 		Assert.IsTrue(key1.Equals(key3));
 		Assert.IsTrue(key1.Equals(key2));
 		Assert.IsFalse(key1.Equals(new object()));
 	}
 
 	[TestMethod]
-	public void DefinitionServiceTypeKeyTest()
+	public void ServiceKey_DefinitionKey_Equals()
 	{
-		// Arrange
+		// Arrange  
 		var key1 = ((GenericTypeKey) TypeKey.ServiceKey<GenericClass<int>, int>()).DefinitionKey;
 		var key2 = ((GenericTypeKey) TypeKey.ServiceKey<GenericClass<long>, int>()).DefinitionKey;
 
-		// Act
+		// Act  
 		object key3 = key1;
 
-		// Assert
-
+		// Assert  
 		Assert.IsTrue(key1.Equals(key3));
 		Assert.IsTrue(key1.Equals(key2));
 	}
 
 	[TestMethod]
-	public void ServiceGenericToStringTypeKeyTest()
+	public void ServiceKey_GenericToString_ReturnsExpectedString()
 	{
-		// Arrange
+		// Arrange  
 		var key = TypeKey.ServiceKey<GenericClass<object>, int>();
 
-		// Assert
+		// Assert  
 		Assert.AreEqual(expected: "SRV:GenericClass<object>(int)", key.ToString());
 	}
 
 	[TestMethod]
-	public void ImplementationGenericToStringTypeKeyTest()
+	public void ImplementationKey_GenericToString_ReturnsExpectedString()
 	{
-		// Arrange
+		// Arrange  
 		var key = TypeKey.ImplementationKey<GenericClass<object>, int>();
 
-		// Assert
+		// Assert  
 		Assert.AreEqual(expected: "IMP:GenericClass<object>(int)", key.ToString());
 	}
 
 	[TestMethod]
-	public void ServiceSimpleToStringTypeKeyTest()
+	public void ServiceKey_SimpleToString_ReturnsExpectedString()
 	{
-		// Arrange
+		// Arrange  
 		var key = TypeKey.ServiceKey<object, Empty>();
 
-		// Assert
+		// Assert  
 		Assert.AreEqual(expected: "SRV:object", key.ToString());
 	}
 
 	[TestMethod]
-	public void ImplementationSimpleToStringTypeKeyTest()
+	public void ImplementationKey_SimpleToString_ReturnsExpectedString()
 	{
-		// Arrange
+		// Arrange  
 		var key = TypeKey.ImplementationKey<object, Empty>();
 
-		// Assert
+		// Assert  
 		Assert.AreEqual(expected: "IMP:object", key.ToString());
 	}
 
 	[TestMethod]
-	public void ServiceSimpleDoTypedActionTypeKeyTest()
+	public void ServiceKey_DoTypedAction_ExecutesWithoutException()
 	{
-		// Arrange
+		// Arrange  
 		var key = TypeKey.ServiceKey<object, Empty>();
 
-		// Act
+		// Act  
 		key.DoTypedAction(new TypedActionClass());
 	}
 
 	[TestMethod]
-	public void ImplementationSimpleDoTypedActionTypeKeyTest()
+	public void ImplementationKey_DoTypedAction_ExecutesWithoutException()
 	{
-		// Arrange
+		// Arrange  
 		var key = TypeKey.ImplementationKey<object, Empty>();
 
-		// Assert
+		// Act  
 		key.DoTypedAction(new TypedActionClass());
 	}
 

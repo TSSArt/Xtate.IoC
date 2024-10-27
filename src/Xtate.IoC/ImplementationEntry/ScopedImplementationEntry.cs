@@ -20,22 +20,56 @@ using ValueTuple = System.ValueTuple;
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Represents an entry for a scoped implementation in the IoC container. Instance owned by IoC.
+/// </summary>
 internal sealed class ScopedImplementationEntry : ImplementationEntry
 {
 	private readonly ServiceProvider _serviceProvider;
 	private readonly object          _syncRoot = new();
 	private          object?         _instance;
 
+	/// <summary>
+	///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="factory">The factory delegate.</param>
 	public ScopedImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(factory) => _serviceProvider = serviceProvider;
 
+	/// <summary>
+	///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="sourceEntry">The source implementation entry.</param>
 	private ScopedImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(sourceEntry) => _serviceProvider = serviceProvider;
 
+	/// <summary>
+	///     Gets the service provider.
+	/// </summary>
 	protected override IServiceProvider ServiceProvider => _serviceProvider;
 
+	/// <summary>
+	///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
 	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedImplementationEntry(serviceProvider, this);
 
+	/// <summary>
+	///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="factory">The factory delegate.</param>
+	/// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
 	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedImplementationEntry(serviceProvider, factory);
 
+	/// <summary>
+	///     Executes the factory delegate asynchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
 	private async ValueTask<T?> ExecuteFactoryInternal<T, TArg>(TArg argument)
 	{
 		var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
@@ -54,6 +88,13 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Executes the factory delegate asynchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
 	private protected override ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
 	{
 		lock (_syncRoot)
@@ -74,6 +115,13 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Executes the factory delegate synchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>The instance.</returns>
 	private protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
 	{
 		EnsureSynchronousContext<T, TArg>();
@@ -85,6 +133,13 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 		return valueTask.Result;
 	}
 
+	/// <summary>
+	///     Executes the factory delegate with an argument asynchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
 	private Task<T?> ExecuteFactoryWithArg<T, TArg>(TArg argument)
 	{
 		if (_instance is not Dictionary<ValueTuple<TArg>, Task<T?>> dictionary)

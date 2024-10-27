@@ -18,14 +18,15 @@
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Xtate.IoC.Test.Tests;
+namespace Xtate.IoC.Test;
 
 [TestClass]
 public class AncestorTest
 {
 	[TestMethod]
-	public async Task AncestorSimpleTest()
+	public async Task AncestorSimpleTest_ShouldResolveDependenciesCorrectly()
 	{
+		// Arrange
 		await using var container = Container.Create(
 			s =>
 			{
@@ -39,32 +40,34 @@ public class AncestorTest
 				s.AddFactory<LazyImpl<Any>>().For<Lazy<Any>>();
 			});
 
+		// Act
 		var grandParent = await container.GetRequiredService<GrandParent>();
 		var childPost = await container.GetRequiredService<ChildPost>();
 		var child = await container.GetRequiredService<Child, int>(5);
 
+		// Assert
 		Assert.AreEqual(typeof(Parent), grandParent.ParentInstance.ChildInstance.ParentInstance1.Value!.GetType());
 		Assert.AreEqual(typeof(Parent), grandParent.ParentInstance.ChildInstance.ParentInstance2.Value!.GetType());
 		Assert.AreEqual(typeof(Parent), grandParent.ParentInstance.ChildInstance.ParentInstance3.Value!.GetType());
-
 		Assert.AreEqual(typeof(GrandParent), grandParent.ParentInstance.GrandParentInstance.Value!.GetType());
-
 		Assert.AreEqual(typeof(Parent), childPost.ParentInstance.Value!.GetType());
 		Assert.AreEqual(typeof(Parent), childPost.ParentInstanceGetter().GetType());
 		Assert.IsNotNull(child);
 	}
 
 	[TestMethod]
-	public void AncestorOtherTest()
+	public void AncestorOtherTest_ShouldValidateTypeKeyArguments()
 	{
+		// Arrange
 		var k1 = TypeKey.ImplementationKey<object, ValueTuple>();
 		var k2 = TypeKey.ImplementationKey<object, int>();
 		var k3 = TypeKey.ImplementationKey<List<int>, int>();
 
+		// Act & Assert
 		Assert.IsTrue(k1.IsEmptyArg);
 		Assert.IsFalse(k2.IsEmptyArg);
 		Assert.IsFalse(k3.IsEmptyArg);
-		Assert.IsTrue(((GenericTypeKey)k3).DefinitionKey.IsEmptyArg);
+		Assert.IsTrue(((GenericTypeKey) k3).DefinitionKey.IsEmptyArg);
 	}
 
 	private delegate T Lazy<out T>();

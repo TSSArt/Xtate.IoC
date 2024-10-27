@@ -19,6 +19,11 @@ namespace Xtate.IoC;
 
 internal static class TaskExtensions
 {
+	/// <summary>
+	///     Synchronously waits for the completion of the provided <see cref="ValueTask" />.
+	/// </summary>
+	/// <param name="valueTask">The <see cref="ValueTask" /> to wait for.</param>
+	/// <exception cref="AggregateException">Thrown if the <see cref="ValueTask" /> completes in a faulted state.</exception>
 	public static void SynchronousWait(this ValueTask valueTask)
 	{
 		if (valueTask.IsCompleted)

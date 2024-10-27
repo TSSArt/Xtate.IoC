@@ -22,13 +22,17 @@ public class ModuleTest
 {
 	[TestMethod]
 	[Obsolete(message: "Suppressing warning for AddConstant", error: true)]
-	public void AddConstantValueTaskTest()
+	public void AddConstant_ShouldAddValueTask()
 	{
+		// Arrange & Act
 		using var container = Container.Create(services => services.AddConstant(new ValueTask<int>()));
+
+		// Assert
+		// No assertion needed as we are testing the AddConstant method
 	}
 
 	[TestMethod]
-	public async Task ModuleSimpleAsyncTest()
+	public async Task AddModule_ShouldReturnDefaultShortValue_Async()
 	{
 		// Arrange
 		await using var container = Container.Create(services => services.AddModule<MyModule<short>>());
@@ -41,7 +45,7 @@ public class ModuleTest
 	}
 
 	[TestMethod]
-	public void ModuleSimpleTest()
+	public void AddModule_ShouldReturnDefaultShortValue()
 	{
 		// Arrange
 		using var container = Container.Create(services => services.AddModule<MyModule<short>>());
@@ -54,7 +58,7 @@ public class ModuleTest
 	}
 
 	[TestMethod]
-	public void ModuleSimple1Test()
+	public void AddModule1_ShouldReturnDefaultIntValueAndModuleInstance()
 	{
 		// Arrange
 		using var containerNo = Container.Create<MyModule1>();
@@ -70,7 +74,7 @@ public class ModuleTest
 	}
 
 	[TestMethod]
-	public void ModuleSimple2Test()
+	public void AddModule2_ShouldReturnDefaultIntAndLongValuesAndModuleInstance()
 	{
 		// Arrange
 		using var containerNo = Container.Create<MyModule2, MyModule<object>>();
@@ -88,7 +92,7 @@ public class ModuleTest
 	}
 
 	[TestMethod]
-	public void ModuleSimple3Test()
+	public void AddModule3_ShouldReturnDefaultIntLongByteValuesAndModuleInstance()
 	{
 		// Arrange
 		using var containerNo = Container.Create<MyModule3, MyModule<object>, MyModule<object>>();
@@ -108,7 +112,7 @@ public class ModuleTest
 	}
 
 	[TestMethod]
-	public void ModuleSimple4Test()
+	public void AddModule4_ShouldReturnDefaultIntLongByteSbyteValuesAndModuleInstance()
 	{
 		// Arrange
 		using var containerNo = Container.Create<MyModule4, MyModule<object>, MyModule<object>, MyModule<object>>();

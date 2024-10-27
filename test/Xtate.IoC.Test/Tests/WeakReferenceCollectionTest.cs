@@ -28,11 +28,13 @@ public class WeakReferenceCollectionTest
 	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith(value: "Mono", StringComparison.OrdinalIgnoreCase);
 
 	[TestMethod]
-	public void BasicTest()
+	public void WeakReferenceCollection_ShouldStoreAndRetrieveAllObjects()
 	{
+		// Arrange
 		var wrc = new WeakReferenceCollection();
 		var objects = Enumerable.Range(start: 0, count: 16).Select(_ => CreateObject()).ToList();
 
+		// Act
 		foreach (var o in objects)
 		{
 			wrc.Put(o);
@@ -43,6 +45,7 @@ public class WeakReferenceCollectionTest
 			objects.Remove(obj);
 		}
 
+		// Assert
 		Assert.AreEqual(expected: 0, objects.Count);
 	}
 
@@ -67,35 +70,36 @@ public class WeakReferenceCollectionTest
 	[DataRow(1)]
 	[DataRow(8)]
 	[DataRow(16)]
-	public void CollectAllTest(int n)
+	public void WeakReferenceCollection_ShouldCollectAllObjects_WhenGcCollectsAll(int n)
 	{
 		if (!IsGcCollectsAll)
 		{
 			return;
 		}
 
+		// Arrange
 		var wrc = new WeakReferenceCollection();
-
 		AddObjects(wrc, n);
 
+		// Act
 		GcCollect();
-
 		var result = wrc.TryTake(out _);
 
+		// Assert
 		Assert.IsFalse(result);
 	}
 
 	[TestMethod]
-	public void CollectSomeTest()
+	public void WeakReferenceCollection_ShouldCollectSomeObjects_WhenGcCollectsAll()
 	{
 		if (!IsGcCollectsAll)
 		{
 			return;
 		}
 
+		// Arrange
 		var wrc = new WeakReferenceCollection();
 		var list = new object[8];
-
 		FillList(wrc, list, count: 8);
 
 		list[0] = null!;
@@ -104,8 +108,8 @@ public class WeakReferenceCollectionTest
 		list[5] = null!;
 		list[7] = null!;
 
+		// Act
 		GcCollect();
-
 		AddObjects(wrc, count: 1);
 
 		var count = 0;
@@ -114,6 +118,7 @@ public class WeakReferenceCollectionTest
 			count ++;
 		}
 
+		// Assert
 		Assert.AreEqual(expected: 4, count);
 	}
 
@@ -127,16 +132,9 @@ public class WeakReferenceCollectionTest
 	}
 
 	[TestMethod]
-	public void IfPutNullShouldRaiseExceptionTest()
+	public void WeakReferenceCollection_ShouldHandleMultiThreadedAccess()
 	{
-		var wrc = new WeakReferenceCollection();
-
-		wrc.Put(default!);
-	}
-
-	[TestMethod]
-	public void MultiThreadTest()
-	{
+		// Arrange
 		var wrc = new WeakReferenceCollection();
 
 		var thread1 = new Thread(o => Put((WeakReferenceCollection) o!));
@@ -144,6 +142,7 @@ public class WeakReferenceCollectionTest
 		var thread3 = new Thread(o => Take((WeakReferenceCollection) o!));
 		var thread4 = new Thread(o => Take((WeakReferenceCollection) o!));
 
+		// Act
 		thread1.Start(wrc);
 		thread2.Start(wrc);
 		thread3.Start(wrc);
@@ -154,6 +153,7 @@ public class WeakReferenceCollectionTest
 		thread3.Join();
 		thread4.Join();
 
+		// Assert
 		while (wrc.TryTake(out _)) { }
 	}
 
@@ -168,5 +168,91 @@ public class WeakReferenceCollectionTest
 	private static void Take(WeakReferenceCollection wrc)
 	{
 		while (wrc.TryTake(out _)) { }
+	}
+
+	[TestMethod]
+	public void Put_ShouldAddObjectToCollection()
+	{
+		// Arrange
+		var wrc = new WeakReferenceCollection();
+		var obj = new object();
+
+		// Act
+		wrc.Put(obj);
+
+		// Assert
+		Assert.IsTrue(wrc.TryTake(out var retrievedObj));
+		Assert.AreSame(obj, retrievedObj);
+	}
+
+	[TestMethod]
+	public void Put_ShouldNotAddNullObjectToCollection()
+	{
+		// Arrange
+		var wrc = new WeakReferenceCollection();
+
+		// Act
+		wrc.Put(null!);
+
+		// Assert
+		Assert.IsFalse(wrc.TryTake(out _));
+	}
+
+	[TestMethod]
+	public void TryTake_ShouldReturnFalseWhenCollectionIsEmpty()
+	{
+		// Arrange
+		var wrc = new WeakReferenceCollection();
+
+		// Act
+		var result = wrc.TryTake(out var obj);
+
+		// Assert
+		Assert.IsFalse(result);
+		Assert.IsNull(obj);
+	}
+
+	[TestMethod]
+	public void TryTake_ShouldReturnTrueAndRemoveObjectFromCollection()
+	{
+		// Arrange
+		var wrc = new WeakReferenceCollection();
+		var obj = new object();
+		wrc.Put(obj);
+
+		// Act
+		var result = wrc.TryTake(out var retrievedObj);
+
+		// Assert
+		Assert.IsTrue(result);
+		Assert.AreSame(obj, retrievedObj);
+		Assert.IsFalse(wrc.TryTake(out _));
+	}
+
+	[TestMethod]
+	public void WeakReferenceCollection_ShouldHandleConcurrentAccess()
+	{
+		// Arrange
+		var wrc = new WeakReferenceCollection();
+		var obj1 = new object();
+		var obj2 = new object();
+
+		// Act
+		var thread1 = new Thread(() => wrc.Put(obj1));
+		var thread2 = new Thread(() => wrc.Put(obj2));
+		thread1.Start();
+		thread2.Start();
+		thread1.Join();
+		thread2.Join();
+
+		// Assert
+		var retrievedObjects = new List<object>();
+		while (wrc.TryTake(out var obj))
+		{
+			retrievedObjects.Add(obj);
+		}
+
+		CollectionAssert.Contains(retrievedObjects, obj1);
+		CollectionAssert.Contains(retrievedObjects, obj2);
 	}
 }

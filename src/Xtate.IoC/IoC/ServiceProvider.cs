@@ -352,7 +352,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		}
 	}
 
-	private class SourceServiceCollection(ServiceProvider serviceProvider) : ServiceCollection, IServiceCollection
+	internal class SourceServiceCollection(ServiceProvider serviceProvider) : ServiceCollection, IServiceCollection
 	{
 	#region Interface IServiceCollection
 

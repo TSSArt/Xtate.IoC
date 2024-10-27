@@ -48,8 +48,12 @@ public class FriendlyTypeTest
 	[DataRow("(int,int,int,int,int,int,int,int)", typeof((int, int, int, int, int, int, int, int)))]
 	[DataRow("(int,int,int,int,int,int,int,int,int)", typeof((int, int, int, int, int, int, int, int, int)))]
 	[DataRow("(int,int,int,int,int,int,int,int,int,int)", typeof((int, int, int, int, int, int, int, int, int, int)))]
-	public void ClassNameTest(string name, Type type)
+	public void FriendlyName_ShouldReturnExpectedName_WhenGivenType(string expectedName, Type type)
 	{
-		Assert.AreEqual(name, type.FriendlyName());
+		// Arrange & Act
+		var actualName = type.FriendlyName();
+
+		// Assert
+		Assert.AreEqual(expectedName, actualName);
 	}
 }

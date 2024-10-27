@@ -19,6 +19,12 @@ namespace Xtate.IoC;
 
 internal static class OptionExtensions
 {
+	/// <summary>
+	///     Validates the specified option against the allowed options.
+	/// </summary>
+	/// <param name="option">The option to validate.</param>
+	/// <param name="allowedOptions">The allowed options.</param>
+	/// <exception cref="ArgumentException">Thrown when the option contains unsupported options.</exception>
 	public static void Validate(this Option option, Option allowedOptions)
 	{
 		if ((option & ~allowedOptions) is var notSupportedOptions && notSupportedOptions != 0)
@@ -27,6 +33,12 @@ internal static class OptionExtensions
 		}
 	}
 
+	/// <summary>
+	///     Determines whether the specified option contains the option to check.
+	/// </summary>
+	/// <param name="option">The option to check.</param>
+	/// <param name="toCheck">The option to check for.</param>
+	/// <returns><c>true</c> if the specified option contains the option to check; otherwise, <c>false</c>.</returns>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool Has(this Option option, Option toCheck) => (option & toCheck) == toCheck;
 }

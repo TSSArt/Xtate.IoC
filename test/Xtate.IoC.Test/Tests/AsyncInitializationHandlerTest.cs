@@ -21,27 +21,46 @@ namespace Xtate.IoC.Test;
 public class AsyncInitializationHandlerTest
 {
 	[TestMethod]
-	public async Task AsyncInitializationHandlerInterfaceTest()
+	public async Task Initialize_ShouldReturnFalse_WhenObjectIsNotAsyncInitializable()
 	{
 		// Arrange
 		var obj = new Class();
+
+		// Act
+		var init = AsyncInitializationHandler.Instance.Initialize(obj);
+		await AsyncInitializationHandler.Instance.InitializeAsync(obj);
+
+		// Assert
+		Assert.IsFalse(init);
+	}
+
+	[TestMethod]
+	public async Task Initialize_ShouldReturnTrue_WhenObjectIsAsyncInitializable()
+	{
+		// Arrange
 		var objAsyncInit = new ClassAsyncInit();
+
+		// Act
+		var init = AsyncInitializationHandler.Instance.Initialize(objAsyncInit);
+		await AsyncInitializationHandler.Instance.InitializeAsync(objAsyncInit);
+
+		// Assert
+		Assert.IsTrue(init);
+		Assert.IsTrue(objAsyncInit.Init);
+	}
+
+	[TestMethod]
+	public async Task Initialize_ShouldReturnFalse_WhenObjectIsNull()
+	{
+		// Arrange
 		ClassAsyncInit? nullObjAsyncInit = null;
 
 		// Act
-		var init1 = AsyncInitializationHandler.Instance.Initialize(obj);
-		var init2 = AsyncInitializationHandler.Instance.Initialize(objAsyncInit);
-		var init3 = AsyncInitializationHandler.Instance.Initialize(nullObjAsyncInit);
-
-		await AsyncInitializationHandler.Instance.InitializeAsync(obj);
-		await AsyncInitializationHandler.Instance.InitializeAsync(objAsyncInit);
+		var init = AsyncInitializationHandler.Instance.Initialize(nullObjAsyncInit);
 		await AsyncInitializationHandler.Instance.InitializeAsync(nullObjAsyncInit);
 
 		// Assert
-		Assert.IsFalse(init1);
-		Assert.IsTrue(init2);
-		Assert.IsFalse(init3);
-		Assert.IsTrue(objAsyncInit.Init);
+		Assert.IsFalse(init);
 	}
 
 	// ReSharper disable All

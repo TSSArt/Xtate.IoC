@@ -118,60 +118,60 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Exception_FactoryOfRaisedException" xml:space="preserve">
-    <value>Factory of [{0}] raised exception.</value>
+    <value>Factory of [{0}] raised exception</value>
   </data>
   <data name="Exception_CantFindFactoryForType" xml:space="preserve">
-    <value>Can't find factory for type [{0}].</value>
+    <value>Can't find factory for type [{0}]</value>
   </data>
   <data name="Exception_TypeCantBeCastedTo" xml:space="preserve">
-    <value>Type {0} can't be cast to {1}.</value>
+    <value>Type {0} can't be cast to {1}</value>
   </data>
   <data name="Exception_TypeCantBeConstructedBasedOnServiceType" xml:space="preserve">
-    <value>Type {0} can't be constructed based on service type {1}.</value>
+    <value>Type {0} can't be constructed based on service type {1}</value>
   </data>
   <data name="Exception_AssertUnmatched" xml:space="preserve">
-    <value>Unmatched value ({0}:{1}).</value>
+    <value>Unmatched value ({0}:{1})</value>
   </data>
   <data name="Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter.</value>
+    <value>Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter</value>
   </data>
   <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
-    <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously.</value>
+    <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously</value>
   </data>
   <data name="Exception_CantCastForwardDelegate" xml:space="preserve">
-    <value>Can't cast/forward delegate {0} to {1}.</value>
+    <value>Can't cast/forward delegate {0} to {1}</value>
   </data>
   <data name="Exception_ServiceTypeNotInitialized" xml:space="preserve">
-    <value>ServiceType not initialized.</value>
+    <value>ServiceType not initialized</value>
   </data>
   <data name="Exception_ServiceNotAvailableInSynchronousContext" xml:space="preserve">
-    <value>Service [{0}] not available in synchronous context.</value>
+    <value>Service [{0}] not available in synchronous context</value>
   </data>
   <data name="Exception_ServiceMissedInContainer" xml:space="preserve">
-    <value>Service [{0}] missed in container.</value>
+    <value>Service [{0}] missed in container</value>
   </data>
   <data name="Exception_ServiceArgMissedInContainer" xml:space="preserve">
-    <value>Service [{0} (Argument: {1})] missed in container.</value>
+    <value>Service [{0} (Argument: {1})] missed in container</value>
   </data>
   <data name="Exception_InvalidType" xml:space="preserve">
-    <value>Invalid type.</value>
+    <value>Invalid type</value>
   </data>
   <data name="Exception_AssertionFailed" xml:space="preserve">
-    <value>Assertion failed.</value>
+    <value>Assertion failed</value>
   </data>
   <data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
-	  <value>More than one method found.</value>
+    <value>More than one method found</value>
   </data>
   <data name="Exception_NoMethodFound" xml:space="preserve">
-	  <value>No method found.</value>
+    <value>No method found</value>
   </data>
   <data name="Exception_MoreThanOneConstructorFound" xml:space="preserve">
-	  <value>More than one constructor found.</value>
+    <value>More than one constructor found</value>
   </data>
   <data name="Exception_NoConstructorFound" xml:space="preserve">
-	  <value>No constructor found.</value>
+    <value>No constructor found</value>
   </data>
   <data name="Exception_OptionsDoesNotSupported" xml:space="preserve">
-	  <value>Options {0} does not supported.</value>
+    <value>Options {0} does not supported</value>
   </data>
 </root>

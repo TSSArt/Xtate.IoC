@@ -23,7 +23,7 @@ namespace Xtate.IoC.Test;
 public class ImplementationTypeTest
 {
 	[TestMethod]
-	public void NotValidImplementationTypeTest()
+	public void TypeOf_Interface_ThrowsArgumentException()
 	{
 		// Arrange
 
@@ -34,7 +34,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void NotValidImplementationType2Test()
+	public void AddImplementation_Interface_ThrowsArgumentException()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -46,7 +46,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void ImplementationTypeEmptyTest()
+	public void EmptyImplementationType_AccessType_ThrowsInvalidOperationException()
 	{
 		// Arrange
 		var empty = new ImplementationType();
@@ -58,7 +58,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void ImplementationTypeDefinitionTest()
+	public void TypeOf_Int_ReturnsCorrectDefinition()
 	{
 		// Arrange
 		var intType = ImplementationType.TypeOf<int>();
@@ -70,7 +70,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void ImplementationTypeGenericDefinitionTest()
+	public void TypeOf_GenericList_ReturnsCorrectDefinition()
 	{
 		// Arrange
 		var listIntType = ImplementationType.TypeOf<List<int>>();
@@ -87,7 +87,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void ImplementationTypeEmptyBaseMethodsTest()
+	public void EmptyImplementationType_BaseMethods_ReturnExpectedResults()
 	{
 		// Arrange
 		var empty = new ImplementationType();
@@ -101,7 +101,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void ImplementationTypeBaseMethodsTest()
+	public void TypeOf_Int_BaseMethods_ReturnExpectedResults()
 	{
 		// Arrange
 		var intType = ImplementationType.TypeOf<int>();
@@ -115,7 +115,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void TryConstructBaseClassTest()
+	public void TryConstruct_BaseClass_ReturnsTrueAndCorrectType()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<Service<Any>>();
@@ -130,7 +130,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void TryConstructInterfaceTest()
+	public void TryConstruct_Interface_ReturnsTrueAndCorrectType()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<Service<Any>>();
@@ -145,7 +145,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void GetMethodInfoNotResolvedTypeTest()
+	public void GetMethodInfo_NotResolvedType_ThrowsDependencyInjectionException()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<Factory<Any>>();
@@ -157,7 +157,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void GetMethodInfoNotResolvedMethodTest()
+	public void GetMethodInfo_NotResolvedMethod_ThrowsDependencyInjectionException()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<Factory2>();
@@ -169,7 +169,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void GetMethodInfoTest()
+	public void GetMethodInfo_ResolvedMethod_ReturnsMethodInfo()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<Factory<object>>();
@@ -182,7 +182,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void MultipleObsoleteTest()
+	public void GetMethodInfo_MultipleObsoleteMethods_ReturnsMethodInfo()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<FactoryObsolete>();
@@ -195,7 +195,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void MultipleActualTest()
+	public void GetMethodInfo_MultipleActualMethods_ThrowsDependencyInjectionException()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<FactoryMultiActual>();
@@ -207,7 +207,7 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
-	public void ValidParametersTest()
+	public void GetMethodInfo_InvalidParameters_ThrowsDependencyInjectionException()
 	{
 		// Arrange
 		var implType = ImplementationType.TypeOf<Factory<int>>();

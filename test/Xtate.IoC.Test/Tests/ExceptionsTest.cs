@@ -21,7 +21,7 @@ namespace Xtate.IoC.Test;
 public class ExceptionsTest
 {
 	[TestMethod]
-	public void InvalidOperationException0Test()
+	public void InvalidOperationException_DefaultConstructor_ShouldHaveDefaultMessageAndNoInnerException()
 	{
 		// Arrange
 		var ex = new InvalidOperationException();
@@ -34,7 +34,7 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void InvalidOperationException1Test()
+	public void InvalidOperationException_MessageConstructor_ShouldSetMessageAndHaveNoInnerException()
 	{
 		// Arrange
 		var ex = new InvalidOperationException(@"text");
@@ -47,7 +47,7 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void InvalidOperationException2Test()
+	public void InvalidOperationException_MessageAndInnerExceptionConstructor_ShouldSetMessageAndInnerException()
 	{
 		// Arrange
 		var exInner = new ApplicationException();
@@ -61,7 +61,7 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void DependencyInjectionException0Test()
+	public void DependencyInjectionException_DefaultConstructor_ShouldHaveDefaultMessageAndNoInnerException()
 	{
 		// Arrange
 		var ex = new DependencyInjectionException();
@@ -74,7 +74,7 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void DependencyInjectionException1Test()
+	public void DependencyInjectionException_MessageConstructor_ShouldSetMessageAndHaveNoInnerException()
 	{
 		// Arrange
 		var ex = new DependencyInjectionException(@"text");
@@ -87,7 +87,7 @@ public class ExceptionsTest
 	}
 
 	[TestMethod]
-	public void DependencyInjectionException2Test()
+	public void DependencyInjectionException_MessageAndInnerExceptionConstructor_ShouldSetMessageAndInnerException()
 	{
 		// Arrange
 		var exInner = new ApplicationException();

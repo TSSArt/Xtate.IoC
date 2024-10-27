@@ -19,8 +19,20 @@ namespace Xtate.IoC;
 
 internal static class ConvertHelper<TFrom, TTo>
 {
+	/// <summary>
+	///     A delegate that converts an object of type <typeparamref name="TFrom" /> to an object of type
+	///     <typeparamref name="TTo" />.
+	/// </summary>
 	public static readonly Func<TFrom, TTo> Convert = GetConverter();
 
+	/// <summary>
+	///     Creates a converter function that converts an object of type <typeparamref name="TFrom" /> to an object of type
+	///     <typeparamref name="TTo" />.
+	/// </summary>
+	/// <returns>
+	///     A function that converts an object of type <typeparamref name="TFrom" /> to an object of type
+	///     <typeparamref name="TTo" />.
+	/// </returns>
 	private static Func<TFrom, TTo> GetConverter()
 	{
 		var arg = Expression.Parameter(typeof(TFrom));

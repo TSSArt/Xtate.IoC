@@ -29,6 +29,10 @@ internal class WeakReferenceCollection
 
 	private WeakReferenceNode? _node;
 
+	/// <summary>
+	///     Adds an object to the collection.
+	/// </summary>
+	/// <param name="instance">The object to add.</param>
 	public void Put(object instance)
 	{
 		if (instance is null)
@@ -48,6 +52,11 @@ internal class WeakReferenceCollection
 		}
 	}
 
+	/// <summary>
+	///     Removes orphaned nodes from the collection.
+	/// </summary>
+	/// <param name="node">The starting node.</param>
+	/// <returns>The number of removed nodes.</returns>
 	private static int RemoveOrphanedNodes(ref WeakReferenceNode? node)
 	{
 		var count = 0;
@@ -69,6 +78,11 @@ internal class WeakReferenceCollection
 		return count;
 	}
 
+	/// <summary>
+	///     Processes a node to check if it is alive.
+	/// </summary>
+	/// <param name="node">The node to process.</param>
+	/// <returns>True if the node is alive; otherwise, false.</returns>
 	private static bool ProcessNode(ref WeakReferenceNode? node)
 	{
 		while (true)
@@ -103,6 +117,11 @@ internal class WeakReferenceCollection
 		}
 	}
 
+	/// <summary>
+	///     Tries to take an object from the collection.
+	/// </summary>
+	/// <param name="instance">The object taken from the collection, if successful.</param>
+	/// <returns>True if an object was successfully taken; otherwise, false.</returns>
 	public bool TryTake([NotNullWhen(true)] out object? instance)
 	{
 		while (true)
@@ -134,8 +153,14 @@ internal class WeakReferenceCollection
 		}
 	}
 
+	/// <summary>
+	///     Represents a node in the weak reference collection.
+	/// </summary>
 	private class WeakReferenceNode(object target, WeakReferenceNode? nextNode) : WeakReference(target)
 	{
+		/// <summary>
+		///     Gets or sets the next node in the collection.
+		/// </summary>
 		public WeakReferenceNode? NextNode = nextNode;
 	}
 }

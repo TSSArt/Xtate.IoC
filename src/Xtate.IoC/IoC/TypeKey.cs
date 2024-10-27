@@ -31,7 +31,8 @@ internal abstract class GenericTypeKey : TypeKey
 
 public abstract class TypeKey
 {
-	public static TypeKey ServiceKey<T, TArg>() => Infra.TypeInitHandle(() => Service<T, TArg>.Value);
+	public virtual bool    IsEmptyArg            => true;
+	public static  TypeKey ServiceKey<T, TArg>() => Infra.TypeInitHandle(() => Service<T, TArg>.Value);
 
 	public static TypeKey ImplementationKey<T, TArg>() => Infra.TypeInitHandle(() => Implementation<T, TArg>.Value);
 
@@ -44,8 +45,6 @@ public abstract class TypeKey
 	[ExcludeFromCodeCoverage]
 	internal virtual void DoTypedAction(ITypeKeyAction typeKeyAction) => Infra.Assert(false);
 
-	public virtual bool IsEmptyArg => true;
-
 	private static class Service<T, TArg>
 	{
 		private static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
@@ -56,22 +55,21 @@ public abstract class TypeKey
 
 		private class Simple : SimpleTypeKey
 		{
+			public override   bool IsEmptyArg                                  => ArgumentType.TypeOf<TArg>().IsEmpty;
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
-
-			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 
 		private class Generic : GenericTypeKey
 		{
 			public override SimpleTypeKey DefinitionKey { get; } = new DefinitionServiceTypeKey(ServiceType.TypeOf<T>().Definition);
 
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
+
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
-
-			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 	}
 
@@ -85,22 +83,21 @@ public abstract class TypeKey
 
 		private class Simple : SimpleTypeKey
 		{
+			public override   bool IsEmptyArg                                  => ArgumentType.TypeOf<TArg>().IsEmpty;
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
-
-			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 
 		private class Generic : GenericTypeKey
 		{
 			public override SimpleTypeKey DefinitionKey { get; } = new DefinitionImplementationTypeKey(ImplementationType.TypeOf<T>().Definition);
 
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
+
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
-
-			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
 		}
 	}
 

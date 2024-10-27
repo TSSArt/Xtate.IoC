@@ -222,7 +222,7 @@ public class ImplementationEntryTest
 		// Arrange
 		var sc = new ServiceCollection
 				 {
-					 new(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Transient, [ExcludeFromCodeCoverage]() => 5)
+					 new ServiceEntry(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Transient, [ExcludeFromCodeCoverage]() => 5)
 				 };
 		var sp = sc.BuildProvider();
 
@@ -238,7 +238,7 @@ public class ImplementationEntryTest
 		// Arrange
 		var sc = new ServiceCollection
 				 {
-					 new(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Transient, [ExcludeFromCodeCoverage]() => 5)
+					 new ServiceEntry(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Transient, [ExcludeFromCodeCoverage]() => 5)
 				 };
 		var sp = sc.BuildProvider();
 
@@ -254,7 +254,7 @@ public class ImplementationEntryTest
 		// Arrange
 		var sc = new ServiceCollection
 				 {
-					 new(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Singleton, [ExcludeFromCodeCoverage]() => 5)
+					 new ServiceEntry(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Singleton, [ExcludeFromCodeCoverage]() => 5)
 				 };
 		var sp = sc.BuildProvider();
 
@@ -270,7 +270,8 @@ public class ImplementationEntryTest
 		// Arrange
 		var sc = new ServiceCollection
 				 {
-					 new(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Forwarding, [ExcludeFromCodeCoverage](IServiceProvider sp, ValueTuple _) => new ValueTask<Class>(new Class()))
+					 new ServiceEntry(
+						 TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Forwarding, [ExcludeFromCodeCoverage](IServiceProvider sp, ValueTuple _) => new ValueTask<Class>(new Class()))
 				 };
 		var sp = sc.BuildProvider();
 
@@ -286,7 +287,7 @@ public class ImplementationEntryTest
 		// Arrange
 		var sc = new ServiceCollection
 				 {
-					 new(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Forwarding, [ExcludeFromCodeCoverage](IServiceProvider sp, Class _, ValueTuple _) => new Class())
+					 new ServiceEntry(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Forwarding, [ExcludeFromCodeCoverage](IServiceProvider sp, Class _, ValueTuple _) => new Class())
 				 };
 		var sp = sc.BuildProvider();
 
@@ -302,7 +303,8 @@ public class ImplementationEntryTest
 		// Arrange
 		var sc = new ServiceCollection
 				 {
-					 new(TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Forwarding, [ExcludeFromCodeCoverage](IServiceProvider sp, Class _, ValueTuple _) => new ValueTask<Class>(new Class()))
+					 new ServiceEntry(
+						 TypeKey.ServiceKey<Class, ValueTuple>(), InstanceScope.Forwarding, [ExcludeFromCodeCoverage](IServiceProvider sp, Class _, ValueTuple _) => new ValueTask<Class>(new Class()))
 				 };
 		var sp = sc.BuildProvider();
 
@@ -453,7 +455,7 @@ public class ImplementationEntryTest
 
 		// Assert
 		Assert.IsTrue(inst.Disposed);
-		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage] () => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
+		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
 	}
 
 	[TestMethod]

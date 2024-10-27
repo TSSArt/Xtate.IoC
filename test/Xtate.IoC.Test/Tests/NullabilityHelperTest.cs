@@ -35,7 +35,7 @@ public class NullabilityHelperTest
 			.Single();
 
 	[TestMethod]
-	public void SimpleTypeNotFoundTest()
+	public void IsNullable_SimpleType_ReturnsFalse()
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
@@ -53,7 +53,7 @@ public class NullabilityHelperTest
 	}
 
 	[TestMethod]
-	public void GenericTypeNotFoundTest()
+	public void IsNullable_GenericType_ReturnsFalse()
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
@@ -71,7 +71,7 @@ public class NullabilityHelperTest
 	}
 
 	[TestMethod]
-	public void GenericNullableTypeNotFoundTest()
+	public void IsNullable_GenericNullableType_ReturnsFalse()
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
@@ -89,7 +89,7 @@ public class NullabilityHelperTest
 	}
 
 	[TestMethod]
-	public void NullableIntTest()
+	public void IsNullable_NullableInt_ReturnsTrue()
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
@@ -107,7 +107,7 @@ public class NullabilityHelperTest
 	}
 
 	[TestMethod]
-	public void NestedTest()
+	public void IsNullable_NestedGenericType_ReturnsFalse()
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]
@@ -127,7 +127,7 @@ public class NullabilityHelperTest
 	}
 #nullable disable
 	[TestMethod]
-	public void GenericNullabilityDisabledTest()
+	public void IsNullable_GenericNullabilityDisabled_ReturnsFalse()
 	{
 #pragma warning disable CS8321 // Local function is declared but never used
 		[ExcludeFromCodeCoverage]

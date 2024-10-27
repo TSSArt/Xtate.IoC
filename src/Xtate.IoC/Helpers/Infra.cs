@@ -22,11 +22,11 @@ namespace Xtate.IoC;
 internal static class Infra
 {
 	/// <summary>
-	///     Handles TypeInitializationException exceptions
+	///     Handles TypeInitializationException exceptions.
 	/// </summary>
-	/// <typeparam name="T">Return Type</typeparam>
-	/// <param name="getter">Method reads static field</param>
-	/// <returns></returns>
+	/// <typeparam name="T">Return type.</typeparam>
+	/// <param name="getter">Method that reads a static field.</param>
+	/// <returns>The result of the getter method.</returns>
 	[ExcludeFromCodeCoverage]
 	public static T TypeInitHandle<T>(Func<T> getter)
 	{
@@ -44,11 +44,11 @@ internal static class Infra
 
 	/// <summary>
 	///     Checks for a condition; if the condition is <see langword="false" />, throws
-	///     <see cref="InvalidOperationException" /> exception.
+	///     an <see cref="InvalidOperationException" /> exception.
 	/// </summary>
 	/// <param name="condition">
 	///     The conditional expression to evaluate. If the condition is <see langword="true" />, execution
-	///     returned to caller.
+	///     returns to the caller.
 	/// </param>
 	/// <exception cref="InvalidOperationException"></exception>
 	[AssertionMethod]
@@ -62,12 +62,12 @@ internal static class Infra
 	}
 
 	/// <summary>
-	///     Checks value for a null; if the value is <see langword="null" />, throws
-	///     <see cref="InvalidOperationException" /> exception.
+	///     Checks a value for null; if the value is <see langword="null" />, throws
+	///     an <see cref="InvalidOperationException" /> exception.
 	/// </summary>
 	/// <param name="value">
-	///     The value to check for null. If the value is not <see langword="null" />, execution returned to
-	///     caller.
+	///     The value to check for null. If the value is not <see langword="null" />, execution returns to
+	///     the caller.
 	/// </param>
 	/// <exception cref="InvalidOperationException"></exception>
 	[AssertionMethod]

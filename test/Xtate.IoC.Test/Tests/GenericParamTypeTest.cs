@@ -23,7 +23,7 @@ namespace Xtate.IoC.Test;
 public class GenericParamTypeTest
 {
 	[TestMethod]
-	public void SubTypeInt32Test()
+	public void SubTypeInt32_ShouldReturnCorrectValue()
 	{
 		// Arrange
 		var services = new ServiceCollection();
@@ -38,7 +38,7 @@ public class GenericParamTypeTest
 	}
 
 	[TestMethod]
-	public async Task GenericParticularTest()
+	public async Task GenericParticular_ShouldReturnNonNullServices()
 	{
 		// Arrange
 		var services = new ServiceCollection();

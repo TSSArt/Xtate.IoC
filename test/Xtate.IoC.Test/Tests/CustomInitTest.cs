@@ -21,7 +21,7 @@ namespace Xtate.IoC.Test;
 public class CustomInitTest
 {
 	[TestMethod]
-	public void CustomInitTest_NoInitRequiredTest()
+	public void NoInitRequired_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -37,7 +37,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_NoInitRequiredSyncTest()
+	public void NoInitRequiredSync_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -53,7 +53,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_NoInitOptionalTest()
+	public void NoInitOptional_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -69,7 +69,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_CustomInitRequiredTest()
+	public void CustomInitRequired_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -85,7 +85,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_CustomInitOptionalTest()
+	public void CustomInitOptional_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -101,7 +101,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_CustomAsyncInitRequiredTest()
+	public void CustomAsyncInitRequired_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -117,7 +117,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_CustomInitRequiredSyncTest()
+	public void CustomInitRequiredSync_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -133,7 +133,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomInitTest_CustomAsyncInitRequiredSyncTest()
+	public void CustomAsyncInitRequiredSync_ShouldThrowException()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -141,14 +141,12 @@ public class CustomInitTest
 		sc.AddTypeSync<Temp>();
 		var serviceProvider = sc.BuildProvider();
 
-		// Act
-
-		// Assert
+		// Act & Assert
 		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => serviceProvider.GetRequiredServiceSync<Temp>());
 	}
 
 	[TestMethod]
-	public void CustomInitTest_CustomAsyncInitOptionalTest()
+	public void CustomAsyncInitOptional_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();

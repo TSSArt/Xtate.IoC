@@ -17,11 +17,29 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Provides methods to dispose of objects that implement <see cref="IDisposable" /> or <see cref="IAsyncDisposable" />
+///     .
+/// </summary>
 internal static class Disposer
 {
+	/// <summary>
+	///     Determines whether the specified instance is disposable.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <param name="instance">The instance to check.</param>
+	/// <returns>
+	///     <c>true</c> if the instance is <see cref="IDisposable" /> or <see cref="IAsyncDisposable" />; otherwise,
+	///     <c>false</c>.
+	/// </returns>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool IsDisposable<T>([NotNullWhen(true)] T instance) => instance is IDisposable or IAsyncDisposable;
 
+	/// <summary>
+	///     Disposes the specified instance if it implements <see cref="IDisposable" /> or <see cref="IAsyncDisposable" />.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <param name="instance">The instance to dispose.</param>
 	public static void Dispose<T>(T instance)
 	{
 		switch (instance)
@@ -36,6 +54,13 @@ internal static class Disposer
 		}
 	}
 
+	/// <summary>
+	///     Asynchronously disposes the specified instance if it implements <see cref="IAsyncDisposable" /> or
+	///     <see cref="IDisposable" />.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <param name="instance">The instance to dispose asynchronously.</param>
+	/// <returns>A <see cref="ValueTask" /> representing the asynchronous dispose operation.</returns>
 	public static ValueTask DisposeAsync<T>(T instance)
 	{
 		switch (instance)
@@ -45,7 +70,6 @@ internal static class Disposer
 
 			case IDisposable disposable:
 				disposable.Dispose();
-
 				return default;
 
 			default:

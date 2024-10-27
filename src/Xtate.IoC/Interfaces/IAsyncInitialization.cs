@@ -17,7 +17,15 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Represents an interface for asynchronous initialization.
+///     If a class implements this interface, the IoC container will treat the instance as initialized
+///     when the <see cref="Initialization" /> task is completed.
+/// </summary>
 public interface IAsyncInitialization
 {
+	/// <summary>
+	///     Gets the task that represents the asynchronous initialization operation.
+	/// </summary>
 	Task Initialization { get; }
 }
