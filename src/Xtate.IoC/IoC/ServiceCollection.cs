@@ -43,6 +43,19 @@ public class ServiceCollection : IServiceCollection
 
 	public void Add(ServiceEntry serviceEntry) => _registrations.Add(serviceEntry);
 
+	public bool IsRegistered(TypeKey key)
+	{
+		foreach (var entry in _registrations)
+		{
+			if (entry.Key == key)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 #endregion
 
 	public List<ServiceEntry>.Enumerator GetEnumerator() => _registrations.GetEnumerator();

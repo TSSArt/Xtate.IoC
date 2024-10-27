@@ -32,6 +32,8 @@ internal class Cache<TKey, TValue> where TKey : notnull
 
 	public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) => _dictionary.TryGetValue(key, out value);
 
+	public bool ContainsKey(TKey key) => _dictionary.ContainsKey(key);
+
 	public TValue GetOrAdd(TKey key, TValue value) => _dictionary.GetOrAdd(key, value);
 
 	public void TryAdd(TKey key, TValue value) => _dictionary.TryAdd(key, value);

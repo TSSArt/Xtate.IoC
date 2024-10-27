@@ -41,14 +41,16 @@ public readonly struct ServiceImplementation<TImplementation, TArg> where TImple
 
 		var key = TypeKey.ServiceKey<TService, TArg>();
 
-		if (!option.Has(Option.IfNotRegistered) || !_serviceCollection.IsRegistered(key))
+		if (option.Has(Option.IfNotRegistered) && _serviceCollection.IsRegistered(key))
 		{
-			var factory = _synchronous
-				? ForwardSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
-				: ForwardAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
-
-			_serviceCollection.Add(new ServiceEntry(key, InstanceScope.Forwarding, factory));
+			return this;
 		}
+
+		var factory = _synchronous
+			? ForwardSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
+			: ForwardAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+
+		_serviceCollection.Add(new ServiceEntry(key, InstanceScope.Forwarding, factory));
 
 		return this;
 	}

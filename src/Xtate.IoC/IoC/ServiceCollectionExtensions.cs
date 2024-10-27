@@ -19,19 +19,6 @@ namespace Xtate.IoC;
 
 public static class ServiceCollectionExtensions
 {
-	internal static bool IsRegistered(this IServiceCollection services, TypeKey key)
-	{
-		foreach (var entry in services)
-		{
-			if (entry.Key == key)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	private static InstanceScope GetInstanceScope(SharedWithin sharedWithin) =>
 		sharedWithin switch
 		{
@@ -48,7 +35,7 @@ public static class ServiceCollectionExtensions
 
 	public static void AddModule<TModule>(this IServiceCollection services) where TModule : IModule, new()
 	{
-		if (!IsRegistered(services, TypeKey.ImplementationKeyFast<TModule, Empty>()))
+		if (!services.IsRegistered(TypeKey.ImplementationKeyFast<TModule, Empty>()))
 		{
 			new TModule { Services = services }.AddServices();
 
@@ -56,7 +43,7 @@ public static class ServiceCollectionExtensions
 		}
 	}
 
-	public static bool IsRegistered<T, TArg>(this IServiceCollection services) => IsRegistered(services, TypeKey.ServiceKey<T, TArg>());
+	public static bool IsRegistered<T, TArg>(this IServiceCollection services) => services.IsRegistered(TypeKey.ServiceKey<T, TArg>());
 
 	public static bool IsRegistered<T>(this IServiceCollection services) => IsRegistered<T, Empty>(services);
 

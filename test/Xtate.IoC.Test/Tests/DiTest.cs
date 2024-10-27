@@ -31,7 +31,7 @@ using System.Threading;
 #pragma warning disable CA2012 // Use ValueTasks correctly
 #pragma warning disable CA1822 // Mark members as static
 
-namespace Xtate.IoC.Test.DI;
+namespace Xtate.IoC.Test;
 
 [TestClass]
 public class DiTest

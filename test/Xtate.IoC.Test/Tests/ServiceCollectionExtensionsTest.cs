@@ -431,6 +431,76 @@ public class ServiceCollectionExtensionsTest
 	}
 
 	[TestMethod]
+	public void AddFactoryIfNotRegisteredNoArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryNoArg>().For<IService>(Option.IfNotRegistered);
+		_services.AddFactory<FactoryNoArg>().For<IService>(Option.IfNotRegistered);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var cnt = sp.GetServices<IService>().Count();
+
+		// Assert
+		Assert.AreEqual(expected: 1, cnt);
+	}
+
+	[TestMethod]
+	public void AddValidOptionTest()
+	{
+		// Arrange
+		
+		// Act
+
+		// Assert
+		Assert.ThrowsException<ArgumentException>(() => _services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Scope, Option.DoNotDispose));
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedNoArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Scope);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService>();
+
+		// Assert
+		Assert.AreEqual(expected: "c0", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryArg>().For<IService, Arg1>(SharedWithin.Scope);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService, Arg1>(Arg1.Val);
+
+		// Assert
+		Assert.AreEqual(expected: "c1:a1", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedMultiArg2Test()
+	{
+		// Arrange
+		_services.AddFactory<FactoryMultiArg>().For<IService, Arg1, Arg2>(SharedWithin.Scope);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj1 = await sp.GetRequiredService<IService, Arg1, Arg2>(Arg1.Val, Arg2.Val);
+		var obj2 = await sp.GetRequiredService<IService, (Arg1, Arg2)>((Arg1.Val, Arg2.Val));
+
+		// Assert
+		Assert.AreEqual(expected: "c2:a1:a2", obj1.ToString());
+		Assert.AreEqual(expected: "c2:a1:a2", obj2.ToString());
+	}
+
+	[TestMethod]
 	public void AddFactorySyncNoArgTest()
 	{
 		// Arrange

@@ -20,16 +20,16 @@ namespace Xtate.IoC.Test.Tests;
 [TestClass]
 public class ScopeTest
 {
-	private async ValueTask<string[]> GetList<T>(IAsyncEnumerable<T> asyncEnumerable)
+	private static async ValueTask<string[]> GetList<T>(IAsyncEnumerable<T> asyncEnumerable)
 	{
 		var list = new List<string>();
 
-		await foreach (ISomeValue? svc in asyncEnumerable)
+		await foreach (var svc in asyncEnumerable)
 		{
-			list.Add(svc!.Value);
+			list.Add(((ISomeValue)svc!).Value);
 		}
 
-		return list.ToArray();
+		return [.. list];
 	}
 
 	[TestMethod]

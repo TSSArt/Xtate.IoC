@@ -108,7 +108,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	IServiceScope IServiceScopeFactory.CreateScope(Action<IServiceCollection> configureServices)
 	{
-		var additionalServices = new ServiceCollection();
+		var additionalServices = new SourceServiceCollection(this);
 		configureServices(additionalServices);
 
 		return new ServiceProviderScope(this, additionalServices);
@@ -350,6 +350,31 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 			_disposeTokenSource.Dispose();
 		}
+	}
+
+	private class SourceServiceCollection(ServiceProvider serviceProvider) : ServiceCollection, IServiceCollection
+	{
+	#region Interface IServiceCollection
+
+		bool IServiceCollection.IsRegistered(TypeKey key)
+		{
+			if (IsRegistered(key))
+			{
+				return true;
+			}
+
+			for (var sp = serviceProvider; sp is not null; sp = sp._sourceServiceProvider)
+			{
+				if (sp._services.ContainsKey(key))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+	#endregion
 	}
 
 	private sealed class SingletonContainer : IDisposable, IAsyncDisposable

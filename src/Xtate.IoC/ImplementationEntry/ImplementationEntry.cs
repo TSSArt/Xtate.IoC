@@ -66,12 +66,7 @@ public abstract class ImplementationEntry
 	{
 		var instance = await GetService<T, TArg>(argument).ConfigureAwait(false);
 
-		if (instance is null)
-		{
-			throw MissedServiceException<T, TArg>();
-		}
-
-		return instance;
+		return instance is not null ? instance : throw MissedServiceException<T, TArg>();
 	}
 
 	public ValueTask<T?> GetService<T, TArg>(TArg argument) =>
