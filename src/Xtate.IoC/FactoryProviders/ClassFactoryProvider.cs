@@ -25,26 +25,45 @@ internal abstract class ClassFactoryProvider
 	private const string RequiredMemberAttr = @"System.Runtime.CompilerServices.RequiredMemberAttribute";
 
 	private static readonly MethodInfo GetFactory;
+
 	private static readonly MethodInfo GetFactoryArg;
+
 	private static readonly MethodInfo GetFactoryArg2;
+
 	private static readonly MethodInfo GetSyncFactory;
+
 	private static readonly MethodInfo GetSyncFactoryArg;
+
 	private static readonly MethodInfo GetSyncFactoryArg2;
+
 	private static readonly MethodInfo GetRequiredFactory;
+
 	private static readonly MethodInfo GetRequiredFactoryArg;
+
 	private static readonly MethodInfo GetRequiredFactoryArg2;
+
 	private static readonly MethodInfo GetRequiredSyncFactory;
+
 	private static readonly MethodInfo GetRequiredSyncFactoryArg;
+
 	private static readonly MethodInfo GetRequiredSyncFactoryArg2;
+
 	private static readonly MethodInfo GetServices;
+
 	private static readonly MethodInfo GetServicesFactoryArg;
+
 	private static readonly MethodInfo GetServicesFactoryArg2;
+
 	private static readonly MethodInfo GetServicesSync;
+
 	private static readonly MethodInfo GetServicesSyncFactoryArg;
+
 	private static readonly MethodInfo GetServicesSyncFactoryArg2;
 
 	protected readonly Delegate Delegate;
+
 	protected readonly Member[] Parameters;
+
 	protected readonly Member[] RequiredMembers;
 
 	static ClassFactoryProvider()
@@ -309,8 +328,10 @@ internal abstract class ClassFactoryProvider
 
 	protected abstract class MemberBase
 	{
-		public abstract Type                     Type { get; }
-		public abstract bool                     IsNotNull(string path = "");
+		public abstract Type Type { get; }
+
+		public abstract bool IsNotNull(string path = "");
+
 		public abstract Action<object, object?>? CreateSetter();
 	}
 
@@ -360,9 +381,12 @@ internal abstract class ClassFactoryProvider
 	protected readonly struct Member
 	{
 		public readonly Func<IServiceProvider, ValueTask<object?>>? AsyncValueGetter;
-		public readonly Action<object, object?>?                    MemberSetter;
-		public readonly Type                                        MemberType;
-		public readonly Func<IServiceProvider, object?>?            SyncValueGetter;
+
+		public readonly Action<object, object?>? MemberSetter;
+
+		public readonly Type MemberType;
+
+		public readonly Func<IServiceProvider, object?>? SyncValueGetter;
 
 		public Member(Delegate valueGetter, MemberBase memberBase)
 		{

@@ -23,8 +23,10 @@ namespace Xtate.IoC;
 /// </summary>
 public abstract class ImplementationEntry
 {
-	private DelegateEntry?       _delegateEntry;
-	private ImplementationEntry  _nextEntry;
+	private DelegateEntry? _delegateEntry;
+
+	private ImplementationEntry _nextEntry;
+
 	private ImplementationEntry? _previousEntry;
 
 	/// <summary>

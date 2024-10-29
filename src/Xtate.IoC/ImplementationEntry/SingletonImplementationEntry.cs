@@ -25,7 +25,8 @@ namespace Xtate.IoC;
 /// </summary>
 internal sealed class SingletonImplementationEntry : ImplementationEntry
 {
-	private readonly ServiceProvider    _serviceProvider;
+	private readonly ServiceProvider _serviceProvider;
+
 	private readonly SingletonContainer _singletonContainer;
 
 	/// <summary>

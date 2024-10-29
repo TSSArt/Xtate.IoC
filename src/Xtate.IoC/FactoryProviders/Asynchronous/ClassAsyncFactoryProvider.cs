@@ -22,6 +22,7 @@ namespace Xtate.IoC;
 internal sealed class ClassAsyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
 {
 	private static readonly MethodInfo GetAsyncService;
+
 	private static readonly MethodInfo GetRequiredAsyncService;
 
 	static ClassAsyncFactoryProvider()

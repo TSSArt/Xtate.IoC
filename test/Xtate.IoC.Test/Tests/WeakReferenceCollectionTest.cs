@@ -113,6 +113,7 @@ public class WeakReferenceCollectionTest
 		AddObjects(wrc, count: 1);
 
 		var count = 0;
+
 		while (wrc.TryTake(out _))
 		{
 			count ++;
@@ -247,6 +248,7 @@ public class WeakReferenceCollectionTest
 
 		// Assert
 		var retrievedObjects = new List<object>();
+
 		while (wrc.TryTake(out var obj))
 		{
 			retrievedObjects.Add(obj);

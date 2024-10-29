@@ -74,6 +74,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var list = new List<Service>();
+
 		await foreach (var vc in sp.GetServices<Service, int, int>(arg1: 1, arg2: 2))
 		{
 			list.Add(vc);
@@ -94,6 +95,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var list = new List<Service>();
+
 		foreach (var vc in sp.GetServicesSync<Service, int>(4))
 		{
 			list.Add(vc);
@@ -114,6 +116,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var list = new List<Service>();
+
 		foreach (var vc in sp.GetServicesSync<Service>())
 		{
 			list.Add(vc);
@@ -149,6 +152,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var list = new List<Service>();
+
 		foreach (var vc in sp.GetServicesSync<Service, int, int>(arg1: 1, arg2: 2))
 		{
 			list.Add(vc);
@@ -169,6 +173,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var list = new List<Service>();
+
 		await foreach (var vc in sp.GetServicesFactory<Service, int, int>()(arg1: 1, arg2: 2))
 		{
 			list.Add(vc);
@@ -189,6 +194,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var list = new List<Service>();
+
 		foreach (var vc in sp.GetServicesSyncFactory<Service, int, int>()(arg1: 1, arg2: 2))
 		{
 			list.Add(vc);

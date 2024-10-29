@@ -24,8 +24,10 @@ namespace Xtate.IoC;
 /// </summary>
 internal static class NullabilityHelper
 {
-	private const int    CanBeNull           = 2;
-	private const string NullableAttr        = @"System.Runtime.CompilerServices.NullableAttribute";
+	private const int CanBeNull = 2;
+
+	private const string NullableAttr = @"System.Runtime.CompilerServices.NullableAttribute";
+
 	private const string NullableContextAttr = @"System.Runtime.CompilerServices.NullableContextAttribute";
 
 	/// <summary>
@@ -111,6 +113,7 @@ internal static class NullabilityHelper
 		if (type.IsGenericType)
 		{
 			var pos = '0';
+
 			foreach (var argType in type.GetGenericArguments())
 			{
 				if (pos ++ == path[level])

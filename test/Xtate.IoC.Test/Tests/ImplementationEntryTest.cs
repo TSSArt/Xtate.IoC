@@ -402,12 +402,14 @@ public class ImplementationEntryTest
 		var list3 = new List<object?>();
 		var list4 = new List<object?>();
 		var enumerator = chain2.GetEnumerator();
+
 		while (enumerator.MoveNext())
 		{
 			list3.Add(enumerator.Current);
 		}
 
 		enumerator.Reset();
+
 		while (enumerator.MoveNext())
 		{
 			list4.Add(enumerator.Current);

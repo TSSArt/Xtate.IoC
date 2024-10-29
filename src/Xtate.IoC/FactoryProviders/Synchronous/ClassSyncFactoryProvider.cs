@@ -22,6 +22,7 @@ namespace Xtate.IoC;
 internal sealed class ClassSyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
 {
 	private static readonly MethodInfo GetSyncService;
+
 	private static readonly MethodInfo GetRequiredSyncService;
 
 	static ClassSyncFactoryProvider()

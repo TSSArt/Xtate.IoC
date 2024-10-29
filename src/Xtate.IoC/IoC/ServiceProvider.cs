@@ -19,11 +19,15 @@ namespace Xtate.IoC;
 
 public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyAction, IDisposable, IAsyncDisposable
 {
-	private readonly CancellationTokenSource              _disposeTokenSource  = new();
-	private readonly WeakReferenceCollection              _instancesForDispose = new();
+	private readonly CancellationTokenSource _disposeTokenSource = new();
+
+	private readonly WeakReferenceCollection _instancesForDispose = new();
+
 	private readonly Cache<TypeKey, ImplementationEntry?> _services;
-	private readonly SingletonContainer                   _singletonContainer;
-	private readonly ServiceProvider?                     _sourceServiceProvider;
+
+	private readonly SingletonContainer _singletonContainer;
+
+	private readonly ServiceProvider? _sourceServiceProvider;
 
 	private int _disposed;
 
@@ -380,7 +384,8 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	private sealed class SingletonContainer : IDisposable, IAsyncDisposable
 	{
 		private WeakReferenceCollection? _instancesForDispose = new();
-		private int                      _referenceCount;
+
+		private int _referenceCount;
 
 	#region Interface IAsyncDisposable
 

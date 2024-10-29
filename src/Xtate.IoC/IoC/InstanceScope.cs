@@ -20,7 +20,10 @@ namespace Xtate.IoC;
 public enum InstanceScope
 {
 	Transient,
+
 	Scoped,
+
 	Singleton,
+
 	Forwarding
 }

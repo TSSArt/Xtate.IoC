@@ -176,6 +176,7 @@ internal static class TypeHelper
 		sb.Append(name, startIndex: 0, name.IndexOf('`'));
 
 		var first = true;
+
 		foreach (var t in type.GetGenericArguments())
 		{
 			AppendFriendlyName(sb.Append(first ? '<' : ','), t);

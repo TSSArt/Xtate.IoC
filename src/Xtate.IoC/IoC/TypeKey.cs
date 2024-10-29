@@ -31,8 +31,9 @@ internal abstract class GenericTypeKey : TypeKey
 
 public abstract class TypeKey
 {
-	public virtual bool    IsEmptyArg            => true;
-	public static  TypeKey ServiceKey<T, TArg>() => Infra.TypeInitHandle(() => Service<T, TArg>.Value);
+	public virtual bool IsEmptyArg => true;
+
+	public static TypeKey ServiceKey<T, TArg>() => Infra.TypeInitHandle(() => Service<T, TArg>.Value);
 
 	public static TypeKey ImplementationKey<T, TArg>() => Infra.TypeInitHandle(() => Implementation<T, TArg>.Value);
 
@@ -55,7 +56,8 @@ public abstract class TypeKey
 
 		private class Simple : SimpleTypeKey
 		{
-			public override   bool IsEmptyArg                                  => ArgumentType.TypeOf<TArg>().IsEmpty;
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
+
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;
@@ -83,7 +85,8 @@ public abstract class TypeKey
 
 		private class Simple : SimpleTypeKey
 		{
-			public override   bool IsEmptyArg                                  => ArgumentType.TypeOf<TArg>().IsEmpty;
+			public override bool IsEmptyArg => ArgumentType.TypeOf<TArg>().IsEmpty;
+
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
 			public override string ToString() => ToStringValue;

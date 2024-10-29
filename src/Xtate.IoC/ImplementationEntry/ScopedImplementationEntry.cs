@@ -26,8 +26,10 @@ namespace Xtate.IoC;
 internal sealed class ScopedImplementationEntry : ImplementationEntry
 {
 	private readonly ServiceProvider _serviceProvider;
-	private readonly object          _syncRoot = new();
-	private          object?         _instance;
+
+	private readonly object _syncRoot = new();
+
+	private object? _instance;
 
 	/// <summary>
 	///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.

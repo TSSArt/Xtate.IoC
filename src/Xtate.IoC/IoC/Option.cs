@@ -20,7 +20,9 @@ namespace Xtate.IoC;
 [Flags]
 public enum Option
 {
-	Default         = 0,
+	Default = 0,
+
 	IfNotRegistered = 1,
-	DoNotDispose    = 2
+
+	DoNotDispose = 2
 }

@@ -20,7 +20,8 @@ namespace Xtate.IoC;
 internal readonly struct ServiceType : IEquatable<ServiceType>
 {
 	private readonly Type? _openGenericType;
-	private readonly Type  _type;
+
+	private readonly Type _type;
 
 	private ServiceType(Type type)
 	{

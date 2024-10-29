@@ -46,6 +46,7 @@ internal class WeakReferenceCollection
 		}
 
 		var newNode = new WeakReferenceNode(instance, _node);
+
 		while (Interlocked.CompareExchange(ref _node, newNode, newNode.NextNode) != newNode.NextNode)
 		{
 			newNode.NextNode = _node;
@@ -100,6 +101,7 @@ internal class WeakReferenceCollection
 			}
 
 			WeakReferenceNode? newNode = default;
+
 			for (var iNode = initNode.NextNode; iNode is not null; iNode = iNode.NextNode)
 			{
 				if (iNode.IsAlive)
@@ -135,6 +137,7 @@ internal class WeakReferenceCollection
 			}
 
 			WeakReferenceNode? newNode = default;
+
 			for (var iNode = initNode; iNode is not null; iNode = iNode.NextNode)
 			{
 				if (iNode.Target is { } target)

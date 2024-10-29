@@ -48,13 +48,20 @@ internal static class TupleHelper
 	public static bool IsMatch<T>(Type type) => ArgumentBase<T, object>.Instance.IsMatchInternal(type);
 
 	private static MemberExpression GetItem1(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item1");
+
 	private static MemberExpression GetItem2(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item2");
+
 	private static MemberExpression GetItem3(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item3");
+
 	private static MemberExpression GetItem4(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item4");
+
 	private static MemberExpression GetItem5(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item5");
+
 	private static MemberExpression GetItem6(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item6");
+
 	private static MemberExpression GetItem7(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item7");
-	private static MemberExpression GetRest(Expression expr)  => Expression.PropertyOrField(expr, propertyOrFieldName: @"Rest");
+
+	private static MemberExpression GetRest(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Rest");
 
 	private abstract class ArgumentBase<TArg, TValue>
 	{

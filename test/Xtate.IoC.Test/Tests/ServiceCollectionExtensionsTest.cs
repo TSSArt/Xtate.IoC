@@ -82,6 +82,7 @@ public class ServiceCollectionExtensionsTest
 
 		// Act
 		var count = 0;
+
 		foreach (var _ in _services)
 		{
 			count --;
@@ -966,18 +967,21 @@ public class ServiceCollectionExtensionsTest
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
 		var noArgCount = 0;
+
 		await foreach (var _ in sp.GetServices<ClassNoArg>())
 		{
 			noArgCount ++;
 		}
 
 		var argCount = 0;
+
 		await foreach (var _ in sp.GetServices<ClassArg, Arg1>(Arg1.Val))
 		{
 			argCount ++;
 		}
 
 		var multiArgCount = 0;
+
 		await foreach (var _ in sp.GetServices<ClassMultiArg, Arg1, Arg2>(Arg1.Val, Arg2.Val))
 		{
 			multiArgCount ++;

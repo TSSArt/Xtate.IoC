@@ -326,6 +326,7 @@ public class ServiceProviderTest
 
 		// Act & Assert
 		Assert.ThrowsException<InvalidOperationException>(sc.BuildProvider);
+
 		return;
 
 		[ExcludeFromCodeCoverage]

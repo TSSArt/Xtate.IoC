@@ -22,7 +22,8 @@ namespace Xtate.IoC;
 internal readonly struct ImplementationType : IEquatable<ImplementationType>
 {
 	private readonly Type? _openGenericType;
-	private readonly Type  _type;
+
+	private readonly Type _type;
 
 	private ImplementationType(Type type, bool validate)
 	{
@@ -231,7 +232,8 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 	private readonly struct Contract(Type type, Type[] args)
 	{
 		private readonly Type[] _args = args;
-		private readonly Type   _type = type;
+
+		private readonly Type _type = type;
 
 		public bool IsDefault => _type is null;
 
@@ -257,10 +259,13 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		Type[]? typeArguments,
 		Type[]? methodArguments)
 	{
-		private readonly Type[]?    _methodArguments = methodArguments;
-		private readonly MethodInfo _methodInfo      = methodInfo;
-		private readonly Type       _type            = type;
-		private readonly Type[]?    _typeArguments   = typeArguments;
+		private readonly Type[]? _methodArguments = methodArguments;
+
+		private readonly MethodInfo _methodInfo = methodInfo;
+
+		private readonly Type _type = type;
+
+		private readonly Type[]? _typeArguments = typeArguments;
 
 		public MethodInfo CreateMethodInfo()
 		{

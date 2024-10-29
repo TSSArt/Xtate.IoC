@@ -374,6 +374,7 @@ public class DiTest2
 			get
 			{
 				InitCalled = true;
+
 				return Task.CompletedTask;
 			}
 		}
@@ -406,20 +407,29 @@ public class DiTest2
 	private class Class4A(string sval, int val)
 	{
 		public string Sval { get; } = sval;
-		public int    Val  { get; } = val;
+
+		public int Val { get; } = val;
 	}
 
 	private class Class5 : IAsyncInitialization
 	{
-		private readonly int                                      _arg;
-		private readonly Func<ValueTask<Class2>>                  _class2Factory;
-		private readonly Func<int, IAsyncEnumerable<Class4>>      _class4Factories;
-		private readonly Func<int, IEnumerable<Class4Sync>>       _class4FactoriesSync;
+		private readonly int _arg;
+
+		private readonly Func<ValueTask<Class2>> _class2Factory;
+
+		private readonly Func<int, IAsyncEnumerable<Class4>> _class4Factories;
+
+		private readonly Func<int, IEnumerable<Class4Sync>> _class4FactoriesSync;
+
 		private readonly Func<int, int, IAsyncEnumerable<Class4>> _class4FactoriesTwo;
-		private readonly Func<int, int, IEnumerable<Class4Sync>>  _class4FactoriesTwoSync;
-		private readonly Func<int, ValueTask<Class4>>             _class4Factory;
-		private readonly IAsyncEnumerable<IForDecoration>         _forDecorations;
-		private readonly IEnumerable<IForDecorationSync>          _forDecorationsSync;
+
+		private readonly Func<int, int, IEnumerable<Class4Sync>> _class4FactoriesTwoSync;
+
+		private readonly Func<int, ValueTask<Class4>> _class4Factory;
+
+		private readonly IAsyncEnumerable<IForDecoration> _forDecorations;
+
+		private readonly IEnumerable<IForDecorationSync> _forDecorationsSync;
 
 		public Class5(Class1 class1,
 					  int arg,
@@ -448,13 +458,16 @@ public class DiTest2
 
 		public Class1 PropClass1 { get; }
 
-		public ImmutableArray<Class4>     PropClass4S     { get; private set; } = [];
+		public ImmutableArray<Class4> PropClass4S { get; private set; } = [];
+
 		public ImmutableArray<Class4Sync> PropClass4SSync { get; private set; } = [];
 
-		public ImmutableArray<Class4>     PropClass4STwo     { get; private set; } = [];
+		public ImmutableArray<Class4> PropClass4STwo { get; private set; } = [];
+
 		public ImmutableArray<Class4Sync> PropClass4STwoSync { get; private set; } = [];
 
-		public ImmutableArray<IForDecoration>     PropForDecorations     { get; private set; } = [];
+		public ImmutableArray<IForDecoration> PropForDecorations { get; private set; } = [];
+
 		public ImmutableArray<IForDecorationSync> PropForDecorationsSync { get; private set; } = [];
 
 		public Class4 PropClass4 { get; private set; } = default!;
@@ -471,6 +484,7 @@ public class DiTest2
 		{
 			PropClass2 = await _class2Factory();
 			PropClass4 = await _class4Factory(_arg);
+
 			await foreach (var i in _forDecorations)
 			{
 				PropForDecorations = PropForDecorations.Add(i);
@@ -505,11 +519,15 @@ public class DiTest2
 
 	private class Class6 : IAsyncInitialization
 	{
-		private readonly int                                 _arg;
-		private readonly Func<ValueTask<Class2?>>            _class2Factory;
+		private readonly int _arg;
+
+		private readonly Func<ValueTask<Class2?>> _class2Factory;
+
 		private readonly Func<int, IAsyncEnumerable<Class4>> _class4Factories;
-		private readonly Func<int, ValueTask<Class4?>>       _class4Factory;
-		private readonly IAsyncEnumerable<IForDecoration>    _forDecorations;
+
+		private readonly Func<int, ValueTask<Class4?>> _class4Factory;
+
+		private readonly IAsyncEnumerable<IForDecoration> _forDecorations;
 
 		public Class6(Class1? class1,
 					  int arg,
@@ -550,6 +568,7 @@ public class DiTest2
 		{
 			PropClass2 = await _class2Factory();
 			PropClass4 = await _class4Factory(_arg);
+
 			await foreach (var i in _forDecorations)
 			{
 				PropForDecorations = PropForDecorations.Add(i);
@@ -613,6 +632,7 @@ public class DiTest2
 	private interface IGenericInterface<TI0, TI1, TI2>
 	{
 		Type ArgType1 { get; }
+
 		Type ArgType2 { get; }
 	}
 
@@ -621,6 +641,7 @@ public class DiTest2
 	#region Interface IGenericInterface<byte,TC2,TC1>
 
 		public Type ArgType1 => typeof(TC1);
+
 		public Type ArgType2 => typeof(TC2);
 
 	#endregion
@@ -668,7 +689,8 @@ public class DiTest2
 	private class Class12(Func<Class11> factory, Func<Class11> _)
 	{
 		public Func<Class11> Unknown { get; } = _;
-		public Class11       Class11 { get; } = factory();
+
+		public Class11 Class11 { get; } = factory();
 	}
 
 	private class Class14(int a, long b)
