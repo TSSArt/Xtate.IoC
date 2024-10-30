@@ -447,17 +447,6 @@ public class ServiceCollectionExtensionsTest
 	}
 
 	[TestMethod]
-	public void AddValidOptionTest()
-	{
-		// Arrange
-
-		// Act
-
-		// Assert
-		Assert.ThrowsException<ArgumentException>(() => _services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Scope, Option.DoNotDispose));
-	}
-
-	[TestMethod]
 	public async Task AddFactorySharedNoArgTest()
 	{
 		// Arrange
@@ -472,10 +461,66 @@ public class ServiceCollectionExtensionsTest
 	}
 
 	[TestMethod]
+	public async Task AddFactorySharedExternalNoArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Scope, Option.DoNotDispose);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService>();
+
+		// Assert
+		Assert.AreEqual(expected: "c0", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedContainerExternalNoArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Container, Option.DoNotDispose);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService>();
+
+		// Assert
+		Assert.AreEqual(expected: "c0", obj.ToString());
+	}
+
+	[TestMethod]
 	public async Task AddFactorySharedArgTest()
 	{
 		// Arrange
 		_services.AddFactory<FactoryArg>().For<IService, Arg1>(SharedWithin.Scope);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService, Arg1>(Arg1.Val);
+
+		// Assert
+		Assert.AreEqual(expected: "c1:a1", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedContainerExternalArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryArg>().For<IService, Arg1>(SharedWithin.Container, Option.DoNotDispose);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService, Arg1>(Arg1.Val);
+
+		// Assert
+		Assert.AreEqual(expected: "c1:a1", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedExternalArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryArg>().For<IService, Arg1>(SharedWithin.Scope, Option.DoNotDispose);
 		var sp = _services.BuildProvider();
 
 		// Act

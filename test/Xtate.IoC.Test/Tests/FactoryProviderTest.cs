@@ -408,7 +408,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>(_services.AddType<TwoConstructor>);
+		Assert.ThrowsException<DependencyInjectionException>(() => _services.AddType<TwoConstructor>());
 	}
 
 	[TestMethod]
@@ -434,7 +434,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>(_services.AddType<NoConstructor>);
+		Assert.ThrowsException<DependencyInjectionException>(() => _services.AddType<NoConstructor>());
 	}
 
 	[TestMethod]
@@ -532,10 +532,8 @@ public class FactoryProviderTest
 	[ExcludeFromCodeCoverage]
 	public class ContainerMultiFactoryArg(Func<Class?> _, Func<int, Class> __, Func<int, Class?> ___)
 	{
-		public Func<Class?> Unknown1 { get; } = _;
-
-		public Func<int, Class> Unknown2 { get; } = __;
-
+		public Func<Class?>      Unknown1 { get; } = _;
+		public Func<int, Class>  Unknown2 { get; } = __;
 		public Func<int, Class?> Unknown3 { get; } = ___;
 	}
 
@@ -566,16 +564,14 @@ public class FactoryProviderTest
 	[ExcludeFromCodeCoverage]
 	public class Decorator<T>(IService<T> decorated) : IService<T>
 	{
-		public IService<T> Decorated { get; } = decorated;
-
-		public override string ToString() => $"{typeof(T).Name}:{Decorated}";
+		public          IService<T> Decorated  { get; } = decorated;
+		public override string      ToString() => $"{typeof(T).Name}:{Decorated}";
 	}
 
 	[ExcludeFromCodeCoverage]
 	public class TwoConstructor
 	{
 		public TwoConstructor(int _) { }
-
 		public TwoConstructor(string _) { }
 	}
 

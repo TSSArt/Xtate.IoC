@@ -49,7 +49,7 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 
 	private FactoryImplementation<TImplementation> Register<TService, TArg>(SharedWithin? sharedWithin, Option option)
 	{
-		option.Validate(sharedWithin is null ? Option.IfNotRegistered | Option.DoNotDispose : Option.IfNotRegistered);
+		option.Validate(Option.IfNotRegistered | Option.DoNotDispose);
 
 		var key = TypeKey.ServiceKey<TService, TArg>();
 
@@ -65,8 +65,8 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 		var scope = sharedWithin switch
 					{
 						null                   => option.Has(Option.DoNotDispose) ? InstanceScope.Forwarding : InstanceScope.Transient,
-						SharedWithin.Container => InstanceScope.Singleton,
-						SharedWithin.Scope     => InstanceScope.Scoped,
+						SharedWithin.Container => option.Has(Option.DoNotDispose) ? InstanceScope.SingletonExternal : InstanceScope.Singleton,
+						SharedWithin.Scope     => option.Has(Option.DoNotDispose) ? InstanceScope.ScopedExternal : InstanceScope.Scoped,
 						_                      => throw Infra.Unmatched(sharedWithin)
 					};
 

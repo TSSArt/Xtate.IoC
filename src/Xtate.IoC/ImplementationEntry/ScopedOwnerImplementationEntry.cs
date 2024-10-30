@@ -23,7 +23,7 @@ namespace Xtate.IoC;
 /// <summary>
 ///     Represents an entry for a scoped implementation in the IoC container. Instance owned by IoC.
 /// </summary>
-internal sealed class ScopedImplementationEntry : ImplementationEntry
+internal sealed class ScopedOwnerImplementationEntry : ImplementationEntry
 {
 	private readonly ServiceProvider _serviceProvider;
 
@@ -36,14 +36,14 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
-	public ScopedImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(factory) => _serviceProvider = serviceProvider;
+	public ScopedOwnerImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(factory) => _serviceProvider = serviceProvider;
 
 	/// <summary>
 	///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="sourceEntry">The source implementation entry.</param>
-	private ScopedImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(sourceEntry) => _serviceProvider = serviceProvider;
+	private ScopedOwnerImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(sourceEntry) => _serviceProvider = serviceProvider;
 
 	/// <summary>
 	///     Gets the service provider.
@@ -55,7 +55,7 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedImplementationEntry(serviceProvider, this);
+	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedOwnerImplementationEntry(serviceProvider, this);
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
@@ -63,7 +63,32 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
 	/// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedImplementationEntry(serviceProvider, factory);
+	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedOwnerImplementationEntry(serviceProvider, factory);
+
+	/// <summary>
+	///     Executes the factory delegate asynchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
+	private async ValueTask<T?> ExecuteFactoryInternal<T, TArg>(TArg argument)
+	{
+		var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
+
+		try
+		{
+			_serviceProvider.RegisterInstanceForDispose(instance);
+
+			return instance;
+		}
+		catch
+		{
+			await Disposer.DisposeAsync(instance).ConfigureAwait(false);
+
+			throw;
+		}
+	}
 
 	/// <summary>
 	///     Executes the factory delegate asynchronously.
@@ -80,7 +105,7 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 			{
 				if (ArgumentType.TypeOf<TArg>().IsEmpty)
 				{
-					_instance = task = base.ExecuteFactory<T, TArg>(argument).AsTask();
+					_instance = task = ExecuteFactoryInternal<T, TArg>(argument).AsTask();
 				}
 				else
 				{
@@ -127,7 +152,7 @@ internal sealed class ScopedImplementationEntry : ImplementationEntry
 
 		if (!dictionary.TryGetValue(ValueTuple.Create(argument), out var task))
 		{
-			task = base.ExecuteFactory<T, TArg>(argument).AsTask();
+			task = ExecuteFactoryInternal<T, TArg>(argument).AsTask();
 
 			dictionary.Add(ValueTuple.Create(argument), task);
 		}

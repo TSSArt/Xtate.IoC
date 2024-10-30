@@ -294,11 +294,13 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	private ImplementationEntry CreateImplementationEntry(in ServiceEntry service) =>
 		service.InstanceScope switch
 		{
-			InstanceScope.Singleton  => new SingletonImplementationEntry(this, service.Factory),
-			InstanceScope.Scoped     => new ScopedImplementationEntry(this, service.Factory),
-			InstanceScope.Transient  => new TransientImplementationEntry(this, service.Factory),
-			InstanceScope.Forwarding => new ForwardingImplementationEntry(this, service.Factory),
-			_                        => throw Infra.Unmatched(service.InstanceScope)
+			InstanceScope.Transient         => new TransientImplementationEntry(this, service.Factory),
+			InstanceScope.Forwarding        => new ForwardingImplementationEntry(this, service.Factory),
+			InstanceScope.Scoped            => new ScopedOwnerImplementationEntry(this, service.Factory),
+			InstanceScope.ScopedExternal    => new ScopedImplementationEntry(this, service.Factory),
+			InstanceScope.Singleton         => new SingletonOwnerImplementationEntry(this, service.Factory),
+			InstanceScope.SingletonExternal => new SingletonImplementationEntry(this, service.Factory),
+			_                               => throw Infra.Unmatched(service.InstanceScope)
 		};
 
 	private void AddForDispose(object instance)

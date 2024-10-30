@@ -33,6 +33,20 @@ public static class ServiceCollectionExtensions
 								 Delegate factory) =>
 		services.Add(new ServiceEntry(serviceKey, instanceScope, factory));
 
+	private static void AddEntry(IServiceCollection services,
+								 TypeKey serviceKey,
+								 InstanceScope instanceScope,
+								 Option option,
+								 Delegate factory)
+	{
+		option.Validate(Option.IfNotRegistered);
+
+		if (!option.Has(Option.IfNotRegistered) || !services.IsRegistered(serviceKey))
+		{
+			services.Add(new ServiceEntry(serviceKey, instanceScope, factory));
+		}
+	}
+
 	public static void AddModule<TModule>(this IServiceCollection services) where TModule : IModule, new()
 	{
 		if (!services.IsRegistered(TypeKey.ImplementationKeyFast<TModule, Empty>()))
@@ -49,19 +63,19 @@ public static class ServiceCollectionExtensions
 
 	public static bool IsRegistered<T, TArg1, TArg2>(this IServiceCollection services) => IsRegistered<T, (TArg1, TArg2)>(services);
 
-	public static void AddType<T, TArg>(this IServiceCollection services) where T : notnull =>
-		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), InstanceScope.Transient, ImplementationAsyncFactoryProvider<T, TArg>.Delegate());
+	public static void AddType<T, TArg>(this IServiceCollection services, Option option = Option.Default) where T : notnull =>
+		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), InstanceScope.Transient, option, ImplementationAsyncFactoryProvider<T, TArg>.Delegate());
 
-	public static void AddType<T>(this IServiceCollection services) where T : notnull => AddType<T, Empty>(services);
+	public static void AddType<T>(this IServiceCollection services, Option option = Option.Default) where T : notnull => AddType<T, Empty>(services, option);
 
-	public static void AddType<T, TArg1, TArg2>(this IServiceCollection services) where T : notnull => AddType<T, (TArg1, TArg2)>(services);
+	public static void AddType<T, TArg1, TArg2>(this IServiceCollection services, Option option = Option.Default) where T : notnull => AddType<T, (TArg1, TArg2)>(services, option);
 
-	public static void AddTypeSync<T, TArg>(this IServiceCollection services) where T : notnull =>
-		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), InstanceScope.Transient, ImplementationSyncFactoryProvider<T, TArg>.Delegate());
+	public static void AddTypeSync<T, TArg>(this IServiceCollection services, Option option = Option.Default) where T : notnull =>
+		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), InstanceScope.Transient, option, ImplementationSyncFactoryProvider<T, TArg>.Delegate());
 
-	public static void AddTypeSync<T>(this IServiceCollection services) where T : notnull => AddTypeSync<T, Empty>(services);
+	public static void AddTypeSync<T>(this IServiceCollection services, Option option = Option.Default) where T : notnull => AddTypeSync<T, Empty>(services, option);
 
-	public static void AddTypeSync<T, TArg1, TArg2>(this IServiceCollection services) where T : notnull => AddTypeSync<T, (TArg1, TArg2)>(services);
+	public static void AddTypeSync<T, TArg1, TArg2>(this IServiceCollection services, Option option = Option.Default) where T : notnull => AddTypeSync<T, (TArg1, TArg2)>(services, option);
 
 	public static DecoratorImplementation<T, TArg> AddDecorator<T, TArg>(this IServiceCollection services) where T : notnull => new(services, InstanceScope.Transient, synchronous: false);
 
@@ -92,20 +106,23 @@ public static class ServiceCollectionExtensions
 
 	public static FactoryImplementation<T> AddFactorySync<T>(this IServiceCollection services) where T : notnull => new(services, InstanceScope.Transient, synchronous: true);
 
-	public static void AddSharedType<T, TArg>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull =>
-		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), GetInstanceScope(sharedWithin), ImplementationAsyncFactoryProvider<T, TArg>.Delegate());
+	public static void AddSharedType<T, TArg>(this IServiceCollection services, SharedWithin sharedWithin, Option option = Option.Default) where T : notnull =>
+		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), GetInstanceScope(sharedWithin), option, ImplementationAsyncFactoryProvider<T, TArg>.Delegate());
 
-	public static void AddSharedType<T>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull => AddSharedType<T, Empty>(services, sharedWithin);
+	public static void AddSharedType<T>(this IServiceCollection services, SharedWithin sharedWithin, Option option = Option.Default) where T : notnull =>
+		AddSharedType<T, Empty>(services, sharedWithin, option);
 
-	public static void AddSharedType<T, TArg1, TArg2>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull => AddSharedType<T, (TArg1, TArg2)>(services, sharedWithin);
+	public static void AddSharedType<T, TArg1, TArg2>(this IServiceCollection services, SharedWithin sharedWithin, Option option = Option.Default) where T : notnull =>
+		AddSharedType<T, (TArg1, TArg2)>(services, sharedWithin, option);
 
-	public static void AddSharedTypeSync<T, TArg>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull =>
-		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), GetInstanceScope(sharedWithin), ImplementationSyncFactoryProvider<T, TArg>.Delegate());
+	public static void AddSharedTypeSync<T, TArg>(this IServiceCollection services, SharedWithin sharedWithin, Option option = Option.Default) where T : notnull =>
+		AddEntry(services, TypeKey.ServiceKey<T, TArg>(), GetInstanceScope(sharedWithin), option, ImplementationSyncFactoryProvider<T, TArg>.Delegate());
 
-	public static void AddSharedTypeSync<T>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull => AddSharedTypeSync<T, Empty>(services, sharedWithin);
+	public static void AddSharedTypeSync<T>(this IServiceCollection services, SharedWithin sharedWithin, Option option = Option.Default) where T : notnull =>
+		AddSharedTypeSync<T, Empty>(services, sharedWithin, option);
 
-	public static void AddSharedTypeSync<T, TArg1, TArg2>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull =>
-		AddSharedTypeSync<T, (TArg1, TArg2)>(services, sharedWithin);
+	public static void AddSharedTypeSync<T, TArg1, TArg2>(this IServiceCollection services, SharedWithin sharedWithin, Option option = Option.Default) where T : notnull =>
+		AddSharedTypeSync<T, (TArg1, TArg2)>(services, sharedWithin, option);
 
 	public static DecoratorImplementation<T, TArg> AddSharedDecorator<T, TArg>(this IServiceCollection services, SharedWithin sharedWithin) where T : notnull =>
 		new(services, GetInstanceScope(sharedWithin), synchronous: false);

@@ -17,13 +17,40 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Specifies the scope of an instance in the IoC container.
+/// </summary>
 public enum InstanceScope
 {
+	/// <summary>
+	///     A new instance is created every time it is requested.
+	/// </summary>
 	Transient,
 
+	/// <summary>
+	///     The instance is forwarded from another source and the IoC container is not responsible for its disposal.
+	/// </summary>
+	Forwarding,
+
+	/// <summary>
+	///     A single instance is created and shared within a defined scope.
+	/// </summary>
 	Scoped,
 
+	/// <summary>
+	///     A single instance is created and shared within a defined scope, and the IoC container is not responsible for its
+	///     disposal.
+	/// </summary>
+	ScopedExternal,
+
+	/// <summary>
+	///     A single instance is created and shared across the container.
+	/// </summary>
 	Singleton,
 
-	Forwarding
+	/// <summary>
+	///     A single instance is created and shared across the container, and the IoC container is not responsible for its
+	///     disposal.
+	/// </summary>
+	SingletonExternal
 }
