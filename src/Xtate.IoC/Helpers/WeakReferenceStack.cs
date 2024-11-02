@@ -18,22 +18,22 @@
 namespace Xtate.IoC;
 
 /// <summary>
-///     Collection of weak references with auto-shrinking collected objects.
+///     Stack of weak references with auto-shrinking collected objects.
 /// </summary>
 /// <remarks>
 ///     All public members are thread-safe and may be used concurrently from multiple threads.
 /// </remarks>
-internal class WeakReferenceCollection
+internal class WeakReferenceStack
 {
 	private int _counter;
 
 	private WeakReferenceNode? _node;
 
 	/// <summary>
-	///     Adds an object to the collection.
+	///     Adds an object to the stack.
 	/// </summary>
 	/// <param name="instance">The object to add.</param>
-	public void Put(object instance)
+	public void Push(object instance)
 	{
 		if (instance is null)
 		{
@@ -54,7 +54,7 @@ internal class WeakReferenceCollection
 	}
 
 	/// <summary>
-	///     Removes orphaned nodes from the collection.
+	///     Removes orphaned nodes from the stack.
 	/// </summary>
 	/// <param name="node">The starting node.</param>
 	/// <returns>The number of removed nodes.</returns>
@@ -120,11 +120,11 @@ internal class WeakReferenceCollection
 	}
 
 	/// <summary>
-	///     Tries to take an object from the collection.
+	///     Tries to pop first not collected object from the stack.
 	/// </summary>
-	/// <param name="instance">The object taken from the collection, if successful.</param>
+	/// <param name="instance">The object taken from the stack, if successful.</param>
 	/// <returns>True if an object was successfully taken; otherwise, false.</returns>
-	public bool TryTake([NotNullWhen(true)] out object? instance)
+	public bool TryPop([NotNullWhen(true)] out object? instance)
 	{
 		while (true)
 		{

@@ -23,10 +23,8 @@ namespace Xtate.IoC;
 /// <summary>
 ///     Represents an entry for a singleton implementation in the IoC container. Instance owned by IoC.
 /// </summary>
-internal sealed class SingletonImplementationEntry : ImplementationEntry
+public class SingletonImplementationEntry : ImplementationEntry
 {
-	private readonly ServiceProvider _serviceProvider;
-
 	private readonly SingletonContainer _singletonContainer;
 
 	/// <summary>
@@ -34,11 +32,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
-	public SingletonImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(factory)
-	{
-		_serviceProvider = serviceProvider;
-		_singletonContainer = new SingletonContainer();
-	}
+	public SingletonImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) => _singletonContainer = new SingletonContainer();
 
 	/// <summary>
 	///     Initializes a new instance of the <see cref="SingletonImplementationEntry" /> class
@@ -46,23 +40,15 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="sourceEntry">The source entry to copy.</param>
-	private SingletonImplementationEntry(ServiceProvider serviceProvider, SingletonImplementationEntry sourceEntry) : base(sourceEntry)
-	{
-		_serviceProvider = serviceProvider;
+	protected SingletonImplementationEntry(ServiceProvider serviceProvider, SingletonImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) =>
 		_singletonContainer = sourceEntry._singletonContainer;
-	}
-
-	/// <summary>
-	///     Gets the service provider.
-	/// </summary>
-	protected override IServiceProvider ServiceProvider => _serviceProvider;
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="SingletonImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <returns>A new instance of <see cref="SingletonImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new SingletonImplementationEntry(serviceProvider, this);
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new SingletonImplementationEntry(serviceProvider, this);
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="SingletonImplementationEntry" /> class with a factory delegate.
@@ -70,7 +56,16 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
 	/// <returns>A new instance of <see cref="SingletonImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new SingletonImplementationEntry(serviceProvider, factory);
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new SingletonImplementationEntry(serviceProvider, factory);
+
+	/// <summary>
+	///     Executes the base factory delegate and returns the created instance.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument to pass to the factory delegate.</param>
+	/// <returns>A task representing the asynchronous operation, with the created instance as the result.</returns>
+	protected virtual ValueTask<T?> ExecuteFactoryBase<T, TArg>(TArg argument) => base.ExecuteFactory<T, TArg>(argument);
 
 	/// <summary>
 	///     Executes the factory delegate and returns the created instance, ensuring it is a singleton.
@@ -79,7 +74,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument.</typeparam>
 	/// <param name="argument">The argument to pass to the factory delegate.</param>
 	/// <returns>A task representing the asynchronous operation, with the created instance as the result.</returns>
-	private protected override ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
+	protected override ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
 	{
 		lock (_singletonContainer)
 		{
@@ -87,7 +82,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 			{
 				if (ArgumentType.TypeOf<TArg>().IsEmpty)
 				{
-					_singletonContainer.Instance = task = base.ExecuteFactory<T, TArg>(argument).AsTask();
+					_singletonContainer.Instance = task = ExecuteFactoryBase<T, TArg>(argument).AsTask();
 				}
 				else
 				{
@@ -106,7 +101,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument.</typeparam>
 	/// <param name="argument">The argument to pass to the factory delegate.</param>
 	/// <returns>The created instance.</returns>
-	private protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
+	protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
 	{
 		EnsureSynchronousContext<T, TArg>();
 
@@ -134,7 +129,7 @@ internal sealed class SingletonImplementationEntry : ImplementationEntry
 
 		if (!dictionary.TryGetValue(ValueTuple.Create(argument), out var task))
 		{
-			task = base.ExecuteFactory<T, TArg>(argument).AsTask();
+			task = ExecuteFactoryBase<T, TArg>(argument).AsTask();
 
 			dictionary.Add(ValueTuple.Create(argument), task);
 		}

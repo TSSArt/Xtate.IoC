@@ -21,28 +21,21 @@ namespace Xtate.IoC;
 ///     Represents an entry for a forward implementation in the IoC container.
 ///     Each time services are needed, the delegate is called. Instance not owned by IoC.
 /// </summary>
-internal sealed class ForwardingImplementationEntry : ImplementationEntry
+public class ForwardingImplementationEntry : ImplementationEntry
 {
-	private readonly ServiceProvider _serviceProvider;
-
 	/// <summary>
 	///     Initializes a new instance of the <see cref="ForwardingImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
-	public ForwardingImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(factory) => _serviceProvider = serviceProvider;
+	public ForwardingImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
 
 	/// <summary>
 	///     Initializes a new instance of the <see cref="ForwardingImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="sourceEntry">The source implementation entry.</param>
-	private ForwardingImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(sourceEntry) => _serviceProvider = serviceProvider;
-
-	/// <summary>
-	///     Gets the service provider.
-	/// </summary>
-	protected override IServiceProvider ServiceProvider => _serviceProvider;
+	protected ForwardingImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="ForwardingImplementationEntry" /> class with the specified service
@@ -50,7 +43,7 @@ internal sealed class ForwardingImplementationEntry : ImplementationEntry
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <returns>A new instance of <see cref="ForwardingImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ForwardingImplementationEntry(serviceProvider, this);
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ForwardingImplementationEntry(serviceProvider, this);
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="ForwardingImplementationEntry" /> class with the specified service
@@ -59,5 +52,5 @@ internal sealed class ForwardingImplementationEntry : ImplementationEntry
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
 	/// <returns>A new instance of <see cref="ForwardingImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ForwardingImplementationEntry(serviceProvider, factory);
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ForwardingImplementationEntry(serviceProvider, factory);
 }

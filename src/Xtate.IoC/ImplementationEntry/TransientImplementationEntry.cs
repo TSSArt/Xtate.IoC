@@ -21,35 +21,30 @@ namespace Xtate.IoC;
 ///     Represents an entry for a transient implementation in the IoC container.
 ///     Each time services are needed, the delegate is called. Instance owned by IoC.
 /// </summary>
-internal sealed class TransientImplementationEntry : ImplementationEntry
+public class TransientImplementationEntry : ImplementationEntry
 {
-	private readonly ServiceProvider _serviceProvider;
+	private readonly ObjectsBin _objectsBin;
 
 	/// <summary>
 	///     Initializes a new instance of the <see cref="TransientImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
-	public TransientImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(factory) => _serviceProvider = serviceProvider;
+	public TransientImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) => _objectsBin = serviceProvider.ObjectsBin;
 
 	/// <summary>
 	///     Initializes a new instance of the <see cref="TransientImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="sourceEntry">The source entry.</param>
-	private TransientImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(sourceEntry) => _serviceProvider = serviceProvider;
-
-	/// <summary>
-	///     Gets the service provider.
-	/// </summary>
-	protected override IServiceProvider ServiceProvider => _serviceProvider;
+	protected TransientImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) => _objectsBin = serviceProvider.ObjectsBin;
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="TransientImplementationEntry" /> class.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <returns>A new instance of <see cref="TransientImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new TransientImplementationEntry(serviceProvider, this);
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new TransientImplementationEntry(serviceProvider, this);
 
 	/// <summary>
 	///     Creates a new instance of the <see cref="TransientImplementationEntry" /> class.
@@ -57,7 +52,7 @@ internal sealed class TransientImplementationEntry : ImplementationEntry
 	/// <param name="serviceProvider">The service provider.</param>
 	/// <param name="factory">The factory delegate.</param>
 	/// <returns>A new instance of <see cref="TransientImplementationEntry" />.</returns>
-	internal override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new TransientImplementationEntry(serviceProvider, factory);
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new TransientImplementationEntry(serviceProvider, factory);
 
 	/// <summary>
 	///     Executes the factory asynchronously.
@@ -66,20 +61,11 @@ internal sealed class TransientImplementationEntry : ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument.</typeparam>
 	/// <param name="argument">The argument.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
-	private protected override async ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
+	protected override async ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
 	{
 		var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
 
-		try
-		{
-			_serviceProvider.RegisterInstanceForDispose(instance);
-		}
-		catch
-		{
-			await Disposer.DisposeAsync(instance).ConfigureAwait(false);
-
-			throw;
-		}
+		await _objectsBin.AddAsync(instance).ConfigureAwait(false);
 
 		return instance;
 	}
@@ -91,20 +77,11 @@ internal sealed class TransientImplementationEntry : ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument.</typeparam>
 	/// <param name="argument">The argument.</param>
 	/// <returns>The instance.</returns>
-	private protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
+	protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
 	{
 		var instance = base.ExecuteFactorySync<T, TArg>(argument);
 
-		try
-		{
-			_serviceProvider.RegisterInstanceForDispose(instance);
-		}
-		catch
-		{
-			Disposer.Dispose(instance);
-
-			throw;
-		}
+		_objectsBin.AddSync(instance);
 
 		return instance;
 	}

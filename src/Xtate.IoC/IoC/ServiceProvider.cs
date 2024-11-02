@@ -21,11 +21,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 {
 	private readonly CancellationTokenSource _disposeTokenSource = new();
 
-	private readonly WeakReferenceCollection _instancesForDispose = new();
-
 	private readonly Cache<TypeKey, ImplementationEntry?> _services;
-
-	private readonly SingletonContainer _singletonContainer;
 
 	private readonly ServiceProvider? _sourceServiceProvider;
 
@@ -34,7 +30,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	public ServiceProvider(IServiceCollection services)
 	{
 		_sourceServiceProvider = default;
-		_singletonContainer = new SingletonContainer();
+		SharedObjectsBin = new SharedObjectsBin();
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
 
 		Initialization(services);
@@ -43,8 +39,8 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	protected ServiceProvider(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = default)
 	{
 		_sourceServiceProvider = sourceServiceProvider;
-		_singletonContainer = sourceServiceProvider._singletonContainer;
-		_singletonContainer.AddReference();
+		SharedObjectsBin = sourceServiceProvider.SharedObjectsBin;
+		SharedObjectsBin.AddReference();
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(sourceServiceProvider, additionalServices));
 
 		if (additionalServices is not null)
@@ -52,6 +48,10 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			Initialization(additionalServices);
 		}
 	}
+
+	public ObjectsBin ObjectsBin { get; } = new();
+
+	public SharedObjectsBin SharedObjectsBin { get; }
 
 #region Interface IAsyncDisposable
 
@@ -232,22 +232,6 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		return entry?.GetServicesSync<IServiceProviderActions, Empty>(default).ToArray();
 	}
 
-	internal void RegisterInstanceForDispose<T>(T? instance)
-	{
-		if (Disposer.IsDisposable(instance) && (instance is not ServiceProvider serviceProvider || serviceProvider != this))
-		{
-			AddForDispose(instance);
-		}
-	}
-
-	internal void RegisterSingletonInstanceForDispose<T>(T? instance)
-	{
-		if (Disposer.IsDisposable(instance) && (instance is not ServiceProvider serviceProvider || serviceProvider != this))
-		{
-			_singletonContainer.AddForDispose(instance);
-		}
-	}
-
 	private ImplementationEntry? CopyEntries(SimpleTypeKey typeKey)
 	{
 		ImplementationEntry? lastEntry = default;
@@ -291,7 +275,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		return lastEntry;
 	}
 
-	private ImplementationEntry CreateImplementationEntry(in ServiceEntry service) =>
+	protected virtual ImplementationEntry CreateImplementationEntry(ServiceEntry service) =>
 		service.InstanceScope switch
 		{
 			InstanceScope.Transient         => new TransientImplementationEntry(this, service.Factory),
@@ -303,33 +287,23 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			_                               => throw Infra.Unmatched(service.InstanceScope)
 		};
 
-	private void AddForDispose(object instance)
-	{
-		XtateObjectDisposedException.ThrowIf(_disposed != 0, this);
-
-		_instancesForDispose.Put(instance);
-	}
-
 	~ServiceProvider() => Dispose(false);
 
 	protected virtual void Dispose(bool disposing)
 	{
 		if (Interlocked.Exchange(ref _disposed, value: 1) == 0)
 		{
-			var isLastReference = _singletonContainer.RemoveReference();
+			var isLastReference = SharedObjectsBin.RemoveReference();
 
 			if (disposing)
 			{
 				_disposeTokenSource.Cancel();
 
-				while (_instancesForDispose.TryTake(out var instance))
-				{
-					Disposer.Dispose(instance);
-				}
+				ObjectsBin.Dispose();
 
 				if (isLastReference)
 				{
-					_singletonContainer.Dispose();
+					SharedObjectsBin.Dispose();
 				}
 
 				_disposeTokenSource.Dispose();
@@ -344,14 +318,11 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 			// ReSharper disable once MethodHasAsyncOverload
 			_disposeTokenSource.Cancel();
 
-			while (_instancesForDispose.TryTake(out var instance))
-			{
-				await Disposer.DisposeAsync(instance).ConfigureAwait(false);
-			}
+			await ObjectsBin.DisposeAsync().ConfigureAwait(false);
 
-			if (_singletonContainer.RemoveReference())
+			if (SharedObjectsBin.RemoveReference())
 			{
-				await _singletonContainer.DisposeAsync().ConfigureAwait(false);
+				await SharedObjectsBin.DisposeAsync().ConfigureAwait(false);
 			}
 
 			_disposeTokenSource.Dispose();
@@ -381,55 +352,5 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		}
 
 	#endregion
-	}
-
-	private sealed class SingletonContainer : IDisposable, IAsyncDisposable
-	{
-		private WeakReferenceCollection? _instancesForDispose = new();
-
-		private int _referenceCount;
-
-	#region Interface IAsyncDisposable
-
-		public async ValueTask DisposeAsync()
-		{
-			if (Interlocked.CompareExchange(ref _instancesForDispose, value: default, _instancesForDispose) is { } instancesForDispose)
-			{
-				while (instancesForDispose.TryTake(out var instance))
-				{
-					await Disposer.DisposeAsync(instance).ConfigureAwait(false);
-				}
-			}
-		}
-
-	#endregion
-
-	#region Interface IDisposable
-
-		public void Dispose()
-		{
-			if (Interlocked.CompareExchange(ref _instancesForDispose, value: default, _instancesForDispose) is { } instancesForDispose)
-			{
-				while (instancesForDispose.TryTake(out var instance))
-				{
-					Disposer.Dispose(instance);
-				}
-			}
-		}
-
-	#endregion
-
-		public void AddReference() => Interlocked.Increment(ref _referenceCount);
-
-		public bool RemoveReference() => Interlocked.Decrement(ref _referenceCount) == -1;
-
-		public void AddForDispose(object instance)
-		{
-			var instancesForDispose = _instancesForDispose;
-
-			XtateObjectDisposedException.ThrowIf(instancesForDispose is null, this);
-
-			instancesForDispose.Put(instance);
-		}
 	}
 }

@@ -23,7 +23,8 @@ namespace Xtate.IoC;
 /// </summary>
 public abstract class ImplementationEntry
 {
-	private DelegateEntry? _delegateEntry;
+	private readonly IServiceProvider ServiceProvider;
+	private          DelegateEntry?   _delegateEntry;
 
 	private ImplementationEntry _nextEntry;
 
@@ -32,9 +33,11 @@ public abstract class ImplementationEntry
 	/// <summary>
 	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class with the specified factory delegate.
 	/// </summary>
+	/// <param name="serviceProvider">The service provider used to resolve dependencies.</param>
 	/// <param name="factory">The factory delegate used to create instances of the service.</param>
-	protected ImplementationEntry(Delegate factory)
+	protected ImplementationEntry(IServiceProvider serviceProvider, Delegate factory)
 	{
+		ServiceProvider = serviceProvider;
 		Factory = factory;
 		_nextEntry = this;
 	}
@@ -43,25 +46,25 @@ public abstract class ImplementationEntry
 	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class by copying the factory delegate from
 	///     another <see cref="ImplementationEntry" /> instance.
 	/// </summary>
+	/// <param name="serviceProvider">The service provider used to resolve dependencies.</param>
 	/// <param name="sourceImplementationEntry">
 	///     The source <see cref="ImplementationEntry" /> instance to copy the factory
 	///     delegate from.
 	/// </param>
-	protected ImplementationEntry(ImplementationEntry sourceImplementationEntry)
+	protected ImplementationEntry(IServiceProvider serviceProvider, ImplementationEntry sourceImplementationEntry)
 	{
+		ServiceProvider = serviceProvider;
 		Factory = sourceImplementationEntry.Factory;
 		_nextEntry = this;
 	}
 
 	public Delegate Factory { get; }
 
-	protected abstract IServiceProvider ServiceProvider { get; }
-
 	private bool IsAsyncInitializationHandlerUsed() => ReferenceEquals(ServiceProvider.InitializationHandler, AsyncInitializationHandler.Instance);
 
-	internal abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider);
+	public abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider);
 
-	internal abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory);
+	public abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory);
 
 	internal void AddToChain([NotNull] ref ImplementationEntry? lastEntry)
 	{
@@ -236,7 +239,7 @@ public abstract class ImplementationEntry
 
 	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Res.Format(Resources.Exception_ServiceNotAvailableInSynchronousContext, typeof(T)));
 
-	private protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) =>
+	protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) =>
 		ServiceProvider.Actions is not { } actions
 			? ExecuteFactoryNoActions<T, TArg>(argument)
 			: ExecuteFactoryWithActions<T, TArg>(argument, actions);
@@ -270,7 +273,7 @@ public abstract class ImplementationEntry
 		return instance;
 	}
 
-	private protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument) =>
+	protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument) =>
 		ServiceProvider.Actions is not { } actions
 			? ExecuteFactorySyncNoActions<T, TArg>(argument)
 			: ExecuteFactorySyncWithActions<T, TArg>(argument, actions);
