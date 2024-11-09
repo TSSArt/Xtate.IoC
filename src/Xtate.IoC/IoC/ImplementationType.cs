@@ -31,7 +31,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		{
 			if (type.IsInterface || type.IsAbstract)
 			{
-				throw new ArgumentException(Resources.Exception_InvalidType, nameof(type));
+				throw new ArgumentException(Res.Format(Resources.Exception_InvalidType, type), nameof(type));
 			}
 		}
 
