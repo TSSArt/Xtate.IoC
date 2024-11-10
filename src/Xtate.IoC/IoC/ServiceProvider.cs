@@ -60,6 +60,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		await DisposeAsyncCore().ConfigureAwait(false);
 
 		Dispose(false);
+
 		GC.SuppressFinalize(this);
 	}
 

@@ -42,17 +42,9 @@ internal static class Disposer
 	/// <param name="instance">The instance to dispose.</param>
 	public static void Dispose<T>(T instance)
 	{
-		switch (instance)
+		if (instance is IDisposable disposable)
 		{
-			case IDisposable disposable:
-				disposable.Dispose();
-
-				break;
-
-			case IAsyncDisposable asyncDisposable:
-				asyncDisposable.DisposeAsync().SynchronousWait();
-
-				break;
+			disposable.Dispose();
 		}
 	}
 

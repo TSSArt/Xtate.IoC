@@ -28,40 +28,6 @@ public class HelpersTest
 	}
 
 	[TestMethod]
-	public void SynchronousWait_WaitsForNotCompletedTask_TaskIsCompleted()
-	{
-		// Arrange
-		var task = Task.Delay(1);
-		var valueTask = new ValueTask(task);
-
-		// PreAssert
-		Assert.IsFalse(valueTask.IsCompleted);
-
-		// Act
-		valueTask.SynchronousWait();
-
-		// Assert
-		Assert.IsTrue(valueTask.IsCompleted);
-	}
-
-	[TestMethod]
-	public void SynchronousWait_WaitsForCompletedTask_TaskRemainsCompleted()
-	{
-		// Arrange
-		var task = Task.CompletedTask;
-		var valueTask = new ValueTask(task);
-
-		// PreAssert
-		Assert.IsTrue(valueTask.IsCompleted);
-
-		// Act
-		valueTask.SynchronousWait();
-
-		// Assert
-		Assert.IsTrue(valueTask.IsCompleted);
-	}
-
-	[TestMethod]
 	public async Task GetAsyncEnumerator_EmptyAsyncEnumerable_CurrentIsDefault()
 	{
 		// Arrange
@@ -73,19 +39,6 @@ public class HelpersTest
 
 		// Assert
 		Assert.AreEqual(expected: 0, current);
-	}
-
-	[TestMethod]
-	public void DisposeAsync_DisposesAsyncDisposableClass_DisposedIsTrue()
-	{
-		// Arrange
-		var c = new AsyncDisposableClass();
-
-		// Act
-		Disposer.Dispose(c);
-
-		// Assert
-		Assert.IsTrue(c.Disposed);
 	}
 
 	private sealed class AsyncDisposableClass : IAsyncDisposable
