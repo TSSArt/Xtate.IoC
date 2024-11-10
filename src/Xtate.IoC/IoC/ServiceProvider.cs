@@ -71,6 +71,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	public void Dispose()
 	{
 		Dispose(true);
+
 		GC.SuppressFinalize(this);
 	}
 
@@ -316,8 +317,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	{
 		if (Interlocked.Exchange(ref _disposed, value: 1) == 0)
 		{
-			// ReSharper disable once MethodHasAsyncOverload
-			_disposeTokenSource.Cancel();
+			await _disposeTokenSource.CancelAsync().ConfigureAwait(false);
 
 			await ObjectsBin.DisposeAsync().ConfigureAwait(false);
 

@@ -129,3 +129,32 @@ public abstract class Module<TDependencyModule1, TDependencyModule2, TDependency
 
 	protected abstract void AddServices();
 }
+
+public abstract class Module<TDependencyModule1, TDependencyModule2, TDependencyModule3, TDependencyModule4, TDependencyModule5> : IModule
+	where TDependencyModule1 : IModule, new()
+	where TDependencyModule2 : IModule, new()
+	where TDependencyModule3 : IModule, new()
+	where TDependencyModule4 : IModule, new()
+	where TDependencyModule5 : IModule, new()
+{
+	protected IServiceCollection Services { get; private init; } = default!;
+
+#region Interface IModule
+
+	void IModule.AddServices()
+	{
+		Services.AddModule<TDependencyModule1>();
+		Services.AddModule<TDependencyModule2>();
+		Services.AddModule<TDependencyModule3>();
+		Services.AddModule<TDependencyModule4>();
+		Services.AddModule<TDependencyModule5>();
+
+		AddServices();
+	}
+
+	IServiceCollection IModule.Services { init => Services = value; }
+
+#endregion
+
+	protected abstract void AddServices();
+}
