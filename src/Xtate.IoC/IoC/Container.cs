@@ -88,4 +88,24 @@ public sealed class Container(IServiceCollection services) : ServiceProvider(ser
 
 		return new Container(services);
 	}
+
+	[MustDisposeResource]
+	public static Container Create<TModule1, TModule2, TModule3, TModule4, TModule5>(Action<IServiceCollection>? addServices = default)
+		where TModule1 : IModule, new()
+		where TModule2 : IModule, new()
+		where TModule3 : IModule, new()
+		where TModule4 : IModule, new()
+		where TModule5 : IModule, new()
+	{
+		var services = new ServiceCollection();
+		services.AddModule<TModule1>();
+		services.AddModule<TModule2>();
+		services.AddModule<TModule3>();
+		services.AddModule<TModule4>();
+		services.AddModule<TModule5>();
+
+		addServices?.Invoke(services);
+
+		return new Container(services);
+	}
 }

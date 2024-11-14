@@ -133,6 +133,30 @@ public class ModuleTest
 		Assert.IsNotNull(mod);
 	}
 
+	[TestMethod]
+	public void AddModule5_ShouldReturnDefaultIntLongByteSbyteUlongValuesAndModuleInstance()
+	{
+		// Arrange
+		using var containerNo = Container.Create<MyModule5, MyModule<object>, MyModule<object>, MyModule<object>, MyModule<object>>();
+		using var container = Container.Create<MyModule5, MyModule<object>, MyModule<object>, MyModule<object>, MyModule<object>>(_ => { });
+
+		// Act
+		var val1 = container.GetRequiredServiceSync<int>();
+		var val2 = container.GetRequiredServiceSync<long>();
+		var val3 = container.GetRequiredServiceSync<byte>();
+		var val4 = container.GetRequiredServiceSync<sbyte>();
+		var val5 = container.GetRequiredServiceSync<ulong>();
+		var mod = container.GetRequiredServiceSync<MyModule5>();
+
+		// Assert
+		Assert.AreEqual(expected: 0, val1);
+		Assert.AreEqual(expected: 0, val2);
+		Assert.AreEqual(expected: 0, val3);
+		Assert.AreEqual(expected: 0, val4);
+		Assert.AreEqual(expected: 0ul, val5);
+		Assert.IsNotNull(mod);
+	}
+
 	private class MyModule<T> : Module where T : new()
 	{
 		protected override void AddServices()
@@ -170,6 +194,14 @@ public class ModuleTest
 		protected override void AddServices()
 		{
 			Services.AddForwarding(_ => new MyModule4());
+		}
+	}
+
+	private class MyModule5 : Module<MyModule<int>, MyModule<long>, MyModule<byte>, MyModule<sbyte>, MyModule<ulong>>
+	{
+		protected override void AddServices()
+		{
+			Services.AddForwarding(_ => new MyModule5());
 		}
 	}
 }

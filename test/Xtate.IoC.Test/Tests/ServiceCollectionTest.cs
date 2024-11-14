@@ -34,11 +34,65 @@ public class ServiceCollectionTest
 		Assert.IsNotNull(serviceScope);
 	}
 
+	private class Forwarding : ForwardingImplementationEntry
+	{
+		public Forwarding(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+
+		private Forwarding(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new Forwarding(serviceProvider, this);
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new Forwarding(serviceProvider, factory);
+	}
+
+	private class Transient : TransientImplementationEntry
+	{
+		public Transient(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+
+		private Transient(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new Transient(serviceProvider, this);
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new Transient(serviceProvider, factory);
+	}
+
+	private class ScopedOwner : ScopedOwnerImplementationEntry
+	{
+		public ScopedOwner(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+
+		private ScopedOwner(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedOwner(serviceProvider, this);
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedOwner(serviceProvider, factory);
+	}
+
+	private class SingletonOwner : SingletonOwnerImplementationEntry
+	{
+		public SingletonOwner(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+
+		private SingletonOwner(ServiceProvider serviceProvider, SingletonOwnerImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new SingletonOwner(serviceProvider, this);
+
+		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new SingletonOwner(serviceProvider, factory);
+	}
+
 	private class ServiceProviderNew(ServiceCollectionNew services) : ServiceProvider(services)
 	{
 		protected override void Dispose(bool disposing) { }
 
 		protected override ValueTask DisposeAsyncCore() => default;
+
+		protected override ImplementationEntry CreateImplementationEntry(ServiceEntry service) =>
+			service.InstanceScope switch
+			{
+				InstanceScope.Transient  => new Transient(this, service.Factory),
+				InstanceScope.Forwarding => new Forwarding(this, service.Factory),
+				InstanceScope.Scoped     => new ScopedOwner(this, service.Factory),
+				InstanceScope.Singleton  => new SingletonOwner(this, service.Factory),
+				_                        => base.CreateImplementationEntry(service)
+			};
 	}
 
 	private class ServiceCollectionNew : ServiceCollection

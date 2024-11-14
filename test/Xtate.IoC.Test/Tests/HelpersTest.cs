@@ -40,20 +40,4 @@ public class HelpersTest
 		// Assert
 		Assert.AreEqual(expected: 0, current);
 	}
-
-	private sealed class AsyncDisposableClass : IAsyncDisposable
-	{
-		public bool Disposed { get; private set; }
-
-	#region Interface IAsyncDisposable
-
-		public ValueTask DisposeAsync()
-		{
-			Disposed = true;
-
-			return default;
-		}
-
-	#endregion
-	}
 }
