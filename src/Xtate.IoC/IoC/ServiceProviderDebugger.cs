@@ -114,6 +114,24 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 #endregion
 
+	private bool TryOwnWriter()
+	{
+		// Fast-fail check to avoid unnecessary Interlocked operation if already owned
+		if (_writerOwned != 0)
+		{
+			return false;
+		}
+
+		return Interlocked.CompareExchange(ref _writerOwned, value: 1, comparand: 0) == 0;
+	}
+
+	private void ReleaseWriter()
+	{
+		DumpLoggersQueue();
+
+		_writerOwned = 0;
+	}
+
 	private ServiceLogger GetLogger() => _logger.Value ??= new ServiceLogger(this);
 
 	private Stat GetStat(TypeKey serviceKey) => _stats.GetOrAdd(serviceKey, key => new Stat(key));
@@ -260,11 +278,9 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 			if (-- _level == 0 && _parentWriterOwner)
 			{
-				parent.DumpLoggersQueue();
+				parent.ReleaseWriter();
 
 				_parentWriterOwner = false;
-
-				parent._writerOwned = 0;
 			}
 		}
 
@@ -302,12 +318,7 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 				return true;
 			}
 
-			if (parent._writerOwned != 0)
-			{
-				return false;
-			}
-
-			if (Interlocked.CompareExchange(ref parent._writerOwned, value: 1, comparand: 0) != 0)
+			if (!parent.TryOwnWriter())
 			{
 				return false;
 			}
