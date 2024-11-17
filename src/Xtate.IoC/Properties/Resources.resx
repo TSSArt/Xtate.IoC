@@ -171,7 +171,22 @@
   <data name="Exception_NoConstructorFound" xml:space="preserve">
     <value>No constructor found</value>
   </data>
-  <data name="Exception_OptionsDoesNotSupported" xml:space="preserve">
-    <value>Options {0} does not supported</value>
+  <data name="Exception_OptionDoesNotSupport" xml:space="preserve">
+    <value>Option {0} does not support</value>
+  </data>
+  <data name="Exception_CycleReferenceDetectedInContainerConfiguration" xml:space="preserve">
+	  <value>Cycle reference detected in container configuration</value>
+  </data>
+  <data name="Format_ServiceNoArgs" xml:space="preserve">
+	  <value>{0}</value>
+  </data>
+  <data name="Format_ServiceWithArgs" xml:space="preserve">
+	  <value>{0}({1:, |p1})</value>
+  </data>
+  <data name="Format_ImplementationNoArgs" xml:space="preserve">
+	  <value>^{0}</value>
+  </data>
+  <data name="Format_ImplementationWithArgs" xml:space="preserve">
+	  <value>^{0}({1:, |p1})</value>
   </data>
 </root>

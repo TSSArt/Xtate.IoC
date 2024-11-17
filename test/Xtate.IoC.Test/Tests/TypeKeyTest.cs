@@ -100,7 +100,7 @@ public class TypeKeyTest
 		var key = TypeKey.ServiceKey<GenericClass<object>, int>();
 
 		// Assert  
-		Assert.AreEqual(expected: "SRV:GenericClass<object>(int)", key.ToString());
+		Assert.AreEqual(expected: "TypeKeyTest.GenericClass<object>(int)", key.ToString());
 	}
 
 	[TestMethod]
@@ -110,7 +110,7 @@ public class TypeKeyTest
 		var key = TypeKey.ImplementationKey<GenericClass<object>, int>();
 
 		// Assert  
-		Assert.AreEqual(expected: "IMP:GenericClass<object>(int)", key.ToString());
+		Assert.AreEqual(expected: "^TypeKeyTest.GenericClass<object>(int)", key.ToString());
 	}
 
 	[TestMethod]
@@ -120,7 +120,7 @@ public class TypeKeyTest
 		var key = TypeKey.ServiceKey<object, Empty>();
 
 		// Assert  
-		Assert.AreEqual(expected: "SRV:object", key.ToString());
+		Assert.AreEqual(expected: "object", key.ToString());
 	}
 
 	[TestMethod]
@@ -130,7 +130,7 @@ public class TypeKeyTest
 		var key = TypeKey.ImplementationKey<object, Empty>();
 
 		// Assert  
-		Assert.AreEqual(expected: "IMP:object", key.ToString());
+		Assert.AreEqual(expected: "^object", key.ToString());
 	}
 
 	[TestMethod]

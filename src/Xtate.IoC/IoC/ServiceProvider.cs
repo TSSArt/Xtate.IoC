@@ -343,7 +343,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 			for (var sp = serviceProvider; sp is not null; sp = sp._sourceServiceProvider)
 			{
-				if (sp._services.ContainsKey(key))
+				if (sp.GetImplementationEntry(key) is not null)
 				{
 					return true;
 				}

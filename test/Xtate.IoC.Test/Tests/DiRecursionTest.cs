@@ -48,7 +48,8 @@ public class DiRecursionTest
 
 		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => default;
 
-		public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey) => default;
+		[ExcludeFromCodeCoverage]
+		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException(typeKey?.ToString());
 
 		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
 		{
@@ -60,6 +61,7 @@ public class DiRecursionTest
 			return default;
 		}
 
+		[ExcludeFromCodeCoverage]
 		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey)
 		{
 			_level --;

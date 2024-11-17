@@ -15,11 +15,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Text;
 using ValueTuple = System.ValueTuple;
 
 namespace Xtate.IoC;
 
-internal readonly struct ArgumentType
+internal readonly struct ArgumentType : IFormattable
 {
 	private readonly Type? _type;
 
@@ -27,7 +28,102 @@ internal readonly struct ArgumentType
 
 	public bool IsEmpty => _type is null;
 
+#region Interface IFormattable
+
+	public string ToString(string? format, IFormatProvider? formatProvider)
+	{
+		if (_type is null)
+		{
+			return string.Empty;
+		}
+
+		if (format is null || format.Length == 0 || !_type.IsTuple() || format.Split('|') is not [var dlm, var arg]
+			|| !TryGetArgFormat(arg, out var argFormat, out var index))
+		{
+			return _type.FriendlyName();
+		}
+
+		var sb = new StringBuilder();
+
+		string? delimiter = null;
+
+		foreach (var type in _type.DecomposeTuple())
+		{
+			if (delimiter is not null)
+			{
+				sb.Append(delimiter);
+			}
+			else
+			{
+				delimiter = dlm;
+			}
+
+			sb.AppendFriendlyName(type).AppendFormat(formatProvider, argFormat, index ++);
+		}
+
+		return sb.ToString();
+	}
+
+#endregion
+
+	private static bool TryGetArgFormat(string arg, [MaybeNullWhen(false)] out string argFormat, out int index)
+	{
+		index = 0;
+		argFormat = default;
+
+		if (string.IsNullOrEmpty(arg) || arg[0] is '0' or '1')
+		{
+			return false;
+		}
+
+		var digits = 0;
+		var badChars = 0;
+
+		foreach (var ch in arg)
+		{
+			if (ch is '0' or '1')
+			{
+				digits ++;
+			}
+			else if (!char.IsLetter(ch) && ch != '_')
+			{
+				badChars ++;
+			}
+		}
+
+		if (badChars > 0 || digits > 1)
+		{
+			return false;
+		}
+
+		if (digits == 0)
+		{
+			argFormat = arg;
+
+			return true;
+		}
+
+		var sb = new StringBuilder(arg.Length + 2);
+
+		foreach (var ch in arg)
+		{
+			if (ch is '0' or '1')
+			{
+				index = ch - '0';
+				sb.Append(@"{0}");
+			}
+			else
+			{
+				sb.Append(ch);
+			}
+		}
+
+		argFormat = sb.ToString();
+
+		return true;
+	}
+
 	public static ArgumentType TypeOf<T>() => new(typeof(T));
 
-	public override string ToString() => _type?.FriendlyName() ?? @"(empty)";
+	public override string ToString() => ToString(format: default, formatProvider: default);
 }

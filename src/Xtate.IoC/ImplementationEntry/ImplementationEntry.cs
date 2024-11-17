@@ -23,8 +23,9 @@ namespace Xtate.IoC;
 /// </summary>
 public abstract class ImplementationEntry
 {
-	private readonly IServiceProvider ServiceProvider;
-	private          DelegateEntry?   _delegateEntry;
+	private readonly IServiceProvider _serviceProvider;
+
+	private DelegateEntry? _delegateEntry;
 
 	private ImplementationEntry _nextEntry;
 
@@ -37,7 +38,7 @@ public abstract class ImplementationEntry
 	/// <param name="factory">The factory delegate used to create instances of the service.</param>
 	protected ImplementationEntry(IServiceProvider serviceProvider, Delegate factory)
 	{
-		ServiceProvider = serviceProvider;
+		_serviceProvider = serviceProvider;
 		Factory = factory;
 		_nextEntry = this;
 	}
@@ -53,14 +54,14 @@ public abstract class ImplementationEntry
 	/// </param>
 	protected ImplementationEntry(IServiceProvider serviceProvider, ImplementationEntry sourceImplementationEntry)
 	{
-		ServiceProvider = serviceProvider;
+		_serviceProvider = serviceProvider;
 		Factory = sourceImplementationEntry.Factory;
 		_nextEntry = this;
 	}
 
 	public Delegate Factory { get; }
 
-	private bool IsAsyncInitializationHandlerUsed() => ReferenceEquals(ServiceProvider.InitializationHandler, AsyncInitializationHandler.Instance);
+	private bool IsAsyncInitializationHandlerUsed() => ReferenceEquals(_serviceProvider.InitializationHandler, AsyncInitializationHandler.Instance);
 
 	public abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider);
 
@@ -108,7 +109,7 @@ public abstract class ImplementationEntry
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>A task that represents the asynchronous operation. The task result contains the service or null if not found.</returns>
 	public ValueTask<T?> GetService<T, TArg>(TArg argument) =>
-		ServiceProvider.Actions is not { } actions
+		_serviceProvider.Actions is not { } actions
 			? GetServiceNoActions<T, TArg>(argument)
 			: GetServiceWithActions<T, TArg>(argument, actions);
 
@@ -116,9 +117,14 @@ public abstract class ImplementationEntry
 	{
 		var instance = await ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
 
+		if (instance is null)
+		{
+			return default;
+		}
+
 		var initTask = IsAsyncInitializationHandlerUsed()
 			? AsyncInitializationHandler.InitializeAsync(instance)
-			: CustomInitialize(ServiceProvider, instance);
+			: CustomInitialize(_serviceProvider, instance);
 
 		await initTask.ConfigureAwait(false);
 
@@ -163,36 +169,48 @@ public abstract class ImplementationEntry
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>The required service.</returns>
 	/// <exception cref="DependencyInjectionException">Thrown if the service is not found.</exception>
-	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull
-	{
-		var instance = ExecuteFactorySync<T, TArg>(argument);
+	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull => GetServiceSync<T, TArg>(argument) ?? throw MissedServiceException<T, TArg>();
 
-		if (instance is not null && IsAsyncInitializationHandlerUsed())
+	/// <summary>
+	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
+	///     Returns null if the service is not found.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <returns>The service or null if not found.</returns>
+	public T? GetServiceSync<T, TArg>(TArg argument) =>
+		_serviceProvider.Actions is not { } actions
+			? GetServiceSyncNoActions<T, TArg>(argument)
+			: GetServiceSyncWithActions<T, TArg>(argument, actions);
+
+	/// <summary>
+	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
+	///     Returns null if the service is not found.
+	///     Executes actions before and after the service is requested.
+	/// </summary>
+	/// <typeparam name="T">The type of the service to get.</typeparam>
+	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
+	/// <param name="argument">The argument to pass to the service factory.</param>
+	/// <param name="actions">The actions to execute before and after the service is requested.</param>
+	/// <returns>The service or null if not found.</returns>
+	private T? GetServiceSyncWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	{
+		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+		foreach (var action in actions)
 		{
-			if (AsyncInitializationHandler.Initialize(instance))
-			{
-				throw TypeUsedInSynchronousInstantiationException<T>();
-			}
+			action.ServiceRequesting(typeKey)?.ServiceRequesting<T, TArg>(argument);
 		}
-		else
+
+		var instance = GetServiceSyncNoActions<T, TArg>(argument);
+
+		for (var i = actions.Length - 1; i >= 0; i --)
 		{
-			CustomInitialize(ServiceProvider, instance);
+			actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
 		}
 
 		return instance;
-
-		static void CustomInitialize(IServiceProvider serviceProvider, [NotNull] T? instance)
-		{
-			if (instance is null)
-			{
-				throw MissedServiceException<T, TArg>();
-			}
-
-			if (serviceProvider.InitializationHandler is { } handler && handler.Initialize(instance))
-			{
-				throw TypeUsedInSynchronousInstantiationException<T>();
-			}
-		}
 	}
 
 	/// <summary>
@@ -203,9 +221,14 @@ public abstract class ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>The service or null if not found.</returns>
-	public T? GetServiceSync<T, TArg>(TArg argument)
+	private T? GetServiceSyncNoActions<T, TArg>(TArg argument)
 	{
 		var instance = ExecuteFactorySync<T, TArg>(argument);
+
+		if (instance is null)
+		{
+			return default;
+		}
 
 		if (IsAsyncInitializationHandlerUsed())
 		{
@@ -216,7 +239,7 @@ public abstract class ImplementationEntry
 		}
 		else
 		{
-			CustomInitialize(ServiceProvider, instance);
+			CustomInitialize(_serviceProvider, instance);
 		}
 
 		return instance;
@@ -240,15 +263,15 @@ public abstract class ImplementationEntry
 	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Res.Format(Resources.Exception_ServiceNotAvailableInSynchronousContext, typeof(T)));
 
 	protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) =>
-		ServiceProvider.Actions is not { } actions
+		_serviceProvider.Actions is not { } actions
 			? ExecuteFactoryNoActions<T, TArg>(argument)
 			: ExecuteFactoryWithActions<T, TArg>(argument, actions);
 
 	private ValueTask<T?> ExecuteFactoryNoActions<T, TArg>(TArg argument) =>
 		Factory switch
 		{
-			Func<IServiceProvider, TArg, ValueTask<T?>> factory    => factory(ServiceProvider, argument),
-			Func<IServiceProvider, TArg, T?> factory               => new ValueTask<T?>(factory(ServiceProvider, argument)),
+			Func<IServiceProvider, TArg, ValueTask<T?>> factory    => factory(_serviceProvider, argument),
+			Func<IServiceProvider, TArg, T?> factory               => new ValueTask<T?>(factory(_serviceProvider, argument)),
 			Func<IServiceProvider, T, TArg, ValueTask<T?>> factory => GetDecoratorAsync(factory, argument),
 			Func<IServiceProvider, T, TArg, T?> factory            => GetDecoratorAsync(factory, argument),
 			_                                                      => throw Infra.Unmatched(Factory)
@@ -274,14 +297,14 @@ public abstract class ImplementationEntry
 	}
 
 	protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument) =>
-		ServiceProvider.Actions is not { } actions
+		_serviceProvider.Actions is not { } actions
 			? ExecuteFactorySyncNoActions<T, TArg>(argument)
 			: ExecuteFactorySyncWithActions<T, TArg>(argument, actions);
 
 	private T? ExecuteFactorySyncNoActions<T, TArg>(TArg argument) =>
 		Factory switch
 		{
-			Func<IServiceProvider, TArg, T?> factory       => factory(ServiceProvider, argument),
+			Func<IServiceProvider, TArg, T?> factory       => factory(_serviceProvider, argument),
 			Func<IServiceProvider, T, TArg, T?> factory    => GetDecoratorSync(factory, argument),
 			Func<IServiceProvider, TArg, ValueTask<T?>>    => throw ServiceNotAvailableInSynchronousContextException<T>(),
 			Func<IServiceProvider, T, TArg, ValueTask<T?>> => throw ServiceNotAvailableInSynchronousContextException<T>(),
@@ -326,17 +349,17 @@ public abstract class ImplementationEntry
 
 	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) =>
 		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
-			? await factory(ServiceProvider, decoratedService, argument).ConfigureAwait(false)
+			? await factory(_serviceProvider, decoratedService, argument).ConfigureAwait(false)
 			: default;
 
 	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
 		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
-			? factory(ServiceProvider, decoratedService, argument)
+			? factory(_serviceProvider, decoratedService, argument)
 			: default;
 
 	private T? GetDecoratorSync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
 		_previousEntry is not null && _previousEntry.GetServiceSync<T, TArg>(argument) is { } decoratedService
-			? factory(ServiceProvider, decoratedService, argument)
+			? factory(_serviceProvider, decoratedService, argument)
 			: default;
 
 	/// <summary>

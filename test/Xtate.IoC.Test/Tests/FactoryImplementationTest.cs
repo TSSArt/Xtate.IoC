@@ -32,8 +32,8 @@ public class FactoryImplementationTest
 	public void Constructor_ShouldAddServiceEntry()
 	{
 		// Arrange
-		var instanceScope = InstanceScope.Transient;
-		var synchronous = true;
+		const InstanceScope instanceScope = InstanceScope.Transient;
+		const bool synchronous = true;
 
 		// Act
 		_ = new FactoryImplementation<object>(_serviceCollection, instanceScope, synchronous);

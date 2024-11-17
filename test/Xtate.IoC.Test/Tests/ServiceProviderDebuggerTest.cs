@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2024 Sergii Artemenko
+// Copyright � 2019-2024 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -15,62 +15,155 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.IO;
+
 namespace Xtate.IoC.Test;
 
 [TestClass]
 public class ServiceProviderDebuggerTest
 {
 	[TestMethod]
-	public async Task RegisterServiceProviderDebugger_ShouldRegisterAndResolveServicesCorrectly()
+	public void RegisterService_ShouldWriteCorrectly()
 	{
 		// Arrange
-		var dbg = new Actions();
-		var sc = new ServiceCollection();
-		sc.AddTransient<IServiceProviderActions>(_ => dbg);
-		sc.AddType<ServiceProviderDebuggerTest>();
-		var sp = sc.BuildProvider();
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var serviceEntry = new ServiceEntry(TypeKey.ServiceKey<object, ValueTuple>(), InstanceScope.Transient, () => new object());
 
 		// Act
-		var rService = await sp.GetRequiredService<IServiceProviderActions>();
-		var oService = await sp.GetService<IServiceProviderActions>();
-		var rServiceSync = sp.GetRequiredServiceSync<IServiceProviderActions>();
-		var oServiceSync = sp.GetServiceSync<IServiceProviderActions>();
+		debugger.RegisterServices().RegisterService(serviceEntry);
 
 		// Assert
-		Assert.AreSame(rService, dbg);
-		Assert.AreSame(oService, dbg);
-		Assert.AreSame(rServiceSync, dbg);
-		Assert.AreSame(oServiceSync, dbg);
+		var expected = $"REG: {serviceEntry.InstanceScope,-18} | {serviceEntry.Key}";
+		Assert.IsTrue(stringWriter.ToString().Contains(expected));
 	}
 
-	private class Actions : IServiceProviderActions, IServiceProviderDataActions
+	[TestMethod]
+	public void ServiceRequesting_ShouldLogCorrectly()
 	{
-	#region Interface IServiceProviderActions
+		// Arrange
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		public IServiceProviderDataActions RegisterServices() => this;
+		// Act
+		debugger.ServiceRequesting(typeKey);
+		debugger.ServiceRequested(typeKey);
 
-		public IServiceProviderDataActions ServiceRequesting(TypeKey typeKey) => this;
+		// Assert
+		Assert.IsTrue(stringWriter.ToString().Contains(typeKey.ToString() ?? string.Empty));
+	}
 
-		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => this;
+	[TestMethod]
+	public void FactoryCalling_ShouldLogCorrectly()
+	{
+		// Arrange
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		public IServiceProviderDataActions FactoryCalling(TypeKey typeKey) => this;
+		// Act
+		debugger.ServiceRequesting(typeKey);
+		debugger.FactoryCalling(typeKey);
+		debugger.FactoryCalled(typeKey);
+		debugger.ServiceRequested(typeKey);
 
-		public IServiceProviderDataActions FactoryCalled(TypeKey typeKey) => this;
+		// Assert
+		Assert.IsTrue(stringWriter.ToString().Contains("{#1}"));
+	}
 
-	#endregion
+	[TestMethod]
+	public void FactoryCalled_ShouldLogCorrectly()
+	{
+		// Arrange
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-	#region Interface IServiceProviderDataActions
+		// Act
+		debugger.ServiceRequesting(typeKey);
+		debugger.FactoryCalling(typeKey);
+		debugger.FactoryCalled(typeKey);
+		debugger.ServiceRequested(typeKey);
+		debugger.Dispose();
 
-		public void RegisterService(ServiceEntry serviceEntry) { }
+		// Assert
+		Assert.IsTrue(stringWriter.ToString().Contains("STAT:"));
+	}
 
-		public void ServiceRequesting<T, TArg>(TArg argument) { }
+	[TestMethod]
+	public void ServiceRequested_ShouldLogCorrectly()
+	{
+		// Arrange
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		public void ServiceRequested<T, TArg>(T? instance) { }
+		// Act
+		debugger.ServiceRequesting(typeKey);
+		debugger.ServiceRequested(typeKey);
 
-		public void FactoryCalling<T, TArg>(TArg argument) { }
+		// Assert
+		Assert.IsTrue(stringWriter.ToString().Contains("CACHED"));
+	}
 
-		public void FactoryCalled<T, TArg>(T? instance) { }
+	[TestMethod]
+	public async Task FactoryCalled_MultiThreadLogTest()
+	{
+		// Arrange
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+		var typeKey2 = TypeKey.ServiceKey<long, (int, long)>();
 
-	#endregion
+		// Act
+		var asyncDebug1 = AsyncDebug(debugger, typeKey, typeKey2);
+		var asyncDebug2 = AsyncDebug(debugger, typeKey, typeKey2);
+		var asyncDebug3 = AsyncDebug(debugger, typeKey, typeKey2);
+
+		await asyncDebug1;
+		await asyncDebug2;
+		await asyncDebug3;
+
+		debugger.Dispose();
+
+		// Assert
+		Assert.IsTrue(stringWriter.ToString().Contains("STAT:"));
+		Assert.IsTrue(stringWriter.ToString().Contains("{#3}"));
+	}
+
+	private static async Task AsyncDebug(ServiceProviderDebugger debugger, TypeKey typeKey, TypeKey typeKey2)
+	{
+		debugger.ServiceRequesting(typeKey);
+		debugger.FactoryCalling(typeKey);
+
+		debugger.ServiceRequesting(typeKey2);
+		debugger.FactoryCalling(typeKey2);
+
+		await Task.Yield();
+
+		debugger.FactoryCalled(typeKey2);
+		debugger.ServiceRequested(typeKey2);
+
+		debugger.FactoryCalled(typeKey);
+		debugger.ServiceRequested(typeKey);
+	}
+
+	[TestMethod]
+	public void FactoryCalling_100Times_ShouldThrowException()
+	{
+		// Arrange
+		var stringWriter = new StringWriter();
+		var debugger = new ServiceProviderDebugger(stringWriter);
+		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+
+		// Act
+		for (var i = 0; i < 100; i ++)
+		{
+			debugger.FactoryCalling(typeKey);
+		}
+
+		// Assert
+		Assert.ThrowsException<DependencyInjectionException>(() => debugger.FactoryCalling(typeKey));
 	}
 }

@@ -106,6 +106,6 @@ public class ServiceTypeTest
 		var toString = empty.ToString();
 
 		// Assert
-		Assert.AreEqual(expected: "(empty)", toString);
+		Assert.AreEqual(expected: "", toString);
 	}
 }

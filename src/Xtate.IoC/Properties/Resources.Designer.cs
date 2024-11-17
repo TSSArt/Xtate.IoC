@@ -97,6 +97,15 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cycle reference detected in container configuration.
+        /// </summary>
+        internal static string Exception_CycleReferenceDetectedInContainerConfiguration {
+            get {
+                return ResourceManager.GetString("Exception_CycleReferenceDetectedInContainerConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Factory of [{0}] raised exception.
         /// </summary>
         internal static string Exception_FactoryOfRaisedException {
@@ -151,11 +160,11 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Options {0} does not supported.
+        ///   Looks up a localized string similar to Option {0} does not support.
         /// </summary>
-        internal static string Exception_OptionsDoesNotSupported {
+        internal static string Exception_OptionDoesNotSupport {
             get {
-                return ResourceManager.GetString("Exception_OptionsDoesNotSupported", resourceCulture);
+                return ResourceManager.GetString("Exception_OptionDoesNotSupport", resourceCulture);
             }
         }
         
@@ -228,6 +237,42 @@ namespace Xtate.IoC {
         internal static string Exception_TypeUsedInSynchronousInstantiation {
             get {
                 return ResourceManager.GetString("Exception_TypeUsedInSynchronousInstantiation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ^{0}.
+        /// </summary>
+        internal static string Format_ImplementationNoArgs {
+            get {
+                return ResourceManager.GetString("Format_ImplementationNoArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ^{0}({1:, |p1}).
+        /// </summary>
+        internal static string Format_ImplementationWithArgs {
+            get {
+                return ResourceManager.GetString("Format_ImplementationWithArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string Format_ServiceNoArgs {
+            get {
+                return ResourceManager.GetString("Format_ServiceNoArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}({1:, |p1}).
+        /// </summary>
+        internal static string Format_ServiceWithArgs {
+            get {
+                return ResourceManager.GetString("Format_ServiceWithArgs", resourceCulture);
             }
         }
     }

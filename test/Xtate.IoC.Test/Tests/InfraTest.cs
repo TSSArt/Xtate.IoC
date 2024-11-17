@@ -46,7 +46,7 @@ public class InfraTest
 	public void Unmatched_ShouldReturnExceptionWithMessageContainingPrimitiveValue()
 	{
 		// Arrange
-		var value = 456789123;
+		const int value = 456789123;
 
 		// Act
 		var ex = Infra.Unmatched(value);
@@ -59,7 +59,7 @@ public class InfraTest
 	public void Unmatched_ShouldReturnExceptionWithMessageContainingEnumValue()
 	{
 		// Arrange
-		var value = UnexpectedEnumTestEnum.Val1;
+		const UnexpectedEnumTestEnum value = UnexpectedEnumTestEnum.Val1;
 
 		// Act
 		var ex = Infra.Unmatched(value);

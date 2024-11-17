@@ -48,11 +48,14 @@ public abstract class TypeKey
 
 	private static class Service<T, TArg>
 	{
-		private static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
-			? @$"SRV:{ServiceType.TypeOf<T>()}"
-			: @$"SRV:{ServiceType.TypeOf<T>()}({ArgumentType.TypeOf<TArg>()})";
-
 		public static readonly TypeKey Value = ServiceType.TypeOf<T>().IsGeneric ? new Generic() : new Simple();
+
+		private static class Nested
+		{
+			public static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
+				? Res.Format(Resources.Format_ServiceNoArgs, ServiceType.TypeOf<T>())
+				: Res.Format(Resources.Format_ServiceWithArgs, ServiceType.TypeOf<T>(), ArgumentType.TypeOf<TArg>());
+		}
 
 		private class Simple : SimpleTypeKey
 		{
@@ -60,7 +63,7 @@ public abstract class TypeKey
 
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
-			public override string ToString() => ToStringValue;
+			public override string ToString() => Nested.ToStringValue;
 		}
 
 		private class Generic : GenericTypeKey
@@ -71,17 +74,20 @@ public abstract class TypeKey
 
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
-			public override string ToString() => ToStringValue;
+			public override string ToString() => Nested.ToStringValue;
 		}
 	}
 
 	private static class Implementation<T, TArg>
 	{
-		private static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
-			? @$"IMP:{ImplementationType.TypeOf<T>()}"
-			: @$"IMP:{ImplementationType.TypeOf<T>()}({ArgumentType.TypeOf<TArg>()})";
-
 		public static readonly TypeKey Value = ImplementationType.TypeOf<T>().IsGeneric ? new Generic() : new Simple();
+
+		private static class Nested
+		{
+			public static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
+				? Res.Format(Resources.Format_ImplementationNoArgs, ImplementationType.TypeOf<T>())
+				: Res.Format(Resources.Format_ImplementationWithArgs, ImplementationType.TypeOf<T>(), ArgumentType.TypeOf<TArg>());
+		}
 
 		private class Simple : SimpleTypeKey
 		{
@@ -89,7 +95,7 @@ public abstract class TypeKey
 
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
-			public override string ToString() => ToStringValue;
+			public override string ToString() => Nested.ToStringValue;
 		}
 
 		private class Generic : GenericTypeKey
@@ -100,7 +106,7 @@ public abstract class TypeKey
 
 			internal override void DoTypedAction(ITypeKeyAction typeKeyAction) => typeKeyAction.TypedAction<T, TArg>(this);
 
-			public override string ToString() => ToStringValue;
+			public override string ToString() => Nested.ToStringValue;
 		}
 	}
 
@@ -112,7 +118,7 @@ public abstract class TypeKey
 
 		public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is DefinitionServiceTypeKey other && _openGeneric.Equals(other._openGeneric));
 
-		public override string ToString() => @$"SRV:{_openGeneric}";
+		public override string ToString() => Res.Format(Resources.Format_ServiceNoArgs, _openGeneric);
 	}
 
 	private class DefinitionImplementationTypeKey(in ImplementationType openGeneric) : SimpleTypeKey
@@ -123,6 +129,6 @@ public abstract class TypeKey
 
 		public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is DefinitionImplementationTypeKey other && _openGeneric.Equals(other._openGeneric));
 
-		public override string ToString() => @$"IMP:{_openGeneric}";
+		public override string ToString() => Res.Format(Resources.Format_ImplementationNoArgs, _openGeneric);
 	}
 }

@@ -26,6 +26,8 @@ public class FuncConverterTest
 		// Arrange & Act & Assert
 		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
 
+		return;
+
 		[ExcludeFromCodeCoverage]
 		static bool MyFunc(ValueTuple _) => false;
 	}
@@ -35,6 +37,8 @@ public class FuncConverterTest
 	{
 		// Arrange & Act & Assert
 		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
+
+		return;
 
 		[ExcludeFromCodeCoverage]
 		static bool MyFunc(ValueTuple _) => false;
@@ -52,6 +56,8 @@ public class FuncConverterTest
 		// Assert
 		Assert.AreEqual(expected: "test", result);
 
+		return;
+
 		static string MyFunc(ValueTuple _) => "test";
 	}
 
@@ -67,6 +73,8 @@ public class FuncConverterTest
 		// Assert
 		Assert.AreEqual(expected: "test", result);
 
+		return;
+
 		static string MyFunc(string v) => v;
 	}
 
@@ -75,6 +83,8 @@ public class FuncConverterTest
 	{
 		// Arrange & Act & Assert
 		Assert.ThrowsException<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
+
+		return;
 
 		[ExcludeFromCodeCoverage]
 		static string MyFunc(string v) => v;
@@ -92,6 +102,8 @@ public class FuncConverterTest
 		// Assert
 		Assert.AreEqual(expected: "ab", result);
 
+		return;
+
 		static string MyFunc((string v1, string v2) arg) => arg.v1 + arg.v2;
 	}
 
@@ -107,6 +119,8 @@ public class FuncConverterTest
 
 		// Assert
 		Assert.AreEqual(expected: "123456789", result);
+
+		return;
 
 		static string MyFunc((string v1, string v2, string v3, string v4, string v5, string v6, string v7, string v8, string v9) arg) =>
 			arg.v1 + arg.v2 + arg.v3 + arg.v4 + arg.v5 + arg.v6 + arg.v7 + arg.v8 + arg.v9;
