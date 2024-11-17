@@ -17,7 +17,6 @@
 
 using System.Collections.Concurrent;
 using System.IO;
-using System.Text;
 
 namespace Xtate.IoC;
 
@@ -32,8 +31,6 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 	private readonly TextWriter _writer = writer;
 
 	private int _writerOwned;
-
-	public ServiceProviderDebugger(Stream stream) : this(new StreamWriter(stream, Encoding.ASCII)) { }
 
 	public ServiceProviderDebugger() : this(Console.Out) { }
 
@@ -87,7 +84,21 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 #region Interface IServiceProviderDataActions
 
-	public void RegisterService(ServiceEntry serviceEntry) => _writer.WriteLine($@"REG: {serviceEntry.InstanceScope,-18} | {serviceEntry.Key}");
+	public void RegisterService(ServiceEntry serviceEntry)
+	{
+		_writer.Write(@"REG: ");
+
+		var scope = serviceEntry.InstanceScope.ToString();
+		_writer.Write(scope);
+
+		for (var i = 0; i < 18 - scope.Length; i ++)
+		{
+			_writer.Write(' ');
+		}
+
+		_writer.Write(@" | ");
+		_writer.WriteLine(serviceEntry.Key.ToString());
+	}
 
 	[ExcludeFromCodeCoverage]
 	public void ServiceRequesting<T, TArg>(TArg argument) => throw new NotSupportedException();
@@ -109,13 +120,12 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 	private void DumpStatistics()
 	{
-		var list = _stats
-				   .Select(p => (ServiceName: p.Value.TypeKey.ToString() ?? string.Empty, p.Value.CallsCount))
-				   .OrderByDescending(p => p.CallsCount)
-				   .ThenBy(p => p.ServiceName)
-				   .ToList();
+		var maxServiceLength = _stats.Max(p => p.Value.ServiceName.Length);
 
-		var maxServiceLength = list.Max(p => p.ServiceName.Length);
+		var list = from pair in _stats
+				   let nc = (pair.Value.ServiceName, pair.Value.CallsCount)
+				   orderby nc.CallsCount descending, nc.ServiceName
+				   select nc;
 
 		foreach (var (serviceName, callsCount) in list)
 		{
@@ -129,7 +139,7 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 			_writer.Write(@" | ");
 			_writer.Write(callsCount.ToString());
-			_writer.WriteLine(@" call(s)");
+			_writer.WriteLine(callsCount > 1 ? @" calls" : @" call");
 		}
 	}
 
@@ -194,24 +204,29 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void ServiceRequesting(TypeKey typeKey)
 		{
-			_level ++;
-
-			if (_factoryCalled)
+			lock (this)
 			{
-				Writer.WriteLine();
+				_level ++;
 
-				_factoryCalled = false;
+				if (_factoryCalled)
+				{
+					Writer.WriteLine();
+
+					_factoryCalled = false;
+				}
+
+				WriteIdent();
+
+				Writer.Write(typeKey.ToString());
+
+				_noFactory = true;
 			}
-
-			WriteIdent();
-
-			Writer.Write(typeKey.ToString());
-
-			_noFactory = true;
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void FactoryCalling(int callsCount)
 		{
 			Writer.Write($@" {{#{callsCount}}}");
@@ -220,6 +235,7 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 			_noFactory = false;
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void ServiceRequested()
 		{
 			if (_noFactory)
@@ -250,7 +266,6 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 				parent._writerOwned = 0;
 			}
-
 		}
 
 		private void WriteIdent()
@@ -304,6 +319,7 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 			return true;
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void DumpLocalWriter()
 		{
 			parent._writer.Write(_localWriter?.ToString());
@@ -314,11 +330,11 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 		}
 	}
 
-	private class Stat(TypeKey key)
+	private class Stat(TypeKey typeKey)
 	{
 		private int _deepLevel;
 
-		public TypeKey TypeKey { get; } = key;
+		public string ServiceName => typeKey.ToString() ?? string.Empty;
 
 		public int CallsCount { get; private set; }
 
