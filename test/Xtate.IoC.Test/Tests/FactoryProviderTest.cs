@@ -268,7 +268,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<IService<long>, string>("D"));
+		await Assert.ThrowsExceptionAsync<MissedServiceException<IService<long>, string>>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<IService<long>, string>("D"));
 	}
 
 	[TestMethod]
@@ -281,7 +281,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<IService<long>, string>("D"));
+		Assert.ThrowsException<MissedServiceException<IService<long>, string>>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<IService<long>, string>("D"));
 	}
 
 	[TestMethod]

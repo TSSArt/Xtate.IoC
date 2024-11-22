@@ -97,7 +97,7 @@ public abstract class ImplementationEntry
 	{
 		var instance = await GetService<T, TArg>(argument).ConfigureAwait(false);
 
-		return instance is not null ? instance : throw MissedServiceException<T, TArg>();
+		return instance is not null ? instance : throw new MissedServiceException<T, TArg>();
 	}
 
 	/// <summary>
@@ -169,7 +169,7 @@ public abstract class ImplementationEntry
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>The required service.</returns>
 	/// <exception cref="DependencyInjectionException">Thrown if the service is not found.</exception>
-	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull => GetServiceSync<T, TArg>(argument) ?? throw MissedServiceException<T, TArg>();
+	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull => GetServiceSync<T, TArg>(argument) ?? throw new MissedServiceException<T, TArg>();
 
 	/// <summary>
 	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
@@ -252,11 +252,6 @@ public abstract class ImplementationEntry
 			}
 		}
 	}
-
-	public static DependencyInjectionException MissedServiceException<T, TArg>() =>
-		ArgumentType.TypeOf<TArg>().IsEmpty
-			? new DependencyInjectionException(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T)))
-			: new DependencyInjectionException(Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), ArgumentType.TypeOf<TArg>()));
 
 	private static DependencyInjectionException TypeUsedInSynchronousInstantiationException<T>() => new(Res.Format(Resources.Exception_TypeUsedInSynchronousInstantiation, typeof(T)));
 

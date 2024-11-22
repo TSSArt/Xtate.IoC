@@ -159,7 +159,13 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		}
 		catch (Exception ex)
 		{
-			throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken, _type, typeof(TService)), ex);
+			var message = Res.Format(
+				synchronousOnly
+					? Resources.Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken
+					: Resources.Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken,
+				_type, typeof(TService));
+
+			throw new DependencyInjectionException(message, ex);
 		}
 	}
 

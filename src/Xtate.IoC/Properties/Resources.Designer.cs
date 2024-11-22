@@ -169,7 +169,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Service [{0} (Argument: {1})] missed in container.
+        ///   Looks up a localized string similar to Service [{0}({1:, |p1})] missed in container.
         /// </summary>
         internal static string Exception_ServiceArgMissedInContainer {
             get {
@@ -223,11 +223,20 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter.
+        ///   Looks up a localized string similar to Type {0} does not contain method (or ambiguity) with return type ValueTask&lt;{1}&gt; or {1} and empty or single CancellationToken input parameter.
         /// </summary>
-        internal static string Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken {
+        internal static string Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken {
             get {
-                return ResourceManager.GetString("Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken", resourceCulture);
+                return ResourceManager.GetString("Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type {0} does not contain method (or ambiguity) with return type {1} and empty or single CancellationToken input parameter.
+        /// </summary>
+        internal static string Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken {
+            get {
+                return ResourceManager.GetString("Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken", resourceCulture);
             }
         }
         

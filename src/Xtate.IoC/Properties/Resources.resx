@@ -132,8 +132,11 @@
   <data name="Exception_AssertUnmatched" xml:space="preserve">
     <value>Unmatched value ({0}:{1})</value>
   </data>
-  <data name="Exception_TypeDoesNotContainMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contain method (or ambiguity) with return type: (ValueTask&lt;{1}&gt; or {1}) and empty or single CancellationToken input parameter</value>
+  <data name="Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
+    <value>Type {0} does not contain method (or ambiguity) with return type {1} and empty or single CancellationToken input parameter</value>
+  </data>
+  <data name="Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
+    <value>Type {0} does not contain method (or ambiguity) with return type ValueTask&lt;{1}&gt; or {1} and empty or single CancellationToken input parameter</value>
   </data>
   <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
     <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously</value>
@@ -151,7 +154,7 @@
     <value>Service [{0}] missed in container</value>
   </data>
   <data name="Exception_ServiceArgMissedInContainer" xml:space="preserve">
-    <value>Service [{0} (Argument: {1})] missed in container</value>
+    <value>Service [{0}({1:, |p1})] missed in container</value>
   </data>
   <data name="Exception_InvalidType" xml:space="preserve">
     <value>Invalid type</value>

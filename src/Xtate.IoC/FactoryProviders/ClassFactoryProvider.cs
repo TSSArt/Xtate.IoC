@@ -91,11 +91,11 @@ internal abstract class ClassFactoryProvider
 	protected ClassFactoryProvider(Type implementationType)
 	{
 		var factory = GetConstructor(implementationType);
-		var parameters = factory.GetParameters();
+		var parameters = factory?.GetParameters();
 
-		Delegate = CreateDelegate(factory, parameters);
+		Delegate = factory is not null && parameters is not null ? CreateDelegate(factory, parameters) : CreateDelegate(implementationType);
 
-		if (parameters.Length > 0)
+		if (parameters?.Length > 0)
 		{
 			Parameters = new Member[parameters.Length];
 
@@ -234,11 +234,11 @@ internal abstract class ClassFactoryProvider
 		}
 	}
 
-	private static ConstructorInfo GetConstructor(Type implementationType)
+	private static ConstructorInfo? GetConstructor(Type implementationType)
 	{
 		try
 		{
-			return FindConstructorInfo(implementationType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+			return FindConstructorInfo(implementationType.IsValueType, implementationType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 		}
 		catch (Exception ex)
 		{
@@ -246,7 +246,7 @@ internal abstract class ClassFactoryProvider
 		}
 	}
 
-	private static ConstructorInfo FindConstructorInfo(IEnumerable<ConstructorInfo> constructorInfos)
+	private static ConstructorInfo? FindConstructorInfo(bool isValueType, IEnumerable<ConstructorInfo> constructorInfos)
 	{
 		ConstructorInfo? obsoleteConstructorInfo = default;
 		ConstructorInfo? actualConstructorInfo = default;
@@ -291,6 +291,11 @@ internal abstract class ClassFactoryProvider
 			return resultConstructorInfo;
 		}
 
+		if (isValueType)
+		{
+			return default;
+		}
+
 		throw new DependencyInjectionException(Resources.Exception_NoConstructorFound);
 	}
 
@@ -307,6 +312,15 @@ internal abstract class ClassFactoryProvider
 
 		Array.Clear(array, index: 0, Parameters.Length);
 		ArrayPool<object?>.Shared.Return(array);
+	}
+
+	private static Delegate CreateDelegate(Type type)
+	{
+		var arrayParameter = Expression.Parameter(typeof(object?[]));
+
+		var serviceExpression = Expression.New(type);
+
+		return Expression.Lambda(serviceExpression, arrayParameter).Compile();
 	}
 
 	private static Delegate CreateDelegate(ConstructorInfo factory, ParameterInfo[] parameters)
