@@ -305,7 +305,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act & Assert
-		Assert.ThrowsException<MissedServiceException<Service, (int, int)>>(sp.GetRequiredSyncFactory<Service, int, int>);
+		Assert.ThrowsException<MissedServiceException>(sp.GetRequiredSyncFactory<Service, int, int>);
 	}
 
 	[TestMethod]

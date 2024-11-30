@@ -268,7 +268,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException<IService<long>, string>>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<IService<long>, string>("D"));
+		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<IService<long>, string>("D"));
 	}
 
 	[TestMethod]
@@ -281,7 +281,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException<IService<long>, string>>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<IService<long>, string>("D"));
+		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<IService<long>, string>("D"));
 	}
 
 	[TestMethod]

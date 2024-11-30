@@ -18,40 +18,6 @@
 namespace Xtate.IoC;
 
 [Serializable]
-public class MissedServiceException<T> : MissedServiceException
-{
-	[SetsRequiredMembers]
-	public MissedServiceException() : this(GetMessage<T, Empty>()) { }
-
-	[SetsRequiredMembers]
-	public MissedServiceException(Exception? innerException) : this(GetMessage<T, Empty>(), innerException) { }
-
-	[SetsRequiredMembers]
-	public MissedServiceException(string? message, Exception? innerException = default) : base(message, innerException)
-	{
-		Service = typeof(T);
-		Argument = typeof(Empty);
-	}
-}
-
-[Serializable]
-public class MissedServiceException<T, TArg> : MissedServiceException
-{
-	[SetsRequiredMembers]
-	public MissedServiceException() : this(GetMessage<T, TArg>()) { }
-
-	[SetsRequiredMembers]
-	public MissedServiceException(Exception? innerException) : this(GetMessage<T, TArg>(), innerException) { }
-
-	[SetsRequiredMembers]
-	public MissedServiceException(string? message, Exception? innerException = default) : base(message, innerException)
-	{
-		Service = typeof(T);
-		Argument = typeof(TArg);
-	}
-}
-
-[Serializable]
 public class MissedServiceException : DependencyInjectionException
 {
 	public MissedServiceException() { }
@@ -62,10 +28,19 @@ public class MissedServiceException : DependencyInjectionException
 
 	public required Type Service { get; init; }
 
-	public required Type Argument { get; init; }
+	public Type? Argument { get; init; }
 
-	protected static string GetMessage<T, TArg>() =>
-		ArgumentType.TypeOf<TArg>().IsEmpty
+	public static MissedServiceException Create<T>() => new(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))) { Service = typeof(T) };
+
+	public static MissedServiceException Create<T, TArg>()
+	{
+		var argumentType = ArgumentType.TypeOf<TArg>();
+		var isEmptyArg = argumentType.IsEmpty;
+
+		var message = isEmptyArg
 			? Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))
-			: Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), ArgumentType.TypeOf<TArg>());
+			: Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), argumentType);
+
+		return new MissedServiceException(message) { Service = typeof(T), Argument = isEmptyArg ? default : typeof(TArg) };
+	}
 }

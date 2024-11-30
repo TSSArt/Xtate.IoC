@@ -49,7 +49,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException<Class, ValueTuple>>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
+		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
 	}
 
 	[TestMethod]
@@ -110,7 +110,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException<Class, ValueTuple>>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -155,7 +155,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException<Class, int>>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class, int>(4));
+		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class, int>(4));
 	}
 
 	[TestMethod]
@@ -294,7 +294,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException<Class, ValueTuple>>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -324,7 +324,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException<Class, ValueTuple>>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
+		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
 	}
 
 	[TestMethod]
@@ -337,7 +337,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException<Class, ValueTuple>>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<Class>());
+		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<Class>());
 	}
 
 	[TestMethod]
@@ -350,7 +350,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException<Class, ValueTuple>>(sp.GetRequiredFactory<Class>);
+		Assert.ThrowsException<MissedServiceException>(sp.GetRequiredFactory<Class>);
 	}
 
 	[TestMethod]

@@ -97,7 +97,7 @@ public abstract class ImplementationEntry
 	{
 		var instance = await GetService<T, TArg>(argument).ConfigureAwait(false);
 
-		return instance is not null ? instance : throw new MissedServiceException<T, TArg>();
+		return instance is not null ? instance : throw MissedServiceException.Create<T, TArg>();
 	}
 
 	/// <summary>
@@ -169,7 +169,7 @@ public abstract class ImplementationEntry
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>The required service.</returns>
 	/// <exception cref="DependencyInjectionException">Thrown if the service is not found.</exception>
-	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull => GetServiceSync<T, TArg>(argument) ?? throw new MissedServiceException<T, TArg>();
+	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull => GetServiceSync<T, TArg>(argument) ?? throw MissedServiceException.Create<T, TArg>();
 
 	/// <summary>
 	///     Gets the service of type <typeparamref name="T" /> with the specified argument.

@@ -23,7 +23,7 @@ public static class ServiceProviderExtensions
 
 	public static ValueTask<T> GetRequiredService<T, TArg>(this IServiceProvider serviceProvider, TArg arg) where T : notnull =>
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredService<T, TArg>(arg) ??
-		new ValueTask<T>(Task.FromException<T>(new MissedServiceException<T, TArg>()));
+		new ValueTask<T>(Task.FromException<T>(MissedServiceException.Create<T, TArg>()));
 
 	public static ValueTask<T> GetRequiredService<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) where T : notnull =>
 		serviceProvider.GetRequiredService<T, (TArg1, TArg2)>((arg1, arg2));
@@ -40,7 +40,7 @@ public static class ServiceProviderExtensions
 	public static T GetRequiredServiceSync<T, TArg>(this IServiceProvider serviceProvider, TArg arg) where T : notnull =>
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>()) is { } entry
 			? entry.GetRequiredServiceSync<T, TArg>(arg)
-			: throw new MissedServiceException<T, TArg>();
+			: throw MissedServiceException.Create<T, TArg>();
 
 	public static T GetRequiredServiceSync<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) where T : notnull =>
 		serviceProvider.GetRequiredServiceSync<T, (TArg1, TArg2)>((arg1, arg2));
@@ -87,7 +87,7 @@ public static class ServiceProviderExtensions
 		serviceProvider.GetServicesSyncFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, IEnumerable<T>>>(static (_, _) => []);
 
 	private static TDelegate GetRequiredFactoryBase<T, TArg, TDelegate>(this IServiceProvider serviceProvider) where T : notnull where TDelegate : Delegate =>
-		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredServiceDelegate<T, TArg, TDelegate>() ?? throw new MissedServiceException<T, TArg>();
+		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredServiceDelegate<T, TArg, TDelegate>() ?? throw MissedServiceException.Create<T, TArg>();
 
 	public static Func<ValueTask<T>> GetRequiredFactory<T>(this IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactoryBase<T, Empty, Func<ValueTask<T>>>();
 
@@ -108,7 +108,7 @@ public static class ServiceProviderExtensions
 		serviceProvider.GetFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, ValueTask<T?>>>(static (_, _) => default);
 
 	private static TDelegate GetRequiredSyncFactoryBase<T, TArg, TDelegate>(this IServiceProvider serviceProvider) where T : notnull where TDelegate : Delegate =>
-		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredServiceSyncDelegate<T, TArg, TDelegate>() ?? throw new MissedServiceException<T, TArg>();
+		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredServiceSyncDelegate<T, TArg, TDelegate>() ?? throw MissedServiceException.Create<T, TArg>();
 
 	public static Func<T> GetRequiredSyncFactory<T>(this IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactoryBase<T, Empty, Func<T>>();
 
