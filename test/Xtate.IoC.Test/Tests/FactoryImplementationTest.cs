@@ -20,7 +20,7 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class FactoryImplementationTest
 {
-	private ServiceCollection _serviceCollection = default!;
+	private ServiceCollection _serviceCollection = null!;
 
 	[TestInitialize]
 	public void Setup()

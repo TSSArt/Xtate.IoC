@@ -65,10 +65,10 @@ internal static class Disposer
 			case IDisposable disposable:
 				disposable.Dispose();
 
-				return default;
+				return ValueTaskExt.CompletedTask;
 
 			default:
-				return default;
+				return ValueTaskExt.CompletedTask;
 		}
 	}
 }

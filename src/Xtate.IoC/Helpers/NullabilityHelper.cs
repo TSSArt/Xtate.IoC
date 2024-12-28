@@ -125,7 +125,7 @@ internal static class NullabilityHelper
 			}
 		}
 
-		return default;
+		return null;
 	}
 
 	/// <summary>

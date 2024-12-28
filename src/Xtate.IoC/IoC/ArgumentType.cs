@@ -24,7 +24,7 @@ internal readonly struct ArgumentType : IFormattable
 {
 	private readonly Type? _type;
 
-	private ArgumentType(Type type) => _type = type != typeof(ValueTuple) ? type : default;
+	private ArgumentType(Type type) => _type = type != typeof(ValueTuple) ? type : null;
 
 	public bool IsEmpty => _type is null;
 
@@ -69,7 +69,7 @@ internal readonly struct ArgumentType : IFormattable
 	private static bool TryGetArgFormat(string arg, [MaybeNullWhen(false)] out string argFormat, out int index)
 	{
 		index = 0;
-		argFormat = default;
+		argFormat = null;
 
 		if (string.IsNullOrEmpty(arg) || arg[0] is '0' or '1')
 		{
@@ -125,5 +125,5 @@ internal readonly struct ArgumentType : IFormattable
 
 	public static ArgumentType TypeOf<T>() => new(typeof(T));
 
-	public override string ToString() => ToString(format: default, formatProvider: default);
+	public override string ToString() => ToString(format: null, formatProvider: null);
 }

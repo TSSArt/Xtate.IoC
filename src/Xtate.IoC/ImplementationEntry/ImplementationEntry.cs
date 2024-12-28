@@ -566,7 +566,7 @@ public abstract class ImplementationEntry
 			return ok;
 		}
 
-		void IEnumerator.Reset() => Current = default!;
+		void IEnumerator.Reset() => Current = null!;
 
 		readonly object IEnumerator.Current => Current;
 
@@ -574,7 +574,7 @@ public abstract class ImplementationEntry
 
 	#region Interface IEnumerator<ImplementationEntry>
 
-		public ImplementationEntry Current { get; private set; } = default!;
+		public ImplementationEntry Current { get; private set; } = null!;
 
 	#endregion
 

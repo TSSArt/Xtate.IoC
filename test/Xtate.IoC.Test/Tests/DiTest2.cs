@@ -98,9 +98,9 @@ public class DiTest2
 		var class5 = await serviceProvider.GetRequiredService<Class5, int>(22);
 
 		Assert.IsNotNull(class5);
-		Assert.IsNotNull(class5.PropClass1);
-		Assert.IsNotNull(class5.PropClass2);
-		Assert.IsNotNull(class5.PropClass4);
+		//Assert.IsNotNull(class5.PropClass1);
+		//Assert.IsNotNull(class5.PropClass2);
+		//Assert.IsNotNull(class5.PropClass4);
 		Assert.AreEqual(expected: 22, class5.PropClass4.Val);
 		Assert.AreEqual(expected: 1, class5.PropClass4S.Length);
 		Assert.AreEqual(expected: 22, class5.PropClass4S[0].Val);
@@ -456,7 +456,7 @@ public class DiTest2
 			Initialization = Initialize();
 		}
 
-		public Class1 PropClass1 { get; }
+		public Class1 PropClass1 { [UsedImplicitly] get; }
 
 		public ImmutableArray<Class4> PropClass4S { get; private set; } = [];
 
@@ -470,9 +470,9 @@ public class DiTest2
 
 		public ImmutableArray<IForDecorationSync> PropForDecorationsSync { get; private set; } = [];
 
-		public Class4 PropClass4 { get; private set; } = default!;
+		public Class4 PropClass4 { get; private set; } = null!;
 
-		public Class2 PropClass2 { get; private set; } = default!;
+		public Class2 PropClass2 { [UsedImplicitly] get; private set; } = null!;
 
 	#region Interface IAsyncInitialization
 

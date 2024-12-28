@@ -526,7 +526,7 @@ public class TupleHelperTest
 		var result = TupleHelper.IsMatch<((byte, sbyte), short)>(type);
 
 		// Assert
-		Assert.IsNotNull(result);
+		Assert.IsTrue(result);
 	}
 
 	[TestMethod]

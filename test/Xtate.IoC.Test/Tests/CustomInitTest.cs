@@ -21,7 +21,7 @@ namespace Xtate.IoC.Test;
 public class CustomInitTest
 {
 	[TestMethod]
-	public void NoInitRequired_ShouldReturnNotNull()
+	public async Task NoInitRequired_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -30,7 +30,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetRequiredService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
@@ -46,14 +46,14 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetRequiredServiceSync<Temp>();
+		var obj = serviceProvider.GetServiceSync<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
 	}
 
 	[TestMethod]
-	public void NoInitOptional_ShouldReturnNotNull()
+	public async Task NoInitOptional_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -62,14 +62,14 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
 	}
 
 	[TestMethod]
-	public void CustomInitRequired_ShouldReturnNotNull()
+	public async Task CustomInitRequired_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -78,14 +78,14 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetRequiredService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
 	}
 
 	[TestMethod]
-	public void CustomInitOptional_ShouldReturnNotNull()
+	public async Task CustomInitOptional_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -94,14 +94,14 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
 	}
 
 	[TestMethod]
-	public void CustomAsyncInitRequired_ShouldReturnNotNull()
+	public async Task CustomAsyncInitRequired_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -110,14 +110,14 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetRequiredService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
 	}
 
 	[TestMethod]
-	public void CustomInitRequiredSync_ShouldReturnNotNull()
+	public async Task CustomInitRequiredSync_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -126,7 +126,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetRequiredService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);
@@ -146,7 +146,7 @@ public class CustomInitTest
 	}
 
 	[TestMethod]
-	public void CustomAsyncInitOptional_ShouldReturnNotNull()
+	public async Task CustomAsyncInitOptional_ShouldReturnNotNull()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
@@ -155,7 +155,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act
-		var obj = serviceProvider.GetService<Temp>();
+		var obj = await serviceProvider.GetService<Temp>();
 
 		// Assert
 		Assert.IsNotNull(obj);

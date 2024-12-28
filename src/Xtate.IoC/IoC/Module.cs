@@ -19,14 +19,11 @@ namespace Xtate.IoC;
 
 public abstract class Module : IModule
 {
-	protected IServiceCollection Services { get; private init; } = default!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-	void IModule.AddServices()
-	{
-		AddServices();
-	}
+	void IModule.AddServices() => AddServices();
 
 	IServiceCollection IModule.Services { init => Services = value; }
 
@@ -37,7 +34,7 @@ public abstract class Module : IModule
 
 public abstract class Module<TDependencyModule> : IModule where TDependencyModule : IModule, new()
 {
-	protected IServiceCollection Services { get; private init; } = default!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
@@ -59,7 +56,7 @@ public abstract class Module<TDependencyModule1, TDependencyModule2> : IModule
 	where TDependencyModule1 : IModule, new()
 	where TDependencyModule2 : IModule, new()
 {
-	protected IServiceCollection Services { get; private init; } = default!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
@@ -83,7 +80,7 @@ public abstract class Module<TDependencyModule1, TDependencyModule2, TDependency
 	where TDependencyModule2 : IModule, new()
 	where TDependencyModule3 : IModule, new()
 {
-	protected IServiceCollection Services { get; private init; } = default!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
@@ -109,7 +106,7 @@ public abstract class Module<TDependencyModule1, TDependencyModule2, TDependency
 	where TDependencyModule3 : IModule, new()
 	where TDependencyModule4 : IModule, new()
 {
-	protected IServiceCollection Services { get; private init; } = default!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
@@ -137,7 +134,7 @@ public abstract class Module<TDependencyModule1, TDependencyModule2, TDependency
 	where TDependencyModule4 : IModule, new()
 	where TDependencyModule5 : IModule, new()
 {
-	protected IServiceCollection Services { get; private init; } = default!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 

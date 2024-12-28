@@ -103,12 +103,12 @@ internal sealed class FactoryAsyncFactoryProvider<TImplementation, TService, TAr
 		{
 			if (!StubType.IsMatch(typeof(TService), typeof(TResolvedService)))
 			{
-				return default;
+				return null;
 			}
 
 			if (!StubType.IsMatch(typeof(TArg), typeof(TResolvedArg)))
 			{
-				return default;
+				return null;
 			}
 
 			var methodInfo = ImplementationType.TypeOf<TImplementation>().GetMethodInfo<TResolvedService, TResolvedArg>(false);

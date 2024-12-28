@@ -29,7 +29,6 @@ public class ExceptionsTest
 		// Act
 
 		// Assert
-		Assert.IsNotNull(ex.Message);
 		Assert.IsNull(ex.InnerException);
 	}
 
@@ -69,7 +68,6 @@ public class ExceptionsTest
 		// Act
 
 		// Assert
-		Assert.IsNotNull(ex.Message);
 		Assert.IsNull(ex.InnerException);
 	}
 

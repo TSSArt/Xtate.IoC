@@ -68,12 +68,12 @@ internal class ForwardSyncFactoryProvider<TImplementation, TService, TArg> : Fac
 		{
 			if (!StubType.IsMatch(typeof(TService), typeof(TResolved)))
 			{
-				return default;
+				return null;
 			}
 
 			if (!StubType.IsMatch(typeof(TArg), typeof(TResolvedArg)))
 			{
-				return default;
+				return null;
 			}
 
 			if (ImplementationType.TypeOf<TImplementation>().TryConstruct(ServiceType.TypeOf<TResolved>(), out var implementationType))

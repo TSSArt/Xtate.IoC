@@ -23,7 +23,7 @@ public class ObjectsBin
 
 	internal async ValueTask DisposeAsync()
 	{
-		if (Interlocked.CompareExchange(ref _instancesForDispose, value: default, _instancesForDispose) is { } instancesForDispose)
+		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
 		{
 			while (instancesForDispose.TryPop(out var instance))
 			{
@@ -34,7 +34,7 @@ public class ObjectsBin
 
 	internal void Dispose()
 	{
-		if (Interlocked.CompareExchange(ref _instancesForDispose, value: default, _instancesForDispose) is { } instancesForDispose)
+		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
 		{
 			while (instancesForDispose.TryPop(out var instance))
 			{
@@ -49,14 +49,14 @@ public class ObjectsBin
 		{
 			XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
 
-			return default;
+			return ValueTaskExt.CompletedTask;
 		}
 
 		if (_instancesForDispose is { } instancesForDispose)
 		{
 			instancesForDispose.Push(instance);
 
-			return default;
+			return ValueTaskExt.CompletedTask;
 		}
 
 		return DisposeAndThrow();

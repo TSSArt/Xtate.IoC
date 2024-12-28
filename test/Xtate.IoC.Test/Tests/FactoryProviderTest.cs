@@ -181,14 +181,14 @@ public class FactoryProviderTest
 	}
 
 	[TestMethod]
-	public void StubNonGenTypeTest()
+	public async Task StubNonGenTypeTest()
 	{
 		// Arrange
 		_services.AddImplementation<ImplementationLong>().For<IService<long>>();
 		var sp = _services.BuildProvider();
 
 		// Act
-		var obj = sp.GetRequiredService<IService<long>>();
+		var obj = await sp.GetService<IService<long>>();
 
 		// Assert
 		Assert.IsNotNull(obj);

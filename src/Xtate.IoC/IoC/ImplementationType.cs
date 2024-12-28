@@ -36,7 +36,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		}
 
 		_type = type;
-		_openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : default;
+		_openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 	}
 
 	private ImplementationType(Type openGenericType) => _type = _openGenericType = openGenericType;
@@ -98,8 +98,8 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 
 	private static Method FindMethod(IEnumerable<Method> methods)
 	{
-		Method? obsoleteMethod = default;
-		Method? actualMethod = default;
+		Method? obsoleteMethod = null;
+		Method? actualMethod = null;
 		var multipleObsolete = false;
 		var multipleActual = false;
 
@@ -174,14 +174,14 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		var implType = _openGenericType ?? _type;
 
 		var allMethods = implType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
-		var resolvedTypeArguments = _type.IsGenericType ? _type.GetGenericArguments() : default;
+		var resolvedTypeArguments = _type.IsGenericType ? _type.GetGenericArguments() : null;
 
 		foreach (var methodInfo in allMethods)
 		{
 			if (ValidParameters<TArg>(methodInfo, synchronousOnly))
 			{
-				var typeArguments = implType.IsGenericType ? implType.GetGenericArguments() : default;
-				var methodArguments = methodInfo.IsGenericMethod ? methodInfo.GetGenericArguments() : default;
+				var typeArguments = implType.IsGenericType ? implType.GetGenericArguments() : null;
+				var methodArguments = methodInfo.IsGenericMethod ? methodInfo.GetGenericArguments() : null;
 
 				if (StubType.TryMap(typeArguments, methodArguments, serviceType, GetReturnType(methodInfo, synchronousOnly)) &&
 					StubType.TryMap(typeArguments, methodArguments, resolvedTypeArguments, typeArguments))
@@ -226,13 +226,13 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 	{
 		var implementationArguments = _openGenericType?.GetGenericArguments() ?? [];
 
-		if (StubType.TryMap(implementationArguments, typesToMap2: default, type1, type2) &&
-			StubType.TryMap(typesToMap1: default, typesToMap2: default, implementationArguments, _type.GetGenericArguments()))
+		if (StubType.TryMap(implementationArguments, typesToMap2: null, type1, type2) &&
+			StubType.TryMap(typesToMap1: null, typesToMap2: null, implementationArguments, _type.GetGenericArguments()))
 		{
 			return implementationArguments;
 		}
 
-		return default;
+		return null;
 	}
 
 	private readonly struct Contract(Type type, Type[] args)

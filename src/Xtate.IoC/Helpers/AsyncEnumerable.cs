@@ -32,7 +32,7 @@ internal static class AsyncEnumerable
 
 	#region Interface IAsyncDisposable
 
-		ValueTask IAsyncDisposable.DisposeAsync() => default;
+		ValueTask IAsyncDisposable.DisposeAsync() => ValueTaskExt.CompletedTask;
 
 	#endregion
 
@@ -44,7 +44,7 @@ internal static class AsyncEnumerable
 
 	#region Interface IAsyncEnumerator<T>
 
-		ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync() => default;
+		ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync() => new(false);
 
 		T IAsyncEnumerator<T>.Current => default!;
 

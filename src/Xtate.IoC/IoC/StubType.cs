@@ -67,7 +67,7 @@ internal static class StubType
 		return true;
 	}
 
-	public static bool IsMatch(Type type1, Type type2) => TryMap(typesToMap1: default, typesToMap2: default, type1, type2);
+	public static bool IsMatch(Type type1, Type type2) => TryMap(typesToMap1: null, typesToMap2: null, type1, type2);
 
 	public static bool TryMap(Type[]? typesToMap1,
 							  Type[]? typesToMap2,
@@ -119,8 +119,8 @@ internal static class StubType
 
 			return TryMap(
 				typesToMap1, typesToMap2,
-				arg1?.IsGenericTypeDefinition == false ? arg1.GetGenericArguments() : default,
-				arg2?.IsGenericTypeDefinition == false ? arg2.GetGenericArguments() : default);
+				arg1?.IsGenericTypeDefinition == false ? arg1.GetGenericArguments() : null,
+				arg2?.IsGenericTypeDefinition == false ? arg2.GetGenericArguments() : null);
 		}
 
 		return arg1 is null || arg2 is null;

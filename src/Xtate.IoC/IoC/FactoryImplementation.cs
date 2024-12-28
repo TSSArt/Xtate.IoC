@@ -35,11 +35,11 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 		serviceCollection.Add(new ServiceEntry(TypeKey.ImplementationKey<TImplementation, Empty>(), instanceScope, factory));
 	}
 
-	public FactoryImplementation<TImplementation> For<TService>(Option option = Option.Default) => Register<TService, Empty>(sharedWithin: default, option);
+	public FactoryImplementation<TImplementation> For<TService>(Option option = Option.Default) => Register<TService, Empty>(sharedWithin: null, option);
 
-	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default) => Register<TService, TArg>(sharedWithin: default, option);
+	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default) => Register<TService, TArg>(sharedWithin: null, option);
 
-	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(sharedWithin: default, option);
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(sharedWithin: null, option);
 
 	public FactoryImplementation<TImplementation> For<TService>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, Empty>(sharedWithin, option);
 

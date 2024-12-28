@@ -100,7 +100,7 @@ internal class WeakReferenceStack
 				return true;
 			}
 
-			WeakReferenceNode? newNode = default;
+			WeakReferenceNode? newNode = null;
 
 			for (var iNode = initNode.NextNode; iNode is not null; iNode = iNode.NextNode)
 			{
@@ -129,14 +129,14 @@ internal class WeakReferenceStack
 		while (true)
 		{
 			var initNode = _node;
-			instance = default;
+			instance = null;
 
 			if (initNode is null)
 			{
 				return false;
 			}
 
-			WeakReferenceNode? newNode = default;
+			WeakReferenceNode? newNode = null;
 
 			for (var iNode = initNode; iNode is not null; iNode = iNode.NextNode)
 			{

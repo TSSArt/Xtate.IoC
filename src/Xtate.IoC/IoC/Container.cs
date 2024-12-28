@@ -31,7 +31,7 @@ public sealed class Container(IServiceCollection services) : ServiceProvider(ser
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule>(Action<IServiceCollection>? addServices = default) where TModule : IModule, new()
+	public static Container Create<TModule>(Action<IServiceCollection>? addServices = null) where TModule : IModule, new()
 	{
 		var services = new ServiceCollection();
 		services.AddModule<TModule>();
@@ -42,7 +42,7 @@ public sealed class Container(IServiceCollection services) : ServiceProvider(ser
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2>(Action<IServiceCollection>? addServices = default)
+	public static Container Create<TModule1, TModule2>(Action<IServiceCollection>? addServices = null)
 		where TModule1 : IModule, new()
 		where TModule2 : IModule, new()
 	{
@@ -56,7 +56,7 @@ public sealed class Container(IServiceCollection services) : ServiceProvider(ser
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2, TModule3>(Action<IServiceCollection>? addServices = default)
+	public static Container Create<TModule1, TModule2, TModule3>(Action<IServiceCollection>? addServices = null)
 		where TModule1 : IModule, new()
 		where TModule2 : IModule, new()
 		where TModule3 : IModule, new()
@@ -72,7 +72,7 @@ public sealed class Container(IServiceCollection services) : ServiceProvider(ser
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2, TModule3, TModule4>(Action<IServiceCollection>? addServices = default)
+	public static Container Create<TModule1, TModule2, TModule3, TModule4>(Action<IServiceCollection>? addServices = null)
 		where TModule1 : IModule, new()
 		where TModule2 : IModule, new()
 		where TModule3 : IModule, new()
@@ -90,7 +90,7 @@ public sealed class Container(IServiceCollection services) : ServiceProvider(ser
 	}
 
 	[MustDisposeResource]
-	public static Container Create<TModule1, TModule2, TModule3, TModule4, TModule5>(Action<IServiceCollection>? addServices = default)
+	public static Container Create<TModule1, TModule2, TModule3, TModule4, TModule5>(Action<IServiceCollection>? addServices = null)
 		where TModule1 : IModule, new()
 		where TModule2 : IModule, new()
 		where TModule3 : IModule, new()

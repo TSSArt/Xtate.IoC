@@ -86,12 +86,12 @@ internal sealed class FactorySyncFactoryProvider<TImplementation, TService, TArg
 		{
 			if (!StubType.IsMatch(typeof(TService), typeof(TResolvedService)))
 			{
-				return default;
+				return null;
 			}
 
 			if (!StubType.IsMatch(typeof(TArg), typeof(TResolvedArg)))
 			{
-				return default;
+				return null;
 			}
 
 			var methodInfo = ImplementationType.TypeOf<TImplementation>().GetMethodInfo<TResolvedService, TResolvedArg>(true);

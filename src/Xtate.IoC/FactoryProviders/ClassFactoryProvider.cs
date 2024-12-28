@@ -191,10 +191,10 @@ internal abstract class ClassFactoryProvider
 
 		async = false;
 
-		return default;
+		return null;
 	}
 
-	private static Type? IsFunc(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>) ? type.GetGenericArguments()[0] : default;
+	private static Type? IsFunc(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>) ? type.GetGenericArguments()[0] : null;
 
 	private static (Type? Type, Type? ArgType) IsFunc2(Type type) =>
 		type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<,>) && type.GetGenericArguments() is { } args ? (args[1], args[0]) : default;
@@ -202,7 +202,7 @@ internal abstract class ClassFactoryProvider
 	private static (Type? Type, Type? ArgType1, Type? ArgType2) IsFunc3(Type type) =>
 		type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<,,>) && type.GetGenericArguments() is { } args ? (args[2], args[0], args[1]) : default;
 
-	private static Type? IsValueTask(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>) ? type.GetGenericArguments()[0] : default;
+	private static Type? IsValueTask(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>) ? type.GetGenericArguments()[0] : null;
 
 	private static Delegate CreateDelegate(MethodInfo methodInfo, params Type[] args)
 	{
@@ -248,8 +248,8 @@ internal abstract class ClassFactoryProvider
 
 	private static ConstructorInfo? FindConstructorInfo(bool isValueType, IEnumerable<ConstructorInfo> constructorInfos)
 	{
-		ConstructorInfo? obsoleteConstructorInfo = default;
-		ConstructorInfo? actualConstructorInfo = default;
+		ConstructorInfo? obsoleteConstructorInfo = null;
+		ConstructorInfo? actualConstructorInfo = null;
 		var multipleObsolete = false;
 		var multipleActual = false;
 
@@ -293,7 +293,7 @@ internal abstract class ClassFactoryProvider
 
 		if (isValueType)
 		{
-			return default;
+			return null;
 		}
 
 		throw new DependencyInjectionException(Resources.Exception_NoConstructorFound);
@@ -355,7 +355,7 @@ internal abstract class ClassFactoryProvider
 
 		public override bool IsNotNull(string path = "") => !NullabilityHelper.IsNullable(parameterInfo, path);
 
-		public override Action<object, object?>? CreateSetter() => default;
+		public override Action<object, object?>? CreateSetter() => null;
 	}
 
 	private class Field(FieldInfo fieldInfo) : MemberBase

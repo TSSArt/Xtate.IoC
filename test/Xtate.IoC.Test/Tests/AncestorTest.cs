@@ -113,15 +113,15 @@ public class AncestorTest
 
 	#region Interface IServiceProviderActions
 
-		public IServiceProviderDataActions? RegisterServices() => default;
+		public IServiceProviderDataActions? RegisterServices() => null;
 
-		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => default;
+		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => null;
 
-		public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey) => default;
+		public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey) => null;
 
-		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey) => typeKey.IsEmptyArg ? this : default;
+		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey) => typeKey.IsEmptyArg ? this : null;
 
-		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey) => typeKey.IsEmptyArg ? this : default;
+		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey) => typeKey.IsEmptyArg ? this : null;
 
 	#endregion
 
@@ -136,7 +136,7 @@ public class AncestorTest
 		[ExcludeFromCodeCoverage]
 		public void ServiceRequested<T, TArg>(T? instance) { }
 
-		public void FactoryCalling<T, TArg>(TArg argument) => GetCurrentContainer().Add((typeof(T), default));
+		public void FactoryCalling<T, TArg>(TArg argument) => GetCurrentContainer().Add((typeof(T), null));
 
 		public void FactoryCalled<T, TArg>(T? instance)
 		{
@@ -161,7 +161,7 @@ public class AncestorTest
 
 			if (container.Count == 0)
 			{
-				_local.Value = default!;
+				_local.Value = null!;
 
 				ContainerPool.Add(container);
 			}
@@ -216,36 +216,36 @@ public class AncestorTest
 	private class GrandParent
 	{
 		[UsedImplicitly]
-		public required Parent ParentInstance = default!;
+		public required Parent ParentInstance = null!;
 	}
 
 	private class Parent
 	{
 		[UsedImplicitly]
-		public required Child ChildInstance = default!;
+		public required Child ChildInstance = null!;
 
 		[UsedImplicitly]
-		public required ILazy<GrandParent> GrandParentInstance = default!;
+		public required ILazy<GrandParent> GrandParentInstance = null!;
 	}
 
 	private class Child
 	{
 		[UsedImplicitly]
-		public required ILazy<Parent> ParentInstance1 = default!;
+		public required ILazy<Parent> ParentInstance1 = null!;
 
 		[UsedImplicitly]
-		public required ILazy<Parent> ParentInstance2 = default!;
+		public required ILazy<Parent> ParentInstance2 = null!;
 
 		[UsedImplicitly]
-		public required ILazy<Parent> ParentInstance3 = default!;
+		public required ILazy<Parent> ParentInstance3 = null!;
 	}
 
 	private class ChildPost
 	{
 		[UsedImplicitly]
-		public required ILazy<Parent> ParentInstance = default!;
+		public required ILazy<Parent> ParentInstance = null!;
 
 		[UsedImplicitly]
-		public required Lazy<Parent> ParentInstanceGetter = default!;
+		public required Lazy<Parent> ParentInstanceGetter = null!;
 	}
 }

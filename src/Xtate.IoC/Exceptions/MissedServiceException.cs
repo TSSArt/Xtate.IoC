@@ -41,6 +41,6 @@ public class MissedServiceException : DependencyInjectionException
 			? Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))
 			: Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), argumentType);
 
-		return new MissedServiceException(message) { Service = typeof(T), Argument = isEmptyArg ? default : typeof(TArg) };
+		return new MissedServiceException(message) { Service = typeof(T), Argument = isEmptyArg ? null : typeof(TArg) };
 	}
 }

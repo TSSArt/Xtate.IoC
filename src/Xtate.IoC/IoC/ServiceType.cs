@@ -26,7 +26,7 @@ internal readonly struct ServiceType : IEquatable<ServiceType>
 	private ServiceType(Type type)
 	{
 		_type = type;
-		_openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : default;
+		_openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
 	}
 
 	public Type Type => _type ?? throw new InvalidOperationException(Resources.Exception_ServiceTypeNotInitialized);

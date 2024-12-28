@@ -120,12 +120,12 @@ internal static class TupleHelper
 				return true;
 			}
 
-			val = default;
+			val = null;
 
 			return false;
 		}
 
-		public override Expression? TryBuildInternal(Type type, Expression arg) => type == typeof(TArg) ? arg : default;
+		public override Expression? TryBuildInternal(Type type, Expression arg) => type == typeof(TArg) ? arg : null;
 
 		public override bool IsMatchInternal(Type type) => type == typeof(TArg);
 	}

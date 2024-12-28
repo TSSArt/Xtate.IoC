@@ -26,7 +26,7 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ServiceCollectionExtensionsTest
 {
-	private ServiceCollection _services = default!;
+	private ServiceCollection _services = null!;
 
 	[TestInitialize]
 	public void Initialization()

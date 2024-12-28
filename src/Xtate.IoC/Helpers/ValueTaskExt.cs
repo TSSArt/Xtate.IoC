@@ -17,11 +17,11 @@
 
 namespace Xtate.IoC;
 
-public class ServiceProviderScope(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = null) : ServiceProvider(sourceServiceProvider, additionalServices), IServiceScope
+internal static class ValueTaskExt
 {
-#region Interface IServiceScope
-
-	public IServiceProvider ServiceProvider => this;
-
-#endregion
+	public static ValueTask CompletedTask
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get => default;
+	}
 }

@@ -85,7 +85,7 @@ internal static class TypeHelper
 	{
 		if (type.IsEnum)
 		{
-			return default;
+			return null;
 		}
 
 		var name = Type.GetTypeCode(type) switch
@@ -104,7 +104,7 @@ internal static class TypeHelper
 					   TypeCode.UInt16  => @"ushort",
 					   TypeCode.UInt32  => @"uint",
 					   TypeCode.UInt64  => @"ulong",
-					   _                => default
+					   _                => null
 				   };
 
 		if (name is not null)
@@ -122,7 +122,7 @@ internal static class TypeHelper
 			return @"void";
 		}
 
-		return default;
+		return null;
 	}
 
 	private static string? TryGetSimpleName(Type type)
@@ -137,7 +137,7 @@ internal static class TypeHelper
 			return type.Name;
 		}
 
-		return default;
+		return null;
 	}
 
 	private static StringBuilder AppendQualifiedName(this StringBuilder sb, Type type)

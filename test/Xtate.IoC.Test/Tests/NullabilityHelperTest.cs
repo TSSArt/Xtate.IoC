@@ -27,7 +27,7 @@ namespace Xtate.IoC.Test;
 public class NullabilityHelperTest
 {
 	[ExcludeFromCodeCoverage]
-	private static ParameterInfo GetParameterInfo([CallerMemberName] string? member = default) =>
+	private static ParameterInfo GetParameterInfo([CallerMemberName] string? member = null) =>
 		typeof(NullabilityHelperTest)
 			.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
 			.Single(m => m.Name != member && m.Name.Contains(member!))

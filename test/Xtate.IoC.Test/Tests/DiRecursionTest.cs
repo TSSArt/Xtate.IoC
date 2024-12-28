@@ -44,9 +44,9 @@ public class DiRecursionTest
 
 	#region Interface IServiceProviderActions
 
-		public IServiceProviderDataActions? RegisterServices() => default;
+		public IServiceProviderDataActions? RegisterServices() => null;
 
-		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => default;
+		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => null;
 
 		[ExcludeFromCodeCoverage]
 		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException(typeKey?.ToString());
@@ -58,7 +58,7 @@ public class DiRecursionTest
 				throw new DependencyInjectionException();
 			}
 
-			return default;
+			return null;
 		}
 
 		[ExcludeFromCodeCoverage]
@@ -66,7 +66,7 @@ public class DiRecursionTest
 		{
 			_level --;
 
-			return default;
+			return null;
 		}
 
 	#endregion

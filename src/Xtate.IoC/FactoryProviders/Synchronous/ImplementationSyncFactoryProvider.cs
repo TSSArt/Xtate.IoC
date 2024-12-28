@@ -34,7 +34,7 @@ internal static class ImplementationSyncFactoryProvider<T, TArg>
 		public override Delegate? GetDelegate<TResolved, TResolvedArg>() =>
 			StubType.IsMatch(typeof(T), typeof(TResolved)) && StubType.IsMatch(typeof(TArg), typeof(TResolvedArg))
 				? ClassSyncFactoryProvider<TResolved, TResolved>.GetServiceDelegate<TResolvedArg>()
-				: default;
+				: null;
 
 		public static Resolver GetResolver() => Instance;
 	}

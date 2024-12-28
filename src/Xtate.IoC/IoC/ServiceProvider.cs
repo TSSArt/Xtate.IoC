@@ -29,14 +29,14 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public ServiceProvider(IServiceCollection services)
 	{
-		_sourceServiceProvider = default;
+		_sourceServiceProvider = null;
 		SharedObjectsBin = new SharedObjectsBin();
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
 
 		Initialization(services);
 	}
 
-	protected ServiceProvider(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = default)
+	protected ServiceProvider(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = null)
 	{
 		_sourceServiceProvider = sourceServiceProvider;
 		SharedObjectsBin = sourceServiceProvider.SharedObjectsBin;
@@ -159,7 +159,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 		foreach (var registration in services)
 		{
-			AddRegistration(groupedServices, sourceServiceProvider: default, registration);
+			AddRegistration(groupedServices, sourceServiceProvider: null, registration);
 		}
 
 		AddForwarding(groupedServices, static (serviceProvider, _) => serviceProvider);
@@ -169,7 +169,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	}
 
 	private void AddForwarding<T>(Dictionary<TypeKey, ImplementationEntry?> services, Func<IServiceProvider, Empty, T> evaluator) =>
-		AddRegistration(services, sourceServiceProvider: default, new ServiceEntry(TypeKey.ServiceKeyFast<T, Empty>(), InstanceScope.Forwarding, evaluator));
+		AddRegistration(services, sourceServiceProvider: null, new ServiceEntry(TypeKey.ServiceKeyFast<T, Empty>(), InstanceScope.Forwarding, evaluator));
 
 	private IEnumerable<KeyValuePair<TypeKey, ImplementationEntry?>> GroupServices(ServiceProvider sourceServiceProvider, IServiceCollection? services)
 	{
@@ -236,7 +236,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private ImplementationEntry? CopyEntries(SimpleTypeKey typeKey)
 	{
-		ImplementationEntry? lastEntry = default;
+		ImplementationEntry? lastEntry = null;
 
 		if (_sourceServiceProvider?.GetImplementationEntry(typeKey) is { } sourceEntry)
 		{
@@ -251,7 +251,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private ImplementationEntry? CreateEntries<T, TArg>(GenericTypeKey typeKey)
 	{
-		ImplementationEntry? lastEntry = default;
+		ImplementationEntry? lastEntry = null;
 
 		if (GetImplementationEntry(typeKey.DefinitionKey) is { } genericEntry)
 		{
@@ -264,7 +264,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 								  Func<IServiceProvider, TArg, T?> func               => func,
 								  Func<IServiceProvider, T, TArg, ValueTask<T?>> func => func,
 								  Func<IServiceProvider, T, TArg, T?> func            => func,
-								  _                                                   => default
+								  _                                                   => null
 							  };
 
 				if (factory is not null)

@@ -53,7 +53,7 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 	{
 		GetLogger().ServiceRequesting(typeKey);
 
-		return default;
+		return null;
 	}
 
 	public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
@@ -63,21 +63,21 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 		GetLogger().FactoryCalling(stat.CallsCount);
 
-		return default;
+		return null;
 	}
 
 	public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey)
 	{
 		GetStat(typeKey).FactoryCalled();
 
-		return default;
+		return null;
 	}
 
 	public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey)
 	{
 		GetLogger().ServiceRequested();
 
-		return default;
+		return null;
 	}
 
 #endregion
@@ -337,7 +337,7 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 
 			_localWriter?.Close();
 
-			_localWriter = default;
+			_localWriter = null;
 		}
 	}
 
