@@ -100,7 +100,7 @@ public class TypeKeyTest
 		var key = TypeKey.ServiceKey<GenericClass<object>, int>();
 
 		// Assert  
-		Assert.AreEqual(expected: "TypeKeyTest.GenericClass<object>(int)", key.ToString());
+		Assert.AreEqual(expected: "TypeKeyTest.GenericClass<object>(int p1)", key.ToString());
 	}
 
 	[TestMethod]
@@ -110,7 +110,7 @@ public class TypeKeyTest
 		var key = TypeKey.ImplementationKey<GenericClass<object>, int>();
 
 		// Assert  
-		Assert.AreEqual(expected: "^TypeKeyTest.GenericClass<object>(int)", key.ToString());
+		Assert.AreEqual(expected: "^TypeKeyTest.GenericClass<object>(int p1)", key.ToString());
 	}
 
 	[TestMethod]

@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2024 Sergii Artemenko
+﻿// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -20,7 +20,7 @@ using System.IO;
 
 namespace Xtate.IoC;
 
-public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderActions, IServiceProviderDataActions, IDisposable
+public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) : IServiceProviderActions, IServiceProviderDataActions, IDisposable
 {
 	private readonly AsyncLocal<ServiceLogger> _logger = new();
 
@@ -31,8 +31,6 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 	private readonly TextWriter _writer = writer;
 
 	private int _writerOwned;
-
-	public ServiceProviderDebugger() : this(Console.Out) { }
 
 #region Interface IDisposable
 
@@ -172,6 +170,11 @@ public class ServiceProviderDebugger(TextWriter writer) : IServiceProviderAction
 				DumpStatistics();
 
 				_writer.Flush();
+
+				if (!leaveOpen)
+				{
+					_writer.Close();
+				}
 			}
 			catch (ObjectDisposedException)
 			{

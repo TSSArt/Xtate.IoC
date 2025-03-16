@@ -408,7 +408,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>(() => _services.AddType<TwoConstructor>());
+		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => _services.AddType<TwoConstructor>());
 	}
 
 	[TestMethod]
@@ -434,7 +434,7 @@ public class FactoryProviderTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>(() => _services.AddType<NoConstructor>());
+		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => _services.AddType<NoConstructor>());
 	}
 
 	[TestMethod]

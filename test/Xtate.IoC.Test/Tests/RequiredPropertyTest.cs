@@ -108,13 +108,13 @@ namespace Xtate.IoC.Test
 
 			// Assert
 			Assert.IsNotNull(class1Instance);
-			//Assert.IsNotNull(class1Instance.DepClassProp);
-			//Assert.IsNotNull(class1Instance.DepClassField);
-			//Assert.IsNotNull(class1Instance.DepClassPropPublic);
+			Assert.IsNotNull(class1Instance.DepClassProp);
+			Assert.IsNotNull(class1Instance.DepClassField);
+			Assert.IsNotNull(class1Instance.DepClassPropPublic);
 			Assert.IsNotNull(inst);
 			Assert.IsNotNull(inst2);
 			Assert.IsNotNull(inst3);
-			//Assert.IsNotNull(class1Instance.DepClass2ArgsFieldServices);
+			Assert.IsNotNull(class1Instance.DepClass2ArgsFieldServices);
 		}
 
 		[TestMethod]

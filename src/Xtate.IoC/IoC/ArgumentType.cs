@@ -37,8 +37,7 @@ internal readonly struct ArgumentType : IFormattable
 			return string.Empty;
 		}
 
-		if (format is null || format.Length == 0 || !_type.IsTuple() || format.Split('|') is not [var dlm, var arg]
-			|| !TryGetArgFormat(arg, out var argFormat, out var index))
+		if (format is null || format.Length == 0 || format.Split('|') is not [var dlm, var arg] || !TryGetArgFormat(arg, out var argFormat, out var index))
 		{
 			return _type.FriendlyName();
 		}
@@ -47,7 +46,7 @@ internal readonly struct ArgumentType : IFormattable
 
 		string? delimiter = null;
 
-		foreach (var type in _type.DecomposeTuple())
+		foreach (var type in _type.DecomposeType())
 		{
 			if (delimiter is not null)
 			{
@@ -58,7 +57,7 @@ internal readonly struct ArgumentType : IFormattable
 				delimiter = dlm;
 			}
 
-			sb.AppendFriendlyName(type).AppendFormat(formatProvider, argFormat, index ++);
+			sb.AppendFriendlyName(type).Append(' ').AppendFormat(formatProvider, argFormat, index ++);
 		}
 
 		return sb.ToString();

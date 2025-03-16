@@ -163,12 +163,7 @@ internal static class TypeHelper
 
 	private static Type GetDeclaringType(Type type)
 	{
-		if (!type.IsGenericType)
-		{
-			return type.DeclaringType!;
-		}
-
-		if (type.DeclaringType is not { IsGenericType: true } declaringType)
+		if (!type.IsGenericType || type.DeclaringType is not { IsGenericType: true } declaringType)
 		{
 			return type.DeclaringType!;
 		}
@@ -179,15 +174,22 @@ internal static class TypeHelper
 		return declaringType.MakeGenericType(parentArguments);
 	}
 
-	public static IEnumerable<Type> DecomposeTuple(this Type type)
+	public static IEnumerable<Type> DecomposeType(this Type type)
 	{
+		if (!type.IsTuple())
+		{
+			yield return type;
+			
+			yield break;
+		}
+
 		var genericArguments = type.GetGenericArguments();
 
 		for (var i = 0; i < genericArguments.Length; i ++)
 		{
 			if (i == 7)
 			{
-				foreach (var itemType in DecomposeTuple(genericArguments[7]))
+				foreach (var itemType in DecomposeType(genericArguments[7]))
 				{
 					yield return itemType;
 				}
@@ -235,24 +237,29 @@ internal static class TypeHelper
 			return true;
 		}
 
-		if (type.DeclaringType is not { IsGenericType: true } declaringType)
+		if (type.DeclaringType is { IsGenericType: true } declaringType)
 		{
-			return true;
+			return type.GetGenericArguments().Length > declaringType.GetGenericArguments().Length;
 		}
 
-		return type.GetGenericArguments().Length > declaringType.GetGenericArguments().Length;
+		return true;
 	}
 
 	private static IEnumerable<Type> GetGenericArgs(Type type)
 	{
-		if (!type.IsNested || type.DeclaringType is not { IsGenericType: true })
+		if (!type.IsNested)
 		{
 			return type.GetGenericArguments();
 		}
 
-		return Enumerate(type);
+		if (type.DeclaringType is { IsGenericType: true })
+		{
+			return EnumerateOwnArgs(type);
+		}
 
-		static IEnumerable<Type> Enumerate(Type type)
+		return type.GetGenericArguments();
+
+		static IEnumerable<Type> EnumerateOwnArgs(Type type)
 		{
 			var args = type.GetGenericArguments();
 
@@ -293,7 +300,7 @@ internal static class TypeHelper
 	{
 		string? delimiter = null;
 
-		foreach (var typeItem in DecomposeTuple(type))
+		foreach (var typeItem in DecomposeType(type))
 		{
 			if (delimiter is not null)
 			{
@@ -315,7 +322,7 @@ internal static class TypeHelper
 	/// </summary>
 	/// <param name="type">The type to check.</param>
 	/// <returns>True if the type is a tuple; otherwise, false.</returns>
-	public static bool IsTuple(this Type type)
+	private static bool IsTuple(this Type type)
 	{
 		if (!type.IsGenericType)
 		{
@@ -324,7 +331,8 @@ internal static class TypeHelper
 
 		var typeDef = type.GetGenericTypeDefinition();
 
-		return typeDef == typeof(ValueTuple<,>) ||
+		return typeDef == typeof(ValueTuple<>) ||
+			   typeDef == typeof(ValueTuple<,>) ||
 			   typeDef == typeof(ValueTuple<,,>) ||
 			   typeDef == typeof(ValueTuple<,,>) ||
 			   typeDef == typeof(ValueTuple<,,,>) ||

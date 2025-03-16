@@ -98,9 +98,9 @@ public class DiTest2
 		var class5 = await serviceProvider.GetRequiredService<Class5, int>(22);
 
 		Assert.IsNotNull(class5);
-		//Assert.IsNotNull(class5.PropClass1);
-		//Assert.IsNotNull(class5.PropClass2);
-		//Assert.IsNotNull(class5.PropClass4);
+		Assert.IsNotNull(class5.PropClass1);
+		Assert.IsNotNull(class5.PropClass2);
+		Assert.IsNotNull(class5.PropClass4);
 		Assert.AreEqual(expected: 22, class5.PropClass4.Val);
 		Assert.AreEqual(expected: 1, class5.PropClass4S.Length);
 		Assert.AreEqual(expected: 22, class5.PropClass4S[0].Val);
