@@ -298,14 +298,14 @@ public class ServiceProviderExtensionsTest
 	}
 
 	[TestMethod]
-	public void GetRequiredSyncFactory_WithoutArgs_ThrowsException()
+	public void GetRequiredSyncFactory_WithoutArgs_ThrowsExactly()
 	{
 		// Arrange
 		var sc = new ServiceCollection();
 		var sp = sc.BuildProvider();
 
 		// Act & Assert
-		Assert.ThrowsException<MissedServiceException>(sp.GetRequiredSyncFactory<Service, int, int>);
+		Assert.ThrowsExactly<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Service, int, int>());
 	}
 
 	[TestMethod]

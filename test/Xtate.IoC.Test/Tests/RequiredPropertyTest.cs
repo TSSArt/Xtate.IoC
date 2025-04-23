@@ -152,7 +152,7 @@ namespace Xtate.IoC.Test
 			var serviceProvider = serviceCollection.BuildProvider();
 
 			// Act & Assert
-			await Assert.ThrowsExceptionAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await serviceProvider.GetRequiredService<Sync2Class>());
+			await Assert.ThrowsExactlyAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await serviceProvider.GetRequiredService<Sync2Class>());
 		}
 
 		[TestMethod]

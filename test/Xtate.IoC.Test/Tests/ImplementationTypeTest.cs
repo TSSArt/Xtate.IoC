@@ -30,7 +30,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<ArgumentException>([ExcludeFromCodeCoverage]() => ImplementationType.TypeOf<IInterface>());
+		Assert.ThrowsExactly<ArgumentException>([ExcludeFromCodeCoverage]() => ImplementationType.TypeOf<IInterface>());
 	}
 
 	[TestMethod]
@@ -42,7 +42,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<ArgumentException>([ExcludeFromCodeCoverage]() => sc.AddImplementation<IInterface>());
+		Assert.ThrowsExactly<ArgumentException>([ExcludeFromCodeCoverage]() => sc.AddImplementation<IInterface>());
 	}
 
 	[TestMethod]
@@ -54,7 +54,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => empty.Type);
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => _ = empty.Type);
 	}
 
 	[TestMethod]
@@ -153,7 +153,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<int>, int>(false));
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<int>, int>(false));
 	}
 
 	[TestMethod]
@@ -165,7 +165,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<Any>, int>(false));
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<Any>, int>(false));
 	}
 
 	[TestMethod]
@@ -203,7 +203,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<int>, int>(false));
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<int>, int>(false));
 	}
 
 	[TestMethod]
@@ -215,7 +215,7 @@ public class ImplementationTypeTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<string>, int>(false));
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<string>, int>(false));
 	}
 
 	// ReSharper disable All

@@ -49,7 +49,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
+		await Assert.ThrowsExactlyAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
 	}
 
 	[TestMethod]
@@ -110,7 +110,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -155,7 +155,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class, int>(4));
+		await Assert.ThrowsExactlyAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class, int>(4));
 	}
 
 	[TestMethod]
@@ -170,7 +170,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -184,7 +184,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<ClassAsyncInit>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<ClassAsyncInit>()());
 	}
 
 	[TestMethod]
@@ -199,7 +199,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetSyncFactory<Class>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -213,7 +213,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetSyncFactory<ClassAsyncInit>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetSyncFactory<ClassAsyncInit>()());
 	}
 
 	[TestMethod]
@@ -229,7 +229,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<InvalidOperationException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
+		await Assert.ThrowsExactlyAsync<InvalidOperationException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
 	}
 
 	[TestMethod]
@@ -245,7 +245,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -261,7 +261,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -278,7 +278,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -294,7 +294,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -311,7 +311,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -324,7 +324,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
+		await Assert.ThrowsExactlyAsync<MissedServiceException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<Class>());
 	}
 
 	[TestMethod]
@@ -337,7 +337,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<Class>());
+		Assert.ThrowsExactly<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredServiceSync<Class>());
 	}
 
 	[TestMethod]
@@ -350,7 +350,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<MissedServiceException>(sp.GetRequiredFactory<Class>);
+		Assert.ThrowsExactly<MissedServiceException>([ExcludeFromCodeCoverage]() => sp.GetRequiredFactory<Class>());
 	}
 
 	[TestMethod]
@@ -439,7 +439,7 @@ public class ImplementationEntryTest
 
 		// Assert
 		Assert.IsTrue(inst.Disposed);
-		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry.GetRequiredService<AsyncDisposableClass, ValueTuple>(default));
+		await Assert.ThrowsExactlyAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry.GetRequiredService<AsyncDisposableClass, ValueTuple>(default));
 	}
 
 	[TestMethod]
@@ -457,7 +457,7 @@ public class ImplementationEntryTest
 
 		// Assert
 		Assert.IsTrue(inst.Disposed);
-		Assert.ThrowsException<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
+		Assert.ThrowsExactly<ObjectDisposedException>([ExcludeFromCodeCoverage]() => entry.GetRequiredServiceSyncDelegate<DisposableClass, ValueTuple, Func<ValueTuple, DisposableClass>>()(default));
 	}
 
 	[TestMethod]
@@ -473,7 +473,7 @@ public class ImplementationEntryTest
 		await Disposer.DisposeAsync(sp);
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+		await Assert.ThrowsExactlyAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
 	}
 
 	[TestMethod]
@@ -519,7 +519,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	[TestMethod]
@@ -535,7 +535,7 @@ public class ImplementationEntryTest
 		await Disposer.DisposeAsync(sp);
 
 		// Assert
-		await Assert.ThrowsExceptionAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
+		await Assert.ThrowsExactlyAsync<ObjectDisposedException>([ExcludeFromCodeCoverage] async () => await entry!.GetRequiredService<DisposableClass, ValueTuple>(default));
 	}
 
 	[TestMethod]
@@ -628,7 +628,7 @@ public class ImplementationEntryTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
 	// ReSharper disable All

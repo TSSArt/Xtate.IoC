@@ -27,7 +27,7 @@ public class ServiceTypeTest
 		var empty = new ServiceType();
 
 		// Act & Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => empty.Type);
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => _ = empty.Type);
 	}
 
 	[TestMethod]

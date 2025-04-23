@@ -28,7 +28,7 @@ public class InfraTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.Assert(false));
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.Assert(false));
 	}
 
 	[TestMethod]
@@ -39,7 +39,7 @@ public class InfraTest
 		// Act
 
 		// Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.NotNull(null!));
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.NotNull(null!));
 	}
 
 	[TestMethod]

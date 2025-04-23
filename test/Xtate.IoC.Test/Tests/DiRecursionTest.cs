@@ -35,7 +35,7 @@ public class DiRecursionTest
 		var serviceProvider = serviceCollection.BuildProvider();
 
 		// Act & Assert
-		await Assert.ThrowsExceptionAsync<DependencyInjectionException>(async () => await serviceProvider.GetRequiredService<R1>());
+		await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await serviceProvider.GetRequiredService<R1>());
 	}
 
 	private class RecursionDetector : IServiceProviderActions

@@ -252,7 +252,7 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 
 		// Act & Assert
-		Assert.ThrowsException<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
 	}
 
 	[TestMethod]
@@ -325,7 +325,7 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection { new ServiceEntry(TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
 
 		// Act & Assert
-		Assert.ThrowsException<InvalidOperationException>(sc.BuildProvider);
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.BuildProvider());
 
 		return;
 

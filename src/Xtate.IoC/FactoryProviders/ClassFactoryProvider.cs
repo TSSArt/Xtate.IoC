@@ -111,7 +111,7 @@ internal abstract class ClassFactoryProvider
 			Parameters = [];
 		}
 
-		RequiredMembers = EnumerateRequiredMembers(implementationType).ToArray();
+		RequiredMembers = [..EnumerateRequiredMembers(implementationType)];
 	}
 
 	protected abstract MethodInfo GetServiceMethodInfo { get; }

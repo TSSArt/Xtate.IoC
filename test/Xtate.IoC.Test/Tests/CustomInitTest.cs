@@ -142,7 +142,7 @@ public class CustomInitTest
 		var serviceProvider = sc.BuildProvider();
 
 		// Act & Assert
-		Assert.ThrowsException<DependencyInjectionException>([ExcludeFromCodeCoverage]() => serviceProvider.GetRequiredServiceSync<Temp>());
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => serviceProvider.GetRequiredServiceSync<Temp>());
 	}
 
 	[TestMethod]

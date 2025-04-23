@@ -28,7 +28,7 @@ public class MissedServiceExceptionTest
 
 		// Assert
 		Assert.IsNotNull(exception);
-		Assert.IsNotNull(exception.Service);
+		Assert.AreEqual(typeof(void), exception.Service);
 		Assert.IsNull(exception.Argument);
 	}
 
@@ -44,7 +44,7 @@ public class MissedServiceExceptionTest
 		// Assert
 		Assert.IsNotNull(exception);
 		Assert.AreEqual(message, exception.Message);
-		Assert.IsNotNull(exception.Service);
+		Assert.AreEqual(typeof(void), exception.Service);
 		Assert.IsNull(exception.Argument);
 	}
 
@@ -62,7 +62,7 @@ public class MissedServiceExceptionTest
 		Assert.IsNotNull(exception);
 		Assert.AreEqual(message, exception.Message);
 		Assert.AreEqual(innerException, exception.InnerException);
-		Assert.IsNotNull(exception.Service);
+		Assert.AreEqual(typeof(void), exception.Service);
 		Assert.IsNull(exception.Argument);
 	}
 

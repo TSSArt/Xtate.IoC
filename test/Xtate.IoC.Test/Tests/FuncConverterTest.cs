@@ -24,7 +24,7 @@ public class FuncConverterTest
 	public void Cast_EventHandler_ThrowsInvalidCastException()
 	{
 		// Arrange & Act & Assert
-		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
+		Assert.ThrowsExactly<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
 
 		return;
 
@@ -36,7 +36,7 @@ public class FuncConverterTest
 	public void Cast_PredicateString_ThrowsInvalidCastException()
 	{
 		// Arrange & Act & Assert
-		Assert.ThrowsException<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
+		Assert.ThrowsExactly<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
 
 		return;
 
@@ -82,7 +82,7 @@ public class FuncConverterTest
 	public void Cast_FuncObjectString_ThrowsArgumentException()
 	{
 		// Arrange & Act & Assert
-		Assert.ThrowsException<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
+		Assert.ThrowsExactly<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
 
 		return;
 

@@ -164,6 +164,6 @@ public class ServiceProviderDebuggerTest
 		}
 
 		// Assert
-		Assert.ThrowsException<DependencyInjectionException>(() => debugger.FactoryCalling(typeKey));
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => debugger.FactoryCalling(typeKey));
 	}
 }

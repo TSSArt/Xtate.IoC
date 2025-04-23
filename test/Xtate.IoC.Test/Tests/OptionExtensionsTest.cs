@@ -44,7 +44,6 @@ public class OptionExtensionsTest
 		option.Validate(allowedOptions);
 
 		// Assert
-		Assert.IsTrue(true); // If no exception is thrown, the test passes
 	}
 
 	[TestMethod]
