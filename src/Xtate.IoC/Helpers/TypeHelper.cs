@@ -179,7 +179,7 @@ internal static class TypeHelper
 		if (!type.IsTuple())
 		{
 			yield return type;
-			
+
 			yield break;
 		}
 

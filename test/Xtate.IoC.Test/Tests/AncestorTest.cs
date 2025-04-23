@@ -27,18 +27,17 @@ public class AncestorTest
 	public async Task AncestorSimpleTest_ShouldResolveDependenciesCorrectly()
 	{
 		// Arrange
-		await using var container = Container.Create(
-			s =>
-			{
-				s.AddType<ChildPost>();
-				s.AddType<GrandParent>();
-				s.AddType<Parent>();
-				s.AddType<Child>();
-				s.AddType<Child, int>();
-				s.AddImplementation<LazyImpl<Any>>().For<ILazy<Any>>();
-				s.AddSharedImplementationSync<ServiceProviderActions>(SharedWithin.Scope).For<ServiceProviderActions>().For<IServiceProviderActions>();
-				s.AddFactory<LazyImpl<Any>>().For<Lazy<Any>>();
-			});
+		await using var container = Container.Create(s =>
+													 {
+														 s.AddType<ChildPost>();
+														 s.AddType<GrandParent>();
+														 s.AddType<Parent>();
+														 s.AddType<Child>();
+														 s.AddType<Child, int>();
+														 s.AddImplementation<LazyImpl<Any>>().For<ILazy<Any>>();
+														 s.AddSharedImplementationSync<ServiceProviderActions>(SharedWithin.Scope).For<ServiceProviderActions>().For<IServiceProviderActions>();
+														 s.AddFactory<LazyImpl<Any>>().For<Lazy<Any>>();
+													 });
 
 		// Act
 		var grandParent = await container.GetRequiredService<GrandParent>();

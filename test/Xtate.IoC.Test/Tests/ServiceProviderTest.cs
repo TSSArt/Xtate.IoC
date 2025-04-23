@@ -176,13 +176,12 @@ public class ServiceProviderTest
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
 		var ssf = await sp.GetRequiredService<IServiceScopeFactory>();
-		var sp2 = ssf.CreateScope(
-						 sc2 =>
-						 {
-							 sc2.AddType<Class>();
-							 sc2.AddType<Class2>();
-							 sc2.AddType<Class2>();
-						 })
+		var sp2 = ssf.CreateScope(sc2 =>
+								  {
+									  sc2.AddType<Class>();
+									  sc2.AddType<Class2>();
+									  sc2.AddType<Class2>();
+								  })
 					 .ServiceProvider;
 
 		// Act
@@ -301,12 +300,11 @@ public class ServiceProviderTest
 		sc.AddType<GenericClass<long>>();
 		var sp = sc.BuildProvider();
 		var ssf = await sp.GetRequiredService<IServiceScopeFactory>();
-		var sp2 = ssf.CreateScope(
-						 sc2 =>
-						 {
-							 sc2.AddType<GenericClass<int>>();
-							 sc2.AddType<GenericClass<long>>();
-						 })
+		var sp2 = ssf.CreateScope(sc2 =>
+								  {
+									  sc2.AddType<GenericClass<int>>();
+									  sc2.AddType<GenericClass<long>>();
+								  })
 					 .ServiceProvider;
 
 		// Act

@@ -989,16 +989,14 @@ public class ServiceCollectionExtensionsTest
 		_services.AddTransientDecorator([ExcludeFromCodeCoverage] async (IServiceProvider sp, ClassNoArg _) => new ClassNoArg());
 		_services.AddTransientDecorator([ExcludeFromCodeCoverage](IServiceProvider sp, ClassArg _, Arg1 arg) => new ClassArg(arg));
 		_services.AddTransientDecorator([ExcludeFromCodeCoverage] async (IServiceProvider sp, ClassArg _, Arg1 arg) => new ClassArg(arg));
-		_services.AddTransientDecorator(
-			[ExcludeFromCodeCoverage](IServiceProvider sp,
-									  ClassMultiArg _,
-									  Arg1 arg1,
-									  Arg2 arg2) => new ClassMultiArg(arg1, arg2));
-		_services.AddTransientDecorator(
-			[ExcludeFromCodeCoverage] async (IServiceProvider sp,
-											 ClassMultiArg _,
-											 Arg1 arg1,
-											 Arg2 arg2) => new ClassMultiArg(arg1, arg2));
+		_services.AddTransientDecorator([ExcludeFromCodeCoverage](IServiceProvider sp,
+																  ClassMultiArg _,
+																  Arg1 arg1,
+																  Arg2 arg2) => new ClassMultiArg(arg1, arg2));
+		_services.AddTransientDecorator([ExcludeFromCodeCoverage] async (IServiceProvider sp,
+																		 ClassMultiArg _,
+																		 Arg1 arg1,
+																		 Arg2 arg2) => new ClassMultiArg(arg1, arg2));
 
 		_services.AddForwarding([ExcludeFromCodeCoverage](sp) => new ClassNoArg());
 		_services.AddForwarding([ExcludeFromCodeCoverage] async (sp) => new ClassNoArg());

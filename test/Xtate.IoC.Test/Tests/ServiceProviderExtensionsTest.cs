@@ -82,6 +82,7 @@ public class ServiceProviderExtensionsTest
 
 		// Assert
 		Assert.AreEqual(expected: 1, list.Count);
+
 		//Assert.IsNotNull(list[0]);
 	}
 
@@ -103,6 +104,7 @@ public class ServiceProviderExtensionsTest
 
 		// Assert
 		Assert.AreEqual(expected: 1, list.Count);
+
 		//Assert.IsNotNull(list[0]);
 	}
 
@@ -124,6 +126,7 @@ public class ServiceProviderExtensionsTest
 
 		// Assert
 		Assert.AreEqual(expected: 1, list.Count);
+
 		//Assert.IsNotNull(list[0]);
 	}
 
@@ -160,6 +163,7 @@ public class ServiceProviderExtensionsTest
 
 		// Assert
 		Assert.AreEqual(expected: 1, list.Count);
+
 		//Assert.IsNotNull(list[0]);
 	}
 
@@ -181,6 +185,7 @@ public class ServiceProviderExtensionsTest
 
 		// Assert
 		Assert.AreEqual(expected: 1, list.Count);
+
 		//Assert.IsNotNull(list[0]);
 	}
 
@@ -202,6 +207,7 @@ public class ServiceProviderExtensionsTest
 
 		// Assert
 		Assert.AreEqual(expected: 1, list.Count);
+
 		//Assert.IsNotNull(list[0]);
 	}
 

@@ -36,12 +36,11 @@ public class ScopeTest
 	public async Task NoScope_AnyType_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var container = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-			});
+		await using var container = Container.Create(s =>
+													 {
+														 s.AddImplementation<NonGeneric>().For<INonGeneric>();
+														 s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+													 });
 
 		// Act
 		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
@@ -60,13 +59,12 @@ public class ScopeTest
 	public async Task NoScope_SpecificTypes_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var container = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-				s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-			});
+		await using var container = Container.Create(s =>
+													 {
+														 s.AddImplementation<NonGeneric>().For<INonGeneric>();
+														 s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+														 s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+													 });
 
 		// Act
 		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
@@ -85,12 +83,11 @@ public class ScopeTest
 	public async Task Scoped_AnyType_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var parentContainer = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-			});
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														   });
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
 		var container = serviceScopeFactory.CreateScope().ServiceProvider;
@@ -112,13 +109,12 @@ public class ScopeTest
 	public async Task Scoped_SpecificTypes_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var parentContainer = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-				s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-			});
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+															   s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+														   });
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
 		var container = serviceScopeFactory.CreateScope().ServiceProvider;
@@ -140,19 +136,17 @@ public class ScopeTest
 	public async Task Scoped_AnyTypeInScope_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var parentContainer = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-			});
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														   });
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-		var container = serviceScopeFactory.CreateScope(
-											   s =>
-											   {
-												   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-											   })
+		var container = serviceScopeFactory.CreateScope(s =>
+														{
+															s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														})
 										   .ServiceProvider;
 
 		// Act
@@ -172,20 +166,18 @@ public class ScopeTest
 	public async Task Scoped_SpecificTypesInScope_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var parentContainer = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-				s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-			});
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+															   s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+														   });
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-		var container = serviceScopeFactory.CreateScope(
-											   s =>
-											   {
-												   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-											   })
+		var container = serviceScopeFactory.CreateScope(s =>
+														{
+															s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														})
 										   .ServiceProvider;
 
 		// Act
@@ -205,20 +197,18 @@ public class ScopeTest
 	public async Task Scoped_AnyTypeWithSpecificTypesInScope_ReturnsExpectedValues()
 	{
 		// Arrange
-		await using var parentContainer = Container.Create(
-			s =>
-			{
-				s.AddImplementation<NonGeneric>().For<INonGeneric>();
-				s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-			});
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														   });
 
 		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-		var container = serviceScopeFactory.CreateScope(
-											   s =>
-											   {
-												   s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-												   s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-											   })
+		var container = serviceScopeFactory.CreateScope(s =>
+														{
+															s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+															s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+														})
 										   .ServiceProvider;
 
 		// Act

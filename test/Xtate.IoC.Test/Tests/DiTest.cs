@@ -138,7 +138,7 @@ public class DiTest
 
 		// Assert
 		Assert.IsNotNull(classInstance);
-		Assert.AreEqual(@"[DecoratedClass]", classInstance.Value);
+		Assert.AreEqual(expected: @"[DecoratedClass]", classInstance.Value);
 	}
 
 	[TestMethod]
@@ -155,7 +155,7 @@ public class DiTest
 
 		// Assert
 		Assert.IsNotNull(classInstance);
-		Assert.AreEqual(@"[DecoratedClassSync]", classInstance.Value);
+		Assert.AreEqual(expected: @"[DecoratedClassSync]", classInstance.Value);
 	}
 
 	[TestMethod]
