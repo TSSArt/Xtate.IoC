@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading;
+
 namespace Xtate.IoC.Test;
 
 [TestClass]
@@ -31,10 +33,10 @@ public class HelpersTest
 	public async Task GetAsyncEnumerator_EmptyAsyncEnumerable_CurrentIsDefault()
 	{
 		// Arrange
-		var asyncEnum = AsyncEnumerable.Empty<int>();
+		var asyncEnum = IAsyncEnumerable<int>.Empty;
 
 		// Act
-		await using var asyncEnumerator = asyncEnum.GetAsyncEnumerator();
+		await using var asyncEnumerator = asyncEnum.GetAsyncEnumerator(CancellationToken.None);
 		var current = asyncEnumerator.Current;
 
 		// Assert

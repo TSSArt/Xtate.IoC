@@ -35,7 +35,7 @@ public class ServiceProviderDebuggerTest
 
 		// Assert
 		var expected = $"REG: {serviceEntry.InstanceScope,-18} | {serviceEntry.Key}";
-		Assert.IsTrue(stringWriter.ToString().Contains(expected));
+		Assert.Contains(expected, stringWriter.ToString());
 	}
 
 	[TestMethod]
@@ -51,7 +51,7 @@ public class ServiceProviderDebuggerTest
 		debugger.ServiceRequested(typeKey);
 
 		// Assert
-		Assert.IsTrue(stringWriter.ToString().Contains(typeKey.ToString() ?? string.Empty));
+		Assert.Contains(typeKey.ToString() ?? string.Empty, stringWriter.ToString());
 	}
 
 	[TestMethod]
@@ -69,7 +69,7 @@ public class ServiceProviderDebuggerTest
 		debugger.ServiceRequested(typeKey);
 
 		// Assert
-		Assert.IsTrue(stringWriter.ToString().Contains("{#1}"));
+		Assert.Contains("{#1}", stringWriter.ToString());
 	}
 
 	[TestMethod]
@@ -88,7 +88,7 @@ public class ServiceProviderDebuggerTest
 		debugger.Dispose();
 
 		// Assert
-		Assert.IsTrue(stringWriter.ToString().Contains("STAT:"));
+		Assert.Contains("STAT:", stringWriter.ToString());
 	}
 
 	[TestMethod]
@@ -104,7 +104,7 @@ public class ServiceProviderDebuggerTest
 		debugger.ServiceRequested(typeKey);
 
 		// Assert
-		Assert.IsTrue(stringWriter.ToString().Contains("CACHED"));
+		Assert.Contains("CACHED", stringWriter.ToString());
 	}
 
 	[TestMethod]
@@ -128,8 +128,8 @@ public class ServiceProviderDebuggerTest
 		debugger.Dispose();
 
 		// Assert
-		Assert.IsTrue(stringWriter.ToString().Contains("STAT:"));
-		Assert.IsTrue(stringWriter.ToString().Contains("{#3}"));
+		Assert.Contains("STAT:", stringWriter.ToString());
+		Assert.Contains("{#3}", stringWriter.ToString());
 	}
 
 	private static async Task AsyncDebug(ServiceProviderDebugger debugger, TypeKey typeKey, TypeKey typeKey2)

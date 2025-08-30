@@ -63,7 +63,7 @@ public class DiTest2
 
 		Assert.IsNotNull(class4);
 		Assert.AreEqual(expected: 556, class4.Val);
-		Assert.AreEqual(expected: "aa", class4.Sval);
+		Assert.AreEqual(expected: "aa", class4.ValStr);
 	}
 
 	[TestMethod]
@@ -76,7 +76,7 @@ public class DiTest2
 
 		Assert.IsNotNull(class4);
 		Assert.AreEqual(expected: 556, class4.Val);
-		Assert.AreEqual(expected: "aa", class4.Sval);
+		Assert.AreEqual(expected: "aa", class4.ValStr);
 	}
 
 	[TestMethod]
@@ -102,16 +102,16 @@ public class DiTest2
 		Assert.IsNotNull(class5.PropClass2);
 		Assert.IsNotNull(class5.PropClass4);
 		Assert.AreEqual(expected: 22, class5.PropClass4.Val);
-		Assert.AreEqual(expected: 1, class5.PropClass4S.Length);
+		Assert.HasCount(expected: 1, class5.PropClass4S);
 		Assert.AreEqual(expected: 22, class5.PropClass4S[0].Val);
-		Assert.AreEqual(expected: 1, class5.PropClass4SSync.Length);
+		Assert.HasCount(expected: 1, class5.PropClass4SSync);
 		Assert.AreEqual(expected: 22, class5.PropClass4SSync[0].Val);
-		Assert.AreEqual(expected: 1, class5.PropClass4STwo.Length);
+		Assert.HasCount(expected: 1, class5.PropClass4STwo);
 		Assert.AreEqual(expected: 22, class5.PropClass4STwo[0].Val);
-		Assert.AreEqual(expected: 1, class5.PropClass4STwoSync.Length);
+		Assert.HasCount(expected: 1, class5.PropClass4STwoSync);
 		Assert.AreEqual(expected: 22, class5.PropClass4STwoSync[0].Val);
-		Assert.AreEqual(expected: 2, class5.PropForDecorations.Length);
-		Assert.AreEqual(expected: 2, class5.PropForDecorationsSync.Length);
+		Assert.HasCount(expected: 2, class5.PropForDecorations);
+		Assert.HasCount(expected: 2, class5.PropForDecorationsSync);
 	}
 
 	[TestMethod]
@@ -148,8 +148,8 @@ public class DiTest2
 		Assert.IsNull(class6.PropClass1);
 		Assert.IsNull(class6.PropClass2);
 		Assert.IsNull(class6.PropClass4);
-		Assert.AreEqual(expected: 0, class6.PropClass4S.Length);
-		Assert.AreEqual(expected: 0, class6.PropForDecorations.Length);
+		Assert.IsEmpty(class6.PropClass4S);
+		Assert.IsEmpty(class6.PropForDecorations);
 	}
 
 	[TestMethod]
@@ -404,9 +404,9 @@ public class DiTest2
 		public int Val { get; } = val;
 	}
 
-	private class Class4A(string sval, int val)
+	private class Class4A(string valStr, int val)
 	{
-		public string Sval { get; } = sval;
+		public string ValStr { get; } = valStr;
 
 		public int Val { get; } = val;
 	}

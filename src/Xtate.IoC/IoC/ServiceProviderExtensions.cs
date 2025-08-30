@@ -55,7 +55,7 @@ public static class ServiceProviderExtensions
 	public static IAsyncEnumerable<T> GetServices<T>(this IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServices<T, Empty>(default);
 
 	public static IAsyncEnumerable<T> GetServices<T, TArg>(this IServiceProvider serviceProvider, TArg arg) where T : notnull =>
-		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServices<T, TArg>(arg) ?? AsyncEnumerable.Empty<T>();
+		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServices<T, TArg>(arg) ?? IAsyncEnumerable<T>.Empty;
 
 	public static IAsyncEnumerable<T> GetServices<T, TArg1, TArg2>(this IServiceProvider serviceProvider, TArg1 arg1, TArg2 arg2) where T : notnull =>
 		serviceProvider.GetServices<T, (TArg1, TArg2)>((arg1, arg2));
@@ -72,10 +72,10 @@ public static class ServiceProviderExtensions
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServicesDelegate<T, TArg, TDelegate>() ?? emptyDelegate;
 
 	public static Func<TArg, IAsyncEnumerable<T>> GetServicesFactory<T, TArg>(this IServiceProvider serviceProvider) where T : notnull =>
-		serviceProvider.GetServicesFactoryBase<T, TArg, Func<TArg, IAsyncEnumerable<T>>>(static _ => AsyncEnumerable.Empty<T>());
+		serviceProvider.GetServicesFactoryBase<T, TArg, Func<TArg, IAsyncEnumerable<T>>>(static _ => IAsyncEnumerable<T>.Empty);
 
 	public static Func<TArg1, TArg2, IAsyncEnumerable<T>> GetServicesFactory<T, TArg1, TArg2>(this IServiceProvider serviceProvider) where T : notnull =>
-		serviceProvider.GetServicesFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, IAsyncEnumerable<T>>>(static (_, _) => AsyncEnumerable.Empty<T>());
+		serviceProvider.GetServicesFactoryBase<T, (TArg1, TArg2), Func<TArg1, TArg2, IAsyncEnumerable<T>>>(static (_, _) => IAsyncEnumerable<T>.Empty);
 
 	private static TDelegate GetServicesSyncFactoryBase<T, TArg, TDelegate>(this IServiceProvider serviceProvider, TDelegate emptyDelegate) where T : notnull where TDelegate : Delegate =>
 		serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetServicesSyncDelegate<T, TArg, TDelegate>() ?? emptyDelegate;

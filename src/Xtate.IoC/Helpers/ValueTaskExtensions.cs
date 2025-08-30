@@ -15,13 +15,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Xtate.IoC;
+#if !NET5_0_OR_GREATER
 
-internal static class ValueTaskExt
+namespace System.Threading.Tasks;
+
+[UsedImplicitly]
+internal static class ValueTaskExtensions
 {
-	public static ValueTask CompletedTask
+	extension(ValueTask)
 	{
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		get => default;
+		/// <summary>Gets a task that has already completed successfully.</summary>
+		public static ValueTask CompletedTask => new();
 	}
 }
+
+#endif

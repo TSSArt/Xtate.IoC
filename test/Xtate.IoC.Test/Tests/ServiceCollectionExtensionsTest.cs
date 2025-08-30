@@ -1158,17 +1158,17 @@ public class ServiceCollectionExtensionsTest
 
 	private class FactoryNoArg : IService
 	{
-		public IService CreateService() => (IService) (object) new ClassNoArg();
+		public IService CreateService() => new ClassNoArg();
 	}
 
 	private class FactoryArg : IService
 	{
-		public IService CreateService(Arg1 arg1) => (IService) (object) new ClassArg(arg1);
+		public IService CreateService(Arg1 arg1) => new ClassArg(arg1);
 	}
 
 	private class FactoryMultiArg : IService
 	{
-		public IService CreateService(Arg1 arg1, Arg2 arg2) => (IService) (object) new ClassMultiArg(arg1, arg2);
+		public IService CreateService(Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2);
 	}
 
 	private class ClassNoArg : IService

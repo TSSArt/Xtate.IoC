@@ -418,10 +418,10 @@ public class ImplementationEntryTest
 		((IDisposable) enumerator).Dispose();
 
 		// Assert
-		Assert.AreEqual(expected: 2, list1.Count);
-		Assert.AreEqual(expected: 2, list2.Count);
-		Assert.AreEqual(expected: 2, list3.Count);
-		Assert.AreEqual(expected: 2, list4.Count);
+		Assert.HasCount(expected: 2, list1);
+		Assert.HasCount(expected: 2, list2);
+		Assert.HasCount(expected: 2, list3);
+		Assert.HasCount(expected: 2, list4);
 	}
 
 	[TestMethod]

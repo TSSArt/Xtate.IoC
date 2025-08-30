@@ -20,7 +20,7 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class TupleHelperTest
 {
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap2Test()
 	{
 		// Arrange
@@ -35,7 +35,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item2));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap3Test()
 	{
 		// Arrange
@@ -51,7 +51,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item3));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap4Test()
 	{
 		// Arrange
@@ -68,7 +68,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item4));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap5Test()
 	{
 		// Arrange
@@ -86,7 +86,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item5));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap6Test()
 	{
 		// Arrange
@@ -105,7 +105,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item6));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap7Test()
 	{
 		// Arrange
@@ -125,7 +125,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item7));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrap8Test()
 	{
 		// Arrange
@@ -146,7 +146,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value.Item8));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericUnwrapNestedTest()
 	{
 		// Arrange
@@ -181,7 +181,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch2Test()
 	{
 		// Arrange
@@ -198,7 +198,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 2, Convert.ToInt32(value2));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch3Test()
 	{
 		// Arrange
@@ -218,7 +218,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 3, Convert.ToInt32(value3));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch4Test()
 	{
 		// Arrange
@@ -241,7 +241,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 4, Convert.ToInt32(value4));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch5Test()
 	{
 		// Arrange
@@ -267,7 +267,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 5, Convert.ToInt32(value5));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch6Test()
 	{
 		// Arrange
@@ -296,7 +296,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 6, Convert.ToInt32(value6));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch7Test()
 	{
 		// Arrange
@@ -328,7 +328,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 7, Convert.ToInt32(value7));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatch8Test()
 	{
 		// Arrange
@@ -363,7 +363,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 8, Convert.ToInt32(value8));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	public void GenericTryMatchNestedTest()
 	{
 		// Arrange
@@ -395,7 +395,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	public void IsMatch2Test(Type type)
@@ -409,7 +409,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -424,7 +424,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -440,7 +440,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -457,7 +457,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -475,7 +475,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -494,7 +494,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -514,7 +514,7 @@ public class TupleHelperTest
 		Assert.IsTrue(result);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -543,7 +543,7 @@ public class TupleHelperTest
 		Assert.AreEqual(expected: 1, Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	public void TryMatch2Test(Type type, object val)
@@ -559,7 +559,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -576,7 +576,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -594,7 +594,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -613,7 +613,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -633,7 +633,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -654,7 +654,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -676,7 +676,7 @@ public class TupleHelperTest
 		Assert.AreEqual(Convert.ToInt32(val), Convert.ToInt32(value));
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte), 1)]
 	[DataRow(typeof(sbyte), 2)]
 	[DataRow(typeof(short), 3)]
@@ -707,7 +707,7 @@ public class TupleHelperTest
 		Assert.AreEqual(typeof(byte), arg.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	public void TryBuild2Test(Type type)
@@ -723,7 +723,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -740,7 +740,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -758,7 +758,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -777,7 +777,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -797,7 +797,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -818,7 +818,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -840,7 +840,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]
@@ -863,7 +863,7 @@ public class TupleHelperTest
 		Assert.AreEqual(type, result.Type);
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(typeof(byte))]
 	[DataRow(typeof(sbyte))]
 	[DataRow(typeof(short))]

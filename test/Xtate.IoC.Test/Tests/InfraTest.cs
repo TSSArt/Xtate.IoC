@@ -52,7 +52,7 @@ public class InfraTest
 		var ex = Infra.Unmatched(value);
 
 		// Assert
-		Assert.IsTrue(ex.Message.Contains(value.ToString()));
+		Assert.Contains(value.ToString(), ex.Message);
 	}
 
 	[TestMethod]
@@ -65,7 +65,7 @@ public class InfraTest
 		var ex = Infra.Unmatched(value);
 
 		// Assert
-		Assert.IsTrue(ex.Message.Contains(value.ToString()));
+		Assert.Contains(value.ToString(), ex.Message);
 	}
 
 	[TestMethod]
@@ -78,7 +78,7 @@ public class InfraTest
 		var ex = Infra.Unmatched(value);
 
 		// Assert
-		Assert.IsTrue(ex.Message.Contains("Delegate"));
+		Assert.Contains("Delegate", ex.Message);
 	}
 
 	[TestMethod]
@@ -91,7 +91,7 @@ public class InfraTest
 		var ex = Infra.Unmatched(value);
 
 		// Assert
-		Assert.IsTrue(ex.Message.Contains("Version"));
+		Assert.Contains("Version", ex.Message);
 	}
 
 	private enum UnexpectedEnumTestEnum

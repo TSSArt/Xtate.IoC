@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Threading;
+
 namespace Xtate.IoC.Test;
 
 [TestClass]
@@ -81,7 +83,7 @@ public class ServiceProviderExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 1, list.Count);
+		Assert.HasCount(expected: 1, list);
 
 		//Assert.IsNotNull(list[0]);
 	}
@@ -103,7 +105,7 @@ public class ServiceProviderExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 1, list.Count);
+		Assert.HasCount(expected: 1, list);
 
 		//Assert.IsNotNull(list[0]);
 	}
@@ -125,7 +127,7 @@ public class ServiceProviderExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 1, list.Count);
+		Assert.HasCount(expected: 1, list);
 
 		//Assert.IsNotNull(list[0]);
 	}
@@ -162,7 +164,7 @@ public class ServiceProviderExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 1, list.Count);
+		Assert.HasCount(expected: 1, list);
 
 		//Assert.IsNotNull(list[0]);
 	}
@@ -184,7 +186,7 @@ public class ServiceProviderExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 1, list.Count);
+		Assert.HasCount(expected: 1, list);
 
 		//Assert.IsNotNull(list[0]);
 	}
@@ -206,7 +208,7 @@ public class ServiceProviderExtensionsTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 1, list.Count);
+		Assert.HasCount(expected: 1, list);
 
 		//Assert.IsNotNull(list[0]);
 	}
@@ -220,7 +222,7 @@ public class ServiceProviderExtensionsTest
 
 		// Act
 		var enumerable = sp.GetServicesFactory<Service, int, int>()(arg1: 0, arg2: 1);
-		await using var asyncEnumerator = enumerable.GetAsyncEnumerator();
+		await using var asyncEnumerator = enumerable.GetAsyncEnumerator(CancellationToken.None);
 		var next = await asyncEnumerator.MoveNextAsync();
 
 		// Assert

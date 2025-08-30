@@ -46,7 +46,7 @@ public class WeakReferenceStackTest
 		}
 
 		// Assert
-		Assert.AreEqual(expected: 0, objects.Count);
+		Assert.IsEmpty(objects);
 	}
 
 	private static void AddObjects(WeakReferenceStack wrc, int count)
@@ -65,7 +65,7 @@ public class WeakReferenceStackTest
 		GC.WaitForPendingFinalizers();
 	}
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(0)]
 	[DataRow(1)]
 	[DataRow(8)]

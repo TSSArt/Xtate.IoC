@@ -17,14 +17,18 @@
 
 namespace Xtate.IoC;
 
+[UsedImplicitly]
 internal static class AsyncEnumerable
 {
-	/// <summary>
-	///     Returns an empty <see cref="IAsyncEnumerable{T}" />.
-	/// </summary>
-	/// <typeparam name="T">The type of the elements.</typeparam>
-	/// <returns>An empty <see cref="IAsyncEnumerable{T}" />.</returns>
-	public static IAsyncEnumerable<T> Empty<T>() => EmptyAsyncEnumerable<T>.Instance;
+	extension<T>(IAsyncEnumerable<T>)
+	{
+		/// <summary>
+		///     Returns an empty <see cref="IAsyncEnumerable{T}" />.
+		/// </summary>
+		/// <typeparam name="T">The type of the elements.</typeparam>
+		/// <returns>An empty <see cref="IAsyncEnumerable{T}" />.</returns>
+		public static IAsyncEnumerable<T> Empty => EmptyAsyncEnumerable<T>.Instance;
+	}
 
 	private sealed class EmptyAsyncEnumerable<T> : IAsyncEnumerable<T>, IAsyncEnumerator<T>
 	{
@@ -32,7 +36,7 @@ internal static class AsyncEnumerable
 
 	#region Interface IAsyncDisposable
 
-		ValueTask IAsyncDisposable.DisposeAsync() => ValueTaskExt.CompletedTask;
+		ValueTask IAsyncDisposable.DisposeAsync() => ValueTask.CompletedTask;
 
 	#endregion
 

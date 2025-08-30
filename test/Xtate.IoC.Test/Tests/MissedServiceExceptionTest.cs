@@ -52,7 +52,7 @@ public class MissedServiceExceptionTest
 	public void MissedServiceException_MessageAndInnerExceptionConstructor_ShouldInitializeCorrectly()
 	{
 		// Arrange
-		var message = "Service not found";
+		const string message = "Service not found";
 		var innerException = new Exception("Inner exception");
 
 		// Act

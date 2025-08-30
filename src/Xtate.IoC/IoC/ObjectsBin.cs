@@ -49,14 +49,14 @@ public class ObjectsBin
 		{
 			XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
 
-			return ValueTaskExt.CompletedTask;
+			return ValueTask.CompletedTask;
 		}
 
 		if (_instancesForDispose is { } instancesForDispose)
 		{
 			instancesForDispose.Push(instance);
 
-			return ValueTaskExt.CompletedTask;
+			return ValueTask.CompletedTask;
 		}
 
 		return DisposeAndThrow();

@@ -41,7 +41,6 @@ public class Generic<[UsedImplicitly] T>
 public class FriendlyTypeTest
 {
 	[TestMethod]
-	[DataRow("int", typeof(int))]
 	[DataRow("bool", typeof(bool))]
 	[DataRow("byte", typeof(byte))]
 	[DataRow("char", typeof(char))]

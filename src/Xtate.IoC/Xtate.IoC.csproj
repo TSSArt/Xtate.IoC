@@ -3,7 +3,7 @@
 	<Import Condition="'$(Version)'==''" Project="..\..\Version.props" />
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net8.0;netstandard2.0;net462</TargetFrameworks>
+		<TargetFrameworks>net10.0;net9.0;net8.0;netstandard2.0;net462</TargetFrameworks>
 		<RepositoryUrl>https://github.com/TSSArt/Xtate.IoC</RepositoryUrl>
 		<PackageId>Xtate.IoC</PackageId>
 		<WarningLevel>9999</WarningLevel>
@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net462'">
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.8" />
 		<PackageReference Include="System.Buffers" Version="4.6.1" />
 	</ItemGroup>
 
