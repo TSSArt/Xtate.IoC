@@ -23,8 +23,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5.0.0
-    - name: Setup Mono
-      uses: xtadex/setup-mono@v1.0.2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4.3.1
       with:
@@ -32,6 +30,8 @@ jobs:
         source-url: https://nuget.pkg.github.com/TSSArt/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.XTATE_GITHUB_TOKEN }}
+    - name: Setup Mono
+      uses: xtadex/setup-mono@v1.0.2
     - name: Restore
       run: dotnet restore
     - name: Build
