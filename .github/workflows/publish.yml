@@ -24,7 +24,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5.0.0
     - name: Setup Mono
-      uses: xtadex/setup-mono@v1.0.0
+      uses: xtadex/setup-mono@v1.0.1
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4.3.1
       with:
