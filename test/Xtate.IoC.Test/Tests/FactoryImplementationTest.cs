@@ -1,4 +1,4 @@
-// Copyright © 2019-2024 Sergii Artemenko
+// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -20,105 +20,105 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class FactoryImplementationTest
 {
-	private ServiceCollection _serviceCollection = null!;
+    private ServiceCollection _serviceCollection = null!;
 
-	[TestInitialize]
-	public void Setup()
-	{
-		_serviceCollection = [];
-	}
+    [TestInitialize]
+    public void Setup()
+    {
+        _serviceCollection = [];
+    }
 
-	[TestMethod]
-	public void Constructor_ShouldAddServiceEntry()
-	{
-		// Arrange
-		const InstanceScope instanceScope = InstanceScope.Transient;
-		const bool synchronous = true;
+    [TestMethod]
+    public void Constructor_ShouldAddServiceEntry()
+    {
+        // Arrange
+        const InstanceScope instanceScope = InstanceScope.Transient;
+        const bool synchronous = true;
 
-		// Act
-		_ = new FactoryImplementation<object>(_serviceCollection, instanceScope, synchronous);
+        // Act
+        _ = new FactoryImplementation<object>(_serviceCollection, instanceScope, synchronous);
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ImplementationKey<object, ValueTuple>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ImplementationKey<object, ValueTuple>()));
+    }
 
-	[TestMethod]
-	public void For_ShouldRegisterService()
-	{
-		// Arrange
-		var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
+    [TestMethod]
+    public void For_ShouldRegisterService()
+    {
+        // Arrange
+        var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
 
-		// Act
-		factoryImplementation.For<IService>();
+        // Act
+        factoryImplementation.For<IService>();
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, ValueTuple>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, ValueTuple>()));
+    }
 
-	[TestMethod]
-	public void For_WithArg_ShouldRegisterService()
-	{
-		// Arrange
-		var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
+    [TestMethod]
+    public void For_WithArg_ShouldRegisterService()
+    {
+        // Arrange
+        var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
 
-		// Act
-		factoryImplementation.For<IService, int>();
+        // Act
+        factoryImplementation.For<IService, int>();
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, int>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, int>()));
+    }
 
-	[TestMethod]
-	public void For_WithTwoArgs_ShouldRegisterService()
-	{
-		// Arrange
-		var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
+    [TestMethod]
+    public void For_WithTwoArgs_ShouldRegisterService()
+    {
+        // Arrange
+        var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
 
-		// Act
-		factoryImplementation.For<IService, int, string>();
+        // Act
+        factoryImplementation.For<IService, int, string>();
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, (int, string)>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, (int, string)>()));
+    }
 
-	[TestMethod]
-	public void For_WithSharedWithin_ShouldRegisterService()
-	{
-		// Arrange
-		var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
+    [TestMethod]
+    public void For_WithSharedWithin_ShouldRegisterService()
+    {
+        // Arrange
+        var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
 
-		// Act
-		factoryImplementation.For<IService>(SharedWithin.Scope);
+        // Act
+        factoryImplementation.For<IService>(SharedWithin.Scope);
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, ValueTuple>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, ValueTuple>()));
+    }
 
-	[TestMethod]
-	public void For_WithArgAndSharedWithin_ShouldRegisterService()
-	{
-		// Arrange
-		var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
+    [TestMethod]
+    public void For_WithArgAndSharedWithin_ShouldRegisterService()
+    {
+        // Arrange
+        var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
 
-		// Act
-		factoryImplementation.For<IService, int>(SharedWithin.Scope);
+        // Act
+        factoryImplementation.For<IService, int>(SharedWithin.Scope);
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, int>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, int>()));
+    }
 
-	[TestMethod]
-	public void For_WithTwoArgsAndSharedWithin_ShouldRegisterService()
-	{
-		// Arrange
-		var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
+    [TestMethod]
+    public void For_WithTwoArgsAndSharedWithin_ShouldRegisterService()
+    {
+        // Arrange
+        var factoryImplementation = new FactoryImplementation<object>(_serviceCollection, InstanceScope.Transient, synchronous: true);
 
-		// Act
-		factoryImplementation.For<IService, int, string>(SharedWithin.Scope);
+        // Act
+        factoryImplementation.For<IService, int, string>(SharedWithin.Scope);
 
-		// Assert
-		Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, (int, string)>()));
-	}
+        // Assert
+        Assert.IsTrue(_serviceCollection.IsRegistered(TypeKey.ServiceKey<IService, (int, string)>()));
+    }
 
-	private interface IService;
+    private interface IService;
 }

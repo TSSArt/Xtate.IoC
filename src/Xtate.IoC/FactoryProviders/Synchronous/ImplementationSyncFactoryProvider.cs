@@ -19,23 +19,23 @@ namespace Xtate.IoC;
 
 internal static class ImplementationSyncFactoryProvider<T, TArg>
 {
-	public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
+    public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
 
-	private static class Nested
-	{
-		[SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
-		public static readonly Delegate DelegateField = ImplementationType.TypeOf<T>().IsGeneric ? Resolver.GetResolver : ClassSyncFactoryProvider<T, T>.GetServiceDelegate<TArg>();
-	}
+    private static class Nested
+    {
+        [SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
+        public static readonly Delegate DelegateField = ImplementationType.TypeOf<T>().IsGeneric ? Resolver.GetResolver : ClassSyncFactoryProvider<T, T>.GetServiceDelegate<TArg>();
+    }
 
-	private class Resolver : DelegateFactory
-	{
-		private static readonly Resolver Instance = new();
+    private class Resolver : DelegateFactory
+    {
+        private static readonly Resolver Instance = new();
 
-		public override Delegate? GetDelegate<TResolved, TResolvedArg>() =>
-			StubType.IsMatch(typeof(T), typeof(TResolved)) && StubType.IsMatch(typeof(TArg), typeof(TResolvedArg))
-				? ClassSyncFactoryProvider<TResolved, TResolved>.GetServiceDelegate<TResolvedArg>()
-				: null;
+        public override Delegate? GetDelegate<TResolved, TResolvedArg>() =>
+            StubType.IsMatch(typeof(T), typeof(TResolved)) && StubType.IsMatch(typeof(TArg), typeof(TResolvedArg))
+                ? ClassSyncFactoryProvider<TResolved, TResolved>.GetServiceDelegate<TResolvedArg>()
+                : null;
 
-		public static Resolver GetResolver() => Instance;
-	}
+        public static Resolver GetResolver() => Instance;
+    }
 }

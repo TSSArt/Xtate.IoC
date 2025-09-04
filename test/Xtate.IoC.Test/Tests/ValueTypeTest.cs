@@ -20,19 +20,19 @@ namespace Xtate.IoC.Test.Tests;
 [TestClass]
 public class ValueTypeTest
 {
-	[TestMethod]
-	public async Task SimpleValueTypeTest()
-	{
-		// Arrange
-		var serviceCollection = new ServiceCollection();
-		serviceCollection.AddType<ValType>();
-		var serviceProvider = serviceCollection.BuildProvider();
+    [TestMethod]
+    public async Task SimpleValueTypeTest()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddType<ValType>();
+        var serviceProvider = serviceCollection.BuildProvider();
 
-		// Act
-		_ = await serviceProvider.GetRequiredService<ValType>();
+        // Act
+        _ = await serviceProvider.GetRequiredService<ValType>();
 
-		// Assert
-	}
+        // Assert
+    }
 
-	private struct ValType;
+    private struct ValType;
 }

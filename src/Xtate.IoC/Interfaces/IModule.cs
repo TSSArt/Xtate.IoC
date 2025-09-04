@@ -19,7 +19,7 @@ namespace Xtate.IoC;
 
 public interface IModule
 {
-	IServiceCollection Services { init; }
+    IServiceCollection Services { init; }
 
-	void AddServices();
+    void AddServices();
 }

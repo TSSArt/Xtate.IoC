@@ -22,43 +22,43 @@ namespace Xtate.IoC;
 /// </summary>
 public class ScopedOwnerImplementationEntry : ScopedImplementationEntry
 {
-	private readonly ObjectsBin _objectsBin;
+    private readonly ObjectsBin _objectsBin;
 
-	/// <summary>
-	///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
-	/// </summary>
-	/// <param name="serviceProvider">The service provider.</param>
-	/// <param name="factory">The factory delegate.</param>
-	public ScopedOwnerImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) => _objectsBin = serviceProvider.ObjectsBin;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="factory">The factory delegate.</param>
+    public ScopedOwnerImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) => _objectsBin = serviceProvider.ObjectsBin;
 
-	/// <summary>
-	///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
-	/// </summary>
-	/// <param name="serviceProvider">The service provider.</param>
-	/// <param name="sourceEntry">The source implementation entry.</param>
-	protected ScopedOwnerImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) => _objectsBin = serviceProvider.ObjectsBin;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ScopedImplementationEntry" /> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="sourceEntry">The source implementation entry.</param>
+    protected ScopedOwnerImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) => _objectsBin = serviceProvider.ObjectsBin;
 
-	/// <summary>
-	///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
-	/// </summary>
-	/// <param name="serviceProvider">The service provider.</param>
-	/// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
-	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedOwnerImplementationEntry(serviceProvider, this);
+    /// <summary>
+    ///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
+    public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedOwnerImplementationEntry(serviceProvider, this);
 
-	/// <summary>
-	///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
-	/// </summary>
-	/// <param name="serviceProvider">The service provider.</param>
-	/// <param name="factory">The factory delegate.</param>
-	/// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
-	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedOwnerImplementationEntry(serviceProvider, factory);
+    /// <summary>
+    ///     Creates a new instance of the <see cref="ScopedImplementationEntry" /> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <param name="factory">The factory delegate.</param>
+    /// <returns>A new instance of <see cref="ScopedImplementationEntry" />.</returns>
+    public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedOwnerImplementationEntry(serviceProvider, factory);
 
-	protected override async ValueTask<T?> ExecuteFactoryBase<T, TArg>(TArg argument) where T : default
-	{
-		var instance = await base.ExecuteFactoryBase<T, TArg>(argument).ConfigureAwait(false);
+    protected override async ValueTask<T?> ExecuteFactoryBase<T, TArg>(TArg argument) where T : default
+    {
+        var instance = await base.ExecuteFactoryBase<T, TArg>(argument).ConfigureAwait(false);
 
-		await _objectsBin.AddAsync(instance).ConfigureAwait(false);
+        await _objectsBin.AddAsync(instance).ConfigureAwait(false);
 
-		return instance;
-	}
+        return instance;
+    }
 }

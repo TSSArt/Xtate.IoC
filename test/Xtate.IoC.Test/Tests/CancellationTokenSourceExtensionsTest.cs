@@ -22,32 +22,32 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class CancellationTokenSourceExtensionsTest
 {
-	[TestMethod]
-	public async Task CancelAsync_ShouldCancelToken_WhenNotAlreadyCancelled()
-	{
-		// Arrange
-		var cts = new CancellationTokenSource();
+    [TestMethod]
+    public async Task CancelAsync_ShouldCancelToken_WhenNotAlreadyCancelled()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
 
-		// Act
-		await cts.CancelAsync();
+        // Act
+        await cts.CancelAsync();
 
-		// Assert
-		Assert.IsTrue(cts.IsCancellationRequested);
-	}
+        // Assert
+        Assert.IsTrue(cts.IsCancellationRequested);
+    }
 
-	[TestMethod]
-	public async Task CancelAsync_ShouldNotThrow_WhenAlreadyCancelled()
-	{
-		// Arrange
-		var cts = new CancellationTokenSource();
+    [TestMethod]
+    public async Task CancelAsync_ShouldNotThrow_WhenAlreadyCancelled()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
 
-		// ReSharper disable once MethodHasAsyncOverload
-		cts.Cancel();
+        // ReSharper disable once MethodHasAsyncOverload
+        cts.Cancel();
 
-		// Act
-		await cts.CancelAsync();
+        // Act
+        await cts.CancelAsync();
 
-		// Assert
-		Assert.IsTrue(cts.IsCancellationRequested);
-	}
+        // Assert
+        Assert.IsTrue(cts.IsCancellationRequested);
+    }
 }

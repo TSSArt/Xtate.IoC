@@ -21,107 +21,107 @@ namespace Xtate.IoC;
 
 internal sealed class ClassAsyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
 {
-	private static readonly MethodInfo GetAsyncService;
+    private static readonly MethodInfo GetAsyncService;
 
-	private static readonly MethodInfo GetRequiredAsyncService;
+    private static readonly MethodInfo GetRequiredAsyncService;
 
-	static ClassAsyncFactoryProvider()
-	{
-		GetAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetServiceWrapper));
-		GetRequiredAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetRequiredServiceWrapper));
-	}
+    static ClassAsyncFactoryProvider()
+    {
+        GetAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetServiceWrapper));
+        GetRequiredAsyncService = GetMethodInfo<ClassAsyncFactoryProvider>(nameof(GetRequiredServiceWrapper));
+    }
 
-	protected override MethodInfo GetServiceMethodInfo => GetAsyncService;
+    protected override MethodInfo GetServiceMethodInfo => GetAsyncService;
 
-	protected override MethodInfo GetRequiredServiceMethodInfo => GetRequiredAsyncService;
+    protected override MethodInfo GetRequiredServiceMethodInfo => GetRequiredAsyncService;
 
-	private static async ValueTask<object> GetRequiredServiceWrapper<T>(IServiceProvider serviceProvider) where T : notnull => await serviceProvider.GetRequiredService<T>().ConfigureAwait(false);
+    private static async ValueTask<object> GetRequiredServiceWrapper<T>(IServiceProvider serviceProvider) where T : notnull => await serviceProvider.GetRequiredService<T>().ConfigureAwait(false);
 
-	private static async ValueTask<object?> GetServiceWrapper<T>(IServiceProvider serviceProvider) => await serviceProvider.GetService<T>().ConfigureAwait(false);
+    private static async ValueTask<object?> GetServiceWrapper<T>(IServiceProvider serviceProvider) => await serviceProvider.GetService<T>().ConfigureAwait(false);
 
-	private async ValueTask FillParameters<TArg>(object?[] args, IServiceProvider serviceProvider, TArg? arg)
-	{
-		for (var i = 0; i < Parameters.Length; i ++)
-		{
-			if (TupleHelper.TryMatch(Parameters[i].MemberType, ref arg, out var value))
-			{
-				args[i] = value;
-			}
-			else if (Parameters[i].AsyncValueGetter is { } asyncValueGetter)
-			{
-				args[i] = await asyncValueGetter(serviceProvider).ConfigureAwait(false);
-			}
-			else
-			{
-				args[i] = Parameters[i].SyncValueGetter!(serviceProvider);
-			}
-		}
-	}
+    private async ValueTask FillParameters<TArg>(object?[] args, IServiceProvider serviceProvider, TArg? arg)
+    {
+        for (var i = 0; i < Parameters.Length; i ++)
+        {
+            if (TupleHelper.TryMatch(Parameters[i].MemberType, ref arg, out var value))
+            {
+                args[i] = value;
+            }
+            else if (Parameters[i].AsyncValueGetter is { } asyncValueGetter)
+            {
+                args[i] = await asyncValueGetter(serviceProvider).ConfigureAwait(false);
+            }
+            else
+            {
+                args[i] = Parameters[i].SyncValueGetter!(serviceProvider);
+            }
+        }
+    }
 
-	private async ValueTask SetRequiredMembers<TArg>(object service, IServiceProvider serviceProvider, TArg? arg)
-	{
-		for (var i = 0; i < RequiredMembers.Length; i ++)
-		{
-			var setter = RequiredMembers[i].MemberSetter;
-			Infra.NotNull(setter);
+    private async ValueTask SetRequiredMembers<TArg>(object service, IServiceProvider serviceProvider, TArg? arg)
+    {
+        for (var i = 0; i < RequiredMembers.Length; i ++)
+        {
+            var setter = RequiredMembers[i].MemberSetter;
+            Infra.NotNull(setter);
 
-			if (TupleHelper.TryMatch(RequiredMembers[i].MemberType, ref arg, out var value))
-			{
-				setter(service, value);
-			}
-			else if (RequiredMembers[i].AsyncValueGetter is { } asyncValueGetter)
-			{
-				setter(service, await asyncValueGetter(serviceProvider).ConfigureAwait(false));
-			}
-			else
-			{
-				setter(service, RequiredMembers[i].SyncValueGetter!(serviceProvider));
-			}
-		}
-	}
+            if (TupleHelper.TryMatch(RequiredMembers[i].MemberType, ref arg, out var value))
+            {
+                setter(service, value);
+            }
+            else if (RequiredMembers[i].AsyncValueGetter is { } asyncValueGetter)
+            {
+                setter(service, await asyncValueGetter(serviceProvider).ConfigureAwait(false));
+            }
+            else
+            {
+                setter(service, RequiredMembers[i].SyncValueGetter!(serviceProvider));
+            }
+        }
+    }
 
-	public ValueTask<TService> GetDecoratorService<TService, TArg>(IServiceProvider serviceProvider, TService? service, TArg? arg) =>
-		GetService<TService, (TService?, TArg?)>(serviceProvider, (service, arg));
+    public ValueTask<TService> GetDecoratorService<TService, TArg>(IServiceProvider serviceProvider, TService? service, TArg? arg) =>
+        GetService<TService, (TService?, TArg?)>(serviceProvider, (service, arg));
 
-	public async ValueTask<TService> GetService<TService, TArg>(IServiceProvider serviceProvider, TArg? arg)
-	{
-		var args = RentArray();
+    public async ValueTask<TService> GetService<TService, TArg>(IServiceProvider serviceProvider, TArg? arg)
+    {
+        var args = RentArray();
 
-		try
-		{
-			if (Parameters.Length > 0)
-			{
-				await FillParameters(args, serviceProvider, arg).ConfigureAwait(false);
-			}
+        try
+        {
+            if (Parameters.Length > 0)
+            {
+                await FillParameters(args, serviceProvider, arg).ConfigureAwait(false);
+            }
 
-			var service = ((Func<object?[], TService>) Delegate)(args);
+            var service = ((Func<object?[], TService>)Delegate)(args);
 
-			if (RequiredMembers.Length > 0)
-			{
-				await SetRequiredMembers(service!, serviceProvider, arg).ConfigureAwait(false);
-			}
+            if (RequiredMembers.Length > 0)
+            {
+                await SetRequiredMembers(service!, serviceProvider, arg).ConfigureAwait(false);
+            }
 
-			return service;
-		}
-		catch (Exception ex)
-		{
-			throw GetFactoryException(ex);
-		}
-		finally
-		{
-			ReturnArray(args);
-		}
-	}
+            return service;
+        }
+        catch (Exception ex)
+        {
+            throw GetFactoryException(ex);
+        }
+        finally
+        {
+            ReturnArray(args);
+        }
+    }
 }
 
 internal static class ClassAsyncFactoryProvider<TImplementation, TService>
 {
-	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TService, TArg>;
+    public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TService, TArg>;
 
-	public static Delegate GetDecoratorServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetDecoratorService<TService, TArg>;
+    public static Delegate GetDecoratorServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetDecoratorService<TService, TArg>;
 
-	private static class Nested
-	{
-		public static readonly ClassAsyncFactoryProvider ProviderField = new(typeof(TImplementation));
-	}
+    private static class Nested
+    {
+        public static readonly ClassAsyncFactoryProvider ProviderField = new(typeof(TImplementation));
+    }
 }

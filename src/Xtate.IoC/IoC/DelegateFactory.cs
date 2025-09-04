@@ -19,5 +19,5 @@ namespace Xtate.IoC;
 
 internal abstract class DelegateFactory
 {
-	public abstract Delegate? GetDelegate<T, TArg>();
+    public abstract Delegate? GetDelegate<T, TArg>();
 }

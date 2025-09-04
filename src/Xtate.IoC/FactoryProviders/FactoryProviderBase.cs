@@ -19,11 +19,11 @@ namespace Xtate.IoC;
 
 internal abstract class FactoryProviderBase
 {
-	protected abstract Delegate GetDelegateInstance();
+    protected abstract Delegate GetDelegateInstance();
 
-	protected static Delegate GetDelegateForType(Type genericTypeDefinition,
-												 Type arg1,
-												 Type arg2,
-												 Type arg3) =>
-		genericTypeDefinition.MakeGenericTypeExt(arg1, arg2, arg3).CreateInstance<FactoryProviderBase>().GetDelegateInstance();
+    protected static Delegate GetDelegateForType(Type genericTypeDefinition,
+                                                 Type arg1,
+                                                 Type arg2,
+                                                 Type arg3) =>
+        genericTypeDefinition.MakeGenericTypeExt(arg1, arg2, arg3).CreateInstance<FactoryProviderBase>().GetDelegateInstance();
 }

@@ -1,4 +1,4 @@
-// Copyright © 2019-2024 Sergii Artemenko
+// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -22,148 +22,148 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ServiceProviderDebuggerTest
 {
-	[TestMethod]
-	public void RegisterService_ShouldWriteCorrectly()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var serviceEntry = new ServiceEntry(TypeKey.ServiceKey<object, ValueTuple>(), InstanceScope.Transient, () => new object());
+    [TestMethod]
+    public void RegisterService_ShouldWriteCorrectly()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var serviceEntry = new ServiceEntry(TypeKey.ServiceKey<object, ValueTuple>(), InstanceScope.Transient, () => new object());
 
-		// Act
-		debugger.RegisterServices().RegisterService(serviceEntry);
+        // Act
+        debugger.RegisterServices().RegisterService(serviceEntry);
 
-		// Assert
-		var expected = $"REG: {serviceEntry.InstanceScope,-18} | {serviceEntry.Key}";
-		Assert.Contains(expected, stringWriter.ToString());
-	}
+        // Assert
+        var expected = $"REG: {serviceEntry.InstanceScope,-18} | {serviceEntry.Key}";
+        Assert.Contains(expected, stringWriter.ToString());
+    }
 
-	[TestMethod]
-	public void ServiceRequesting_ShouldLogCorrectly()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+    [TestMethod]
+    public void ServiceRequesting_ShouldLogCorrectly()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.ServiceRequested(typeKey);
+        // Act
+        debugger.ServiceRequesting(typeKey);
+        debugger.ServiceRequested(typeKey);
 
-		// Assert
-		Assert.Contains(typeKey.ToString() ?? string.Empty, stringWriter.ToString());
-	}
+        // Assert
+        Assert.Contains(typeKey.ToString() ?? string.Empty, stringWriter.ToString());
+    }
 
-	[TestMethod]
-	public void FactoryCalling_ShouldLogCorrectly()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+    [TestMethod]
+    public void FactoryCalling_ShouldLogCorrectly()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.FactoryCalling(typeKey);
-		debugger.FactoryCalled(typeKey);
-		debugger.ServiceRequested(typeKey);
+        // Act
+        debugger.ServiceRequesting(typeKey);
+        debugger.FactoryCalling(typeKey);
+        debugger.FactoryCalled(typeKey);
+        debugger.ServiceRequested(typeKey);
 
-		// Assert
-		Assert.Contains("{#1}", stringWriter.ToString());
-	}
+        // Assert
+        Assert.Contains(substring: "{#1}", stringWriter.ToString());
+    }
 
-	[TestMethod]
-	public void FactoryCalled_ShouldLogCorrectly()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+    [TestMethod]
+    public void FactoryCalled_ShouldLogCorrectly()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.FactoryCalling(typeKey);
-		debugger.FactoryCalled(typeKey);
-		debugger.ServiceRequested(typeKey);
-		debugger.Dispose();
+        // Act
+        debugger.ServiceRequesting(typeKey);
+        debugger.FactoryCalling(typeKey);
+        debugger.FactoryCalled(typeKey);
+        debugger.ServiceRequested(typeKey);
+        debugger.Dispose();
 
-		// Assert
-		Assert.Contains("STAT:", stringWriter.ToString());
-	}
+        // Assert
+        Assert.Contains(substring: "STAT:", stringWriter.ToString());
+    }
 
-	[TestMethod]
-	public void ServiceRequested_ShouldLogCorrectly()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+    [TestMethod]
+    public void ServiceRequested_ShouldLogCorrectly()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.ServiceRequested(typeKey);
+        // Act
+        debugger.ServiceRequesting(typeKey);
+        debugger.ServiceRequested(typeKey);
 
-		// Assert
-		Assert.Contains("CACHED", stringWriter.ToString());
-	}
+        // Assert
+        Assert.Contains(substring: "CACHED", stringWriter.ToString());
+    }
 
-	[TestMethod]
-	public async Task FactoryCalled_MultiThreadLogTest()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
-		var typeKey2 = TypeKey.ServiceKey<long, (int, long)>();
+    [TestMethod]
+    public async Task FactoryCalled_MultiThreadLogTest()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+        var typeKey2 = TypeKey.ServiceKey<long, (int, long)>();
 
-		// Act
-		var asyncDebug1 = AsyncDebug(debugger, typeKey, typeKey2);
-		var asyncDebug2 = AsyncDebug(debugger, typeKey, typeKey2);
-		var asyncDebug3 = AsyncDebug(debugger, typeKey, typeKey2);
+        // Act
+        var asyncDebug1 = AsyncDebug(debugger, typeKey, typeKey2);
+        var asyncDebug2 = AsyncDebug(debugger, typeKey, typeKey2);
+        var asyncDebug3 = AsyncDebug(debugger, typeKey, typeKey2);
 
-		await asyncDebug1;
-		await asyncDebug2;
-		await asyncDebug3;
+        await asyncDebug1;
+        await asyncDebug2;
+        await asyncDebug3;
 
-		debugger.Dispose();
+        debugger.Dispose();
 
-		// Assert
-		Assert.Contains("STAT:", stringWriter.ToString());
-		Assert.Contains("{#3}", stringWriter.ToString());
-	}
+        // Assert
+        Assert.Contains(substring: "STAT:", stringWriter.ToString());
+        Assert.Contains(substring: "{#3}", stringWriter.ToString());
+    }
 
-	private static async Task AsyncDebug(ServiceProviderDebugger debugger, TypeKey typeKey, TypeKey typeKey2)
-	{
-		debugger.ServiceRequesting(typeKey);
-		debugger.FactoryCalling(typeKey);
+    private static async Task AsyncDebug(ServiceProviderDebugger debugger, TypeKey typeKey, TypeKey typeKey2)
+    {
+        debugger.ServiceRequesting(typeKey);
+        debugger.FactoryCalling(typeKey);
 
-		debugger.ServiceRequesting(typeKey2);
-		debugger.FactoryCalling(typeKey2);
+        debugger.ServiceRequesting(typeKey2);
+        debugger.FactoryCalling(typeKey2);
 
-		await Task.Yield();
+        await Task.Yield();
 
-		debugger.FactoryCalled(typeKey2);
-		debugger.ServiceRequested(typeKey2);
+        debugger.FactoryCalled(typeKey2);
+        debugger.ServiceRequested(typeKey2);
 
-		debugger.FactoryCalled(typeKey);
-		debugger.ServiceRequested(typeKey);
-	}
+        debugger.FactoryCalled(typeKey);
+        debugger.ServiceRequested(typeKey);
+    }
 
-	[TestMethod]
-	public void FactoryCalling_100Times_ShouldThrowException()
-	{
-		// Arrange
-		var stringWriter = new StringWriter();
-		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+    [TestMethod]
+    public void FactoryCalling_100Times_ShouldThrowException()
+    {
+        // Arrange
+        var stringWriter = new StringWriter();
+        var debugger = new ServiceProviderDebugger(stringWriter);
+        var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
 
-		// Act
-		for (var i = 0; i < 100; i ++)
-		{
-			debugger.FactoryCalling(typeKey);
-		}
+        // Act
+        for (var i = 0; i < 100; i ++)
+        {
+            debugger.FactoryCalling(typeKey);
+        }
 
-		// Assert
-		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => debugger.FactoryCalling(typeKey));
-	}
+        // Assert
+        Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => debugger.FactoryCalling(typeKey));
+    }
 }

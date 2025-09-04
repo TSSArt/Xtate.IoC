@@ -20,57 +20,57 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class OptionExtensionsTest
 {
-	[TestMethod]
-	public void Validate_ShouldThrowArgumentException_WhenOptionContainsUnsupportedOptions()
-	{
-		// Arrange
-		const Option option = Option.IfNotRegistered | Option.DoNotDispose;
-		const Option allowedOptions = Option.IfNotRegistered;
+    [TestMethod]
+    public void Validate_ShouldThrowArgumentException_WhenOptionContainsUnsupportedOptions()
+    {
+        // Arrange
+        const Option option = Option.IfNotRegistered | Option.DoNotDispose;
+        const Option allowedOptions = Option.IfNotRegistered;
 
-		// Act
+        // Act
 
-		// Assert
-		Assert.Throws<ArgumentException>(() => option.Validate(allowedOptions));
-	}
+        // Assert
+        Assert.Throws<ArgumentException>(() => option.Validate(allowedOptions));
+    }
 
-	[TestMethod]
-	public void Validate_ShouldNotThrowException_WhenOptionIsValid()
-	{
-		// Arrange
-		const Option option = Option.IfNotRegistered;
-		const Option allowedOptions = Option.IfNotRegistered | Option.DoNotDispose;
+    [TestMethod]
+    public void Validate_ShouldNotThrowException_WhenOptionIsValid()
+    {
+        // Arrange
+        const Option option = Option.IfNotRegistered;
+        const Option allowedOptions = Option.IfNotRegistered | Option.DoNotDispose;
 
-		// Act
-		option.Validate(allowedOptions);
+        // Act
+        option.Validate(allowedOptions);
 
-		// Assert
-	}
+        // Assert
+    }
 
-	[TestMethod]
-	public void Has_ShouldReturnTrue_WhenOptionContainsToCheck()
-	{
-		// Arrange
-		const Option option = Option.IfNotRegistered | Option.DoNotDispose;
-		const Option toCheck = Option.IfNotRegistered;
+    [TestMethod]
+    public void Has_ShouldReturnTrue_WhenOptionContainsToCheck()
+    {
+        // Arrange
+        const Option option = Option.IfNotRegistered | Option.DoNotDispose;
+        const Option toCheck = Option.IfNotRegistered;
 
-		// Act
-		var result = option.Has(toCheck);
+        // Act
+        var result = option.Has(toCheck);
 
-		// Assert
-		Assert.IsTrue(result);
-	}
+        // Assert
+        Assert.IsTrue(result);
+    }
 
-	[TestMethod]
-	public void Has_ShouldReturnFalse_WhenOptionDoesNotContainToCheck()
-	{
-		// Arrange
-		const Option option = Option.IfNotRegistered;
-		const Option toCheck = Option.DoNotDispose;
+    [TestMethod]
+    public void Has_ShouldReturnFalse_WhenOptionDoesNotContainToCheck()
+    {
+        // Arrange
+        const Option option = Option.IfNotRegistered;
+        const Option toCheck = Option.DoNotDispose;
 
-		// Act
-		var result = option.Has(toCheck);
+        // Act
+        var result = option.Has(toCheck);
 
-		// Assert
-		Assert.IsFalse(result);
-	}
+        // Assert
+        Assert.IsFalse(result);
+    }
 }

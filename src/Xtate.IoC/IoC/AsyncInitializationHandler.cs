@@ -19,50 +19,50 @@ namespace Xtate.IoC;
 
 internal class AsyncInitializationHandler : IInitializationHandler
 {
-	public static readonly IInitializationHandler Instance = new AsyncInitializationHandler();
+    public static readonly IInitializationHandler Instance = new AsyncInitializationHandler();
 
 #region Interface IInitializationHandler
 
-	bool IInitializationHandler.Initialize<T>(T instance) => Initialize(instance);
+    bool IInitializationHandler.Initialize<T>(T instance) => Initialize(instance);
 
-	Task IInitializationHandler.InitializeAsync<T>(T instance) => InitializeAsync(instance);
+    Task IInitializationHandler.InitializeAsync<T>(T instance) => InitializeAsync(instance);
 
 #endregion
 
-	public static bool Initialize<T>(T instance) => instance is IAsyncInitialization;
+    public static bool Initialize<T>(T instance) => instance is IAsyncInitialization;
 
-	public static Task InitializeAsync<T>(T instance)
-	{
-		if (BaseAsyncInit<T>.AsyncInitInstance is { } initializer)
-		{
-			return initializer.InitInternal(instance);
-		}
+    public static Task InitializeAsync<T>(T instance)
+    {
+        if (BaseAsyncInit<T>.AsyncInitInstance is { } initializer)
+        {
+            return initializer.InitInternal(instance);
+        }
 
-		if (instance is IAsyncInitialization asyncInitialization)
-		{
-			return asyncInitialization.Initialization;
-		}
+        if (instance is IAsyncInitialization asyncInitialization)
+        {
+            return asyncInitialization.Initialization;
+        }
 
-		return Task.CompletedTask;
-	}
+        return Task.CompletedTask;
+    }
 
-	private abstract class BaseAsyncInit<T>
-	{
-		public static readonly BaseAsyncInit<T>? AsyncInitInstance;
+    private abstract class BaseAsyncInit<T>
+    {
+        public static readonly BaseAsyncInit<T>? AsyncInitInstance;
 
-		static BaseAsyncInit()
-		{
-			if (typeof(IAsyncInitialization).IsAssignableFrom(typeof(T)))
-			{
-				AsyncInitInstance = typeof(AsyncInit<>).MakeGenericTypeExt(typeof(T)).CreateInstance<BaseAsyncInit<T>>();
-			}
-		}
+        static BaseAsyncInit()
+        {
+            if (typeof(IAsyncInitialization).IsAssignableFrom(typeof(T)))
+            {
+                AsyncInitInstance = typeof(AsyncInit<>).MakeGenericTypeExt(typeof(T)).CreateInstance<BaseAsyncInit<T>>();
+            }
+        }
 
-		public abstract Task InitInternal(in T? instance);
-	}
+        public abstract Task InitInternal(in T? instance);
+    }
 
-	private sealed class AsyncInit<T> : BaseAsyncInit<T> where T : IAsyncInitialization
-	{
-		public override Task InitInternal(in T? instance) => instance is not null ? instance.Initialization : Task.CompletedTask;
-	}
+    private sealed class AsyncInit<T> : BaseAsyncInit<T> where T : IAsyncInitialization
+    {
+        public override Task InitInternal(in T? instance) => instance is not null ? instance.Initialization : Task.CompletedTask;
+    }
 }

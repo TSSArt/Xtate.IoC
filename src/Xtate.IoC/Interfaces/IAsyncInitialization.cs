@@ -24,8 +24,8 @@ namespace Xtate.IoC;
 /// </summary>
 public interface IAsyncInitialization
 {
-	/// <summary>
-	///     Gets the task that represents the asynchronous initialization operation.
-	/// </summary>
-	Task Initialization { get; }
+    /// <summary>
+    ///     Gets the task that represents the asynchronous initialization operation.
+    /// </summary>
+    Task Initialization { get; }
 }

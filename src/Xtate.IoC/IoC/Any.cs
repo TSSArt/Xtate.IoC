@@ -21,7 +21,7 @@ public class Any : IStub
 {
 #region Interface IStub
 
-	public bool IsMatch(Type type) => !type.IsGenericParameter;
+    public bool IsMatch(Type type) => !type.IsGenericParameter;
 
 #endregion
 }

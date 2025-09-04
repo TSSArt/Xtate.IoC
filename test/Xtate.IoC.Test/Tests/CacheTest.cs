@@ -1,4 +1,4 @@
-// Copyright © 2019-2024 Sergii Artemenko
+// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -20,96 +20,96 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class CacheTest
 {
-	[TestMethod]
-	public void Cache_ShouldInitializeWithInitialCapacity()
-	{
-		// Arrange
-		const int initialCapacity = 10;
-		var cache = new Cache<string, int>(initialCapacity);
+    [TestMethod]
+    public void Cache_ShouldInitializeWithInitialCapacity()
+    {
+        // Arrange
+        const int initialCapacity = 10;
+        var cache = new Cache<string, int>(initialCapacity);
 
-		// Act
-		var containsKey = cache.ContainsKey("test");
+        // Act
+        var containsKey = cache.ContainsKey("test");
 
-		// Assert
-		Assert.IsFalse(containsKey);
-	}
+        // Assert
+        Assert.IsFalse(containsKey);
+    }
 
-	[TestMethod]
-	public void Cache_ShouldInitializeWithInitialCollection()
-	{
-		// Arrange
-		var initialCollection = new List<KeyValuePair<string, int>>
-								{
-									new(key: "key1", value: 1),
-									new(key: "key2", value: 2)
-								};
-		var cache = new Cache<string, int>(initialCollection);
+    [TestMethod]
+    public void Cache_ShouldInitializeWithInitialCollection()
+    {
+        // Arrange
+        var initialCollection = new List<KeyValuePair<string, int>>
+                                {
+                                    new(key: "key1", value: 1),
+                                    new(key: "key2", value: 2)
+                                };
+        var cache = new Cache<string, int>(initialCollection);
 
-		// Act
-		var containsKey1 = cache.ContainsKey("key1");
-		var containsKey2 = cache.ContainsKey("key2");
+        // Act
+        var containsKey1 = cache.ContainsKey("key1");
+        var containsKey2 = cache.ContainsKey("key2");
 
-		// Assert
-		Assert.IsTrue(containsKey1);
-		Assert.IsTrue(containsKey2);
-	}
+        // Assert
+        Assert.IsTrue(containsKey1);
+        Assert.IsTrue(containsKey2);
+    }
 
-	[TestMethod]
-	public void Cache_TryGetValue_ShouldReturnCorrectValue()
-	{
-		// Arrange
-		var cache = new Cache<string, int>(10);
-		cache.TryAdd(key: "key", value: 42);
+    [TestMethod]
+    public void Cache_TryGetValue_ShouldReturnCorrectValue()
+    {
+        // Arrange
+        var cache = new Cache<string, int>(10);
+        cache.TryAdd(key: "key", value: 42);
 
-		// Act
-		var result = cache.TryGetValue(key: "key", out var value);
+        // Act
+        var result = cache.TryGetValue(key: "key", out var value);
 
-		// Assert
-		Assert.IsTrue(result);
-		Assert.AreEqual(expected: 42, value);
-	}
+        // Assert
+        Assert.IsTrue(result);
+        Assert.AreEqual(expected: 42, value);
+    }
 
-	[TestMethod]
-	public void Cache_ContainsKey_ShouldReturnTrueIfKeyExists()
-	{
-		// Arrange
-		var cache = new Cache<string, int>(10);
-		cache.TryAdd(key: "key", value: 42);
+    [TestMethod]
+    public void Cache_ContainsKey_ShouldReturnTrueIfKeyExists()
+    {
+        // Arrange
+        var cache = new Cache<string, int>(10);
+        cache.TryAdd(key: "key", value: 42);
 
-		// Act
-		var containsKey = cache.ContainsKey("key");
+        // Act
+        var containsKey = cache.ContainsKey("key");
 
-		// Assert
-		Assert.IsTrue(containsKey);
-	}
+        // Assert
+        Assert.IsTrue(containsKey);
+    }
 
-	[TestMethod]
-	public void Cache_GetOrAdd_ShouldAddValueIfKeyDoesNotExist()
-	{
-		// Arrange
-		var cache = new Cache<string, int>(10);
+    [TestMethod]
+    public void Cache_GetOrAdd_ShouldAddValueIfKeyDoesNotExist()
+    {
+        // Arrange
+        var cache = new Cache<string, int>(10);
 
-		// Act
-		var value = cache.GetOrAdd(key: "key", value: 42);
+        // Act
+        var value = cache.GetOrAdd(key: "key", value: 42);
 
-		// Assert
-		Assert.AreEqual(expected: 42, value);
-		Assert.IsTrue(cache.ContainsKey("key"));
-	}
+        // Assert
+        Assert.AreEqual(expected: 42, value);
+        Assert.IsTrue(cache.ContainsKey("key"));
+    }
 
-	[TestMethod]
-	public void Cache_TryAdd_ShouldNotAddDuplicateKey()
-	{
-		// Arrange
-		var cache = new Cache<string, int>(10);
-		cache.TryAdd(key: "key", value: 42);
+    [TestMethod]
+    public void Cache_TryAdd_ShouldNotAddDuplicateKey()
+    {
+        // Arrange
+        var cache = new Cache<string, int>(10);
+        cache.TryAdd(key: "key", value: 42);
 
-		// Act
-		cache.TryAdd(key: "key", value: 100);
-		var result = cache.TryGetValue(key: "key", out var value);
+        // Act
+        cache.TryAdd(key: "key", value: 100);
+        var result = cache.TryGetValue(key: "key", out var value);
 
-		// Assert
-		Assert.IsTrue(result);
-		Assert.AreEqual(expected: 42, value);
-	}
+        // Assert
+        Assert.IsTrue(result);
+        Assert.AreEqual(expected: 42, value);
+    }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2024 Sergii Artemenko
+﻿// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -24,63 +24,63 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class DiRecursionTest
 {
-	[TestMethod]
-	public async Task Recursion_ShouldThrowDependencyInjectionException_WhenCircularDependencyDetected()
-	{
-		// Arrange
-		var serviceCollection = new ServiceCollection();
-		serviceCollection.AddType<R1>();
-		serviceCollection.AddType<R2>();
-		serviceCollection.AddImplementationSync<RecursionDetector>().For<IServiceProviderActions>();
-		var serviceProvider = serviceCollection.BuildProvider();
+    [TestMethod]
+    public async Task Recursion_ShouldThrowDependencyInjectionException_WhenCircularDependencyDetected()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddType<R1>();
+        serviceCollection.AddType<R2>();
+        serviceCollection.AddImplementationSync<RecursionDetector>().For<IServiceProviderActions>();
+        var serviceProvider = serviceCollection.BuildProvider();
 
-		// Act & Assert
-		await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await serviceProvider.GetRequiredService<R1>());
-	}
+        // Act & Assert
+        await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await serviceProvider.GetRequiredService<R1>());
+    }
 
-	private class RecursionDetector : IServiceProviderActions
-	{
-		private int _level;
+    private class RecursionDetector : IServiceProviderActions
+    {
+        private int _level;
 
-	#region Interface IServiceProviderActions
+    #region Interface IServiceProviderActions
 
-		public IServiceProviderDataActions? RegisterServices() => null;
+        public IServiceProviderDataActions? RegisterServices() => null;
 
-		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => null;
+        public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => null;
 
-		[ExcludeFromCodeCoverage]
-		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException(typeKey?.ToString());
+        [ExcludeFromCodeCoverage]
+        public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException(typeKey?.ToString());
 
-		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
-		{
-			if (_level ++ > 20)
-			{
-				throw new DependencyInjectionException();
-			}
+        public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
+        {
+            if (_level ++ > 20)
+            {
+                throw new DependencyInjectionException();
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		[ExcludeFromCodeCoverage]
-		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey)
-		{
-			_level --;
+        [ExcludeFromCodeCoverage]
+        public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey)
+        {
+            _level --;
 
-			return null;
-		}
+            return null;
+        }
 
-	#endregion
-	}
+    #endregion
+    }
 
-	[ExcludeFromCodeCoverage]
-	public class R1(R2 r2)
-	{
-		public R2 Unknown { get; } = r2;
-	}
+    [ExcludeFromCodeCoverage]
+    public class R1(R2 r2)
+    {
+        public R2 Unknown { get; } = r2;
+    }
 
-	[ExcludeFromCodeCoverage]
-	public class R2(R1 r1)
-	{
-		public R1 Unknown { get; } = r1;
-	}
+    [ExcludeFromCodeCoverage]
+    public class R2(R1 r1)
+    {
+        public R1 Unknown { get; } = r1;
+    }
 }

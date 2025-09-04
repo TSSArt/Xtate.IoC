@@ -19,24 +19,24 @@ namespace Xtate.IoC;
 
 internal static class XtateObjectDisposedException
 {
-	/// <summary>
-	///     Throws an <see cref="ObjectDisposedException" /> if the specified condition is true.
-	/// </summary>
-	/// <param name="condition">The condition to evaluate.</param>
-	/// <param name="instance">The instance that is disposed.</param>
-	/// <exception cref="ObjectDisposedException">Thrown when the condition is true.</exception>
-	[ExcludeFromCodeCoverage]
-	public static void ThrowIf([DoesNotReturnIf(true)] bool condition, object? instance)
-	{
+    /// <summary>
+    ///     Throws an <see cref="ObjectDisposedException" /> if the specified condition is true.
+    /// </summary>
+    /// <param name="condition">The condition to evaluate.</param>
+    /// <param name="instance">The instance that is disposed.</param>
+    /// <exception cref="ObjectDisposedException">Thrown when the condition is true.</exception>
+    [ExcludeFromCodeCoverage]
+    public static void ThrowIf([DoesNotReturnIf(true)] bool condition, object? instance)
+    {
 #if NET7_0_OR_GREATER
-		ObjectDisposedException.ThrowIf(condition, instance!);
+        ObjectDisposedException.ThrowIf(condition, instance!);
 
 #else
-		if (condition)
-		{
-			throw new ObjectDisposedException(instance?.GetType().FullName);
-		}
+        if (condition)
+        {
+            throw new ObjectDisposedException(instance?.GetType().FullName);
+        }
 
 #endif
-	}
+    }
 }

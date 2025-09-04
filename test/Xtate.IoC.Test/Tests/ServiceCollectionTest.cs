@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2024 Sergii Artemenko
+﻿// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -20,83 +20,83 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ServiceCollectionTest
 {
-	[TestMethod]
-	public async Task ServiceCollection_ShouldBuildProvider_WithRequiredServiceScopeFactory()
-	{
-		// Arrange
-		var sc = new ServiceCollectionNew();
-		var sp = sc.BuildProvider();
+    [TestMethod]
+    public async Task ServiceCollection_ShouldBuildProvider_WithRequiredServiceScopeFactory()
+    {
+        // Arrange
+        var sc = new ServiceCollectionNew();
+        var sp = sc.BuildProvider();
 
-		// Act
-		var serviceScope = await sp.GetRequiredService<IServiceScopeFactory>();
+        // Act
+        var serviceScope = await sp.GetRequiredService<IServiceScopeFactory>();
 
-		// Assert
-		Assert.IsNotNull(serviceScope);
-	}
+        // Assert
+        Assert.IsNotNull(serviceScope);
+    }
 
-	private class Forwarding : ForwardingImplementationEntry
-	{
-		public Forwarding(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+    private class Forwarding : ForwardingImplementationEntry
+    {
+        public Forwarding(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
 
-		private Forwarding(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+        private Forwarding(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new Forwarding(serviceProvider, this);
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new Forwarding(serviceProvider, this);
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new Forwarding(serviceProvider, factory);
-	}
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new Forwarding(serviceProvider, factory);
+    }
 
-	private class Transient : TransientImplementationEntry
-	{
-		public Transient(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+    private class Transient : TransientImplementationEntry
+    {
+        public Transient(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
 
-		private Transient(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+        private Transient(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new Transient(serviceProvider, this);
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new Transient(serviceProvider, this);
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new Transient(serviceProvider, factory);
-	}
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new Transient(serviceProvider, factory);
+    }
 
-	private class ScopedOwner : ScopedOwnerImplementationEntry
-	{
-		public ScopedOwner(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+    private class ScopedOwner : ScopedOwnerImplementationEntry
+    {
+        public ScopedOwner(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
 
-		private ScopedOwner(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+        private ScopedOwner(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedOwner(serviceProvider, this);
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ScopedOwner(serviceProvider, this);
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedOwner(serviceProvider, factory);
-	}
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ScopedOwner(serviceProvider, factory);
+    }
 
-	private class SingletonOwner : SingletonOwnerImplementationEntry
-	{
-		public SingletonOwner(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+    private class SingletonOwner : SingletonOwnerImplementationEntry
+    {
+        public SingletonOwner(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
 
-		private SingletonOwner(ServiceProvider serviceProvider, SingletonOwnerImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+        private SingletonOwner(ServiceProvider serviceProvider, SingletonOwnerImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new SingletonOwner(serviceProvider, this);
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new SingletonOwner(serviceProvider, this);
 
-		public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new SingletonOwner(serviceProvider, factory);
-	}
+        public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new SingletonOwner(serviceProvider, factory);
+    }
 
-	private class ServiceProviderNew(ServiceCollectionNew services) : ServiceProvider(services)
-	{
-		protected override void Dispose(bool disposing) { }
+    private class ServiceProviderNew(ServiceCollectionNew services) : ServiceProvider(services)
+    {
+        protected override void Dispose(bool disposing) { }
 
-		protected override ValueTask DisposeAsyncCore() => default;
+        protected override ValueTask DisposeAsyncCore() => default;
 
-		protected override ImplementationEntry CreateImplementationEntry(ServiceEntry service) =>
-			service.InstanceScope switch
-			{
-				InstanceScope.Transient  => new Transient(this, service.Factory),
-				InstanceScope.Forwarding => new Forwarding(this, service.Factory),
-				InstanceScope.Scoped     => new ScopedOwner(this, service.Factory),
-				InstanceScope.Singleton  => new SingletonOwner(this, service.Factory),
-				_                        => base.CreateImplementationEntry(service)
-			};
-	}
+        protected override ImplementationEntry CreateImplementationEntry(ServiceEntry service) =>
+            service.InstanceScope switch
+            {
+                InstanceScope.Transient  => new Transient(this, service.Factory),
+                InstanceScope.Forwarding => new Forwarding(this, service.Factory),
+                InstanceScope.Scoped     => new ScopedOwner(this, service.Factory),
+                InstanceScope.Singleton  => new SingletonOwner(this, service.Factory),
+                _                        => base.CreateImplementationEntry(service)
+            };
+    }
 
-	private class ServiceCollectionNew : ServiceCollection
-	{
-		public override IServiceProvider BuildProvider() => new ServiceProviderNew(this);
-	}
+    private class ServiceCollectionNew : ServiceCollection
+    {
+        public override IServiceProvider BuildProvider() => new ServiceProviderNew(this);
+    }
 }

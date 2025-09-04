@@ -20,107 +20,107 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ArgumentTypeTest
 {
-	[TestMethod]
-	public void ToString_ShouldReturnEmptyString_WhenTypeIsNull()
-	{
-		// Arrange
-		var argumentType = new ArgumentType();
+    [TestMethod]
+    public void ToString_ShouldReturnEmptyString_WhenTypeIsNull()
+    {
+        // Arrange
+        var argumentType = new ArgumentType();
 
-		// Act
-		var result = argumentType.ToString(format: null, formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: null, formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(string.Empty, result);
-	}
+        // Assert
+        Assert.AreEqual(string.Empty, result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFriendlyName_WhenFormatIsNullOrEmpty()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<int>();
+    [TestMethod]
+    public void ToString_ShouldReturnFriendlyName_WhenFormatIsNullOrEmpty()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<int>();
 
-		// Act
-		var result = argumentType.ToString(format: null, formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: null, formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "int", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "int", result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFormattedString_WhenFormatIsValid()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
+    [TestMethod]
+    public void ToString_ShouldReturnFormattedString_WhenFormatIsValid()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
 
-		// Act
-		var result = argumentType.ToString(format: "; |arg0", formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: "; |arg0", formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "int arg0; string arg1", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "int arg0; string arg1", result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFormattedString_WhenFormatIsEmpty()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
+    [TestMethod]
+    public void ToString_ShouldReturnFormattedString_WhenFormatIsEmpty()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
 
-		// Act
-		var result = argumentType.ToString(format: "; |", formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: "; |", formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "(int, string)", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "(int, string)", result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFormattedString_WhenFormatStartWith0()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
+    [TestMethod]
+    public void ToString_ShouldReturnFormattedString_WhenFormatStartWith0()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
 
-		// Act
-		var result = argumentType.ToString(format: "; |0we", formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: "; |0we", formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "(int, string)", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "(int, string)", result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFormattedString_WhenFormatStartWith1()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
+    [TestMethod]
+    public void ToString_ShouldReturnFormattedString_WhenFormatStartWith1()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
 
-		// Act
-		var result = argumentType.ToString(format: "; |1f", formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: "; |1f", formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "(int, string)", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "(int, string)", result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFormattedString_WhenFormatContainsWrongChars()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
+    [TestMethod]
+    public void ToString_ShouldReturnFormattedString_WhenFormatContainsWrongChars()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
 
-		// Act
-		var result = argumentType.ToString(format: "; |@23", formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: "; |@23", formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "(int, string)", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "(int, string)", result);
+    }
 
-	[TestMethod]
-	public void ToString_ShouldReturnFormattedString_WhenFormatContainsNoDigits()
-	{
-		// Arrange
-		var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
+    [TestMethod]
+    public void ToString_ShouldReturnFormattedString_WhenFormatContainsNoDigits()
+    {
+        // Arrange
+        var argumentType = ArgumentType.TypeOf<ValueTuple<int, string>>();
 
-		// Act
-		var result = argumentType.ToString(format: "; |arg", formatProvider: null);
+        // Act
+        var result = argumentType.ToString(format: "; |arg", formatProvider: null);
 
-		// Assert
-		Assert.AreEqual(expected: "int arg; string arg", result);
-	}
+        // Assert
+        Assert.AreEqual(expected: "int arg; string arg", result);
+    }
 }

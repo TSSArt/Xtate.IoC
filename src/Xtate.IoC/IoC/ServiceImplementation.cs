@@ -19,39 +19,39 @@ namespace Xtate.IoC;
 
 public readonly struct ServiceImplementation<TImplementation, TArg> where TImplementation : notnull
 {
-	private readonly IServiceCollection _serviceCollection;
+    private readonly IServiceCollection _serviceCollection;
 
-	private readonly bool _synchronous;
+    private readonly bool _synchronous;
 
-	public ServiceImplementation(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous)
-	{
-		_serviceCollection = serviceCollection;
-		_synchronous = synchronous;
+    public ServiceImplementation(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous)
+    {
+        _serviceCollection = serviceCollection;
+        _synchronous = synchronous;
 
-		var factory = _synchronous
-			? ImplementationSyncFactoryProvider<TImplementation, TArg>.Delegate()
-			: ImplementationAsyncFactoryProvider<TImplementation, TArg>.Delegate();
+        var factory = _synchronous
+            ? ImplementationSyncFactoryProvider<TImplementation, TArg>.Delegate()
+            : ImplementationAsyncFactoryProvider<TImplementation, TArg>.Delegate();
 
-		serviceCollection.Add(new ServiceEntry(TypeKey.ImplementationKey<TImplementation, TArg>(), instanceScope, factory));
-	}
+        serviceCollection.Add(new ServiceEntry(TypeKey.ImplementationKey<TImplementation, TArg>(), instanceScope, factory));
+    }
 
-	public ServiceImplementation<TImplementation, TArg> For<TService>(Option option = Option.Default)
-	{
-		option.Validate(Option.IfNotRegistered);
+    public ServiceImplementation<TImplementation, TArg> For<TService>(Option option = Option.Default)
+    {
+        option.Validate(Option.IfNotRegistered);
 
-		var key = TypeKey.ServiceKey<TService, TArg>();
+        var key = TypeKey.ServiceKey<TService, TArg>();
 
-		if (option.Has(Option.IfNotRegistered) && _serviceCollection.IsRegistered(key))
-		{
-			return this;
-		}
+        if (option.Has(Option.IfNotRegistered) && _serviceCollection.IsRegistered(key))
+        {
+            return this;
+        }
 
-		var factory = _synchronous
-			? ForwardSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
-			: ForwardAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+        var factory = _synchronous
+            ? ForwardSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
+            : ForwardAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
 
-		_serviceCollection.Add(new ServiceEntry(key, InstanceScope.Forwarding, factory));
+        _serviceCollection.Add(new ServiceEntry(key, InstanceScope.Forwarding, factory));
 
-		return this;
-	}
+        return this;
+    }
 }

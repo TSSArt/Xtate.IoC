@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2024 Sergii Artemenko
+﻿// Copyright © 2019-2025 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -20,159 +20,159 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class CustomInitTest
 {
-	[TestMethod]
-	public async Task NoInitRequired_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(null!);
-		sc.AddType<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task NoInitRequired_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(null!);
+        sc.AddType<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public void NoInitRequiredSync_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(null!);
-		sc.AddTypeSync<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public void NoInitRequiredSync_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(null!);
+        sc.AddTypeSync<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = serviceProvider.GetServiceSync<Temp>();
+        // Act
+        var obj = serviceProvider.GetServiceSync<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public async Task NoInitOptional_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(null!);
-		sc.AddType<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task NoInitOptional_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(null!);
+        sc.AddType<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public async Task CustomInitRequired_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
-		sc.AddType<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task CustomInitRequired_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
+        sc.AddType<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public async Task CustomInitOptional_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
-		sc.AddType<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task CustomInitOptional_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
+        sc.AddType<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public async Task CustomAsyncInitRequired_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
-		sc.AddType<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task CustomAsyncInitRequired_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
+        sc.AddType<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public async Task CustomInitRequiredSync_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
-		sc.AddTypeSync<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task CustomInitRequiredSync_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(false));
+        sc.AddTypeSync<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	[TestMethod]
-	public void CustomAsyncInitRequiredSync_ShouldThrowException()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
-		sc.AddTypeSync<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public void CustomAsyncInitRequiredSync_ShouldThrowException()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
+        sc.AddTypeSync<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act & Assert
-		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => serviceProvider.GetRequiredServiceSync<Temp>());
-	}
+        // Act & Assert
+        Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => serviceProvider.GetRequiredServiceSync<Temp>());
+    }
 
-	[TestMethod]
-	public async Task CustomAsyncInitOptional_ShouldReturnNotNull()
-	{
-		// Arrange
-		var sc = new ServiceCollection();
-		sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
-		sc.AddType<Temp>();
-		var serviceProvider = sc.BuildProvider();
+    [TestMethod]
+    public async Task CustomAsyncInitOptional_ShouldReturnNotNull()
+    {
+        // Arrange
+        var sc = new ServiceCollection();
+        sc.AddConstant<IInitializationHandler>(new CustomInitializationHandler(true));
+        sc.AddType<Temp>();
+        var serviceProvider = sc.BuildProvider();
 
-		// Act
-		var obj = await serviceProvider.GetService<Temp>();
+        // Act
+        var obj = await serviceProvider.GetService<Temp>();
 
-		// Assert
-		Assert.IsNotNull(obj);
-	}
+        // Assert
+        Assert.IsNotNull(obj);
+    }
 
-	private class CustomInitializationHandler(bool async) : IInitializationHandler
-	{
-	#region Interface IInitializationHandler
+    private class CustomInitializationHandler(bool async) : IInitializationHandler
+    {
+    #region Interface IInitializationHandler
 
-		public bool Initialize<T>(T instance) => async;
+        public bool Initialize<T>(T instance) => async;
 
-		[ExcludeFromCodeCoverage]
-		public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
+        [ExcludeFromCodeCoverage]
+        public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
 
-	#endregion
-	}
+    #endregion
+    }
 
-	[UsedImplicitly]
-	private class Temp;
+    [UsedImplicitly]
+    private class Temp;
 }

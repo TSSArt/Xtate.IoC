@@ -20,27 +20,27 @@ namespace Xtate.IoC;
 [Serializable]
 public class MissedServiceException : DependencyInjectionException
 {
-	public MissedServiceException() { }
+    public MissedServiceException() { }
 
-	public MissedServiceException(string? message) : base(message) { }
+    public MissedServiceException(string? message) : base(message) { }
 
-	public MissedServiceException(string? message, Exception? innerException) : base(message, innerException) { }
+    public MissedServiceException(string? message, Exception? innerException) : base(message, innerException) { }
 
-	public required Type Service { get; init; }
+    public required Type Service { get; init; }
 
-	public Type? Argument { get; init; }
+    public Type? Argument { get; init; }
 
-	public static MissedServiceException Create<T>() => new(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))) { Service = typeof(T) };
+    public static MissedServiceException Create<T>() => new(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))) { Service = typeof(T) };
 
-	public static MissedServiceException Create<T, TArg>()
-	{
-		var argumentType = ArgumentType.TypeOf<TArg>();
-		var isEmptyArg = argumentType.IsEmpty;
+    public static MissedServiceException Create<T, TArg>()
+    {
+        var argumentType = ArgumentType.TypeOf<TArg>();
+        var isEmptyArg = argumentType.IsEmpty;
 
-		var message = isEmptyArg
-			? Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))
-			: Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), argumentType);
+        var message = isEmptyArg
+            ? Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))
+            : Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), argumentType);
 
-		return new MissedServiceException(message) { Service = typeof(T), Argument = isEmptyArg ? null : typeof(TArg) };
-	}
+        return new MissedServiceException(message) { Service = typeof(T), Argument = isEmptyArg ? null : typeof(TArg) };
+    }
 }

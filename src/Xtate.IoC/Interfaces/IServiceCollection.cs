@@ -19,7 +19,7 @@ namespace Xtate.IoC;
 
 public interface IServiceCollection : IReadOnlyCollection<ServiceEntry>
 {
-	void Add(ServiceEntry serviceEntry);
+    void Add(ServiceEntry serviceEntry);
 
-	bool IsRegistered(TypeKey key);
+    bool IsRegistered(TypeKey key);
 }
