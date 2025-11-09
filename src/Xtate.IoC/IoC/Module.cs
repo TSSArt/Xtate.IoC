@@ -19,157 +19,157 @@ namespace Xtate.IoC;
 
 public abstract class Module : IModule
 {
-    protected IServiceCollection Services { get; private init; } = null!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-    void IModule.AddServices() => AddServices();
+	void IModule.AddServices() => AddServices();
 
-    IServiceCollection IModule.Services
-    {
-        init => Services = value;
-    }
+	IServiceCollection IModule.Services
+	{
+		init => Services = value;
+	}
 
 #endregion
 
-    protected abstract void AddServices();
+	protected abstract void AddServices();
 }
 
 public abstract class Module<TDependencyModule> : IModule where TDependencyModule : IModule, new()
 {
-    protected IServiceCollection Services { get; private init; } = null!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-    void IModule.AddServices()
-    {
-        Services.AddModule<TDependencyModule>();
+	void IModule.AddServices()
+	{
+		Services.AddModule<TDependencyModule>();
 
-        AddServices();
-    }
+		AddServices();
+	}
 
-    IServiceCollection IModule.Services
-    {
-        init => Services = value;
-    }
+	IServiceCollection IModule.Services
+	{
+		init => Services = value;
+	}
 
 #endregion
 
-    protected abstract void AddServices();
+	protected abstract void AddServices();
 }
 
 public abstract class Module<TDependencyModule1, TDependencyModule2> : IModule
-    where TDependencyModule1 : IModule, new()
-    where TDependencyModule2 : IModule, new()
+	where TDependencyModule1 : IModule, new()
+	where TDependencyModule2 : IModule, new()
 {
-    protected IServiceCollection Services { get; private init; } = null!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-    void IModule.AddServices()
-    {
-        Services.AddModule<TDependencyModule1>();
-        Services.AddModule<TDependencyModule2>();
+	void IModule.AddServices()
+	{
+		Services.AddModule<TDependencyModule1>();
+		Services.AddModule<TDependencyModule2>();
 
-        AddServices();
-    }
+		AddServices();
+	}
 
-    IServiceCollection IModule.Services
-    {
-        init => Services = value;
-    }
+	IServiceCollection IModule.Services
+	{
+		init => Services = value;
+	}
 
 #endregion
 
-    protected abstract void AddServices();
+	protected abstract void AddServices();
 }
 
 public abstract class Module<TDependencyModule1, TDependencyModule2, TDependencyModule3> : IModule
-    where TDependencyModule1 : IModule, new()
-    where TDependencyModule2 : IModule, new()
-    where TDependencyModule3 : IModule, new()
+	where TDependencyModule1 : IModule, new()
+	where TDependencyModule2 : IModule, new()
+	where TDependencyModule3 : IModule, new()
 {
-    protected IServiceCollection Services { get; private init; } = null!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-    void IModule.AddServices()
-    {
-        Services.AddModule<TDependencyModule1>();
-        Services.AddModule<TDependencyModule2>();
-        Services.AddModule<TDependencyModule3>();
+	void IModule.AddServices()
+	{
+		Services.AddModule<TDependencyModule1>();
+		Services.AddModule<TDependencyModule2>();
+		Services.AddModule<TDependencyModule3>();
 
-        AddServices();
-    }
+		AddServices();
+	}
 
-    IServiceCollection IModule.Services
-    {
-        init => Services = value;
-    }
+	IServiceCollection IModule.Services
+	{
+		init => Services = value;
+	}
 
 #endregion
 
-    protected abstract void AddServices();
+	protected abstract void AddServices();
 }
 
 public abstract class Module<TDependencyModule1, TDependencyModule2, TDependencyModule3, TDependencyModule4> : IModule
-    where TDependencyModule1 : IModule, new()
-    where TDependencyModule2 : IModule, new()
-    where TDependencyModule3 : IModule, new()
-    where TDependencyModule4 : IModule, new()
+	where TDependencyModule1 : IModule, new()
+	where TDependencyModule2 : IModule, new()
+	where TDependencyModule3 : IModule, new()
+	where TDependencyModule4 : IModule, new()
 {
-    protected IServiceCollection Services { get; private init; } = null!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-    void IModule.AddServices()
-    {
-        Services.AddModule<TDependencyModule1>();
-        Services.AddModule<TDependencyModule2>();
-        Services.AddModule<TDependencyModule3>();
-        Services.AddModule<TDependencyModule4>();
+	void IModule.AddServices()
+	{
+		Services.AddModule<TDependencyModule1>();
+		Services.AddModule<TDependencyModule2>();
+		Services.AddModule<TDependencyModule3>();
+		Services.AddModule<TDependencyModule4>();
 
-        AddServices();
-    }
+		AddServices();
+	}
 
-    IServiceCollection IModule.Services
-    {
-        init => Services = value;
-    }
+	IServiceCollection IModule.Services
+	{
+		init => Services = value;
+	}
 
 #endregion
 
-    protected abstract void AddServices();
+	protected abstract void AddServices();
 }
 
 public abstract class Module<TDependencyModule1, TDependencyModule2, TDependencyModule3, TDependencyModule4, TDependencyModule5> : IModule
-    where TDependencyModule1 : IModule, new()
-    where TDependencyModule2 : IModule, new()
-    where TDependencyModule3 : IModule, new()
-    where TDependencyModule4 : IModule, new()
-    where TDependencyModule5 : IModule, new()
+	where TDependencyModule1 : IModule, new()
+	where TDependencyModule2 : IModule, new()
+	where TDependencyModule3 : IModule, new()
+	where TDependencyModule4 : IModule, new()
+	where TDependencyModule5 : IModule, new()
 {
-    protected IServiceCollection Services { get; private init; } = null!;
+	protected IServiceCollection Services { get; private init; } = null!;
 
 #region Interface IModule
 
-    void IModule.AddServices()
-    {
-        Services.AddModule<TDependencyModule1>();
-        Services.AddModule<TDependencyModule2>();
-        Services.AddModule<TDependencyModule3>();
-        Services.AddModule<TDependencyModule4>();
-        Services.AddModule<TDependencyModule5>();
+	void IModule.AddServices()
+	{
+		Services.AddModule<TDependencyModule1>();
+		Services.AddModule<TDependencyModule2>();
+		Services.AddModule<TDependencyModule3>();
+		Services.AddModule<TDependencyModule4>();
+		Services.AddModule<TDependencyModule5>();
 
-        AddServices();
-    }
+		AddServices();
+	}
 
-    IServiceCollection IModule.Services
-    {
-        init => Services = value;
-    }
+	IServiceCollection IModule.Services
+	{
+		init => Services = value;
+	}
 
 #endregion
 
-    protected abstract void AddServices();
+	protected abstract void AddServices();
 }

@@ -19,13 +19,13 @@ namespace Xtate.IoC;
 
 public interface IServiceProviderActions
 {
-    IServiceProviderDataActions? RegisterServices();
+	IServiceProviderDataActions? RegisterServices(int count);
 
-    IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey);
+	IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey);
 
-    IServiceProviderDataActions? ServiceRequested(TypeKey typeKey);
+	IServiceProviderDataActions? ServiceRequested(TypeKey typeKey);
 
-    IServiceProviderDataActions? FactoryCalling(TypeKey typeKey);
+	IServiceProviderDataActions? FactoryCalling(TypeKey typeKey);
 
-    IServiceProviderDataActions? FactoryCalled(TypeKey typeKey);
+	IServiceProviderDataActions? FactoryCalled(TypeKey typeKey);
 }

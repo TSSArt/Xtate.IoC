@@ -22,44 +22,44 @@ namespace Xtate.IoC;
 /// </summary>
 internal static class Res
 {
-    /// <summary>
-    ///     Formats a string using the specified format and a single argument.
-    /// </summary>
-    /// <param name="format">The format string.</param>
-    /// <param name="arg">The argument to format.</param>
-    /// <returns>A formatted string.</returns>
-    public static string Format(string format, object? arg)
-    {
-        FriendlyTypeArg(ref arg);
+	/// <summary>
+	///     Formats a string using the specified format and a single argument.
+	/// </summary>
+	/// <param name="format">The format string.</param>
+	/// <param name="arg">The argument to format.</param>
+	/// <returns>A formatted string.</returns>
+	public static string Format(string format, object? arg)
+	{
+		FriendlyTypeArg(ref arg);
 
-        return string.Format(Resources.Culture, format, arg);
-    }
+		return string.Format(Resources.Culture, format, arg);
+	}
 
-    /// <summary>
-    ///     Formats a string using the specified format and two arguments.
-    /// </summary>
-    /// <param name="format">The format string.</param>
-    /// <param name="arg0">The first argument to format.</param>
-    /// <param name="arg1">The second argument to format.</param>
-    /// <returns>A formatted string.</returns>
-    public static string Format(string format, object? arg0, object? arg1)
-    {
-        FriendlyTypeArg(ref arg0);
-        FriendlyTypeArg(ref arg1);
+	/// <summary>
+	///     Formats a string using the specified format and two arguments.
+	/// </summary>
+	/// <param name="format">The format string.</param>
+	/// <param name="arg0">The first argument to format.</param>
+	/// <param name="arg1">The second argument to format.</param>
+	/// <returns>A formatted string.</returns>
+	public static string Format(string format, object? arg0, object? arg1)
+	{
+		FriendlyTypeArg(ref arg0);
+		FriendlyTypeArg(ref arg1);
 
-        return string.Format(Resources.Culture, format, arg0, arg1);
-    }
+		return string.Format(Resources.Culture, format, arg0, arg1);
+	}
 
-    private static void FriendlyTypeArg(ref object? arg)
-    {
-        if (arg is Type type)
-        {
-            arg = new FriendlyType(type);
-        }
-    }
+	private static void FriendlyTypeArg(ref object? arg)
+	{
+		if (arg is Type type)
+		{
+			arg = new FriendlyType(type);
+		}
+	}
 
-    private class FriendlyType(Type type)
-    {
-        public override string ToString() => type.FriendlyName();
-    }
+	private class FriendlyType(Type type)
+	{
+		public override string ToString() => type.FriendlyName;
+	}
 }

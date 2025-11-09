@@ -19,13 +19,13 @@ namespace Xtate.IoC;
 
 public interface IServiceProviderDataActions
 {
-    void RegisterService(ServiceEntry serviceEntry);
+	void RegisterService(ServiceEntry serviceEntry);
 
-    void ServiceRequesting<T, TArg>(TArg argument);
+	void ServiceRequesting<T, TArg>(TArg argument);
 
-    void ServiceRequested<T, TArg>(T? instance);
+	void ServiceRequested<T, TArg>(T? instance);
 
-    void FactoryCalling<T, TArg>(TArg argument);
+	void FactoryCalling<T, TArg>(TArg argument);
 
-    void FactoryCalled<T, TArg>(T? instance);
+	void FactoryCalled<T, TArg>(T? instance);
 }

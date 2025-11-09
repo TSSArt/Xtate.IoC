@@ -23,34 +23,34 @@ namespace Xtate.IoC;
 /// </summary>
 public class ForwardingImplementationEntry : ImplementationEntry
 {
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ForwardingImplementationEntry" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <param name="factory">The factory delegate.</param>
-    public ForwardingImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
+	/// <summary>
+	///     Initializes a new instance of the <see cref="ForwardingImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="factory">The factory delegate.</param>
+	public ForwardingImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) { }
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ForwardingImplementationEntry" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <param name="sourceEntry">The source implementation entry.</param>
-    protected ForwardingImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
+	/// <summary>
+	///     Initializes a new instance of the <see cref="ForwardingImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="sourceEntry">The source implementation entry.</param>
+	protected ForwardingImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) { }
 
-    /// <summary>
-    ///     Creates a new instance of the <see cref="ForwardingImplementationEntry" /> class with the specified service
-    ///     provider.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <returns>A new instance of <see cref="ForwardingImplementationEntry" />.</returns>
-    public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ForwardingImplementationEntry(serviceProvider, this);
+	/// <summary>
+	///     Creates a new instance of the <see cref="ForwardingImplementationEntry" /> class with the specified service
+	///     provider.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <returns>A new instance of <see cref="ForwardingImplementationEntry" />.</returns>
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new ForwardingImplementationEntry(serviceProvider, this);
 
-    /// <summary>
-    ///     Creates a new instance of the <see cref="ForwardingImplementationEntry" /> class with the specified service
-    ///     provider and factory delegate.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <param name="factory">The factory delegate.</param>
-    /// <returns>A new instance of <see cref="ForwardingImplementationEntry" />.</returns>
-    public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ForwardingImplementationEntry(serviceProvider, factory);
+	/// <summary>
+	///     Creates a new instance of the <see cref="ForwardingImplementationEntry" /> class with the specified service
+	///     provider and factory delegate.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="factory">The factory delegate.</param>
+	/// <returns>A new instance of <see cref="ForwardingImplementationEntry" />.</returns>
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new ForwardingImplementationEntry(serviceProvider, factory);
 }

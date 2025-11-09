@@ -20,38 +20,38 @@ namespace Xtate.IoC;
 [UsedImplicitly]
 internal static class AsyncEnumerable
 {
-    extension<T>(IAsyncEnumerable<T>)
-    {
-        /// <summary>
-        ///     Returns an empty <see cref="IAsyncEnumerable{T}" />.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements.</typeparam>
-        /// <returns>An empty <see cref="IAsyncEnumerable{T}" />.</returns>
-        public static IAsyncEnumerable<T> Empty => EmptyAsyncEnumerable<T>.Instance;
-    }
+	extension<T>(IAsyncEnumerable<T>)
+	{
+		/// <summary>
+		///     Returns an empty <see cref="IAsyncEnumerable{T}" />.
+		/// </summary>
+		/// <typeparam name="T">The type of the elements.</typeparam>
+		/// <returns>An empty <see cref="IAsyncEnumerable{T}" />.</returns>
+		public static IAsyncEnumerable<T> Empty => EmptyAsyncEnumerable<T>.Instance;
+	}
 
-    private sealed class EmptyAsyncEnumerable<T> : IAsyncEnumerable<T>, IAsyncEnumerator<T>
-    {
-        public static readonly EmptyAsyncEnumerable<T> Instance = new();
+	private sealed class EmptyAsyncEnumerable<T> : IAsyncEnumerable<T>, IAsyncEnumerator<T>
+	{
+		public static readonly EmptyAsyncEnumerable<T> Instance = new();
 
-    #region Interface IAsyncDisposable
+	#region Interface IAsyncDisposable
 
-        ValueTask IAsyncDisposable.DisposeAsync() => ValueTask.CompletedTask;
+		ValueTask IAsyncDisposable.DisposeAsync() => ValueTask.CompletedTask;
 
-    #endregion
+	#endregion
 
-    #region Interface IAsyncEnumerable<T>
+	#region Interface IAsyncEnumerable<T>
 
-        IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken token) => this;
+		IAsyncEnumerator<T> IAsyncEnumerable<T>.GetAsyncEnumerator(CancellationToken token) => this;
 
-    #endregion
+	#endregion
 
-    #region Interface IAsyncEnumerator<T>
+	#region Interface IAsyncEnumerator<T>
 
-        ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync() => new(false);
+		ValueTask<bool> IAsyncEnumerator<T>.MoveNextAsync() => new(false);
 
-        T IAsyncEnumerator<T>.Current => default!;
+		T IAsyncEnumerator<T>.Current => default!;
 
-    #endregion
-    }
+	#endregion
+	}
 }

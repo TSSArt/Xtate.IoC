@@ -20,70 +20,70 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class AsyncInitializationHandlerTest
 {
-    [TestMethod]
-    public async Task Initialize_ShouldReturnFalse_WhenObjectIsNotAsyncInitializable()
-    {
-        // Arrange
-        var obj = new Class();
+	[TestMethod]
+	public async Task Initialize_ShouldReturnFalse_WhenObjectIsNotAsyncInitializable()
+	{
+		// Arrange
+		var obj = new Class();
 
-        // Act
-        var init = AsyncInitializationHandler.Instance.Initialize(obj);
-        await AsyncInitializationHandler.Instance.InitializeAsync(obj);
+		// Act
+		var init = AsyncInitializationHandler.Instance.Initialize(obj);
+		await AsyncInitializationHandler.Instance.InitializeAsync(obj);
 
-        // Assert
-        Assert.IsFalse(init);
-    }
+		// Assert
+		Assert.IsFalse(init);
+	}
 
-    [TestMethod]
-    public async Task Initialize_ShouldReturnTrue_WhenObjectIsAsyncInitializable()
-    {
-        // Arrange
-        var objAsyncInit = new ClassAsyncInit();
+	[TestMethod]
+	public async Task Initialize_ShouldReturnTrue_WhenObjectIsAsyncInitializable()
+	{
+		// Arrange
+		var objAsyncInit = new ClassAsyncInit();
 
-        // Act
-        var init = AsyncInitializationHandler.Instance.Initialize(objAsyncInit);
-        await AsyncInitializationHandler.Instance.InitializeAsync(objAsyncInit);
+		// Act
+		var init = AsyncInitializationHandler.Instance.Initialize(objAsyncInit);
+		await AsyncInitializationHandler.Instance.InitializeAsync(objAsyncInit);
 
-        // Assert
-        Assert.IsTrue(init);
-        Assert.IsTrue(objAsyncInit.Init);
-    }
+		// Assert
+		Assert.IsTrue(init);
+		Assert.IsTrue(objAsyncInit.Init);
+	}
 
-    [TestMethod]
-    public async Task Initialize_ShouldReturnFalse_WhenObjectIsNull()
-    {
-        // Arrange
-        ClassAsyncInit? nullObjAsyncInit = null;
+	[TestMethod]
+	public async Task Initialize_ShouldReturnFalse_WhenObjectIsNull()
+	{
+		// Arrange
+		ClassAsyncInit? nullObjAsyncInit = null;
 
-        // Act
-        var init = AsyncInitializationHandler.Instance.Initialize(nullObjAsyncInit);
-        await AsyncInitializationHandler.Instance.InitializeAsync(nullObjAsyncInit);
+		// Act
+		var init = AsyncInitializationHandler.Instance.Initialize(nullObjAsyncInit);
+		await AsyncInitializationHandler.Instance.InitializeAsync(nullObjAsyncInit);
 
-        // Assert
-        Assert.IsFalse(init);
-    }
+		// Assert
+		Assert.IsFalse(init);
+	}
 
-    // ReSharper disable All
-    public class Class { }
+	// ReSharper disable All
+	public class Class { }
 
-    public class ClassAsyncInit : IAsyncInitialization
-    {
-        public bool Init;
+	public class ClassAsyncInit : IAsyncInitialization
+	{
+		public bool Init;
 
-    #region Interface IAsyncInitialization
+	#region Interface IAsyncInitialization
 
-        public Task Initialization
-        {
-            get
-            {
-                Init = true;
+		public Task Initialization
+		{
+			get
+			{
+				Init = true;
 
-                return Task.CompletedTask;
-            }
-        }
+				return Task.CompletedTask;
+			}
+		}
 
-    #endregion
-    }
+	#endregion
+	}
 
-    // ReSharper restore All
+	// ReSharper restore All
 }

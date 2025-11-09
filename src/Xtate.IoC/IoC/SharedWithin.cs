@@ -19,7 +19,7 @@ namespace Xtate.IoC;
 
 public enum SharedWithin
 {
-    Container,
+	Container,
 
-    Scope
+	Scope
 }

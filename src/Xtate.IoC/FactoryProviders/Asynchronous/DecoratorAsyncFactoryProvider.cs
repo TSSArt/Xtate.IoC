@@ -19,21 +19,21 @@ namespace Xtate.IoC;
 
 internal static class DecoratorAsyncFactoryProvider<TImplementation, TService, TArg>
 {
-    public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
+	public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
 
-    private static Delegate GetDelegate()
-    {
-        if (typeof(TService).IsAssignableFrom(typeof(TImplementation)))
-        {
-            return ClassAsyncFactoryProvider<TImplementation, TService>.GetDecoratorServiceDelegate<TArg>();
-        }
+	private static Delegate GetDelegate()
+	{
+		if (typeof(TService).IsAssignableFrom(typeof(TImplementation)))
+		{
+			return ClassAsyncFactoryProvider<TImplementation, TService>.GetDecoratorServiceDelegate<TArg>();
+		}
 
-        throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
-    }
+		throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
+	}
 
-    private static class Nested
-    {
-        [SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
-        public static readonly Delegate DelegateField = GetDelegate();
-    }
+	private static class Nested
+	{
+		[SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
+		public static readonly Delegate DelegateField = GetDelegate();
+	}
 }

@@ -20,29 +20,29 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class DisposerTest
 {
-    [TestMethod]
-    public void Dispose_ShouldDisposeObject()
-    {
-        // Arrange
-        var obj = new object();
+	[TestMethod]
+	public void Dispose_ShouldDisposeObject()
+	{
+		// Arrange
+		var obj = new object();
 
-        // Act
-        Disposer.Dispose(obj);
+		// Act
+		Disposer.Dispose(obj);
 
-        // Assert
-        // Add assertions here if needed
-    }
+		// Assert
+		// Add assertions here if needed
+	}
 
-    [TestMethod]
-    public void DisposeAsync_ShouldDisposeObjectAsync()
-    {
-        // Arrange
-        var obj = new object();
+	[TestMethod]
+	public void DisposeAsync_ShouldDisposeObjectAsync()
+	{
+		// Arrange
+		var obj = new object();
 
-        // Act
-        _ = Disposer.DisposeAsync(obj).AsTask();
+		// Act
+		_ = Disposer.DisposeAsync(obj).AsTask();
 
-        // Assert
-        // Add assertions here if needed
-    }
+		// Assert
+		// Add assertions here if needed
+	}
 }

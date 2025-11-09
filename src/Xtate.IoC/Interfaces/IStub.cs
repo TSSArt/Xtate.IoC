@@ -19,5 +19,5 @@ namespace Xtate.IoC;
 
 public interface IStub
 {
-    bool IsMatch(Type type);
+	bool IsMatch(Type type);
 }

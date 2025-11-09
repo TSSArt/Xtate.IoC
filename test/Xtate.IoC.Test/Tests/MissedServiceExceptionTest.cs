@@ -20,73 +20,73 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class MissedServiceExceptionTest
 {
-    [TestMethod]
-    public void MissedServiceException_DefaultConstructor_ShouldInitializeCorrectly()
-    {
-        // Act
-        var exception = new MissedServiceException { Service = typeof(void) };
+	[TestMethod]
+	public void MissedServiceException_DefaultConstructor_ShouldInitializeCorrectly()
+	{
+		// Act
+		var exception = new MissedServiceException { Service = typeof(void) };
 
-        // Assert
-        Assert.IsNotNull(exception);
-        Assert.AreEqual(typeof(void), exception.Service);
-        Assert.IsNull(exception.Argument);
-    }
+		// Assert
+		Assert.IsNotNull(exception);
+		Assert.AreEqual(typeof(void), exception.Service);
+		Assert.IsNull(exception.Argument);
+	}
 
-    [TestMethod]
-    public void MissedServiceException_MessageConstructor_ShouldInitializeCorrectly()
-    {
-        // Arrange
-        const string message = "Service not found";
+	[TestMethod]
+	public void MissedServiceException_MessageConstructor_ShouldInitializeCorrectly()
+	{
+		// Arrange
+		const string message = "Service not found";
 
-        // Act
-        var exception = new MissedServiceException(message) { Service = typeof(void) };
+		// Act
+		var exception = new MissedServiceException(message) { Service = typeof(void) };
 
-        // Assert
-        Assert.IsNotNull(exception);
-        Assert.AreEqual(message, exception.Message);
-        Assert.AreEqual(typeof(void), exception.Service);
-        Assert.IsNull(exception.Argument);
-    }
+		// Assert
+		Assert.IsNotNull(exception);
+		Assert.AreEqual(message, exception.Message);
+		Assert.AreEqual(typeof(void), exception.Service);
+		Assert.IsNull(exception.Argument);
+	}
 
-    [TestMethod]
-    public void MissedServiceException_MessageAndInnerExceptionConstructor_ShouldInitializeCorrectly()
-    {
-        // Arrange
-        const string message = "Service not found";
-        var innerException = new Exception("Inner exception");
+	[TestMethod]
+	public void MissedServiceException_MessageAndInnerExceptionConstructor_ShouldInitializeCorrectly()
+	{
+		// Arrange
+		const string message = "Service not found";
+		var innerException = new Exception("Inner exception");
 
-        // Act
-        var exception = new MissedServiceException(message, innerException) { Service = typeof(void) };
+		// Act
+		var exception = new MissedServiceException(message, innerException) { Service = typeof(void) };
 
-        // Assert
-        Assert.IsNotNull(exception);
-        Assert.AreEqual(message, exception.Message);
-        Assert.AreEqual(innerException, exception.InnerException);
-        Assert.AreEqual(typeof(void), exception.Service);
-        Assert.IsNull(exception.Argument);
-    }
+		// Assert
+		Assert.IsNotNull(exception);
+		Assert.AreEqual(message, exception.Message);
+		Assert.AreEqual(innerException, exception.InnerException);
+		Assert.AreEqual(typeof(void), exception.Service);
+		Assert.IsNull(exception.Argument);
+	}
 
-    [TestMethod]
-    public void MissedServiceException_Create_ShouldInitializeCorrectly()
-    {
-        // Act
-        var exception = MissedServiceException.Create<string>();
+	[TestMethod]
+	public void MissedServiceException_Create_ShouldInitializeCorrectly()
+	{
+		// Act
+		var exception = MissedServiceException.Create<string>();
 
-        // Assert
-        Assert.IsNotNull(exception);
-        Assert.AreEqual(typeof(string), exception.Service);
-        Assert.IsNull(exception.Argument);
-    }
+		// Assert
+		Assert.IsNotNull(exception);
+		Assert.AreEqual(typeof(string), exception.Service);
+		Assert.IsNull(exception.Argument);
+	}
 
-    [TestMethod]
-    public void MissedServiceException_CreateWithArgument_ShouldInitializeCorrectly()
-    {
-        // Act
-        var exception = MissedServiceException.Create<string, int>();
+	[TestMethod]
+	public void MissedServiceException_CreateWithArgument_ShouldInitializeCorrectly()
+	{
+		// Act
+		var exception = MissedServiceException.Create<string, int>();
 
-        // Assert
-        Assert.IsNotNull(exception);
-        Assert.AreEqual(typeof(string), exception.Service);
-        Assert.AreEqual(typeof(int), exception.Argument);
-    }
+		// Assert
+		Assert.IsNotNull(exception);
+		Assert.AreEqual(typeof(string), exception.Service);
+		Assert.AreEqual(typeof(int), exception.Argument);
+	}
 }

@@ -19,38 +19,38 @@ namespace Xtate.IoC;
 
 internal readonly struct ServiceType : IEquatable<ServiceType>
 {
-    private readonly Type? _openGenericType;
+	private readonly Type? _openGenericType;
 
-    private readonly Type _type;
+	private readonly Type _type;
 
-    private ServiceType(Type type)
-    {
-        _type = type;
-        _openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
-    }
+	private ServiceType(Type type)
+	{
+		_type = type;
+		_openGenericType = type.IsGenericType ? type.GetGenericTypeDefinition() : null;
+	}
 
-    public Type Type => _type ?? throw new InvalidOperationException(Resources.Exception_ServiceTypeNotInitialized);
+	public Type Type => _type ?? throw new InvalidOperationException(Resources.Exception_ServiceTypeNotInitialized);
 
-    public bool IsGeneric => _openGenericType is not null;
+	public bool IsGeneric => _openGenericType is not null;
 
-    public ServiceType Definition => _openGenericType is not null ? new ServiceType(_openGenericType) : default;
+	public ServiceType Definition => _openGenericType is not null ? new ServiceType(_openGenericType) : default;
 
 #region Interface IEquatable<ServiceType>
 
-    public bool Equals(ServiceType other) => _type == other._type;
+	public bool Equals(ServiceType other) => _type == other._type;
 
 #endregion
 
-    public static ServiceType TypeOf<T>() => Container<T>.Instance;
+	public static ServiceType TypeOf<T>() => Container<T>.Instance;
 
-    public override bool Equals(object? obj) => obj is ServiceType other && _type == other._type;
+	public override bool Equals(object? obj) => obj is ServiceType other && _type == other._type;
 
-    public override int GetHashCode() => _type?.GetHashCode() ?? 0;
+	public override int GetHashCode() => _type?.GetHashCode() ?? 0;
 
-    public override string ToString() => _type?.FriendlyName() ?? string.Empty;
+	public override string ToString() => _type?.FriendlyName ?? string.Empty;
 
-    private static class Container<T>
-    {
-        public static readonly ServiceType Instance = new(typeof(T));
-    }
+	private static class Container<T>
+	{
+		public static readonly ServiceType Instance = new(typeof(T));
+	}
 }

@@ -20,81 +20,81 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ExceptionsTest
 {
-    [TestMethod]
-    public void InvalidOperationException_DefaultConstructor_ShouldHaveDefaultMessageAndNoInnerException()
-    {
-        // Arrange
-        var ex = new InvalidOperationException();
+	[TestMethod]
+	public void InvalidOperationException_DefaultConstructor_ShouldHaveDefaultMessageAndNoInnerException()
+	{
+		// Arrange
+		var ex = new InvalidOperationException();
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.IsNull(ex.InnerException);
-    }
+		// Assert
+		Assert.IsNull(ex.InnerException);
+	}
 
-    [TestMethod]
-    public void InvalidOperationException_MessageConstructor_ShouldSetMessageAndHaveNoInnerException()
-    {
-        // Arrange
-        var ex = new InvalidOperationException(@"text");
+	[TestMethod]
+	public void InvalidOperationException_MessageConstructor_ShouldSetMessageAndHaveNoInnerException()
+	{
+		// Arrange
+		var ex = new InvalidOperationException(@"text");
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.AreEqual(expected: @"text", ex.Message);
-        Assert.IsNull(ex.InnerException);
-    }
+		// Assert
+		Assert.AreEqual(expected: @"text", ex.Message);
+		Assert.IsNull(ex.InnerException);
+	}
 
-    [TestMethod]
-    public void InvalidOperationException_MessageAndInnerExceptionConstructor_ShouldSetMessageAndInnerException()
-    {
-        // Arrange
-        var exInner = new ApplicationException();
-        var ex = new InvalidOperationException(message: @"text", exInner);
+	[TestMethod]
+	public void InvalidOperationException_MessageAndInnerExceptionConstructor_ShouldSetMessageAndInnerException()
+	{
+		// Arrange
+		var exInner = new ApplicationException();
+		var ex = new InvalidOperationException(message: @"text", exInner);
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.AreEqual(expected: @"text", ex.Message);
-        Assert.AreSame(exInner, ex.InnerException);
-    }
+		// Assert
+		Assert.AreEqual(expected: @"text", ex.Message);
+		Assert.AreSame(exInner, ex.InnerException);
+	}
 
-    [TestMethod]
-    public void DependencyInjectionException_DefaultConstructor_ShouldHaveDefaultMessageAndNoInnerException()
-    {
-        // Arrange
-        var ex = new DependencyInjectionException();
+	[TestMethod]
+	public void DependencyInjectionException_DefaultConstructor_ShouldHaveDefaultMessageAndNoInnerException()
+	{
+		// Arrange
+		var ex = new DependencyInjectionException();
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.IsNull(ex.InnerException);
-    }
+		// Assert
+		Assert.IsNull(ex.InnerException);
+	}
 
-    [TestMethod]
-    public void DependencyInjectionException_MessageConstructor_ShouldSetMessageAndHaveNoInnerException()
-    {
-        // Arrange
-        var ex = new DependencyInjectionException(@"text");
+	[TestMethod]
+	public void DependencyInjectionException_MessageConstructor_ShouldSetMessageAndHaveNoInnerException()
+	{
+		// Arrange
+		var ex = new DependencyInjectionException(@"text");
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.AreEqual(expected: @"text", ex.Message);
-        Assert.IsNull(ex.InnerException);
-    }
+		// Assert
+		Assert.AreEqual(expected: @"text", ex.Message);
+		Assert.IsNull(ex.InnerException);
+	}
 
-    [TestMethod]
-    public void DependencyInjectionException_MessageAndInnerExceptionConstructor_ShouldSetMessageAndInnerException()
-    {
-        // Arrange
-        var exInner = new ApplicationException();
-        var ex = new DependencyInjectionException(message: @"text", exInner);
+	[TestMethod]
+	public void DependencyInjectionException_MessageAndInnerExceptionConstructor_ShouldSetMessageAndInnerException()
+	{
+		// Arrange
+		var exInner = new ApplicationException();
+		var ex = new DependencyInjectionException(message: @"text", exInner);
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.AreEqual(expected: @"text", ex.Message);
-        Assert.AreSame(exInner, ex.InnerException);
-    }
+		// Assert
+		Assert.AreEqual(expected: @"text", ex.Message);
+		Assert.AreSame(exInner, ex.InnerException);
+	}
 }

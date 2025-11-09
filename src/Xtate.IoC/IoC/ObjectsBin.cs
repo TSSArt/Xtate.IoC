@@ -19,74 +19,74 @@ namespace Xtate.IoC;
 
 public class ObjectsBin
 {
-    private WeakReferenceStack? _instancesForDispose = new();
+	private WeakReferenceStack? _instancesForDispose = new();
 
-    internal async ValueTask DisposeAsync()
-    {
-        if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
-        {
-            while (instancesForDispose.TryPop(out var instance))
-            {
-                await Disposer.DisposeAsync(instance).ConfigureAwait(false);
-            }
-        }
-    }
+	internal async ValueTask DisposeAsync()
+	{
+		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
+		{
+			while (instancesForDispose.TryPop(out var instance))
+			{
+				await Disposer.DisposeAsync(instance).ConfigureAwait(false);
+			}
+		}
+	}
 
-    internal void Dispose()
-    {
-        if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
-        {
-            while (instancesForDispose.TryPop(out var instance))
-            {
-                Disposer.Dispose(instance);
-            }
-        }
-    }
+	internal void Dispose()
+	{
+		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
+		{
+			while (instancesForDispose.TryPop(out var instance))
+			{
+				Disposer.Dispose(instance);
+			}
+		}
+	}
 
-    public ValueTask AddAsync<T>(T instance)
-    {
-        if (!Disposer.IsDisposable(instance))
-        {
-            XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
+	public ValueTask AddAsync<T>(T instance)
+	{
+		if (!Disposer.IsDisposable(instance))
+		{
+			XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
 
-            return ValueTask.CompletedTask;
-        }
+			return ValueTask.CompletedTask;
+		}
 
-        if (_instancesForDispose is { } instancesForDispose)
-        {
-            instancesForDispose.Push(instance);
+		if (_instancesForDispose is { } instancesForDispose)
+		{
+			instancesForDispose.Push(instance);
 
-            return ValueTask.CompletedTask;
-        }
+			return ValueTask.CompletedTask;
+		}
 
-        return DisposeAndThrow();
+		return DisposeAndThrow();
 
-        async ValueTask DisposeAndThrow()
-        {
-            await Disposer.DisposeAsync(instance).ConfigureAwait(false);
+		async ValueTask DisposeAndThrow()
+		{
+			await Disposer.DisposeAsync(instance).ConfigureAwait(false);
 
-            XtateObjectDisposedException.ThrowIf(condition: true, this);
-        }
-    }
+			XtateObjectDisposedException.ThrowIf(condition: true, this);
+		}
+	}
 
-    public void AddSync<T>(T instance)
-    {
-        if (!Disposer.IsDisposable(instance))
-        {
-            XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
+	public void AddSync<T>(T instance)
+	{
+		if (!Disposer.IsDisposable(instance))
+		{
+			XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
 
-            return;
-        }
+			return;
+		}
 
-        if (_instancesForDispose is { } instancesForDispose)
-        {
-            instancesForDispose.Push(instance);
+		if (_instancesForDispose is { } instancesForDispose)
+		{
+			instancesForDispose.Push(instance);
 
-            return;
-        }
+			return;
+		}
 
-        Disposer.Dispose(instance);
+		Disposer.Dispose(instance);
 
-        XtateObjectDisposedException.ThrowIf(condition: true, this);
-    }
+		XtateObjectDisposedException.ThrowIf(condition: true, this);
+	}
 }

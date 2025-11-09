@@ -21,7 +21,7 @@ public class ServiceProviderScope(ServiceProvider sourceServiceProvider, IServic
 {
 #region Interface IServiceScope
 
-    public IServiceProvider ServiceProvider => this;
+	public IServiceProvider ServiceProvider => this;
 
 #endregion
 }

@@ -20,82 +20,82 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class InfraTest
 {
-    [TestMethod]
-    public void Assert_ShouldThrowInvalidOperationException_WhenConditionIsFalse()
-    {
-        // Arrange
+	[TestMethod]
+	public void Assert_ShouldThrowInvalidOperationException_WhenConditionIsFalse()
+	{
+		// Arrange
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.Assert(false));
-    }
+		// Assert
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.Assert(false));
+	}
 
-    [TestMethod]
-    public void NotNull_ShouldThrowInvalidOperationException_WhenArgumentIsNull()
-    {
-        // Arrange
+	[TestMethod]
+	public void NotNull_ShouldThrowInvalidOperationException_WhenArgumentIsNull()
+	{
+		// Arrange
 
-        // Act
+		// Act
 
-        // Assert
-        Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.NotNull(null!));
-    }
+		// Assert
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => Infra.NotNull(null!));
+	}
 
-    [TestMethod]
-    public void Unmatched_ShouldReturnExceptionWithMessageContainingPrimitiveValue()
-    {
-        // Arrange
-        const int value = 456789123;
+	[TestMethod]
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingPrimitiveValue()
+	{
+		// Arrange
+		const int value = 456789123;
 
-        // Act
-        var ex = Infra.Unmatched(value);
+		// Act
+		var ex = Infra.Unmatched(value);
 
-        // Assert
-        Assert.Contains(value.ToString(), ex.Message);
-    }
+		// Assert
+		Assert.Contains(value.ToString(), ex.Message);
+	}
 
-    [TestMethod]
-    public void Unmatched_ShouldReturnExceptionWithMessageContainingEnumValue()
-    {
-        // Arrange
-        const UnexpectedEnumTestEnum value = UnexpectedEnumTestEnum.Val1;
+	[TestMethod]
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingEnumValue()
+	{
+		// Arrange
+		const UnexpectedEnumTestEnum value = UnexpectedEnumTestEnum.Val1;
 
-        // Act
-        var ex = Infra.Unmatched(value);
+		// Act
+		var ex = Infra.Unmatched(value);
 
-        // Assert
-        Assert.Contains(value.ToString(), ex.Message);
-    }
+		// Assert
+		Assert.Contains(value.ToString(), ex.Message);
+	}
 
-    [TestMethod]
-    public void Unmatched_ShouldReturnExceptionWithMessageContainingDelegateType()
-    {
-        // Arrange
-        Delegate value = [ExcludeFromCodeCoverage]() => { };
+	[TestMethod]
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingDelegateType()
+	{
+		// Arrange
+		Delegate value = [ExcludeFromCodeCoverage]() => { };
 
-        // Act
-        var ex = Infra.Unmatched(value);
+		// Act
+		var ex = Infra.Unmatched(value);
 
-        // Assert
-        Assert.Contains(substring: "Delegate", ex.Message);
-    }
+		// Assert
+		Assert.Contains(substring: "Delegate", ex.Message);
+	}
 
-    [TestMethod]
-    public void Unmatched_ShouldReturnExceptionWithMessageContainingOtherType()
-    {
-        // Arrange
-        var value = new Version();
+	[TestMethod]
+	public void Unmatched_ShouldReturnExceptionWithMessageContainingOtherType()
+	{
+		// Arrange
+		var value = new Version();
 
-        // Act
-        var ex = Infra.Unmatched(value);
+		// Act
+		var ex = Infra.Unmatched(value);
 
-        // Assert
-        Assert.Contains(substring: "Version", ex.Message);
-    }
+		// Assert
+		Assert.Contains(substring: "Version", ex.Message);
+	}
 
-    private enum UnexpectedEnumTestEnum
-    {
-        Val1
-    }
+	private enum UnexpectedEnumTestEnum
+	{
+		Val1
+	}
 }

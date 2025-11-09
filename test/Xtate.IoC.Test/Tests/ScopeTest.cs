@@ -20,230 +20,230 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ScopeTest
 {
-    private static async ValueTask<string[]> GetList<T>(IAsyncEnumerable<T> asyncEnumerable)
-    {
-        var list = new List<string>();
+	private static async ValueTask<string[]> GetList<T>(IAsyncEnumerable<T> asyncEnumerable)
+	{
+		var list = new List<string>();
 
-        await foreach (var svc in asyncEnumerable)
-        {
-            list.Add(((ISomeValue)svc!).Value);
-        }
+		await foreach (var svc in asyncEnumerable)
+		{
+			list.Add(((ISomeValue) svc!).Value);
+		}
 
-        return [.. list];
-    }
+		return [.. list];
+	}
 
-    [TestMethod]
-    public async Task NoScope_AnyType_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var container = Container.Create(s =>
-                                                     {
-                                                         s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                         s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-                                                     });
+	[TestMethod]
+	public async Task NoScope_AnyType_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var container = Container.Create(s =>
+													 {
+														 s.AddImplementation<NonGeneric>().For<INonGeneric>();
+														 s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+													 });
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32"]);
-        Assert.IsTrue(gen3ServicesList is ["Version"]);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32"]);
+		Assert.IsTrue(gen3ServicesList is ["Version"]);
+	}
 
-    [TestMethod]
-    public async Task NoScope_SpecificTypes_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var container = Container.Create(s =>
-                                                     {
-                                                         s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                         s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-                                                         s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-                                                     });
+	[TestMethod]
+	public async Task NoScope_SpecificTypes_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var container = Container.Create(s =>
+													 {
+														 s.AddImplementation<NonGeneric>().For<INonGeneric>();
+														 s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+														 s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+													 });
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32"]);
-        Assert.IsTrue(gen3ServicesList is []);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32"]);
+		Assert.IsTrue(gen3ServicesList is []);
+	}
 
-    [TestMethod]
-    public async Task Scoped_AnyType_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var parentContainer = Container.Create(s =>
-                                                           {
-                                                               s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                               s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-                                                           });
+	[TestMethod]
+	public async Task Scoped_AnyType_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														   });
 
-        var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-        var container = serviceScopeFactory.CreateScope().ServiceProvider;
+		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
+		var container = serviceScopeFactory.CreateScope().ServiceProvider;
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32"]);
-        Assert.IsTrue(gen3ServicesList is ["Version"]);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32"]);
+		Assert.IsTrue(gen3ServicesList is ["Version"]);
+	}
 
-    [TestMethod]
-    public async Task Scoped_SpecificTypes_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var parentContainer = Container.Create(s =>
-                                                           {
-                                                               s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                               s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-                                                               s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-                                                           });
+	[TestMethod]
+	public async Task Scoped_SpecificTypes_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+															   s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+														   });
 
-        var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-        var container = serviceScopeFactory.CreateScope().ServiceProvider;
+		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
+		var container = serviceScopeFactory.CreateScope().ServiceProvider;
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32"]);
-        Assert.IsTrue(gen3ServicesList is []);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32"]);
+		Assert.IsTrue(gen3ServicesList is []);
+	}
 
-    [TestMethod]
-    public async Task Scoped_AnyTypeInScope_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var parentContainer = Container.Create(s =>
-                                                           {
-                                                               s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                               s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-                                                           });
+	[TestMethod]
+	public async Task Scoped_AnyTypeInScope_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														   });
 
-        var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-        var container = serviceScopeFactory.CreateScope(s => { s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>(); })
-                                           .ServiceProvider;
+		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
+		var container = serviceScopeFactory.CreateScope(s => { s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>(); })
+										   .ServiceProvider;
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object", "Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32", "Int32"]);
-        Assert.IsTrue(gen3ServicesList is ["Version", "Version"]);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object", "Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32", "Int32"]);
+		Assert.IsTrue(gen3ServicesList is ["Version", "Version"]);
+	}
 
-    [TestMethod]
-    public async Task Scoped_SpecificTypesInScope_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var parentContainer = Container.Create(s =>
-                                                           {
-                                                               s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                               s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-                                                               s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-                                                           });
+	[TestMethod]
+	public async Task Scoped_SpecificTypesInScope_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+															   s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+														   });
 
-        var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-        var container = serviceScopeFactory.CreateScope(s => { s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>(); })
-                                           .ServiceProvider;
+		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
+		var container = serviceScopeFactory.CreateScope(s => { s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>(); })
+										   .ServiceProvider;
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object", "Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32", "Int32"]);
-        Assert.IsTrue(gen3ServicesList is ["Version"]);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object", "Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32", "Int32"]);
+		Assert.IsTrue(gen3ServicesList is ["Version"]);
+	}
 
-    [TestMethod]
-    public async Task Scoped_AnyTypeWithSpecificTypesInScope_ReturnsExpectedValues()
-    {
-        // Arrange
-        await using var parentContainer = Container.Create(s =>
-                                                           {
-                                                               s.AddImplementation<NonGeneric>().For<INonGeneric>();
-                                                               s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
-                                                           });
+	[TestMethod]
+	public async Task Scoped_AnyTypeWithSpecificTypesInScope_ReturnsExpectedValues()
+	{
+		// Arrange
+		await using var parentContainer = Container.Create(s =>
+														   {
+															   s.AddImplementation<NonGeneric>().For<INonGeneric>();
+															   s.AddImplementation<Generic<Any>>().For<IGeneric<Any>>();
+														   });
 
-        var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
-        var container = serviceScopeFactory.CreateScope(s =>
-                                                        {
-                                                            s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
-                                                            s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
-                                                        })
-                                           .ServiceProvider;
+		var serviceScopeFactory = await parentContainer.GetRequiredService<IServiceScopeFactory>();
+		var container = serviceScopeFactory.CreateScope(s =>
+														{
+															s.AddImplementation<Generic<object>>().For<IGeneric<object>>();
+															s.AddImplementation<Generic<int>>().For<IGeneric<int>>();
+														})
+										   .ServiceProvider;
 
-        // Act
-        var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
-        var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
-        var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
-        var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
+		// Act
+		var nonGenServicesList = await GetList(container.GetServices<INonGeneric>());
+		var gen1ServicesList = await GetList(container.GetServices<IGeneric<object>>());
+		var gen2ServicesList = await GetList(container.GetServices<IGeneric<int>>());
+		var gen3ServicesList = await GetList(container.GetServices<IGeneric<Version>>());
 
-        // Assert
-        Assert.IsTrue(nonGenServicesList is [""]);
-        Assert.IsTrue(gen1ServicesList is ["Object", "Object"]);
-        Assert.IsTrue(gen2ServicesList is ["Int32", "Int32"]);
-        Assert.IsTrue(gen3ServicesList is ["Version"]);
-    }
+		// Assert
+		Assert.IsTrue(nonGenServicesList is [""]);
+		Assert.IsTrue(gen1ServicesList is ["Object", "Object"]);
+		Assert.IsTrue(gen2ServicesList is ["Int32", "Int32"]);
+		Assert.IsTrue(gen3ServicesList is ["Version"]);
+	}
 
-    private interface ISomeValue
-    {
-        string Value { get; }
-    }
+	private interface ISomeValue
+	{
+		string Value { get; }
+	}
 
-    private interface INonGeneric;
+	private interface INonGeneric;
 
-    private interface IGeneric<[UsedImplicitly] T>;
+	private interface IGeneric<[UsedImplicitly] T>;
 
-    [UsedImplicitly]
-    private class NonGeneric : INonGeneric, ISomeValue
-    {
-    #region Interface ISomeValue
+	[UsedImplicitly]
+	private class NonGeneric : INonGeneric, ISomeValue
+	{
+	#region Interface ISomeValue
 
-        public string Value => "";
+		public string Value => "";
 
-    #endregion
-    }
+	#endregion
+	}
 
-    [UsedImplicitly]
-    private class Generic<T> : IGeneric<T>, ISomeValue
-    {
-    #region Interface ISomeValue
+	[UsedImplicitly]
+	private class Generic<T> : IGeneric<T>, ISomeValue
+	{
+	#region Interface ISomeValue
 
-        public string Value => typeof(T).Name;
+		public string Value => typeof(T).Name;
 
-    #endregion
-    }
+	#endregion
+	}
 }

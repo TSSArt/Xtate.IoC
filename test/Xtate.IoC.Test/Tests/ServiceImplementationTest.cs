@@ -22,75 +22,75 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ServiceImplementationTest
 {
-    private ServiceCollection _serviceCollection = null!;
+	private ServiceCollection _serviceCollection = null!;
 
-    [TestInitialize]
-    public void Setup()
-    {
-        _serviceCollection = [];
-    }
+	[TestInitialize]
+	public void Setup()
+	{
+		_serviceCollection = [];
+	}
 
-    [TestMethod]
-    public void Constructor_ShouldAddServiceEntry()
-    {
-        // Arrange
-        const InstanceScope instanceScope = InstanceScope.Singleton;
-        const bool synchronous = true;
+	[TestMethod]
+	public void Constructor_ShouldAddServiceEntry()
+	{
+		// Arrange
+		const InstanceScope instanceScope = InstanceScope.Singleton;
+		const bool synchronous = true;
 
-        // Act
-        _ = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
+		// Act
+		_ = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
 
-        // Assert
-        var key = TypeKey.ImplementationKey<object, object>();
-        Assert.IsTrue(_serviceCollection.IsRegistered(key));
-    }
+		// Assert
+		var key = TypeKey.ImplementationKey<object, object>();
+		Assert.IsTrue(_serviceCollection.IsRegistered(key));
+	}
 
-    [TestMethod]
-    public void For_ShouldAddServiceEntry_WhenOptionIsDefault()
-    {
-        // Arrange
-        const InstanceScope instanceScope = InstanceScope.Singleton;
-        const bool synchronous = true;
-        var serviceImplementation = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
+	[TestMethod]
+	public void For_ShouldAddServiceEntry_WhenOptionIsDefault()
+	{
+		// Arrange
+		const InstanceScope instanceScope = InstanceScope.Singleton;
+		const bool synchronous = true;
+		var serviceImplementation = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
 
-        // Act
-        serviceImplementation.For<object>();
+		// Act
+		serviceImplementation.For<object>();
 
-        // Assert
-        var key = TypeKey.ServiceKey<object, object>();
-        Assert.IsTrue(_serviceCollection.IsRegistered(key));
-    }
+		// Assert
+		var key = TypeKey.ServiceKey<object, object>();
+		Assert.IsTrue(_serviceCollection.IsRegistered(key));
+	}
 
-    [TestMethod]
-    public void For_ShouldNotAddServiceEntry_WhenOptionIfNotRegisteredAndServiceIsRegistered()
-    {
-        // Arrange
-        const InstanceScope instanceScope = InstanceScope.Singleton;
-        const bool synchronous = true;
-        var serviceImplementation = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
-        var key = TypeKey.ServiceKey<object, object>();
-        _serviceCollection.Add(new ServiceEntry(key, instanceScope, null!));
+	[TestMethod]
+	public void For_ShouldNotAddServiceEntry_WhenOptionIfNotRegisteredAndServiceIsRegistered()
+	{
+		// Arrange
+		const InstanceScope instanceScope = InstanceScope.Singleton;
+		const bool synchronous = true;
+		var serviceImplementation = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
+		var key = TypeKey.ServiceKey<object, object>();
+		_serviceCollection.Add(new ServiceEntry(key, instanceScope, null!));
 
-        // Act
-        serviceImplementation.For<object>(Option.IfNotRegistered);
+		// Act
+		serviceImplementation.For<object>(Option.IfNotRegistered);
 
-        // Assert
-        Assert.AreEqual(expected: 1, _serviceCollection.Count(entry => entry.Key.Equals(key)));
-    }
+		// Assert
+		Assert.AreEqual(expected: 1, _serviceCollection.Count(entry => entry.Key.Equals(key)));
+	}
 
-    [TestMethod]
-    public void For_ShouldAddServiceEntry_WhenOptionIfNotRegisteredAndServiceIsNotRegistered()
-    {
-        // Arrange
-        const InstanceScope instanceScope = InstanceScope.Singleton;
-        const bool synchronous = true;
-        var serviceImplementation = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
+	[TestMethod]
+	public void For_ShouldAddServiceEntry_WhenOptionIfNotRegisteredAndServiceIsNotRegistered()
+	{
+		// Arrange
+		const InstanceScope instanceScope = InstanceScope.Singleton;
+		const bool synchronous = true;
+		var serviceImplementation = new ServiceImplementation<object, object>(_serviceCollection, instanceScope, synchronous);
 
-        // Act
-        serviceImplementation.For<object>(Option.IfNotRegistered);
+		// Act
+		serviceImplementation.For<object>(Option.IfNotRegistered);
 
-        // Assert
-        var key = TypeKey.ServiceKey<object, object>();
-        Assert.IsTrue(_serviceCollection.IsRegistered(key));
-    }
+		// Assert
+		var key = TypeKey.ServiceKey<object, object>();
+		Assert.IsTrue(_serviceCollection.IsRegistered(key));
+	}
 }

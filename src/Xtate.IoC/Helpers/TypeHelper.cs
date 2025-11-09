@@ -21,325 +21,335 @@ namespace Xtate.IoC;
 
 internal static class TypeHelper
 {
-    /// <summary>
-    ///     Creates a generic type using the specified type argument.
-    /// </summary>
-    /// <param name="type">The generic type definition.</param>
-    /// <param name="arg">The type argument.</param>
-    /// <returns>The constructed generic type.</returns>
-    public static Type MakeGenericTypeExt(this Type type, Type arg) => type.MakeGenericType(arg);
+	/// <summary>
+	///     Tries to get the simple name of the specified type.
+	/// </summary>
+	/// <param name="type">The type to get the simple name of.</param>
+	/// <returns>The simple name of the type, or null if the type does not have a simple name.</returns>
+	private static string? TryGetTypeAlias(Type type)
+	{
+		if (type.IsEnum)
+		{
+			return null;
+		}
 
-    /// <summary>
-    ///     Creates a generic type using the specified type arguments.
-    /// </summary>
-    /// <param name="type">The generic type definition.</param>
-    /// <param name="arg1">The first type argument.</param>
-    /// <param name="arg2">The second type argument.</param>
-    /// <returns>The constructed generic type.</returns>
-    public static Type MakeGenericTypeExt(this Type type, Type arg1, Type arg2) => type.MakeGenericType(arg1, arg2);
+		var name = Type.GetTypeCode(type) switch
+				   {
+					   TypeCode.Boolean => @"bool",
+					   TypeCode.Byte    => @"byte",
+					   TypeCode.Char    => @"char",
+					   TypeCode.Decimal => @"decimal",
+					   TypeCode.Double  => @"double",
+					   TypeCode.Int16   => @"short",
+					   TypeCode.Int32   => @"int",
+					   TypeCode.Int64   => @"long",
+					   TypeCode.SByte   => @"sbyte",
+					   TypeCode.Single  => @"float",
+					   TypeCode.String  => @"string",
+					   TypeCode.UInt16  => @"ushort",
+					   TypeCode.UInt32  => @"uint",
+					   TypeCode.UInt64  => @"ulong",
+					   _                => null
+				   };
 
-    /// <summary>
-    ///     Creates a generic type using the specified type arguments.
-    /// </summary>
-    /// <param name="type">The generic type definition.</param>
-    /// <param name="arg1">The first type argument.</param>
-    /// <param name="arg2">The second type argument.</param>
-    /// <param name="arg3">The third type argument.</param>
-    /// <returns>The constructed generic type.</returns>
-    public static Type MakeGenericTypeExt(this Type type,
-                                          Type arg1,
-                                          Type arg2,
-                                          Type arg3) =>
-        type.MakeGenericType(arg1, arg2, arg3);
+		if (name is not null)
+		{
+			return name;
+		}
 
-    /// <summary>
-    ///     Creates a generic type using the specified type arguments.
-    /// </summary>
-    /// <param name="type">The generic type definition.</param>
-    /// <param name="arg1">An array of type arguments.</param>
-    /// <param name="arg2">The additional type argument.</param>
-    /// <returns>The constructed generic type.</returns>
-    public static Type MakeGenericTypeExt(this Type type, Type[] arg1, Type arg2)
-    {
-        var args = new Type[arg1.Length + 1];
-        Array.Copy(arg1, args, arg1.Length);
-        args[arg1.Length] = arg2;
+		if (type == typeof(IntPtr))
+		{
+			return @"nint";
+		}
 
-        return type.MakeGenericType(args);
-    }
+		if (type == typeof(UIntPtr))
+		{
+			return @"nuint";
+		}
 
-    /// <summary>
-    ///     Creates an instance of the specified type.
-    /// </summary>
-    /// <typeparam name="T">The type of the instance to create.</typeparam>
-    /// <param name="type">The type to create an instance of.</param>
-    /// <returns>An instance of the specified type.</returns>
-    public static T CreateInstance<T>(this Type type) => (T)Activator.CreateInstance(type)!;
+		if (type == typeof(object))
+		{
+			return @"object";
+		}
 
-    /// <summary>
-    ///     Tries to get the simple name of the specified type.
-    /// </summary>
-    /// <param name="type">The type to get the simple name of.</param>
-    /// <returns>The simple name of the type, or null if the type does not have a simple name.</returns>
-    private static string? TryGetTypeAlias(Type type)
-    {
-        if (type.IsEnum)
-        {
-            return null;
-        }
+		if (type == typeof(void))
+		{
+			return @"void";
+		}
 
-        var name = Type.GetTypeCode(type) switch
-                   {
-                       TypeCode.Boolean => @"bool",
-                       TypeCode.Byte    => @"byte",
-                       TypeCode.Char    => @"char",
-                       TypeCode.Decimal => @"decimal",
-                       TypeCode.Double  => @"double",
-                       TypeCode.Int16   => @"short",
-                       TypeCode.Int32   => @"int",
-                       TypeCode.Int64   => @"long",
-                       TypeCode.SByte   => @"sbyte",
-                       TypeCode.Single  => @"float",
-                       TypeCode.String  => @"string",
-                       TypeCode.UInt16  => @"ushort",
-                       TypeCode.UInt32  => @"uint",
-                       TypeCode.UInt64  => @"ulong",
-                       _                => null
-                   };
+		return null;
+	}
 
-        if (name is not null)
-        {
-            return name;
-        }
+	private static string? TryGetSimpleName(Type type)
+	{
+		if (TryGetTypeAlias(type) is { } typeAlias)
+		{
+			return typeAlias;
+		}
 
-        if (type == typeof(object))
-        {
-            return @"object";
-        }
+		if (!type.IsNested && !type.IsGenericType)
+		{
+			return type.Name;
+		}
 
-        if (type == typeof(void))
-        {
-            return @"void";
-        }
+		return null;
+	}
 
-        return null;
-    }
+	private static Type GetDeclaringType(Type type)
+	{
+		if (!type.IsGenericType || type.DeclaringType is not { IsGenericType: true } declaringType)
+		{
+			return type.DeclaringType!;
+		}
 
-    private static string? TryGetSimpleName(Type type)
-    {
-        if (TryGetTypeAlias(type) is { } typeAlias)
-        {
-            return typeAlias;
-        }
+		var parentArguments = new Type[declaringType.GetGenericArguments().Length];
+		Array.Copy(type.GetGenericArguments(), parentArguments, parentArguments.Length);
 
-        if (!type.IsNested && !type.IsGenericType)
-        {
-            return type.Name;
-        }
+		return declaringType.MakeGenericType(parentArguments);
+	}
 
-        return null;
-    }
+	private static bool ContainsGenericArgs(Type type)
+	{
+		if (!type.IsGenericType)
+		{
+			return false;
+		}
 
-    private static StringBuilder AppendQualifiedName(this StringBuilder sb, Type type)
-    {
-        if (type.IsNested && !type.IsGenericParameter)
-        {
-            AppendFriendlyName(sb, GetDeclaringType(type)).Append('.');
-        }
+		if (!type.IsNested)
+		{
+			return true;
+		}
 
-        var name = type.Name;
+		if (type.DeclaringType is { IsGenericType: true } declaringType)
+		{
+			return type.GetGenericArguments().Length > declaringType.GetGenericArguments().Length;
+		}
 
-        if (ContainsGenericArgs(type))
-        {
-            sb.Append(name, startIndex: 0, name.IndexOf('`'));
-        }
-        else
-        {
-            sb.Append(name);
-        }
+		return true;
+	}
 
-        return sb;
-    }
+	private static IEnumerable<Type> GetGenericArgs(Type type)
+	{
+		if (!type.IsNested)
+		{
+			return type.GetGenericArguments();
+		}
 
-    private static Type GetDeclaringType(Type type)
-    {
-        if (!type.IsGenericType || type.DeclaringType is not { IsGenericType: true } declaringType)
-        {
-            return type.DeclaringType!;
-        }
+		if (type.DeclaringType is { IsGenericType: true })
+		{
+			return EnumerateOwnArgs(type);
+		}
 
-        var parentArguments = new Type[declaringType.GetGenericArguments().Length];
-        Array.Copy(type.GetGenericArguments(), parentArguments, parentArguments.Length);
+		return type.GetGenericArguments();
 
-        return declaringType.MakeGenericType(parentArguments);
-    }
+		static IEnumerable<Type> EnumerateOwnArgs(Type type)
+		{
+			var args = type.GetGenericArguments();
 
-    public static IEnumerable<Type> DecomposeType(this Type type)
-    {
-        if (!type.IsTuple())
-        {
-            yield return type;
+			for (var i = type.DeclaringType!.GetGenericArguments().Length; i < args.Length; i ++)
+			{
+				yield return args[i];
+			}
+		}
+	}
 
-            yield break;
-        }
+	/// <param name="type">The generic type definition.</param>
+	extension(Type type)
+	{
+		/// <summary>
+		///     Gets the friendly name of the specified type.
+		/// </summary>
+		/// <returns>The friendly name of the type.</returns>
+		public string FriendlyName => TryGetSimpleName(type) ?? new StringBuilder().AppendNotSimpleName(type).ToString();
 
-        var genericArguments = type.GetGenericArguments();
+		/// <summary>
+		///     Determines whether the specified type is a tuple.
+		/// </summary>
+		/// <returns>True if the type is a tuple; otherwise, false.</returns>
+		private bool IsTuple
+		{
+			get
+			{
+				if (!type.IsGenericType)
+				{
+					return false;
+				}
 
-        for (var i = 0; i < genericArguments.Length; i ++)
-        {
-            if (i == 7)
-            {
-                foreach (var itemType in DecomposeType(genericArguments[7]))
-                {
-                    yield return itemType;
-                }
+				var typeDef = type.GetGenericTypeDefinition();
 
-                yield break;
-            }
+				return typeDef == typeof(ValueTuple<>) ||
+					   typeDef == typeof(ValueTuple<,>) ||
+					   typeDef == typeof(ValueTuple<,,>) ||
+					   typeDef == typeof(ValueTuple<,,>) ||
+					   typeDef == typeof(ValueTuple<,,,>) ||
+					   typeDef == typeof(ValueTuple<,,,,>) ||
+					   typeDef == typeof(ValueTuple<,,,,,>) ||
+					   typeDef == typeof(ValueTuple<,,,,,,>) ||
+					   typeDef == typeof(ValueTuple<,,,,,,,>) ||
+					   typeDef == typeof(ValueTuple<,,,,,,,>);
+			}
+		}
 
-            yield return genericArguments[i];
-        }
-    }
+		/// <summary>
+		///     Creates a generic type using the specified type argument.
+		/// </summary>
+		/// <param name="arg">The type argument.</param>
+		/// <returns>The constructed generic type.</returns>
+		public Type MakeGenericTypeExt(Type arg) => type.MakeGenericType(arg);
 
-    /// <summary>
-    ///     Gets the friendly name of the specified type.
-    /// </summary>
-    /// <param name="type">The type to get the friendly name of.</param>
-    /// <returns>The friendly name of the type.</returns>
-    public static string FriendlyName(this Type type) => TryGetSimpleName(type) ?? new StringBuilder().AppendNotSimpleName(type).ToString();
+		/// <summary>
+		///     Creates a generic type using the specified type arguments.
+		/// </summary>
+		/// <param name="arg1">The first type argument.</param>
+		/// <param name="arg2">The second type argument.</param>
+		/// <returns>The constructed generic type.</returns>
+		public Type MakeGenericTypeExt(Type arg1, Type arg2) => type.MakeGenericType(arg1, arg2);
 
-    /// <summary>
-    ///     Appends the friendly name of the specified type to the StringBuilder.
-    /// </summary>
-    /// <param name="sb">The StringBuilder to append to.</param>
-    /// <param name="type">The type to get the friendly name of.</param>
-    public static StringBuilder AppendFriendlyName(this StringBuilder sb, Type type) => TryGetSimpleName(type) is { } name ? sb.Append(name) : sb.AppendNotSimpleName(type);
+		/// <summary>
+		///     Creates a generic type using the specified type arguments.
+		/// </summary>
+		/// <param name="arg1">The first type argument.</param>
+		/// <param name="arg2">The second type argument.</param>
+		/// <param name="arg3">The third type argument.</param>
+		/// <returns>The constructed generic type.</returns>
+		public Type MakeGenericTypeExt(Type arg1,
+									   Type arg2,
+									   Type arg3) =>
+			type.MakeGenericType(arg1, arg2, arg3);
 
-    private static StringBuilder AppendNotSimpleName(this StringBuilder sb, Type type)
-    {
-        if (IsTuple(type))
-        {
-            return sb.Append('(').AppendTupleArgs(type).Append(')');
-        }
+		/// <summary>
+		///     Creates a generic type using the specified type arguments.
+		/// </summary>
+		/// <param name="arg1">An array of type arguments.</param>
+		/// <param name="arg2">The additional type argument.</param>
+		/// <returns>The constructed generic type.</returns>
+		public Type MakeGenericTypeExt(Type[] arg1, Type arg2)
+		{
+			var args = new Type[arg1.Length + 1];
+			Array.Copy(arg1, args, arg1.Length);
+			args[arg1.Length] = arg2;
 
-        return ContainsGenericArgs(type) ? AppendGenericType(sb, type) : AppendQualifiedName(sb, type);
-    }
+			return type.MakeGenericType(args);
+		}
 
-    private static bool ContainsGenericArgs(Type type)
-    {
-        if (!type.IsGenericType)
-        {
-            return false;
-        }
+		/// <summary>
+		///     Creates an instance of the specified type.
+		/// </summary>
+		/// <typeparam name="T">The type of the instance to create.</typeparam>
+		/// <returns>An instance of the specified type.</returns>
+		public T CreateInstance<T>() => (T) Activator.CreateInstance(type)!;
 
-        if (!type.IsNested)
-        {
-            return true;
-        }
+		public IEnumerable<Type> DecomposeType()
+		{
+			if (!type.IsTuple)
+			{
+				yield return type;
 
-        if (type.DeclaringType is { IsGenericType: true } declaringType)
-        {
-            return type.GetGenericArguments().Length > declaringType.GetGenericArguments().Length;
-        }
+				yield break;
+			}
 
-        return true;
-    }
+			var genericArguments = type.GetGenericArguments();
 
-    private static IEnumerable<Type> GetGenericArgs(Type type)
-    {
-        if (!type.IsNested)
-        {
-            return type.GetGenericArguments();
-        }
+			for (var i = 0; i < genericArguments.Length; i ++)
+			{
+				if (i == 7)
+				{
+					foreach (var itemType in DecomposeType(genericArguments[7]))
+					{
+						yield return itemType;
+					}
 
-        if (type.DeclaringType is { IsGenericType: true })
-        {
-            return EnumerateOwnArgs(type);
-        }
+					yield break;
+				}
 
-        return type.GetGenericArguments();
+				yield return genericArguments[i];
+			}
+		}
+	}
 
-        static IEnumerable<Type> EnumerateOwnArgs(Type type)
-        {
-            var args = type.GetGenericArguments();
+	/// <param name="sb">The StringBuilder to append to.</param>
+	extension(StringBuilder sb)
+	{
+		private StringBuilder AppendQualifiedName(Type type)
+		{
+			if (type.IsNested && !type.IsGenericParameter)
+			{
+				AppendFriendlyName(sb, GetDeclaringType(type)).Append('.');
+			}
 
-            for (var i = type.DeclaringType!.GetGenericArguments().Length; i < args.Length; i ++)
-            {
-                yield return args[i];
-            }
-        }
-    }
+			var name = type.Name;
 
-    /// <summary>
-    ///     Appends the generic type name to the StringBuilder.
-    /// </summary>
-    /// <param name="sb">The StringBuilder to append to.</param>
-    /// <param name="type">The generic type to append.</param>
-    /// <returns>The StringBuilder with the appended generic type name.</returns>
-    private static StringBuilder AppendGenericType(this StringBuilder sb, Type type)
-    {
-        AppendQualifiedName(sb, type);
+			if (ContainsGenericArgs(type))
+			{
+				sb.Append(name, startIndex: 0, name.IndexOf('`'));
+			}
+			else
+			{
+				sb.Append(name);
+			}
 
-        var first = true;
+			return sb;
+		}
 
-        foreach (var t in GetGenericArgs(type))
-        {
-            AppendFriendlyName(sb.Append(first ? @"<" : @", "), t);
-            first = false;
-        }
+		/// <summary>
+		///     Appends the friendly name of the specified type to the StringBuilder.
+		/// </summary>
+		/// <param name="type">The type to get the friendly name of.</param>
+		public StringBuilder AppendFriendlyName(Type type) => TryGetSimpleName(type) is { } name ? sb.Append(name) : sb.AppendNotSimpleName(type);
 
-        return sb.Append('>');
-    }
+		private StringBuilder AppendNotSimpleName(Type type)
+		{
+			if (type.IsTuple)
+			{
+				return sb.Append('(').AppendTupleArgs(type).Append(')');
+			}
 
-    /// <summary>
-    ///     Appends the tuple arguments to the StringBuilder.
-    /// </summary>
-    /// <param name="sb">The StringBuilder to append to.</param>
-    /// <param name="type">The tuple type to append.</param>
-    private static StringBuilder AppendTupleArgs(this StringBuilder sb, Type type)
-    {
-        string? delimiter = null;
+			return ContainsGenericArgs(type) ? AppendGenericType(sb, type) : AppendQualifiedName(sb, type);
+		}
 
-        foreach (var typeItem in DecomposeType(type))
-        {
-            if (delimiter is not null)
-            {
-                sb.Append(delimiter);
-            }
-            else
-            {
-                delimiter = @", ";
-            }
+		/// <summary>
+		///     Appends the generic type name to the StringBuilder.
+		/// </summary>
+		/// <param name="type">The generic type to append.</param>
+		/// <returns>The StringBuilder with the appended generic type name.</returns>
+		private StringBuilder AppendGenericType(Type type)
+		{
+			AppendQualifiedName(sb, type);
 
-            sb.AppendFriendlyName(typeItem);
-        }
+			var first = true;
 
-        return sb;
-    }
+			foreach (var t in GetGenericArgs(type))
+			{
+				AppendFriendlyName(sb.Append(first ? @"<" : @", "), t);
+				first = false;
+			}
 
-    /// <summary>
-    ///     Determines whether the specified type is a tuple.
-    /// </summary>
-    /// <param name="type">The type to check.</param>
-    /// <returns>True if the type is a tuple; otherwise, false.</returns>
-    private static bool IsTuple(this Type type)
-    {
-        if (!type.IsGenericType)
-        {
-            return false;
-        }
+			return sb.Append('>');
+		}
 
-        var typeDef = type.GetGenericTypeDefinition();
+		/// <summary>
+		///     Appends the tuple arguments to the StringBuilder.
+		/// </summary>
+		/// <param name="type">The tuple type to append.</param>
+		private StringBuilder AppendTupleArgs(Type type)
+		{
+			string? delimiter = null;
 
-        return typeDef == typeof(ValueTuple<>) ||
-               typeDef == typeof(ValueTuple<,>) ||
-               typeDef == typeof(ValueTuple<,,>) ||
-               typeDef == typeof(ValueTuple<,,>) ||
-               typeDef == typeof(ValueTuple<,,,>) ||
-               typeDef == typeof(ValueTuple<,,,,>) ||
-               typeDef == typeof(ValueTuple<,,,,,>) ||
-               typeDef == typeof(ValueTuple<,,,,,,>) ||
-               typeDef == typeof(ValueTuple<,,,,,,,>) ||
-               typeDef == typeof(ValueTuple<,,,,,,,>);
-    }
+			foreach (var typeItem in DecomposeType(type))
+			{
+				if (delimiter is not null)
+				{
+					sb.Append(delimiter);
+				}
+				else
+				{
+					delimiter = @", ";
+				}
+
+				sb.AppendFriendlyName(typeItem);
+			}
+
+			return sb;
+		}
+	}
 }

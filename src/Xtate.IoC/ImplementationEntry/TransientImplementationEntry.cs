@@ -23,66 +23,66 @@ namespace Xtate.IoC;
 /// </summary>
 public class TransientImplementationEntry : ImplementationEntry
 {
-    private readonly ObjectsBin _objectsBin;
+	private readonly ObjectsBin _objectsBin;
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TransientImplementationEntry" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <param name="factory">The factory delegate.</param>
-    public TransientImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) => _objectsBin = serviceProvider.ObjectsBin;
+	/// <summary>
+	///     Initializes a new instance of the <see cref="TransientImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="factory">The factory delegate.</param>
+	public TransientImplementationEntry(ServiceProvider serviceProvider, Delegate factory) : base(serviceProvider, factory) => _objectsBin = serviceProvider.ObjectsBin;
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TransientImplementationEntry" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <param name="sourceEntry">The source entry.</param>
-    protected TransientImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) => _objectsBin = serviceProvider.ObjectsBin;
+	/// <summary>
+	///     Initializes a new instance of the <see cref="TransientImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="sourceEntry">The source entry.</param>
+	protected TransientImplementationEntry(ServiceProvider serviceProvider, ImplementationEntry sourceEntry) : base(serviceProvider, sourceEntry) => _objectsBin = serviceProvider.ObjectsBin;
 
-    /// <summary>
-    ///     Creates a new instance of the <see cref="TransientImplementationEntry" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <returns>A new instance of <see cref="TransientImplementationEntry" />.</returns>
-    public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new TransientImplementationEntry(serviceProvider, this);
+	/// <summary>
+	///     Creates a new instance of the <see cref="TransientImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <returns>A new instance of <see cref="TransientImplementationEntry" />.</returns>
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider) => new TransientImplementationEntry(serviceProvider, this);
 
-    /// <summary>
-    ///     Creates a new instance of the <see cref="TransientImplementationEntry" /> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider.</param>
-    /// <param name="factory">The factory delegate.</param>
-    /// <returns>A new instance of <see cref="TransientImplementationEntry" />.</returns>
-    public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new TransientImplementationEntry(serviceProvider, factory);
+	/// <summary>
+	///     Creates a new instance of the <see cref="TransientImplementationEntry" /> class.
+	/// </summary>
+	/// <param name="serviceProvider">The service provider.</param>
+	/// <param name="factory">The factory delegate.</param>
+	/// <returns>A new instance of <see cref="TransientImplementationEntry" />.</returns>
+	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new TransientImplementationEntry(serviceProvider, factory);
 
-    /// <summary>
-    ///     Executes the factory asynchronously.
-    /// </summary>
-    /// <typeparam name="T">The type of the instance.</typeparam>
-    /// <typeparam name="TArg">The type of the argument.</typeparam>
-    /// <param name="argument">The argument.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
-    protected override async ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
-    {
-        var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
+	/// <summary>
+	///     Executes the factory asynchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the instance.</returns>
+	protected override async ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) where T : default
+	{
+		var instance = await base.ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
 
-        await _objectsBin.AddAsync(instance).ConfigureAwait(false);
+		await _objectsBin.AddAsync(instance).ConfigureAwait(false);
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /// <summary>
-    ///     Executes the factory synchronously.
-    /// </summary>
-    /// <typeparam name="T">The type of the instance.</typeparam>
-    /// <typeparam name="TArg">The type of the argument.</typeparam>
-    /// <param name="argument">The argument.</param>
-    /// <returns>The instance.</returns>
-    protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
-    {
-        var instance = base.ExecuteFactorySync<T, TArg>(argument);
+	/// <summary>
+	///     Executes the factory synchronously.
+	/// </summary>
+	/// <typeparam name="T">The type of the instance.</typeparam>
+	/// <typeparam name="TArg">The type of the argument.</typeparam>
+	/// <param name="argument">The argument.</param>
+	/// <returns>The instance.</returns>
+	protected override T? ExecuteFactorySync<T, TArg>(TArg argument) where T : default
+	{
+		var instance = base.ExecuteFactorySync<T, TArg>(argument);
 
-        _objectsBin.AddSync(instance);
+		_objectsBin.AddSync(instance);
 
-        return instance;
-    }
+		return instance;
+	}
 }

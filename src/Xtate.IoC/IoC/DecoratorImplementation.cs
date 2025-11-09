@@ -19,12 +19,12 @@ namespace Xtate.IoC;
 
 public readonly struct DecoratorImplementation<TImplementation, TArg>(IServiceCollection serviceCollection, InstanceScope instanceScope, bool synchronous) where TImplementation : notnull
 {
-    public void For<TService>() where TService : class
-    {
-        var factory = synchronous
-            ? DecoratorSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
-            : DecoratorAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
+	public void For<TService>() where TService : class
+	{
+		var factory = synchronous
+			? DecoratorSyncFactoryProvider<TImplementation, TService, TArg>.Delegate()
+			: DecoratorAsyncFactoryProvider<TImplementation, TService, TArg>.Delegate();
 
-        serviceCollection.Add(new ServiceEntry(TypeKey.ServiceKey<TService, TArg>(), instanceScope, factory));
-    }
+		serviceCollection.Add(new ServiceEntry(TypeKey.ServiceKey<TService, TArg>(), instanceScope, factory));
+	}
 }

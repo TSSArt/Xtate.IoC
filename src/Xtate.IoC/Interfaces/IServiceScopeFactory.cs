@@ -19,7 +19,7 @@ namespace Xtate.IoC;
 
 public interface IServiceScopeFactory
 {
-    IServiceScope CreateScope();
+	IServiceScope CreateScope();
 
-    IServiceScope CreateScope(Action<IServiceCollection> configureServices);
+	IServiceScope CreateScope(Action<IServiceCollection> configureServices);
 }

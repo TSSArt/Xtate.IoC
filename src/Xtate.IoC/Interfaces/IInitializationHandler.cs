@@ -19,19 +19,19 @@ namespace Xtate.IoC;
 
 public interface IInitializationHandler
 {
-    /// <summary>
-    ///     Runs synchronous initialization.
-    /// </summary>
-    /// <typeparam name="T">Instance type</typeparam>
-    /// <param name="instance">Instance to initialize</param>
-    /// <returns>true - if additional asynchronous initialization required</returns>
-    bool Initialize<T>(T instance);
+	/// <summary>
+	///     Runs synchronous initialization.
+	/// </summary>
+	/// <typeparam name="T">Instance type</typeparam>
+	/// <param name="instance">Instance to initialize</param>
+	/// <returns>true - if additional asynchronous initialization required</returns>
+	bool Initialize<T>(T instance);
 
-    /// <summary>
-    ///     Runs asynchronous initialization.
-    /// </summary>
-    /// <typeparam name="T">Instance type</typeparam>
-    /// <param name="instance">Instance to initialize</param>
-    /// <returns>Initialization Task</returns>
-    Task InitializeAsync<T>(T instance);
+	/// <summary>
+	///     Runs asynchronous initialization.
+	/// </summary>
+	/// <typeparam name="T">Instance type</typeparam>
+	/// <param name="instance">Instance to initialize</param>
+	/// <returns>Initialization Task</returns>
+	Task InitializeAsync<T>(T instance);
 }

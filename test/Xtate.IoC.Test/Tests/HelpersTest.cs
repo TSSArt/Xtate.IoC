@@ -22,24 +22,24 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class HelpersTest
 {
-    [TestMethod]
-    public void ThrowIf_ObjectDisposedException_ThrownWhenConditionIsTrue()
-    {
-        // Arrange & Act & Assert
-        Assert.ThrowsExactly<ObjectDisposedException>([ExcludeFromCodeCoverage]() => XtateObjectDisposedException.ThrowIf(condition: true, instance: "44"));
-    }
+	[TestMethod]
+	public void ThrowIf_ObjectDisposedException_ThrownWhenConditionIsTrue()
+	{
+		// Arrange & Act & Assert
+		Assert.ThrowsExactly<ObjectDisposedException>([ExcludeFromCodeCoverage]() => XtateObjectDisposedException.ThrowIf(condition: true, instance: "44"));
+	}
 
-    [TestMethod]
-    public async Task GetAsyncEnumerator_EmptyAsyncEnumerable_CurrentIsDefault()
-    {
-        // Arrange
-        var asyncEnum = IAsyncEnumerable<int>.Empty;
+	[TestMethod]
+	public async Task GetAsyncEnumerator_EmptyAsyncEnumerable_CurrentIsDefault()
+	{
+		// Arrange
+		var asyncEnum = IAsyncEnumerable<int>.Empty;
 
-        // Act
-        await using var asyncEnumerator = asyncEnum.GetAsyncEnumerator(CancellationToken.None);
-        var current = asyncEnumerator.Current;
+		// Act
+		await using var asyncEnumerator = asyncEnum.GetAsyncEnumerator(CancellationToken.None);
+		var current = asyncEnumerator.Current;
 
-        // Assert
-        Assert.AreEqual(expected: 0, current);
-    }
+		// Assert
+		Assert.AreEqual(expected: 0, current);
+	}
 }

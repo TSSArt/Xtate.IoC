@@ -19,11 +19,11 @@ namespace Xtate.IoC;
 
 public interface IServiceProvider
 {
-    CancellationToken DisposeToken { get; }
+	CancellationToken DisposeToken { get; }
 
-    IInitializationHandler? InitializationHandler { get; }
+	IInitializationHandler? InitializationHandler { get; }
 
-    IServiceProviderActions[]? Actions { get; }
+	IServiceProviderActions[]? Actions { get; }
 
-    ImplementationEntry? GetImplementationEntry(TypeKey typeKey);
+	ImplementationEntry? GetImplementationEntry(TypeKey typeKey);
 }

@@ -21,11 +21,11 @@ namespace System.Threading.Tasks;
 [UsedImplicitly]
 internal static class ValueTaskExtensions
 {
-    extension(ValueTask)
-    {
-        /// <summary>Gets a task that has already completed successfully.</summary>
-        public static ValueTask CompletedTask => new();
-    }
+	extension(ValueTask)
+	{
+		/// <summary>Gets a task that has already completed successfully.</summary>
+		public static ValueTask CompletedTask => new();
+	}
 }
 
 #endif

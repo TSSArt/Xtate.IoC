@@ -19,69 +19,69 @@ namespace Xtate.IoC;
 
 internal class ForwardSyncFactoryProvider<TImplementation, TService, TArg> : FactoryProviderBase where TImplementation : notnull
 {
-    public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
+	public static Delegate Delegate() => Infra.TypeInitHandle(() => Nested.DelegateField);
 
-    protected override Delegate GetDelegateInstance() => GetService;
+	protected override Delegate GetDelegateInstance() => GetService;
 
-    private static Delegate GetDelegate()
-    {
-        if (typeof(TService).IsAssignableFrom(typeof(TImplementation)))
-        {
-            return ServiceType.TypeOf<TService>().IsGeneric ? Resolver.GetResolver : GetService;
-        }
+	private static Delegate GetDelegate()
+	{
+		if (typeof(TService).IsAssignableFrom(typeof(TImplementation)))
+		{
+			return ServiceType.TypeOf<TService>().IsGeneric ? Resolver.GetResolver : GetService;
+		}
 
-        throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
-    }
+		throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
+	}
 
-    private static TService GetService(IServiceProvider serviceProvider, TArg argument)
-    {
-        var entry = serviceProvider.GetImplementationEntry(TypeKey.ImplementationKeyFast<TImplementation, TArg>());
+	private static TService GetService(IServiceProvider serviceProvider, TArg argument)
+	{
+		var entry = serviceProvider.GetImplementationEntry(TypeKey.ImplementationKeyFast<TImplementation, TArg>());
 
-        Infra.NotNull(entry);
+		Infra.NotNull(entry);
 
-        var implementation = entry.GetRequiredServiceSync<TImplementation, TArg>(argument);
+		var implementation = entry.GetRequiredServiceSync<TImplementation, TArg>(argument);
 
-        return ConvertHelper<TImplementation, TService>.Convert(implementation);
-    }
+		return ConvertHelper<TImplementation, TService>.Convert(implementation);
+	}
 
-    private static class Nested
-    {
-        [SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
-        public static readonly Delegate DelegateField = GetDelegate();
-    }
+	private static class Nested
+	{
+		[SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
+		public static readonly Delegate DelegateField = GetDelegate();
+	}
 
-    private class Resolver : DelegateFactory
-    {
-        private static readonly Resolver Instance = new();
+	private class Resolver : DelegateFactory
+	{
+		private static readonly Resolver Instance = new();
 
-        public override Delegate? GetDelegate<TResolved, TResolvedArg>() => Infra.TypeInitHandle(() => Resolved<TResolved, TResolvedArg>.ResolvedDelegateField);
+		public override Delegate? GetDelegate<TResolved, TResolvedArg>() => Infra.TypeInitHandle(() => Resolved<TResolved, TResolvedArg>.ResolvedDelegateField);
 
-        public static Resolver GetResolver() => Instance;
-    }
+		public static Resolver GetResolver() => Instance;
+	}
 
-    private static class Resolved<TResolved, TResolvedArg>
-    {
-        [SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
-        public static readonly Delegate? ResolvedDelegateField = GetResolvedDelegate();
+	private static class Resolved<TResolved, TResolvedArg>
+	{
+		[SuppressMessage(category: "ReSharper", checkId: "StaticMemberInGenericType")]
+		public static readonly Delegate? ResolvedDelegateField = GetResolvedDelegate();
 
-        private static Delegate? GetResolvedDelegate()
-        {
-            if (!StubType.IsMatch(typeof(TService), typeof(TResolved)))
-            {
-                return null;
-            }
+		private static Delegate? GetResolvedDelegate()
+		{
+			if (!StubType.IsMatch(typeof(TService), typeof(TResolved)))
+			{
+				return null;
+			}
 
-            if (!StubType.IsMatch(typeof(TArg), typeof(TResolvedArg)))
-            {
-                return null;
-            }
+			if (!StubType.IsMatch(typeof(TArg), typeof(TResolvedArg)))
+			{
+				return null;
+			}
 
-            if (ImplementationType.TypeOf<TImplementation>().TryConstruct(ServiceType.TypeOf<TResolved>(), out var implementationType))
-            {
-                return GetDelegateForType(typeof(ForwardSyncFactoryProvider<,,>), implementationType.Type, typeof(TResolved), typeof(TResolvedArg));
-            }
+			if (ImplementationType.TypeOf<TImplementation>().TryConstruct(ServiceType.TypeOf<TResolved>(), out var implementationType))
+			{
+				return GetDelegateForType(typeof(ForwardSyncFactoryProvider<,,>), implementationType.Type, typeof(TResolved), typeof(TResolvedArg));
+			}
 
-            throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeConstructedBasedOnServiceType, typeof(TImplementation), typeof(TService)));
-        }
-    }
+			throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeConstructedBasedOnServiceType, typeof(TImplementation), typeof(TService)));
+		}
+	}
 }

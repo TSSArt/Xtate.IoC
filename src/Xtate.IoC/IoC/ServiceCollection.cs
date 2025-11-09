@@ -19,46 +19,46 @@ namespace Xtate.IoC;
 
 public class ServiceCollection : IServiceCollection
 {
-    private readonly List<ServiceEntry> _registrations = [];
+	private readonly List<ServiceEntry> _registrations = [];
 
 #region Interface IEnumerable
 
-    IEnumerator IEnumerable.GetEnumerator() => _registrations.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => _registrations.GetEnumerator();
 
 #endregion
 
 #region Interface IEnumerable<ServiceEntry>
 
-    IEnumerator<ServiceEntry> IEnumerable<ServiceEntry>.GetEnumerator() => _registrations.GetEnumerator();
+	IEnumerator<ServiceEntry> IEnumerable<ServiceEntry>.GetEnumerator() => _registrations.GetEnumerator();
 
 #endregion
 
 #region Interface IReadOnlyCollection<ServiceEntry>
 
-    int IReadOnlyCollection<ServiceEntry>.Count => _registrations.Count;
+	int IReadOnlyCollection<ServiceEntry>.Count => _registrations.Count;
 
 #endregion
 
 #region Interface IServiceCollection
 
-    public void Add(ServiceEntry serviceEntry) => _registrations.Add(serviceEntry);
+	public void Add(ServiceEntry serviceEntry) => _registrations.Add(serviceEntry);
 
-    public bool IsRegistered(TypeKey key)
-    {
-        foreach (var entry in _registrations)
-        {
-            if (entry.Key == key)
-            {
-                return true;
-            }
-        }
+	public bool IsRegistered(TypeKey key)
+	{
+		foreach (var entry in _registrations)
+		{
+			if (entry.Key == key)
+			{
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 #endregion
 
-    public List<ServiceEntry>.Enumerator GetEnumerator() => _registrations.GetEnumerator();
+	public List<ServiceEntry>.Enumerator GetEnumerator() => _registrations.GetEnumerator();
 
-    public virtual IServiceProvider BuildProvider() => new ServiceProvider(this);
+	public virtual IServiceProvider BuildProvider() => new ServiceProvider(this);
 }

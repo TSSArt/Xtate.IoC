@@ -20,109 +20,109 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class FuncConverterTest
 {
-    [TestMethod]
-    public void Cast_EventHandler_ThrowsInvalidCastException()
-    {
-        // Arrange & Act & Assert
-        Assert.ThrowsExactly<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
+	[TestMethod]
+	public void Cast_EventHandler_ThrowsInvalidCastException()
+	{
+		// Arrange & Act & Assert
+		Assert.ThrowsExactly<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<EventHandler>(new Func<ValueTuple, bool>(MyFunc)); });
 
-        return;
+		return;
 
-        [ExcludeFromCodeCoverage]
-        static bool MyFunc(ValueTuple _) => false;
-    }
+		[ExcludeFromCodeCoverage]
+		static bool MyFunc(ValueTuple _) => false;
+	}
 
-    [TestMethod]
-    public void Cast_PredicateString_ThrowsInvalidCastException()
-    {
-        // Arrange & Act & Assert
-        Assert.ThrowsExactly<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
+	[TestMethod]
+	public void Cast_PredicateString_ThrowsInvalidCastException()
+	{
+		// Arrange & Act & Assert
+		Assert.ThrowsExactly<InvalidCastException>([ExcludeFromCodeCoverage]() => { FuncConverter.Cast<Predicate<string>>(new Func<ValueTuple, bool>(MyFunc)); });
 
-        return;
+		return;
 
-        [ExcludeFromCodeCoverage]
-        static bool MyFunc(ValueTuple _) => false;
-    }
+		[ExcludeFromCodeCoverage]
+		static bool MyFunc(ValueTuple _) => false;
+	}
 
-    [TestMethod]
-    public void Cast_FuncString_ReturnsExpectedValue()
-    {
-        // Arrange
-        var f = FuncConverter.Cast<Func<string>>(new Func<ValueTuple, string>(MyFunc));
+	[TestMethod]
+	public void Cast_FuncString_ReturnsExpectedValue()
+	{
+		// Arrange
+		var f = FuncConverter.Cast<Func<string>>(new Func<ValueTuple, string>(MyFunc));
 
-        // Act
-        var result = f();
+		// Act
+		var result = f();
 
-        // Assert
-        Assert.AreEqual(expected: "test", result);
+		// Assert
+		Assert.AreEqual(expected: "test", result);
 
-        return;
+		return;
 
-        static string MyFunc(ValueTuple _) => "test";
-    }
+		static string MyFunc(ValueTuple _) => "test";
+	}
 
-    [TestMethod]
-    public void Cast_FuncStringString_ReturnsExpectedValue()
-    {
-        // Arrange
-        var f = FuncConverter.Cast<Func<string, string>>(new Func<string, string>(MyFunc));
+	[TestMethod]
+	public void Cast_FuncStringString_ReturnsExpectedValue()
+	{
+		// Arrange
+		var f = FuncConverter.Cast<Func<string, string>>(new Func<string, string>(MyFunc));
 
-        // Act
-        var result = f("test");
+		// Act
+		var result = f("test");
 
-        // Assert
-        Assert.AreEqual(expected: "test", result);
+		// Assert
+		Assert.AreEqual(expected: "test", result);
 
-        return;
+		return;
 
-        static string MyFunc(string v) => v;
-    }
+		static string MyFunc(string v) => v;
+	}
 
-    [TestMethod]
-    public void Cast_FuncObjectString_ThrowsArgumentException()
-    {
-        // Arrange & Act & Assert
-        Assert.ThrowsExactly<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
+	[TestMethod]
+	public void Cast_FuncObjectString_ThrowsArgumentException()
+	{
+		// Arrange & Act & Assert
+		Assert.ThrowsExactly<ArgumentException>([ExcludeFromCodeCoverage]() => FuncConverter.Cast<Func<object, string>>(new Func<string, string>(MyFunc)));
 
-        return;
+		return;
 
-        [ExcludeFromCodeCoverage]
-        static string MyFunc(string v) => v;
-    }
+		[ExcludeFromCodeCoverage]
+		static string MyFunc(string v) => v;
+	}
 
-    [TestMethod]
-    public void Cast_FuncStringStringString_ReturnsExpectedValue()
-    {
-        // Arrange
-        var f = FuncConverter.Cast<Func<string, string, string>>(new Func<(string, string), string>(MyFunc));
+	[TestMethod]
+	public void Cast_FuncStringStringString_ReturnsExpectedValue()
+	{
+		// Arrange
+		var f = FuncConverter.Cast<Func<string, string, string>>(new Func<(string, string), string>(MyFunc));
 
-        // Act
-        var result = f(arg1: "a", arg2: "b");
+		// Act
+		var result = f(arg1: "a", arg2: "b");
 
-        // Assert
-        Assert.AreEqual(expected: "ab", result);
+		// Assert
+		Assert.AreEqual(expected: "ab", result);
 
-        return;
+		return;
 
-        static string MyFunc((string v1, string v2) arg) => arg.v1 + arg.v2;
-    }
+		static string MyFunc((string v1, string v2) arg) => arg.v1 + arg.v2;
+	}
 
-    [TestMethod]
-    public void Cast_FuncStringStringStringStringStringStringStringStringStringString_ReturnsExpectedValue()
-    {
-        // Arrange
-        var f = FuncConverter.Cast<Func<string, string, string, string, string, string, string, string, string, string>>(
-            new Func<(string, string, string, string, string, string, string, string, string), string>(MyFunc));
+	[TestMethod]
+	public void Cast_FuncStringStringStringStringStringStringStringStringStringString_ReturnsExpectedValue()
+	{
+		// Arrange
+		var f = FuncConverter.Cast<Func<string, string, string, string, string, string, string, string, string, string>>(
+			new Func<(string, string, string, string, string, string, string, string, string), string>(MyFunc));
 
-        // Act
-        var result = f(arg1: "1", arg2: "2", arg3: "3", arg4: "4", arg5: "5", arg6: "6", arg7: "7", arg8: "8", arg9: "9");
+		// Act
+		var result = f(arg1: "1", arg2: "2", arg3: "3", arg4: "4", arg5: "5", arg6: "6", arg7: "7", arg8: "8", arg9: "9");
 
-        // Assert
-        Assert.AreEqual(expected: "123456789", result);
+		// Assert
+		Assert.AreEqual(expected: "123456789", result);
 
-        return;
+		return;
 
-        static string MyFunc((string v1, string v2, string v3, string v4, string v5, string v6, string v7, string v8, string v9) arg) =>
-            arg.v1 + arg.v2 + arg.v3 + arg.v4 + arg.v5 + arg.v6 + arg.v7 + arg.v8 + arg.v9;
-    }
+		static string MyFunc((string v1, string v2, string v3, string v4, string v5, string v6, string v7, string v8, string v9) arg) =>
+			arg.v1 + arg.v2 + arg.v3 + arg.v4 + arg.v5 + arg.v6 + arg.v7 + arg.v8 + arg.v9;
+	}
 }

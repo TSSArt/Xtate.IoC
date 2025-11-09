@@ -26,121 +26,121 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class NullabilityHelperTest
 {
-    [ExcludeFromCodeCoverage]
-    private static ParameterInfo GetParameterInfo([CallerMemberName] string? member = null) =>
-        typeof(NullabilityHelperTest)
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
-            .Single(m => m.Name != member && m.Name.Contains(member!))
-            .GetParameters()
-            .Single();
+	[ExcludeFromCodeCoverage]
+	private static ParameterInfo GetParameterInfo([CallerMemberName] string? member = null) =>
+		typeof(NullabilityHelperTest)
+			.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)
+			.Single(m => m.Name != member && m.Name.Contains(member!))
+			.GetParameters()
+			.Single();
 
-    [TestMethod]
-    public void IsNullable_SimpleType_ReturnsFalse()
-    {
+	[TestMethod]
+	public void IsNullable_SimpleType_ReturnsFalse()
+	{
 #pragma warning disable CS8321 // Local function is declared but never used
-        [ExcludeFromCodeCoverage]
-        static void Method(int _) { }
+		[ExcludeFromCodeCoverage]
+		static void Method(int _) { }
 #pragma warning restore CS8321 // Local function is declared but never used
 
-        // Arrange
-        var parameterInfo = GetParameterInfo();
+		// Arrange
+		var parameterInfo = GetParameterInfo();
 
-        // Act
-        var result = NullabilityHelper.IsNullable(parameterInfo, path: "1");
+		// Act
+		var result = NullabilityHelper.IsNullable(parameterInfo, path: "1");
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+		// Assert
+		Assert.IsFalse(result);
+	}
 
-    [TestMethod]
-    public void IsNullable_GenericType_ReturnsFalse()
-    {
+	[TestMethod]
+	public void IsNullable_GenericType_ReturnsFalse()
+	{
 #pragma warning disable CS8321 // Local function is declared but never used
-        [ExcludeFromCodeCoverage]
-        static void Method(List<int> _) { }
+		[ExcludeFromCodeCoverage]
+		static void Method(List<int> _) { }
 #pragma warning restore CS8321 // Local function is declared but never used
 
-        // Arrange
-        var parameterInfo = GetParameterInfo();
+		// Arrange
+		var parameterInfo = GetParameterInfo();
 
-        // Act
-        var result = NullabilityHelper.IsNullable(parameterInfo, path: "1");
+		// Act
+		var result = NullabilityHelper.IsNullable(parameterInfo, path: "1");
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+		// Assert
+		Assert.IsFalse(result);
+	}
 
-    [TestMethod]
-    public void IsNullable_GenericNullableType_ReturnsFalse()
-    {
+	[TestMethod]
+	public void IsNullable_GenericNullableType_ReturnsFalse()
+	{
 #pragma warning disable CS8321 // Local function is declared but never used
-        [ExcludeFromCodeCoverage]
-        static void Method(int? _) { }
+		[ExcludeFromCodeCoverage]
+		static void Method(int? _) { }
 #pragma warning restore CS8321 // Local function is declared but never used
 
-        // Arrange
-        var parameterInfo = GetParameterInfo();
+		// Arrange
+		var parameterInfo = GetParameterInfo();
 
-        // Act
-        var result = NullabilityHelper.IsNullable(parameterInfo, path: "1");
+		// Act
+		var result = NullabilityHelper.IsNullable(parameterInfo, path: "1");
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+		// Assert
+		Assert.IsFalse(result);
+	}
 
-    [TestMethod]
-    public void IsNullable_NullableInt_ReturnsTrue()
-    {
+	[TestMethod]
+	public void IsNullable_NullableInt_ReturnsTrue()
+	{
 #pragma warning disable CS8321 // Local function is declared but never used
-        [ExcludeFromCodeCoverage]
-        static void Method(int? _) { }
+		[ExcludeFromCodeCoverage]
+		static void Method(int? _) { }
 #pragma warning restore CS8321 // Local function is declared but never used
 
-        // Arrange
-        var parameterInfo = GetParameterInfo();
+		// Arrange
+		var parameterInfo = GetParameterInfo();
 
-        // Act
-        var result = NullabilityHelper.IsNullable(parameterInfo, path: "");
+		// Act
+		var result = NullabilityHelper.IsNullable(parameterInfo, path: "");
 
-        // Assert
-        Assert.IsTrue(result);
-    }
+		// Assert
+		Assert.IsTrue(result);
+	}
 
-    [TestMethod]
-    public void IsNullable_NestedGenericType_ReturnsFalse()
-    {
+	[TestMethod]
+	public void IsNullable_NestedGenericType_ReturnsFalse()
+	{
 #pragma warning disable CS8321 // Local function is declared but never used
-        [ExcludeFromCodeCoverage]
+		[ExcludeFromCodeCoverage]
 
-        // ReSharper disable once UnusedParameter.Local
-        static void Method(List<List<int>> _) { }
+		// ReSharper disable once UnusedParameter.Local
+		static void Method(List<List<int>> _) { }
 #pragma warning restore CS8321 // Local function is declared but never used
 
-        // Arrange
-        var parameterInfo = GetParameterInfo();
+		// Arrange
+		var parameterInfo = GetParameterInfo();
 
-        // Act
-        var result = NullabilityHelper.IsNullable(parameterInfo, path: "11");
+		// Act
+		var result = NullabilityHelper.IsNullable(parameterInfo, path: "11");
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+		// Assert
+		Assert.IsFalse(result);
+	}
 #nullable disable
-    [TestMethod]
-    public void IsNullable_GenericNullabilityDisabled_ReturnsFalse()
-    {
+	[TestMethod]
+	public void IsNullable_GenericNullabilityDisabled_ReturnsFalse()
+	{
 #pragma warning disable CS8321 // Local function is declared but never used
-        [ExcludeFromCodeCoverage]
-        static void Method(List<List<int>> _) { }
+		[ExcludeFromCodeCoverage]
+		static void Method(List<List<int>> _) { }
 #pragma warning restore CS8321 // Local function is declared but never used
 
-        // Arrange
-        var parameterInfo = GetParameterInfo();
+		// Arrange
+		var parameterInfo = GetParameterInfo();
 
-        // Act
-        var result = NullabilityHelper.IsNullable(parameterInfo, path: "");
+		// Act
+		var result = NullabilityHelper.IsNullable(parameterInfo, path: "");
 
-        // Assert
-        Assert.IsFalse(result);
-    }
+		// Assert
+		Assert.IsFalse(result);
+	}
 }

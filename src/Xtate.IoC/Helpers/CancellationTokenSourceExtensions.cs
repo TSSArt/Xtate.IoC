@@ -20,10 +20,10 @@ namespace Xtate.IoC;
 
 public static class CancellationTokenSourceExtensions
 {
-    public static Task CancelAsync(this CancellationTokenSource cancellationTokenSource) =>
-        !cancellationTokenSource.IsCancellationRequested
-            ? Task.Run(cancellationTokenSource.Cancel)
-            : Task.CompletedTask;
+	public static Task CancelAsync(this CancellationTokenSource cancellationTokenSource) =>
+		!cancellationTokenSource.IsCancellationRequested
+			? Task.Run(cancellationTokenSource.Cancel)
+			: Task.CompletedTask;
 }
 
 #endif

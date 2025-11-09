@@ -21,68 +21,70 @@ public enum SomeEnumName;
 
 public class NonGeneric
 {
-    public enum NestedEnum;
+	public enum NestedEnum;
 
-    public class NestedNonGeneric;
+	public class NestedNonGeneric;
 
-    public class NestedGeneric<[UsedImplicitly] TN>;
+	public class NestedGeneric<[UsedImplicitly] TN>;
 }
 
 public class Generic<[UsedImplicitly] T>
 {
-    public enum NestedEnum;
+	public enum NestedEnum;
 
-    public class NestedNonGeneric;
+	public class NestedNonGeneric;
 
-    public class NestedGeneric<[UsedImplicitly] TN>;
+	public class NestedGeneric<[UsedImplicitly] TN>;
 }
 
 [TestClass]
 public class FriendlyTypeTest
 {
-    [TestMethod]
-    [DataRow("bool", typeof(bool))]
-    [DataRow("byte", typeof(byte))]
-    [DataRow("char", typeof(char))]
-    [DataRow("decimal", typeof(decimal))]
-    [DataRow("double", typeof(double))]
-    [DataRow("short", typeof(short))]
-    [DataRow("int", typeof(int))]
-    [DataRow("long", typeof(long))]
-    [DataRow("sbyte", typeof(sbyte))]
-    [DataRow("float", typeof(float))]
-    [DataRow("string", typeof(string))]
-    [DataRow("ushort", typeof(ushort))]
-    [DataRow("uint", typeof(uint))]
-    [DataRow("ulong", typeof(ulong))]
-    [DataRow("object", typeof(object))]
-    [DataRow("void", typeof(void))]
-    [DataRow("List<int>", typeof(List<int>))]
-    [DataRow("(int, long)", typeof((int, long)))]
-    [DataRow("(int, int, int)", typeof((int, int, int)))]
-    [DataRow("(int, int, int, int)", typeof((int, int, int, int)))]
-    [DataRow("(int, int, int, int, int)", typeof((int, int, int, int, int)))]
-    [DataRow("(int, int, int, int, int, int)", typeof((int, int, int, int, int, int)))]
-    [DataRow("(int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int)))]
-    [DataRow("(int, int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int, int)))]
-    [DataRow("(int, int, int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int, int, int)))]
-    [DataRow("(int, int, int, int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int, int, int, int)))]
-    [DataRow("SomeEnumName", typeof(SomeEnumName))]
-    [DataRow("NonGeneric", typeof(NonGeneric))]
-    [DataRow("Generic<int>", typeof(Generic<int>))]
-    [DataRow("Generic<Generic<int>>", typeof(Generic<Generic<int>>))]
-    [DataRow("NonGeneric.NestedNonGeneric", typeof(NonGeneric.NestedNonGeneric))]
-    [DataRow("NonGeneric.NestedGeneric<int>", typeof(NonGeneric.NestedGeneric<int>))]
-    [DataRow("Generic<long>.NestedNonGeneric", typeof(Generic<long>.NestedNonGeneric))]
-    [DataRow("Generic<long>.NestedGeneric<object>", typeof(Generic<long>.NestedGeneric<object>))]
-    [DataRow("Generic<long>.NestedEnum", typeof(Generic<long>.NestedEnum))]
-    [DataRow("NonGeneric.NestedEnum", typeof(NonGeneric.NestedEnum))]
-    public void FriendlyName_ShouldReturnExpectedName_WhenGivenType(string expectedName, Type type)
-    {
-        // Arrange & Act
-        var actualName = type.FriendlyName();
+	[TestMethod]
+	[DataRow("bool", typeof(bool))]
+	[DataRow("byte", typeof(byte))]
+	[DataRow("char", typeof(char))]
+	[DataRow("decimal", typeof(decimal))]
+	[DataRow("double", typeof(double))]
+	[DataRow("short", typeof(short))]
+	[DataRow("int", typeof(int))]
+	[DataRow("long", typeof(long))]
+	[DataRow("sbyte", typeof(sbyte))]
+	[DataRow("float", typeof(float))]
+	[DataRow("string", typeof(string))]
+	[DataRow("ushort", typeof(ushort))]
+	[DataRow("uint", typeof(uint))]
+	[DataRow("ulong", typeof(ulong))]
+	[DataRow("object", typeof(object))]
+	[DataRow("void", typeof(void))]
+	[DataRow("nint", typeof(IntPtr))]
+	[DataRow("nuint", typeof(UIntPtr))]
+	[DataRow("List<int>", typeof(List<int>))]
+	[DataRow("(int, long)", typeof((int, long)))]
+	[DataRow("(int, int, int)", typeof((int, int, int)))]
+	[DataRow("(int, int, int, int)", typeof((int, int, int, int)))]
+	[DataRow("(int, int, int, int, int)", typeof((int, int, int, int, int)))]
+	[DataRow("(int, int, int, int, int, int)", typeof((int, int, int, int, int, int)))]
+	[DataRow("(int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int)))]
+	[DataRow("(int, int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int, int)))]
+	[DataRow("(int, int, int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int, int, int)))]
+	[DataRow("(int, int, int, int, int, int, int, int, int, int)", typeof((int, int, int, int, int, int, int, int, int, int)))]
+	[DataRow("SomeEnumName", typeof(SomeEnumName))]
+	[DataRow("NonGeneric", typeof(NonGeneric))]
+	[DataRow("Generic<int>", typeof(Generic<int>))]
+	[DataRow("Generic<Generic<int>>", typeof(Generic<Generic<int>>))]
+	[DataRow("NonGeneric.NestedNonGeneric", typeof(NonGeneric.NestedNonGeneric))]
+	[DataRow("NonGeneric.NestedGeneric<int>", typeof(NonGeneric.NestedGeneric<int>))]
+	[DataRow("Generic<long>.NestedNonGeneric", typeof(Generic<long>.NestedNonGeneric))]
+	[DataRow("Generic<long>.NestedGeneric<object>", typeof(Generic<long>.NestedGeneric<object>))]
+	[DataRow("Generic<long>.NestedEnum", typeof(Generic<long>.NestedEnum))]
+	[DataRow("NonGeneric.NestedEnum", typeof(NonGeneric.NestedEnum))]
+	public void FriendlyName_ShouldReturnExpectedName_WhenGivenType(string expectedName, Type type)
+	{
+		// Arrange & Act
+		var actualName = type.FriendlyName;
 
-        // Assert
-        Assert.AreEqual(expectedName, actualName);
-    }
+		// Assert
+		Assert.AreEqual(expectedName, actualName);
+	}
 }

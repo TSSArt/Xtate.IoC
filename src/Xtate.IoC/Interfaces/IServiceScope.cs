@@ -19,5 +19,5 @@ namespace Xtate.IoC;
 
 public interface IServiceScope : IDisposable, IAsyncDisposable
 {
-    IServiceProvider ServiceProvider { get; }
+	IServiceProvider ServiceProvider { get; }
 }
