@@ -19,6 +19,10 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v5.0.0
+      with:
+        fetch-depth: 0
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5.0.0
       with:
@@ -30,10 +34,6 @@ jobs:
       uses: gittools/actions/gitversion/setup@v4.2.0
       with:
         versionSpec: '6.5.x'
-    - name: Checkout
-      uses: actions/checkout@v5.0.0
-      with:
-        fetch-depth: 0
     - name: Determine Version
       uses: gittools/actions/gitversion/execute@v4.2.0
     - name: Restore
