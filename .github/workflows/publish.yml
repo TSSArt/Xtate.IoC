@@ -39,11 +39,11 @@ jobs:
     - name: Restore
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore -p:Version=${{ env.fullSemVer }}
+      run: dotnet build --configuration ${{ env.Configuration }} --no-restore -p:Version=${{ env.fullSemVer }}
     - name: Test
-      run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-restore --no-build
+      run: dotnet test --configuration ${{ env.Configuration }} --no-restore --no-build
     - name: Pack
-      run: dotnet pack --configuration ${{ env.CONFIGURATION }} --no-restore --no-build -p:PackageVersion=${{ env.fullSemVer }} --include-symbols -p:SymbolPackageFormat=snupkg -o bin/packages
+      run: dotnet pack --configuration ${{ env.Configuration }} --no-restore --no-build -p:PackageVersion=${{ env.fullSemVer }} --include-symbols -p:SymbolPackageFormat=snupkg -o bin/packages
     - name: Publish to NuGet.org
       run: dotnet nuget push bin/packages/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_ORG_TOKEN }}
     - name: Publish to GitHub
