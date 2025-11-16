@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtate.IoC", "src\Xtate.IoC\Xtate.IoC.csproj", "{E4837CE8-2C4A-4FA7-B5AC-B91A0EAB15BC}"
 EndProject
@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{0AC0C2
 		Directory.Packages.props = Directory.Packages.props
 		Global.Packages.props = Global.Packages.props
 		LICENSE = LICENSE
+		NuGet.Config = NuGet.Config
+		.github\workflows\publish-dependencies.yml = .github\workflows\publish-dependencies.yml
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 		README.md = README.md
 		Version.props = Version.props
