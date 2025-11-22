@@ -121,6 +121,7 @@ public class WeakReferenceStackTest
 
 		// Assert
 		Assert.AreEqual(expected: 4, count);
+		Assert.HasCount(expected: 8, list);
 	}
 
 	private static void FillList(WeakReferenceStack wrc, object[] list, int count)

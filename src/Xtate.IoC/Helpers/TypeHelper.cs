@@ -191,13 +191,6 @@ internal static class TypeHelper
 		}
 
 		/// <summary>
-		///     Creates a generic type using the specified type argument.
-		/// </summary>
-		/// <param name="arg">The type argument.</param>
-		/// <returns>The constructed generic type.</returns>
-		public Type MakeGenericTypeExt(Type arg) => type.MakeGenericType(arg);
-
-		/// <summary>
 		///     Creates a generic type using the specified type arguments.
 		/// </summary>
 		/// <param name="arg1">The first type argument.</param>

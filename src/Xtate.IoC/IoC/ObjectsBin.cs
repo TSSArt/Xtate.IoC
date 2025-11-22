@@ -17,10 +17,38 @@
 
 namespace Xtate.IoC;
 
+/// <summary>
+///     Holds object instances scheduled for aggregated disposal.
+/// </summary>
+/// <remarks>
+///     <para>
+///         This bin tracks disposable instances (implementing <see cref="IDisposable" /> or
+///         <see cref="IAsyncDisposable" />) via a weak-reference stack. Non‑disposable instances are ignored but still
+///         validate disposal state.
+///     </para>
+///     <para>
+///         Calling <see cref="Dispose" /> or <see cref="DisposeAsync" /> transitions the bin to a disposed state. Any
+///         subsequent attempt to add an object results in an <see cref="XtateObjectDisposedException" /> (after eagerly
+///         disposing the
+///         provided instance if it is disposable).
+///     </para>
+///     <para>
+///         Thread-safety: All public and internal members are safe for concurrent use. Disposal is performed exactly once
+///         using an atomic exchange on the underlying storage field.
+///     </para>
+/// </remarks>
 public class ObjectsBin
 {
 	private WeakReferenceStack? _instancesForDispose = new();
 
+	/// <summary>
+	///     Asynchronously disposes all tracked instances and marks the bin as disposed.
+	/// </summary>
+	/// <remarks>
+	///     Each instance is disposed using <see cref="Disposer.DisposeAsync" />. If multiple threads race to dispose,
+	///     only the first succeeds; others observe a no-op. After completion the bin rejects further additions.
+	/// </remarks>
+	/// <returns>A task representing the asynchronous disposal operation.</returns>
 	internal async ValueTask DisposeAsync()
 	{
 		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
@@ -32,6 +60,13 @@ public class ObjectsBin
 		}
 	}
 
+	/// <summary>
+	///     Synchronously disposes all tracked instances and marks the bin as disposed.
+	/// </summary>
+	/// <remarks>
+	///     Each instance is disposed using <see cref="Disposer.Dispose" />. After completion the bin rejects further
+	///     additions. Safe to call multiple times; only the first call performs work.
+	/// </remarks>
 	internal void Dispose()
 	{
 		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
@@ -43,6 +78,23 @@ public class ObjectsBin
 		}
 	}
 
+	/// <summary>
+	///     Adds an instance to the bin for later disposal (asynchronously, when the bin is disposed).
+	/// </summary>
+	/// <typeparam name="T">Type of the instance being added.</typeparam>
+	/// <param name="instance">The instance to track.</param>
+	/// <returns>
+	///     A completed <see cref="ValueTask" /> if the instance is tracked (or ignored because it is not disposable),
+	///     or a task representing asynchronous immediate disposal followed by an exception if the bin is already disposed.
+	/// </returns>
+	/// <exception cref="XtateObjectDisposedException">
+	///     Thrown if the bin has already been disposed. If the instance is disposable it is disposed prior to throwing.
+	/// </exception>
+	/// <remarks>
+	///     Non‑disposable instances are skipped but still validate that the bin is not disposed.
+	///     Disposable instances are stored on a weak-reference stack allowing garbage collection
+	///     if they become otherwise unreachable before bin disposal.
+	/// </remarks>
 	public ValueTask AddAsync<T>(T instance)
 	{
 		if (!Disposer.IsDisposable(instance))
@@ -59,16 +111,39 @@ public class ObjectsBin
 			return ValueTask.CompletedTask;
 		}
 
-		return DisposeAndThrow();
-
-		async ValueTask DisposeAndThrow()
-		{
-			await Disposer.DisposeAsync(instance).ConfigureAwait(false);
-
-			XtateObjectDisposedException.ThrowIf(condition: true, this);
-		}
+		return DisposeAndThrow(instance);
 	}
 
+	/// <summary>
+	///     Disposes a single instance asynchronously and then unconditionally throws
+	///     <see cref="XtateObjectDisposedException" />.
+	/// </summary>
+	/// <typeparam name="T">Type of the instance being disposed.</typeparam>
+	/// <param name="instance">The instance to dispose.</param>
+	/// <returns>A task representing the asynchronous disposal and subsequent exception.</returns>
+	/// <remarks>
+	///     Used to enforce fail-fast semantics when adding after disposal.
+	/// </remarks>
+	/// <exception cref="XtateObjectDisposedException">Always thrown after disposal completes.</exception>
+	private async ValueTask DisposeAndThrow<T>(T instance)
+	{
+		await Disposer.DisposeAsync(instance!).ConfigureAwait(false);
+
+		XtateObjectDisposedException.ThrowIf(condition: true, this);
+	}
+
+	/// <summary>
+	///     Adds an instance to the bin for later disposal (synchronously, when the bin is disposed).
+	/// </summary>
+	/// <typeparam name="T">Type of the instance being added.</typeparam>
+	/// <param name="instance">The instance to track.</param>
+	/// <exception cref="XtateObjectDisposedException">
+	///     Thrown if the bin has already been disposed. If the instance is disposable it is disposed prior to throwing.
+	/// </exception>
+	/// <remarks>
+	///     Mirrors <see cref="AddAsync{T}" /> but uses synchronous disposal operations. Non‑disposable instances are ignored
+	///     after validating disposal state.
+	/// </remarks>
 	public void AddSync<T>(T instance)
 	{
 		if (!Disposer.IsDisposable(instance))

@@ -22,6 +22,14 @@ namespace Xtate.IoC;
 /// </summary>
 public class SingletonOwnerImplementationEntry : SingletonImplementationEntry
 {
+	/// <summary>
+	///     Bin that tracks created transient instances for disposal when the owning <see cref="ServiceProvider" /> is
+	///     disposed.
+	/// </summary>
+	/// <remarks>
+	///     Non‑disposable instances are ignored by the bin. Disposable instances are registered so their lifetime is tied to
+	///     the service provider even though they are transient.
+	/// </remarks>
 	private readonly ObjectsBin _objectsBin;
 
 	/// <summary>
@@ -55,9 +63,35 @@ public class SingletonOwnerImplementationEntry : SingletonImplementationEntry
 	/// <returns>A new instance of <see cref="SingletonOwnerImplementationEntry" />.</returns>
 	public override ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory) => new SingletonOwnerImplementationEntry(serviceProvider, factory);
 
-	protected override async ValueTask<T?> ExecuteFactoryBase<T, TArg>(TArg argument) where T : default
+	protected override ValueTask<T?> ExecuteFactoryBase<T, TArg>(TArg argument) where T : default
 	{
-		var instance = await base.ExecuteFactoryBase<T, TArg>(argument).ConfigureAwait(false);
+		var valueTask = base.ExecuteFactoryBase<T, TArg>(argument);
+
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return ExecuteFactoryWait(valueTask);
+		}
+
+		if (valueTask.Result is not { } instance)
+		{
+			return new ValueTask<T?>(default(T?));
+		}
+
+		var addValueTask = _objectsBin.AddAsync(instance);
+
+		return addValueTask.IsCompletedSuccessfully ? new ValueTask<T?>(instance) : Wait(addValueTask, instance);
+
+		static async ValueTask<T?> Wait(ValueTask valueTask, T value)
+		{
+			await valueTask.ConfigureAwait(false);
+
+			return value;
+		}
+	}
+
+	private async ValueTask<T?> ExecuteFactoryWait<T>(ValueTask<T?> valueTask)
+	{
+		var instance = await valueTask.ConfigureAwait(false);
 
 		await _objectsBin.AddAsync(instance).ConfigureAwait(false);
 

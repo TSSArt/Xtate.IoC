@@ -18,8 +18,12 @@
 namespace Xtate.IoC;
 
 /// <summary>
-///     Represents a base class for entries in the IoC container per service.
-///     Derived classes should implement specific behaviors for service entries.
+///     Represents a base class for service implementation entries registered in the IoC container.
+///     Each entry encapsulates a factory delegate (either synchronous or asynchronous) able to produce
+///     an instance of the requested service (optionally a decorator that depends on a previous entry).
+///     Entries are chained to support multiple registrations (decorators or service enumeration).
+///     Derived classes provide specialized behavior (scoping, lifetime control).
+///     Thread-safety: Instances are used concurrently; factory delegates must be thread-safe.
 /// </summary>
 public abstract class ImplementationEntry
 {
@@ -35,7 +39,7 @@ public abstract class ImplementationEntry
 	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class with the specified factory delegate.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider used to resolve dependencies.</param>
-	/// <param name="factory">The factory delegate used to create instances of the service.</param>
+	/// <param name="factory">The factory delegate used to create instances of the service (or a decorator).</param>
 	protected ImplementationEntry(IServiceProvider serviceProvider, Delegate factory)
 	{
 		_serviceProvider = serviceProvider;
@@ -44,14 +48,11 @@ public abstract class ImplementationEntry
 	}
 
 	/// <summary>
-	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class by copying the factory delegate from
-	///     another <see cref="ImplementationEntry" /> instance.
+	///     Initializes a new instance of the <see cref="ImplementationEntry" /> class by copying the factory
+	///     delegate from another <see cref="ImplementationEntry" /> instance.
 	/// </summary>
 	/// <param name="serviceProvider">The service provider used to resolve dependencies.</param>
-	/// <param name="sourceImplementationEntry">
-	///     The source <see cref="ImplementationEntry" /> instance to copy the factory
-	///     delegate from.
-	/// </param>
+	/// <param name="sourceImplementationEntry">The source entry whose factory delegate is reused.</param>
 	protected ImplementationEntry(IServiceProvider serviceProvider, ImplementationEntry sourceImplementationEntry)
 	{
 		_serviceProvider = serviceProvider;
@@ -59,14 +60,51 @@ public abstract class ImplementationEntry
 		_nextEntry = this;
 	}
 
+	/// <summary>
+	///     Gets the raw factory delegate registered for this entry.
+	///     Supported delegate shapes:
+	///     <list type="bullet">
+	///         <item>
+	///             <description>
+	///                 <c>Func&lt;IServiceProvider,TArg,T?&gt;</c>
+	///             </description>
+	///         </item>
+	///         <item>
+	///             <description>
+	///                 <c>Func&lt;IServiceProvider,TArg,ValueTask&lt;T?&gt;&gt;</c>
+	///             </description>
+	///         </item>
+	///         <item>
+	///             <description><c>Func&lt;IServiceProvider,T,TArg,T?&gt;</c> (decorator)</description>
+	///         </item>
+	///         <item>
+	///             <description><c>Func&lt;IServiceProvider,T,TArg,ValueTask&lt;T?&gt;&gt;</c> (decorator)</description>
+	///         </item>
+	///     </list>
+	/// </summary>
 	public Delegate Factory { get; }
 
-	private bool IsAsyncInitializationHandlerUsed() => ReferenceEquals(_serviceProvider.InitializationHandler, AsyncInitializationHandler.Instance);
-
+	/// <summary>
+	///     Creates a new entry of the same semantic kind (lifetime strategy) bound to a different
+	///     <see cref="ServiceProvider" />.
+	/// </summary>
+	/// <param name="serviceProvider">The target service provider.</param>
+	/// <returns>A new <see cref="ImplementationEntry" /> instance.</returns>
 	public abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider);
 
+	/// <summary>
+	///     Creates a new entry of the same semantic kind using a supplied factory delegate.
+	/// </summary>
+	/// <param name="serviceProvider">The target service provider.</param>
+	/// <param name="factory">The factory delegate replacing the current one.</param>
+	/// <returns>A new <see cref="ImplementationEntry" /> instance with the specified factory.</returns>
 	public abstract ImplementationEntry CreateNew(ServiceProvider serviceProvider, Delegate factory);
 
+	/// <summary>
+	///     Adds this entry to the circular chain headed by <paramref name="lastEntry" />.
+	///     The method mutates linkage only once; assertions guard against repeated additions.
+	/// </summary>
+	/// <param name="lastEntry">Reference to the last entry variable maintained externally.</param>
 	internal void AddToChain([NotNull] ref ImplementationEntry? lastEntry)
 	{
 		Infra.Assert(_previousEntry is null);
@@ -82,6 +120,9 @@ public abstract class ImplementationEntry
 		lastEntry = this;
 	}
 
+	/// <summary>
+	///     Returns an enumerable wrapper allowing iteration over the chain starting after <c>lastEntry</c>.
+	/// </summary>
 	internal Chain AsChain() => new(this);
 
 	/// <summary>
@@ -91,57 +132,113 @@ public abstract class ImplementationEntry
 	/// <typeparam name="T">The type of the service to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
-	/// <returns>A task that represents the asynchronous operation. The task result contains the required service.</returns>
+	/// <returns>A task whose result is the required service instance.</returns>
 	/// <exception cref="DependencyInjectionException">Thrown if the service is not found.</exception>
-	public async ValueTask<T> GetRequiredService<T, TArg>(TArg argument) where T : notnull
+	public ValueTask<T> GetRequiredService<T, TArg>(TArg argument) where T : notnull
 	{
-		var instance = await GetService<T, TArg>(argument).ConfigureAwait(false);
+		var valueTask = GetService<T, TArg>(argument);
 
-		return instance is not null ? instance : throw MissedServiceException.Create<T, TArg>();
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return Wait(valueTask);
+		}
+
+		return valueTask.Result is { } instance ? new ValueTask<T>(instance) : throw MissedServiceException.Create<T, TArg>();
+
+		static async ValueTask<T> Wait(ValueTask<T?> valueTask)
+		{
+			var instance = await valueTask.ConfigureAwait(false);
+
+			return instance is not null ? instance : throw MissedServiceException.Create<T, TArg>();
+		}
 	}
 
 	/// <summary>
 	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
-	///     Returns null if the service is not found.
+	///     Returns <c>null</c> if the service is not found.
 	/// </summary>
 	/// <typeparam name="T">The type of the service to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
-	/// <returns>A task that represents the asynchronous operation. The task result contains the service or null if not found.</returns>
+	/// <returns>A task whose result is the service instance or <c>null</c>.</returns>
 	public ValueTask<T?> GetService<T, TArg>(TArg argument) =>
 		_serviceProvider.Actions is not { } actions
 			? GetServiceNoActions<T, TArg>(argument)
 			: GetServiceWithActions<T, TArg>(argument, actions);
 
-	private async ValueTask<T?> GetServiceNoActions<T, TArg>(TArg argument)
+	/// <summary>
+	///     Retrieves a service without invoking provider actions (fast path).
+	///     Performs initialization if an instance is produced.
+	/// </summary>
+	private ValueTask<T?> GetServiceNoActions<T, TArg>(TArg argument)
 	{
-		var instance = await ExecuteFactory<T, TArg>(argument).ConfigureAwait(false);
+		var valueTask = ExecuteFactory<T, TArg>(argument);
+
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return GetServiceNoActionsWait(valueTask);
+		}
+
+		if (valueTask.Result is not { } instance)
+		{
+			return new ValueTask<T?>(default(T?));
+		}
+
+		var initValueTask = ReferenceEquals(_serviceProvider.InitializationHandler, AsyncInitializationHandler.Instance)
+			? AsyncInitializationHandler.InitializeAsync(instance)
+			: CustomInitializeAsync(instance);
+
+		return initValueTask.IsCompletedSuccessfully ? new ValueTask<T?>(instance) : Wait(initValueTask, instance);
+
+		static async ValueTask<T?> Wait(ValueTask valueTask, T value)
+		{
+			await valueTask.ConfigureAwait(false);
+
+			return value;
+		}
+	}
+
+	/// <summary>
+	///     Await continuation for <see cref="GetServiceNoActions{T,TArg}" /> when factory returned an incomplete task.
+	/// </summary>
+	private async ValueTask<T?> GetServiceNoActionsWait<T>(ValueTask<T?> valueTask)
+	{
+		var instance = await valueTask.ConfigureAwait(false);
 
 		if (instance is null)
 		{
 			return default;
 		}
 
-		var initTask = IsAsyncInitializationHandlerUsed()
+		var initValueTask = ReferenceEquals(_serviceProvider.InitializationHandler, AsyncInitializationHandler.Instance)
 			? AsyncInitializationHandler.InitializeAsync(instance)
-			: CustomInitialize(_serviceProvider, instance);
+			: CustomInitializeAsync(instance);
 
-		await initTask.ConfigureAwait(false);
+		await initValueTask.ConfigureAwait(false);
 
 		return instance;
-
-		static Task CustomInitialize(IServiceProvider serviceProvider, T? obj)
-		{
-			if (serviceProvider.InitializationHandler is { } handler && handler.Initialize(obj))
-			{
-				return handler.InitializeAsync(obj);
-			}
-
-			return Task.CompletedTask;
-		}
 	}
 
-	private async ValueTask<T?> GetServiceWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	/// <summary>
+	///     Performs custom (possibly async) initialization using a non-async handler.
+	/// </summary>
+	/// <typeparam name="T">Instance type.</typeparam>
+	/// <param name="obj">Instance to initialize (maybe null).</param>
+	/// <returns>A <see cref="ValueTask" /> representing initialization.</returns>
+	private ValueTask CustomInitializeAsync<T>(T? obj)
+	{
+		if (_serviceProvider.InitializationHandler is { } handler && handler.Initialize(obj))
+		{
+			return new ValueTask(handler.InitializeAsync(obj));
+		}
+
+		return ValueTask.CompletedTask;
+	}
+
+	/// <summary>
+	///     Retrieves a service executing provider-wide actions around the request lifecycle.
+	/// </summary>
+	private ValueTask<T?> GetServiceWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
 	{
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
 
@@ -150,19 +247,40 @@ public abstract class ImplementationEntry
 			action.ServiceRequesting(typeKey)?.ServiceRequesting<T, TArg>(argument);
 		}
 
-		var instance = await GetServiceNoActions<T, TArg>(argument).ConfigureAwait(false);
+		var valueTask = GetServiceNoActions<T, TArg>(argument);
+
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return Wait(valueTask, actions);
+		}
+
+		var instance = valueTask.Result;
 
 		for (var i = actions.Length - 1; i >= 0; i --)
 		{
 			actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
 		}
 
-		return instance;
+		return new ValueTask<T?>(instance);
+
+		static async ValueTask<T?> Wait(ValueTask<T?> valueTask, IServiceProviderActions[] actions)
+		{
+			var instance = await valueTask.ConfigureAwait(false);
+
+			var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+			for (var i = actions.Length - 1; i >= 0; i --)
+			{
+				actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
+			}
+
+			return instance;
+		}
 	}
 
 	/// <summary>
-	///     Gets the required service of type <typeparamref name="T" /> with the specified argument.
-	///     Throws an exception if the service is not found.
+	///     Gets the required service of type <typeparamref name="T" /> synchronously with the specified argument.
+	///     Throws an exception if not found.
 	/// </summary>
 	/// <typeparam name="T">The type of the service to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
@@ -172,8 +290,8 @@ public abstract class ImplementationEntry
 	public T GetRequiredServiceSync<T, TArg>(TArg argument) where T : notnull => GetServiceSync<T, TArg>(argument) ?? throw MissedServiceException.Create<T, TArg>();
 
 	/// <summary>
-	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
-	///     Returns null if the service is not found.
+	///     Gets the service of type <typeparamref name="T" /> synchronously with the specified argument
+	///     or <c>null</c> if not found.
 	/// </summary>
 	/// <typeparam name="T">The type of the service to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
@@ -230,7 +348,7 @@ public abstract class ImplementationEntry
 			return default;
 		}
 
-		if (IsAsyncInitializationHandlerUsed())
+		if (ReferenceEquals(_serviceProvider.InitializationHandler, AsyncInitializationHandler.Instance))
 		{
 			if (AsyncInitializationHandler.Initialize(instance))
 			{
@@ -253,15 +371,28 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Creates an exception indicating a type requiring async initialization was used in a sync context.
+	/// </summary>
 	private static DependencyInjectionException TypeUsedInSynchronousInstantiationException<T>() => new(Res.Format(Resources.Exception_TypeUsedInSynchronousInstantiation, typeof(T)));
 
+	/// <summary>
+	///     Creates an exception indicating a service is not available synchronously because its factory is async-only.
+	/// </summary>
 	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Res.Format(Resources.Exception_ServiceNotAvailableInSynchronousContext, typeof(T)));
 
+	/// <summary>
+	///     Executes the factory (async-aware) optionally wrapping with provider actions.
+	/// </summary>
 	protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) =>
 		_serviceProvider.Actions is not { } actions
 			? ExecuteFactoryNoActions<T, TArg>(argument)
 			: ExecuteFactoryWithActions<T, TArg>(argument, actions);
 
+	/// <summary>
+	///     Executes the factory without invoking actions.
+	///     Handles decorator chain resolution.
+	/// </summary>
 	private ValueTask<T?> ExecuteFactoryNoActions<T, TArg>(TArg argument) =>
 		Factory switch
 		{
@@ -272,7 +403,10 @@ public abstract class ImplementationEntry
 			_                                                      => throw Infra.Unmatched(Factory)
 		};
 
-	private async ValueTask<T?> ExecuteFactoryWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	/// <summary>
+	///     Executes the factory while triggering actions before and after invocation.
+	/// </summary>
+	private ValueTask<T?> ExecuteFactoryWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
 	{
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
 
@@ -281,21 +415,49 @@ public abstract class ImplementationEntry
 			action.FactoryCalling(typeKey)?.FactoryCalling<T, TArg>(argument);
 		}
 
-		var instance = await ExecuteFactoryNoActions<T, TArg>(argument).ConfigureAwait(false);
+		var valueTask = ExecuteFactoryNoActions<T, TArg>(argument);
+
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return Wait(valueTask, actions);
+		}
+
+		var instance = valueTask.Result;
 
 		for (var i = actions.Length - 1; i >= 0; i --)
 		{
 			actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
 		}
 
-		return instance;
+		return new ValueTask<T?>(instance);
+
+		static async ValueTask<T?> Wait(ValueTask<T?> valueTask, IServiceProviderActions[] actions)
+		{
+			var instance = await valueTask.ConfigureAwait(false);
+
+			var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+			for (var i = actions.Length - 1; i >= 0; i --)
+			{
+				actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+			}
+
+			return instance;
+		}
 	}
 
+	/// <summary>
+	///     Executes the factory synchronously optionally invoking actions.
+	/// </summary>
 	protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument) =>
 		_serviceProvider.Actions is not { } actions
 			? ExecuteFactorySyncNoActions<T, TArg>(argument)
 			: ExecuteFactorySyncWithActions<T, TArg>(argument, actions);
 
+	/// <summary>
+	///     Executes the factory synchronously without actions.
+	///     Throws if the delegate is async-only.
+	/// </summary>
 	private T? ExecuteFactorySyncNoActions<T, TArg>(TArg argument) =>
 		Factory switch
 		{
@@ -306,6 +468,9 @@ public abstract class ImplementationEntry
 			_                                              => throw Infra.Unmatched(Factory)
 		};
 
+	/// <summary>
+	///     Executes the synchronous factory while firing provider actions.
+	/// </summary>
 	private T? ExecuteFactorySyncWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
 	{
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
@@ -325,6 +490,12 @@ public abstract class ImplementationEntry
 		return instance;
 	}
 
+	/// <summary>
+	///     Ensures the current factory supports synchronous invocation; otherwise throws.
+	///     Used by derived entries needing sync semantics validation.
+	/// </summary>
+	/// <typeparam name="T">Service type.</typeparam>
+	/// <typeparam name="TArg">Argument type.</typeparam>
 	private protected void EnsureSynchronousContext<T, TArg>()
 	{
 		switch (Factory)
@@ -342,16 +513,25 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Executes an asynchronous decorator factory resolving the prior service in the chain.
+	/// </summary>
 	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) =>
 		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
 			? await factory(_serviceProvider, decoratedService, argument).ConfigureAwait(false)
 			: default;
 
+	/// <summary>
+	///     Executes a synchronous decorator factory that returns a value synchronously.
+	/// </summary>
 	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
 		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
 			? factory(_serviceProvider, decoratedService, argument)
 			: default;
 
+	/// <summary>
+	///     Executes a synchronous decorator factory within a synchronous call chain.
+	/// </summary>
 	private T? GetDecoratorSync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
 		_previousEntry is not null && _previousEntry.GetServiceSync<T, TArg>(argument) is { } decoratedService
 			? factory(_serviceProvider, decoratedService, argument)
@@ -383,7 +563,7 @@ public abstract class ImplementationEntry
 	/// <typeparam name="T">The type of the services to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
-	/// <returns>An enumerable of the services.</returns>
+	/// <returns>An enumerable services.</returns>
 	public IEnumerable<T> GetServicesSync<T, TArg>(TArg argument)
 	{
 		foreach (var entry in AsChain())
@@ -401,8 +581,8 @@ public abstract class ImplementationEntry
 	/// </summary>
 	/// <typeparam name="T">The type of the services to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
-	/// <typeparam name="TDelegate">The type of the delegate to return.</typeparam>
-	/// <returns>A delegate that asynchronously gets all services.</returns>
+	/// <typeparam name="TDelegate">The delegate type requested.</typeparam>
+	/// <returns>A delegate that asynchronously retrieves all services.</returns>
 	public TDelegate GetServicesDelegate<T, TArg, TDelegate>() where TDelegate : Delegate
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
@@ -536,28 +716,39 @@ public abstract class ImplementationEntry
 		return newDelegate;
 	}
 
+	/// <summary>
+	///     Represents an enumerator over the circular chain of <see cref="ImplementationEntry" /> instances.
+	///     Iteration starts from the entry following <c>lastEntry</c> and stops once <c>lastEntry</c> is revisited.
+	/// </summary>
 	internal struct Chain(ImplementationEntry lastEntry) : IEnumerable<ImplementationEntry>, IEnumerator<ImplementationEntry>
 	{
 	#region Interface IDisposable
 
+		/// <inheritdoc />
 		readonly void IDisposable.Dispose() { }
 
 	#endregion
 
 	#region Interface IEnumerable
 
+		/// <inheritdoc />
 		readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	#endregion
 
 	#region Interface IEnumerable<ImplementationEntry>
 
+		/// <inheritdoc />
 		readonly IEnumerator<ImplementationEntry> IEnumerable<ImplementationEntry>.GetEnumerator() => GetEnumerator();
 
 	#endregion
 
 	#region Interface IEnumerator
 
+		/// <summary>
+		///     Advances to the next entry in the chain.
+		/// </summary>
+		/// <returns><c>true</c> if advanced; <c>false</c> when iteration is complete.</returns>
 		public bool MoveNext()
 		{
 			var ok = !ReferenceEquals(Current, lastEntry);
@@ -566,18 +757,29 @@ public abstract class ImplementationEntry
 			return ok;
 		}
 
+		/// <summary>
+		///     Resets enumeration to the initial position (before first element).
+		/// </summary>
 		void IEnumerator.Reset() => Current = null!;
 
+		/// <inheritdoc />
 		readonly object IEnumerator.Current => Current;
 
 	#endregion
 
 	#region Interface IEnumerator<ImplementationEntry>
 
+		/// <summary>
+		///     Gets the current entry.
+		/// </summary>
 		public ImplementationEntry Current { get; private set; } = null!;
 
 	#endregion
 
+		/// <summary>
+		///     Gets an enumerator instance (value-type) for use in <c>foreach</c>.
+		///     Validates that <c>lastEntry</c> is indeed the tail of the chain.
+		/// </summary>
 		public readonly Chain GetEnumerator()
 		{
 			Infra.Assert(lastEntry._nextEntry._previousEntry is null); // Entry should be last entry in the chain
@@ -586,33 +788,69 @@ public abstract class ImplementationEntry
 		}
 	}
 
+	/// <summary>
+	///     Base node for cached delegate wrappers associated with this entry.
+	/// </summary>
 	private abstract class DelegateEntry(DelegateEntry? next)
 	{
+		/// <summary>
+		///     Next cached delegate node.
+		/// </summary>
 		public DelegateEntry? Next { get; } = next;
 	}
 
+	/// <summary>
+	///     Stores a delegate returning asynchronous enumeration of services.
+	/// </summary>
 	private class ServicesDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
+		/// <summary>
+		///     The cached delegate instance.
+		/// </summary>
 		public T Delegate { get; } = @delegate;
 	}
 
+	/// <summary>
+	///     Stores a delegate retrieving a required service asynchronously.
+	/// </summary>
 	private class RequiredServiceDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
+		/// <summary>
+		///     The cached delegate instance.
+		/// </summary>
 		public T Delegate { get; } = @delegate;
 	}
 
+	/// <summary>
+	///     Stores a delegate retrieving an optional service asynchronously.
+	/// </summary>
 	private class ServiceDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
+		/// <summary>
+		///     The cached delegate instance.
+		/// </summary>
 		public T Delegate { get; } = @delegate;
 	}
 
+	/// <summary>
+	///     Stores a delegate retrieving a required service synchronously.
+	/// </summary>
 	private class RequiredServiceSyncDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
+		/// <summary>
+		///     The cached delegate instance.
+		/// </summary>
 		public T Delegate { get; } = @delegate;
 	}
 
+	/// <summary>
+	///     Stores a delegate retrieving an optional service synchronously.
+	/// </summary>
 	private class ServiceSyncDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
+		/// <summary>
+		///     The cached delegate instance.
+		/// </summary>
 		public T Delegate { get; } = @delegate;
 	}
 }

@@ -25,145 +25,145 @@ namespace Xtate.IoC;
 /// </remarks>
 internal class WeakReferenceStack
 {
-	private int _counter;
+    private readonly WeakReference<OrphanedNodesRemover> _orphanedNodesRemover = new(null!);
 
-	private WeakReferenceNode? _node;
+    private WeakReferenceNode? _node;
 
-	/// <summary>
-	///     Adds an object to the stack.
-	/// </summary>
-	/// <param name="instance">The object to add.</param>
-	public void Push(object instance)
-	{
-		if (instance is null)
-		{
-			return;
-		}
+    /// <summary>
+    ///     Adds an object to the stack.
+    /// </summary>
+    /// <param name="instance">The object to add.</param>
+    public void Push(object instance)
+    {
+        if (instance is null)
+        {
+            return;
+        }
 
-		if (-- _counter < -8)
-		{
-			_counter = RemoveOrphanedNodes(ref _node);
-		}
+        if (!_orphanedNodesRemover.TryGetTarget(out var remover) || remover is null)
+        {
+            _orphanedNodesRemover.SetTarget(new OrphanedNodesRemover(this));
+        }
 
-		var newNode = new WeakReferenceNode(instance, _node);
+        var newNode = new WeakReferenceNode(instance, _node);
 
-		while (Interlocked.CompareExchange(ref _node, newNode, newNode.NextNode) != newNode.NextNode)
-		{
-			newNode.NextNode = _node;
-		}
-	}
+        while (Interlocked.CompareExchange(ref _node, newNode, newNode.NextNode) != newNode.NextNode)
+        {
+            newNode.NextNode = _node;
+        }
+    }
 
-	/// <summary>
-	///     Removes orphaned nodes from the stack.
-	/// </summary>
-	/// <param name="node">The starting node.</param>
-	/// <returns>The number of removed nodes.</returns>
-	private static int RemoveOrphanedNodes(ref WeakReferenceNode? node)
-	{
-		var count = 0;
+    /// <summary>
+    ///     Processes a node to check if it is alive.
+    /// </summary>
+    /// <param name="node">The node to process.</param>
+    /// <returns>True if the node is alive; otherwise, false.</returns>
+    private static bool ProcessNode(ref WeakReferenceNode? node)
+    {
+        while (true)
+        {
+            var initNode = node;
 
-		while (ProcessNode(ref node))
-		{
-			count ++;
+            if (initNode is null)
+            {
+                return false;
+            }
 
-			if (node is { } tmpNode)
-			{
-				node = ref tmpNode.NextNode;
-			}
-			else
-			{
-				break;
-			}
-		}
+            if (initNode.IsAlive)
+            {
+                return true;
+            }
 
-		return count;
-	}
+            WeakReferenceNode? newNode = null;
 
-	/// <summary>
-	///     Processes a node to check if it is alive.
-	/// </summary>
-	/// <param name="node">The node to process.</param>
-	/// <returns>True if the node is alive; otherwise, false.</returns>
-	private static bool ProcessNode(ref WeakReferenceNode? node)
-	{
-		while (true)
-		{
-			var initNode = node;
+            for (var iNode = initNode.NextNode; iNode is not null; iNode = iNode.NextNode)
+            {
+                if (iNode.IsAlive)
+                {
+                    newNode = iNode;
 
-			if (initNode is null)
-			{
-				return false;
-			}
+                    break;
+                }
+            }
 
-			if (initNode.IsAlive)
-			{
-				return true;
-			}
+            if (Interlocked.CompareExchange(ref node, newNode, initNode) == initNode)
+            {
+                return newNode is not null;
+            }
+        }
+    }
 
-			WeakReferenceNode? newNode = null;
+    /// <summary>
+    ///     Tries to pop the first not collected object from the stack.
+    /// </summary>
+    /// <param name="instance">The object taken from the stack, if successful.</param>
+    /// <returns>True if an object was successfully taken; otherwise, false.</returns>
+    public bool TryPop([NotNullWhen(true)] out object? instance)
+    {
+        while (true)
+        {
+            var initNode = _node;
+            instance = null;
 
-			for (var iNode = initNode.NextNode; iNode is not null; iNode = iNode.NextNode)
-			{
-				if (iNode.IsAlive)
-				{
-					newNode = iNode;
+            if (initNode is null)
+            {
+                return false;
+            }
 
-					break;
-				}
-			}
+            WeakReferenceNode? newNode = null;
 
-			if (Interlocked.CompareExchange(ref node, newNode, initNode) == initNode)
-			{
-				return newNode is not null;
-			}
-		}
-	}
+            for (var iNode = initNode; iNode is not null; iNode = iNode.NextNode)
+            {
+                if (iNode.Target is { } target)
+                {
+                    newNode = iNode.NextNode;
+                    instance = target;
 
-	/// <summary>
-	///     Tries to pop first not collected object from the stack.
-	/// </summary>
-	/// <param name="instance">The object taken from the stack, if successful.</param>
-	/// <returns>True if an object was successfully taken; otherwise, false.</returns>
-	public bool TryPop([NotNullWhen(true)] out object? instance)
-	{
-		while (true)
-		{
-			var initNode = _node;
-			instance = null;
+                    break;
+                }
+            }
 
-			if (initNode is null)
-			{
-				return false;
-			}
+            if (Interlocked.CompareExchange(ref _node, newNode, initNode) == initNode)
+            {
+                return instance is not null;
+            }
+        }
+    }
 
-			WeakReferenceNode? newNode = null;
+    /// <summary>
+    ///     Helper class responsible for removing orphaned nodes from the stack.
+    /// </summary>
+    private class OrphanedNodesRemover(WeakReferenceStack weakReferenceStack)
+    {
+        /// <summary>
+        ///     Finalizer that removes orphaned nodes from the stack.
+        /// </summary>
+        ~OrphanedNodesRemover()
+        {
+            ref var node = ref weakReferenceStack._node;
 
-			for (var iNode = initNode; iNode is not null; iNode = iNode.NextNode)
-			{
-				if (iNode.Target is { } target)
-				{
-					newNode = iNode.NextNode;
-					instance = target;
+            while (ProcessNode(ref node))
+            {
+                if (node is { } tmpNode)
+                {
+                    node = ref tmpNode.NextNode;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
 
-					break;
-				}
-			}
-
-			if (Interlocked.CompareExchange(ref _node, newNode, initNode) == initNode)
-			{
-				return instance is not null;
-			}
-		}
-	}
-
-	/// <summary>
-	///     Represents a node in the weak reference collection.
-	/// </summary>
-	private class WeakReferenceNode(object target, WeakReferenceNode? nextNode) : WeakReference(target)
-	{
-		/// <summary>
-		///     Gets or sets the next node in the collection.
-		/// </summary>
-		public WeakReferenceNode? NextNode = nextNode;
-	}
+    /// <summary>
+    ///     Represents a node in the weak reference collection.
+    /// </summary>
+    private class WeakReferenceNode(object target, WeakReferenceNode? nextNode) : WeakReference(target)
+    {
+        /// <summary>
+        ///     Gets or sets the next node in the collection.
+        /// </summary>
+        public WeakReferenceNode? NextNode = nextNode;
+    }
 }
