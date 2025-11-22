@@ -33,6 +33,7 @@ public class ServiceProviderActionsTest
 		actions.Setup(x => x.ServiceRequested(It.IsAny<TypeKey>())).Returns(dataActions.Object);
 		actions.Setup(x => x.FactoryCalling(It.IsAny<TypeKey>())).Returns(dataActions.Object);
 		actions.Setup(x => x.FactoryCalled(It.IsAny<TypeKey>())).Returns(dataActions.Object);
+		actions.Setup(x => x.RegisterServices(It.IsAny<int>())).Returns(dataActions.Object);
 
 		var sc = new ServiceCollection();
 		sc.AddForwarding<IServiceProviderActions>(_ => actions.Object);
@@ -55,6 +56,8 @@ public class ServiceProviderActionsTest
 		dataActions.Verify(x => x.ServiceRequested<IServiceProviderActions, ValueTuple>(It.IsAny<IServiceProviderActions>()), Times.Exactly(4));
 		dataActions.Verify(x => x.FactoryCalling<IServiceProviderActions, ValueTuple>(It.IsAny<ValueTuple>()), Times.Exactly(4));
 		dataActions.Verify(x => x.FactoryCalled<IServiceProviderActions, ValueTuple>(It.IsAny<IServiceProviderActions>()), Times.Exactly(4));
+		dataActions.Verify(x => x.RegisterService(It.IsAny<ServiceEntry>()), Times.Exactly(2));
+		dataActions.VerifyNoOtherCalls();
 	}
 
 	[UsedImplicitly]

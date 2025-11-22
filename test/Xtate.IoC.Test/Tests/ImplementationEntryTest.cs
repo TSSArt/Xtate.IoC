@@ -631,6 +631,190 @@ public class ImplementationEntryTest
 		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => sp.GetRequiredSyncFactory<Class>()());
 	}
 
+	[TestMethod]
+	public async Task GetServiceNoActionsWait_ReturnsInstance_WhenValueTaskCompletesSuccessfully()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<AsyncClassA>();
+		sc.AddType<AsyncClassB>();
+		sc.AddType<Class>();
+		var sp = sc.BuildProvider();
+
+		// Act
+		var asyncClassB = await sp.GetRequiredService<AsyncClassB>();
+		Assert.IsNotNull(asyncClassB);
+
+		// Assert
+		Assert.AreEqual(expected: "AsyncClassA", asyncClassB.AsyncClassA!.Val);
+		Assert.AreEqual(expected: "AsyncClassB", asyncClassB.Val);
+	}
+
+	[TestMethod]
+	public async Task GetServiceNoActionsWait_Scoped_ReturnsInstance_WhenValueTaskCompletesSuccessfully()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddSharedType<AsyncClassA>(SharedWithin.Scope);
+		sc.AddSharedType<AsyncClassB>(SharedWithin.Scope);
+		sc.AddForwarding<Class>(_ => null!);
+		var sp = sc.BuildProvider();
+
+		// Act
+		var asyncClassB = await sp.GetRequiredService<AsyncClassB>();
+		Assert.IsNotNull(asyncClassB);
+
+		// Assert
+		Assert.AreEqual(expected: "AsyncClassA", asyncClassB.AsyncClassA!.Val);
+		Assert.AreEqual(expected: "AsyncClassB", asyncClassB.Val);
+	}
+
+	[TestMethod]
+	public async Task GetServiceNoActionsWait_Singleton_ReturnsInstance_WhenValueTaskCompletesSuccessfully()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddSharedType<AsyncClassA>(SharedWithin.Container);
+		sc.AddSharedType<AsyncClassB>(SharedWithin.Container);
+		var sp = sc.BuildProvider();
+
+		// Act
+		var asyncClassB = await sp.GetRequiredService<AsyncClassB>();
+		Assert.IsNotNull(asyncClassB);
+
+		// Assert
+		Assert.AreEqual(expected: "AsyncClassA", asyncClassB.AsyncClassA!.Val);
+		Assert.AreEqual(expected: "AsyncClassB", asyncClassB.Val);
+	}
+
+	[TestMethod]
+	public async Task GetServiceNoActionsWait_WithActions_ReturnsInstance_WhenValueTaskCompletesSuccessfully()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddType<AsyncClassA>();
+		sc.AddType<AsyncClassB>();
+		sc.AddImplementationSync<Actions>().For<IServiceProviderActions>();
+		var sp = sc.BuildProvider();
+
+		// Act
+		var asyncClassB = await sp.GetRequiredService<AsyncClassB>();
+		Assert.IsNotNull(asyncClassB);
+
+		// Assert
+		Assert.AreEqual(expected: "AsyncClassA", asyncClassB.AsyncClassA!.Val);
+		Assert.AreEqual(expected: "AsyncClassB", asyncClassB.Val);
+	}
+
+	[TestMethod]
+	public async Task GetServiceNoActionsWait_CustomInit_ReturnsInstance_WhenValueTaskCompletesSuccessfully()
+	{
+		// Arrange
+		var sc = new ServiceCollection();
+		sc.AddImplementationSync<CustomInit>().For<IInitializationHandler>();
+		sc.AddType<AsyncClassB>();
+		sc.AddForwarding<AsyncClassA>(_ => null!);
+		var sp = sc.BuildProvider();
+
+		// Act
+		var asyncClassB = await sp.GetRequiredService<AsyncClassB>();
+		Assert.IsNotNull(asyncClassB);
+
+		// Assert
+		Assert.IsNull(asyncClassB.AsyncClassA);
+		Assert.AreEqual(expected: "AsyncClassB", asyncClassB.Val);
+	}
+
+	public class AsyncClassA : IAsyncInitialization
+	{
+		public required Class? Class;
+
+		public string Val;
+
+		public AsyncClassA() => Initialization = Init();
+
+	#region Interface IAsyncInitialization
+
+		public Task Initialization { get; }
+
+	#endregion
+
+		private async Task Init()
+		{
+			await Task.Yield();
+
+			Val = nameof(AsyncClassA);
+		}
+	}
+
+	public class AsyncClassB : IAsyncInitialization
+	{
+		public readonly AsyncClassA? AsyncClassA;
+
+		public string Val;
+
+		public AsyncClassB(AsyncClassA? asyncClassA)
+		{
+			AsyncClassA = asyncClassA;
+			Initialization = Init();
+		}
+
+	#region Interface IAsyncInitialization
+
+		public Task Initialization { get; }
+
+	#endregion
+
+		private async Task Init()
+		{
+			await Task.Yield();
+
+			Val = nameof(AsyncClassB);
+		}
+	}
+
+	public class CustomInit : IInitializationHandler
+	{
+	#region Interface IInitializationHandler
+
+		public bool Initialize<T>(T instance) => instance is IAsyncInitialization;
+
+		public Task InitializeAsync<T>(T instance) => ((IAsyncInitialization) instance!).Initialization;
+
+	#endregion
+	}
+
+	public class Actions : IServiceProviderDataActions, IServiceProviderActions
+	{
+	#region Interface IServiceProviderActions
+
+		public IServiceProviderDataActions? RegisterServices(int count) => this;
+
+		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => this;
+
+		public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey) => this;
+
+		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey) => this;
+
+		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey) => this;
+
+	#endregion
+
+	#region Interface IServiceProviderDataActions
+
+		public void RegisterService(ServiceEntry serviceEntry) { }
+
+		public void ServiceRequesting<T, TArg>(TArg argument) { }
+
+		public void ServiceRequested<T, TArg>(T? instance) { }
+
+		public void FactoryCalling<T, TArg>(TArg argument) { }
+
+		public void FactoryCalled<T, TArg>(T? instance) { }
+
+	#endregion
+	}
+
 	// ReSharper disable All
 	public class Class { }
 

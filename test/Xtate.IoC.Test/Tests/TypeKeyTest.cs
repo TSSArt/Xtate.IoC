@@ -153,6 +153,32 @@ public class TypeKeyTest
 		key.DoTypedAction(new TypedActionClass());
 	}
 
+	[TestMethod]
+	public void GenericServiceKey_DefinitionKey_StringIsValid()
+	{
+		// Arrange  
+		var key = (GenericTypeKey) TypeKey.ServiceKey<GenericClass<object>, int>();
+		
+		// Act  
+		var str = key.DefinitionKey.ToString();
+
+		// Assert
+		Assert.AreEqual("TypeKeyTest.GenericClass<T>", str);
+	}
+
+	[TestMethod]
+	public void GenericImplementationKey_DefinitionKey_StringIsValid()
+	{
+		// Arrange  
+		var key = (GenericTypeKey) TypeKey.ImplementationKey<GenericClass<object>, int>();
+		
+		// Act  
+		var str = key.DefinitionKey.ToString();
+
+		// Assert
+		Assert.AreEqual("^TypeKeyTest.GenericClass<T>", str);
+	}
+
 	private class TypedActionClass : ITypeKeyAction
 	{
 	#region Interface ITypeKeyAction
