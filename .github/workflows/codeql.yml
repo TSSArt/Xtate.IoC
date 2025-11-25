@@ -37,6 +37,6 @@ jobs:
     - name: Restore
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration ${{ env.Configuration }} --no-restore -p:Version=${{ env.fullSemVer }}
+      run: dotnet build --configuration ${{ env.Configuration }} --no-restore
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
