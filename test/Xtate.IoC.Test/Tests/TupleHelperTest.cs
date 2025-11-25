@@ -21,6 +21,20 @@ namespace Xtate.IoC.Test;
 public class TupleHelperTest
 {
 	[TestMethod]
+	public void GenericUnwrap1Test()
+	{
+		// Arrange
+		byte arg = 1;
+
+		// Act
+		var result = TupleHelper.TryMatch(ref arg, out byte value);
+
+		// Assert
+		Assert.IsTrue(result);
+		Assert.AreEqual(expected: 1, value);
+	}
+
+	[TestMethod]
 	public void GenericUnwrap2Test()
 	{
 		// Arrange

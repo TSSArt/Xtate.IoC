@@ -39,13 +39,13 @@ internal static class TupleHelper
 		ArgumentBase<TValue, TArg>.Instance.TryUnwrapInternal(ref arg, out value) || ArgumentBase<TArg, TValue>.Instance.TryMatchInternal(ref arg, out value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool TryMatch<T>(Type type, ref T? arg, out object? value) => ArgumentBase<T, object>.Instance.TryMatchInternal(type, ref arg, out value);
+	public static bool TryMatch<TArg>(Type type, ref TArg? arg, out object? value) => ArgumentBase<TArg, object>.Instance.TryMatchInternal(type, ref arg, out value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static Expression? TryBuild<T>(Type type, Expression arg) => ArgumentBase<T, object>.Instance.TryBuildInternal(type, arg);
+	public static Expression? TryBuild<TArg>(Type type, Expression arg) => ArgumentBase<TArg, object>.Instance.TryBuildInternal(type, arg);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool IsMatch<T>(Type type) => ArgumentBase<T, object>.Instance.IsMatchInternal(type);
+	public static bool IsMatch<TArg>(Type type) => ArgumentBase<TArg, object>.Instance.IsMatchInternal(type);
 
 	private static MemberExpression GetItem1(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item1");
 
@@ -74,7 +74,7 @@ internal static class TupleHelper
 				return type.MakeGenericTypeExt(typeof(TArg).GetGenericArguments(), typeof(TValue));
 			}
 
-			return typeof(OtherArgument<,>).MakeGenericTypeExt(typeof(TArg), typeof(TValue));
+			return typeof(SimpleArgument<,>).MakeGenericTypeExt(typeof(TArg), typeof(TValue));
 		}
 
 		public abstract bool TryMatchInternal(ref TArg? arg, out TValue? val);
@@ -88,7 +88,7 @@ internal static class TupleHelper
 		public abstract bool TryUnwrapInternal(ref TValue? arg, out TArg? val);
 	}
 
-	private sealed class OtherArgument<TArg, TValue> : ArgumentBase<TArg, TValue>
+	private class SimpleArgument<TArg, TValue> : ArgumentBase<TArg, TValue>
 	{
 		public override bool TryMatchInternal(ref TArg? arg, out TValue? val)
 		{
@@ -130,152 +130,157 @@ internal static class TupleHelper
 		public override bool IsMatchInternal(Type type) => type == typeof(TArg);
 	}
 
-	private sealed class ValueTupleArgument<T1, TValue> : ArgumentBase<ValueTuple<T1?>, TValue>
+	private sealed class ValueTupleArgument<T1, TValue> : SimpleArgument<ValueTuple<T1?>, TValue>
 	{
-		public override bool TryMatchInternal(ref ValueTuple<T1?> arg, out TValue? val) => TryMatch(ref arg.Item1, out val);
+		public override bool TryMatchInternal(ref ValueTuple<T1?> arg, out TValue? val) => base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val);
 
-		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?> arg, out object? val) => TryMatch(type, ref arg.Item1, out val);
+		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?> arg, out object? val) => base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val);
 
-		public override Expression? TryBuildInternal(Type type, Expression arg) => TryBuild<T1>(type, GetItem1(arg));
+		public override Expression? TryBuildInternal(Type type, Expression arg) => base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg));
 
-		public override bool IsMatchInternal(Type type) => IsMatch<T1>(type);
+		public override bool IsMatchInternal(Type type) => base.IsMatchInternal(type) || IsMatch<T1>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out ValueTuple<T1?> val) => TryMatch(ref arg, out val.Item1);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, TValue> : ArgumentBase<ValueTuple<T1?, T2?>, TValue>
+	private sealed class ValueTupleArgument<T1, T2, TValue> : SimpleArgument<ValueTuple<T1?, T2?>, TValue>
 	{
-		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?> arg, out TValue? val) => TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val);
+		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?> arg, out TValue? val) =>
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val);
 
-		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?> arg, out object? val) => TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val);
+		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?> arg, out object? val) =>
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val);
 
-		public override Expression? TryBuildInternal(Type type, Expression arg) => TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg));
+		public override Expression? TryBuildInternal(Type type, Expression arg) => base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg));
 
-		public override bool IsMatchInternal(Type type) => IsMatch<T1>(type) || IsMatch<T2>(type);
+		public override bool IsMatchInternal(Type type) => base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?) val) => TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, T3, TValue> : ArgumentBase<ValueTuple<T1?, T2?, T3?>, TValue>
+	private sealed class ValueTupleArgument<T1, T2, T3, TValue> : SimpleArgument<ValueTuple<T1?, T2?, T3?>, TValue>
 	{
 		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?, T3?> arg, out TValue? val) =>
-			TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val);
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val);
 
 		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?, T3?> arg, out object? val) =>
-			TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val);
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val);
 
-		public override Expression? TryBuildInternal(Type type, Expression arg) => TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ?? TryBuild<T3>(type, GetItem3(arg));
+		public override Expression? TryBuildInternal(Type type, Expression arg) => 
+			base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ?? TryBuild<T3>(type, GetItem3(arg));
 
-		public override bool IsMatchInternal(Type type) => IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type);
+		public override bool IsMatchInternal(Type type) => base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type);
 
-		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?, T3?) val) => TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3);
+		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?, T3?) val) => 
+			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, T3, T4, TValue> : ArgumentBase<ValueTuple<T1?, T2?, T3?, T4?>, TValue>
+	private sealed class ValueTupleArgument<T1, T2, T3, T4, TValue> : SimpleArgument<ValueTuple<T1?, T2?, T3?, T4?>, TValue>
 	{
 		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?, T3?, T4?> arg, out TValue? val) =>
-			TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val);
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || 
+			TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val);
 
 		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?, T3?, T4?> arg, out object? val) =>
-			TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
-			TryMatch(type, ref arg.Item4, out val);
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || 
+			TryMatch(type, ref arg.Item3, out val) || TryMatch(type, ref arg.Item4, out val);
 
 		public override Expression? TryBuildInternal(Type type, Expression arg) =>
-			TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
+			base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
 			TryBuild<T3>(type, GetItem3(arg)) ?? TryBuild<T4>(type, GetItem4(arg));
 
-		public override bool IsMatchInternal(Type type) => IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type);
+		public override bool IsMatchInternal(Type type) => base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?, T3?, T4?) val) =>
 			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, TValue> : ArgumentBase<ValueTuple<T1?, T2?, T3?, T4?, T5?>, TValue>
+	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, TValue> : SimpleArgument<ValueTuple<T1?, T2?, T3?, T4?, T5?>, TValue>
 	{
 		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?, T3?, T4?, T5?> arg, out TValue? val) =>
-			TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val) ||
-			TryMatch(ref arg.Item5, out val);
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || 
+			TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val) || TryMatch(ref arg.Item5, out val);
 
 		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?, T3?, T4?, T5?> arg, out object? val) =>
-			TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
-			TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val);
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || 
+			TryMatch(type, ref arg.Item3, out val) || TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val);
 
 		public override Expression? TryBuildInternal(Type type, Expression arg) =>
-			TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
+			base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
 			TryBuild<T3>(type, GetItem3(arg)) ?? TryBuild<T4>(type, GetItem4(arg)) ?? TryBuild<T5>(type, GetItem5(arg));
 
-		public override bool IsMatchInternal(Type type) => IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type);
+		public override bool IsMatchInternal(Type type) => 
+			base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?, T3?, T4?, T5?) val) =>
 			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4) & TryMatch(ref arg, out val.Item5);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, T6, TValue> : ArgumentBase<ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?>, TValue>
+	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, T6, TValue> : SimpleArgument<ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?>, TValue>
 	{
 		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?> arg, out TValue? val) =>
-			TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val) ||
-			TryMatch(ref arg.Item5, out val) || TryMatch(ref arg.Item6, out val);
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || 
+			TryMatch(ref arg.Item4, out val) || TryMatch(ref arg.Item5, out val) || TryMatch(ref arg.Item6, out val);
 
 		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?> arg, out object? val) =>
-			TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
 			TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val) || TryMatch(type, ref arg.Item6, out val);
 
 		public override Expression? TryBuildInternal(Type type, Expression arg) =>
-			TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
-			TryBuild<T3>(type, GetItem3(arg)) ?? TryBuild<T4>(type, GetItem4(arg)) ?? TryBuild<T5>(type, GetItem5(arg)) ?? TryBuild<T6>(type, GetItem6(arg));
+			base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ?? TryBuild<T3>(type, GetItem3(arg)) ?? 
+			TryBuild<T4>(type, GetItem4(arg)) ?? TryBuild<T5>(type, GetItem5(arg)) ?? TryBuild<T6>(type, GetItem6(arg));
 
-		public override bool IsMatchInternal(Type type) => IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type) || IsMatch<T6>(type);
+		public override bool IsMatchInternal(Type type) =>
+			base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type) || IsMatch<T6>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?, T3?, T4?, T5?, T6?) val) =>
-			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4) & TryMatch(ref arg, out val.Item5) &
-			TryMatch(ref arg, out val.Item6);
+			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & 
+			TryMatch(ref arg, out val.Item4) & TryMatch(ref arg, out val.Item5) & TryMatch(ref arg, out val.Item6);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, T6, T7, TValue> : ArgumentBase<ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?>, TValue>
+	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, T6, T7, TValue> : SimpleArgument<ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?>, TValue>
 	{
 		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?> arg, out TValue? val) =>
-			TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val) ||
-			TryMatch(ref arg.Item5, out val) || TryMatch(ref arg.Item6, out val) || TryMatch(ref arg.Item7, out val);
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || 
+			TryMatch(ref arg.Item4, out val) || TryMatch(ref arg.Item5, out val) || TryMatch(ref arg.Item6, out val) || TryMatch(ref arg.Item7, out val);
 
 		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?> arg, out object? val) =>
-			TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
-			TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val) || TryMatch(type, ref arg.Item6, out val) ||
-			TryMatch(type, ref arg.Item7, out val);
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
+			TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val) || TryMatch(type, ref arg.Item6, out val) || TryMatch(type, ref arg.Item7, out val);
 
 		public override Expression? TryBuildInternal(Type type, Expression arg) =>
-			TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
-			TryBuild<T3>(type, GetItem3(arg)) ?? TryBuild<T4>(type, GetItem4(arg)) ?? TryBuild<T5>(type, GetItem5(arg)) ?? TryBuild<T6>(type, GetItem6(arg)) ??
-			TryBuild<T7>(type, GetItem7(arg));
+			base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ?? TryBuild<T3>(type, GetItem3(arg)) ?? 
+			TryBuild<T4>(type, GetItem4(arg)) ?? TryBuild<T5>(type, GetItem5(arg)) ?? TryBuild<T6>(type, GetItem6(arg)) ?? TryBuild<T7>(type, GetItem7(arg));
 
 		public override bool IsMatchInternal(Type type) =>
-			IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type) || IsMatch<T6>(type) || IsMatch<T7>(type);
+			base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type) || IsMatch<T6>(type) || IsMatch<T7>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out (T1?, T2?, T3?, T4?, T5?, T6?, T7?) val) =>
-			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4) & TryMatch(ref arg, out val.Item5) &
-			TryMatch(ref arg, out val.Item6) & TryMatch(ref arg, out val.Item7);
+			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4) & 
+			TryMatch(ref arg, out val.Item5) & TryMatch(ref arg, out val.Item6) & TryMatch(ref arg, out val.Item7);
 	}
 
-	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, T6, T7, TRest, TValue> : ArgumentBase<ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?, TRest>, TValue> where TRest : struct
+	private sealed class ValueTupleArgument<T1, T2, T3, T4, T5, T6, T7, TRest, TValue> : SimpleArgument<ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?, TRest>, TValue> where TRest : struct
 	{
 		public override bool TryMatchInternal(ref ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?, TRest> arg, out TValue? val) =>
-			TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || TryMatch(ref arg.Item4, out val) ||
-			TryMatch(ref arg.Item5, out val) || TryMatch(ref arg.Item6, out val) || TryMatch(ref arg.Item7, out val) || TryMatch(ref arg.Rest, out val);
+			base.TryMatchInternal(ref arg, out val) || TryMatch(ref arg.Item1, out val) || TryMatch(ref arg.Item2, out val) || TryMatch(ref arg.Item3, out val) || 
+			TryMatch(ref arg.Item4, out val) || TryMatch(ref arg.Item5, out val) || TryMatch(ref arg.Item6, out val) || TryMatch(ref arg.Item7, out val) || TryMatch(ref arg.Rest, out val);
 
 		public override bool TryMatchInternal(Type type, ref ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?, TRest> arg, out object? val) =>
-			TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || TryMatch(type, ref arg.Item3, out val) ||
-			TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val) || TryMatch(type, ref arg.Item6, out val) ||
-			TryMatch(type, ref arg.Item7, out val) || TryMatch(type, ref arg.Rest, out val);
+			base.TryMatchInternal(type, ref arg, out val) || TryMatch(type, ref arg.Item1, out val) || TryMatch(type, ref arg.Item2, out val) || 
+			TryMatch(type, ref arg.Item3, out val) || TryMatch(type, ref arg.Item4, out val) || TryMatch(type, ref arg.Item5, out val) || 
+			TryMatch(type, ref arg.Item6, out val) || TryMatch(type, ref arg.Item7, out val) || TryMatch(type, ref arg.Rest, out val);
 
 		public override Expression? TryBuildInternal(Type type, Expression arg) =>
-			TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ??
-			TryBuild<T3>(type, GetItem3(arg)) ?? TryBuild<T4>(type, GetItem4(arg)) ?? TryBuild<T5>(type, GetItem5(arg)) ?? TryBuild<T6>(type, GetItem6(arg)) ??
-			TryBuild<T7>(type, GetItem7(arg)) ?? TryBuild<TRest>(type, GetRest(arg));
+			base.TryBuildInternal(type, arg) ?? TryBuild<T1>(type, GetItem1(arg)) ?? TryBuild<T2>(type, GetItem2(arg)) ?? TryBuild<T3>(type, GetItem3(arg)) ?? TryBuild<T4>(type, GetItem4(arg)) ??
+			TryBuild<T5>(type, GetItem5(arg)) ?? TryBuild<T6>(type, GetItem6(arg)) ?? TryBuild<T7>(type, GetItem7(arg)) ?? TryBuild<TRest>(type, GetRest(arg));
 
 		public override bool IsMatchInternal(Type type) =>
-			IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || IsMatch<T5>(type) || IsMatch<T6>(type) || IsMatch<T7>(type) || IsMatch<TRest>(type);
+			base.IsMatchInternal(type) || IsMatch<T1>(type) || IsMatch<T2>(type) || IsMatch<T3>(type) || IsMatch<T4>(type) || 
+			IsMatch<T5>(type) || IsMatch<T6>(type) || IsMatch<T7>(type) || IsMatch<TRest>(type);
 
 		public override bool TryUnwrapInternal(ref TValue? arg, out ValueTuple<T1?, T2?, T3?, T4?, T5?, T6?, T7?, TRest> val) =>
-			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4) & TryMatch(ref arg, out val.Item5) &
-			TryMatch(ref arg, out val.Item6) & TryMatch(ref arg, out val.Item7) & TryMatch(ref arg, out val.Rest);
+			TryMatch(ref arg, out val.Item1) & TryMatch(ref arg, out val.Item2) & TryMatch(ref arg, out val.Item3) & TryMatch(ref arg, out val.Item4) & 
+			TryMatch(ref arg, out val.Item5) & TryMatch(ref arg, out val.Item6) & TryMatch(ref arg, out val.Item7) & TryMatch(ref arg, out val.Rest);
 	}
 }

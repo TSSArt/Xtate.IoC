@@ -8,6 +8,7 @@ A modern, async-first, attribute-light Inversion of Control (IoC) / Dependency I
 - Supported Frameworks
 - Installation
 - Quick Start
+- Examples
 - Core Concepts
 - Service Registration API Overview
 - Lifetimes & Ownership Model
@@ -77,6 +78,13 @@ var container = Container.Create(services =>
 var service = container.Get<IMyService>(); // Resolves transient instance
 ```
 Use `Container.Create<TModule>()` to load a module class implementing `IModule`.
+
+## Examples
+A broad set of runnable usage examples (covering registration patterns, scopes, factories, decorators, async flows, disposal semantics, argumented services, etc.) is maintained inside the test project. Browse them here:
+
+- Full examples directory: https://github.com/TSSArt/Xtate.IoC/tree/main/test/Xtate.IoC.Test/Examples
+
+These files double as documentation-by-execution and provide concrete scenarios beyond the Quick Start.
 
 ## Core Concepts
 - `ServiceCollection`: Mutable registration list.

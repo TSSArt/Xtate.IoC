@@ -725,11 +725,13 @@ public class ImplementationEntryTest
 		Assert.AreEqual(expected: "AsyncClassB", asyncClassB.Val);
 	}
 
+	[InstantiatedByIoC]
 	public class AsyncClassA : IAsyncInitialization
 	{
+		[SetByIoC]
 		public required Class? Class;
 
-		public string Val;
+		public string? Val;
 
 		public AsyncClassA() => Initialization = Init();
 
@@ -747,11 +749,13 @@ public class ImplementationEntryTest
 		}
 	}
 
+	[InstantiatedByIoC]
 	public class AsyncClassB : IAsyncInitialization
 	{
+		[SetByIoC]
 		public readonly AsyncClassA? AsyncClassA;
 
-		public string Val;
+		public string? Val;
 
 		public AsyncClassB(AsyncClassA? asyncClassA)
 		{
@@ -773,6 +777,7 @@ public class ImplementationEntryTest
 		}
 	}
 
+	[InstantiatedByIoC]
 	public class CustomInit : IInitializationHandler
 	{
 	#region Interface IInitializationHandler
@@ -784,19 +789,20 @@ public class ImplementationEntryTest
 	#endregion
 	}
 
+	[InstantiatedByIoC]
 	public class Actions : IServiceProviderDataActions, IServiceProviderActions
 	{
 	#region Interface IServiceProviderActions
 
-		public IServiceProviderDataActions? RegisterServices(int count) => this;
+		public IServiceProviderDataActions RegisterServices(int count) => this;
 
-		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => this;
+		public IServiceProviderDataActions ServiceRequesting(TypeKey typeKey) => this;
 
-		public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey) => this;
+		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => this;
 
-		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey) => this;
+		public IServiceProviderDataActions FactoryCalling(TypeKey typeKey) => this;
 
-		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey) => this;
+		public IServiceProviderDataActions FactoryCalled(TypeKey typeKey) => this;
 
 	#endregion
 
