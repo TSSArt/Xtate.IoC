@@ -9,6 +9,9 @@ on:
     - cron: '0 3 * * 1' # Weekly scan
   workflow_dispatch:
 
+env:
+  Configuration: Release
+
 jobs:
   analyze:
     name: Analyze
@@ -21,7 +24,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: csharp
     - name: Setup .NET Core
@@ -36,4 +39,4 @@ jobs:
     - name: Build
       run: dotnet build --configuration ${{ env.Configuration }} --no-restore -p:Version=${{ env.fullSemVer }}
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
