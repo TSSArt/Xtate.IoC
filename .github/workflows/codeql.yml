@@ -15,7 +15,7 @@ env:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-22.04
+    runs-on: latest
     permissions:
       actions: read
       contents: read
@@ -36,6 +36,10 @@ jobs:
         source-url: https://nuget.pkg.github.com/TSSArt/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.XTATE_GITHUB_TOKEN }}
+    - name: Install Mono
+      run: |
+        sudo apt update
+        sudo apt install -y mono-complete
     - name: Restore
       run: dotnet restore
     - name: Build
