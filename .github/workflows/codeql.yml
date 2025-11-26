@@ -15,7 +15,7 @@ env:
 jobs:
   analyze:
     name: Analyze
-    runs-on: latest
+    runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
