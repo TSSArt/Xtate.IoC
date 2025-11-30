@@ -24,6 +24,7 @@ internal static class ValueTaskExtensions
 	extension(ValueTask)
 	{
 		/// <summary>Gets a task that has already completed successfully.</summary>
+		[ExcludeFromCodeCoverage]
 		public static ValueTask CompletedTask => new();
 	}
 }

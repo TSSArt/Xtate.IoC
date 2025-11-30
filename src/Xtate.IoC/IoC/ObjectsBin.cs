@@ -28,7 +28,7 @@ namespace Xtate.IoC;
 ///     </para>
 ///     <para>
 ///         Calling <see cref="Dispose" /> or <see cref="DisposeAsync" /> transitions the bin to a disposed state. Any
-///         subsequent attempt to add an object results in an <see cref="XtateObjectDisposedException" /> (after eagerly
+///         subsequent attempt to add an object results in an <see cref="ObjectDisposedException" /> (after eagerly
 ///         disposing the
 ///         provided instance if it is disposable).
 ///     </para>
@@ -49,10 +49,29 @@ public class ObjectsBin
 	///     only the first succeeds; others observe a no-op. After completion the bin rejects further additions.
 	/// </remarks>
 	/// <returns>A task representing the asynchronous disposal operation.</returns>
-	internal async ValueTask DisposeAsync()
+	internal ValueTask DisposeAsync()
 	{
-		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
+		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is not { } instancesForDispose)
 		{
+			return ValueTask.CompletedTask;
+		}
+
+		while (instancesForDispose.TryPop(out var instance))
+		{
+			var valueTask = Disposer.DisposeAsync(instance);
+
+			if (!valueTask.IsCompletedSuccessfully)
+			{
+				return Wait(valueTask, instancesForDispose);
+			}
+		}
+
+		return ValueTask.CompletedTask;
+
+		static async ValueTask Wait(ValueTask valueTask, WeakReferenceStack instancesForDispose)
+		{
+			await valueTask.ConfigureAwait(false);
+
 			while (instancesForDispose.TryPop(out var instance))
 			{
 				await Disposer.DisposeAsync(instance).ConfigureAwait(false);
@@ -87,7 +106,7 @@ public class ObjectsBin
 	///     A completed <see cref="ValueTask" /> if the instance is tracked (or ignored because it is not disposable),
 	///     or a task representing asynchronous immediate disposal followed by an exception if the bin is already disposed.
 	/// </returns>
-	/// <exception cref="XtateObjectDisposedException">
+	/// <exception cref="ObjectDisposedException">
 	///     Thrown if the bin has already been disposed. If the instance is disposable it is disposed prior to throwing.
 	/// </exception>
 	/// <remarks>
@@ -99,7 +118,7 @@ public class ObjectsBin
 	{
 		if (!Disposer.IsDisposable(instance))
 		{
-			XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
+			ObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
 
 			return ValueTask.CompletedTask;
 		}
@@ -111,25 +130,18 @@ public class ObjectsBin
 			return ValueTask.CompletedTask;
 		}
 
-		return DisposeAndThrow(instance);
-	}
+		var valueTask = Disposer.DisposeAsync(instance);
 
-	/// <summary>
-	///     Disposes a single instance asynchronously and then unconditionally throws
-	///     <see cref="XtateObjectDisposedException" />.
-	/// </summary>
-	/// <typeparam name="T">Type of the instance being disposed.</typeparam>
-	/// <param name="instance">The instance to dispose.</param>
-	/// <returns>A task representing the asynchronous disposal and subsequent exception.</returns>
-	/// <remarks>
-	///     Used to enforce fail-fast semantics when adding after disposal.
-	/// </remarks>
-	/// <exception cref="XtateObjectDisposedException">Always thrown after disposal completes.</exception>
-	private async ValueTask DisposeAndThrow<T>(T instance)
-	{
-		await Disposer.DisposeAsync(instance!).ConfigureAwait(false);
+		ObjectDisposedException.ThrowIf(condition: valueTask.IsCompletedSuccessfully, this);
 
-		XtateObjectDisposedException.ThrowIf(condition: true, this);
+		return Wait(valueTask, this);
+
+		static async ValueTask Wait(ValueTask valueTask, ObjectsBin objectsBin)
+		{
+			await valueTask.ConfigureAwait(false);
+
+			ObjectDisposedException.ThrowIf(condition: true, objectsBin);
+		}
 	}
 
 	/// <summary>
@@ -137,7 +149,7 @@ public class ObjectsBin
 	/// </summary>
 	/// <typeparam name="T">Type of the instance being added.</typeparam>
 	/// <param name="instance">The instance to track.</param>
-	/// <exception cref="XtateObjectDisposedException">
+	/// <exception cref="ObjectDisposedException">
 	///     Thrown if the bin has already been disposed. If the instance is disposable it is disposed prior to throwing.
 	/// </exception>
 	/// <remarks>
@@ -148,7 +160,7 @@ public class ObjectsBin
 	{
 		if (!Disposer.IsDisposable(instance))
 		{
-			XtateObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
+			ObjectDisposedException.ThrowIf(_instancesForDispose is null, this);
 
 			return;
 		}
@@ -156,12 +168,12 @@ public class ObjectsBin
 		if (_instancesForDispose is { } instancesForDispose)
 		{
 			instancesForDispose.Push(instance);
-
-			return;
 		}
+		else
+		{
+			Disposer.Dispose(instance);
 
-		Disposer.Dispose(instance);
-
-		XtateObjectDisposedException.ThrowIf(condition: true, this);
+			ObjectDisposedException.ThrowIf(condition: true, this);
+		}
 	}
 }

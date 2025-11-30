@@ -81,7 +81,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public ImplementationEntry? GetImplementationEntry(TypeKey typeKey)
 	{
-		XtateObjectDisposedException.ThrowIf(_disposed != 0, this);
+		ObjectDisposedException.ThrowIf(_disposed != 0, this);
 
 		if (_services.TryGetValue(typeKey, out var entry))
 		{

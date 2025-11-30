@@ -202,7 +202,7 @@ services.AddForwarding<IRuntimeEnv>(sp => sp.Get<RuntimeEnv>()); // adapter
 ## Error Handling
 - Missing service resolution triggers `MissedServiceException`.
 - Lifetime violations or invalid options throw `DependencyInjectionException` variants.
-- Disposal after use guarded by `XtateObjectDisposedException.ThrowIf` calls.
+- Disposal after use guarded by `ObjectDisposedException.ThrowIf` calls.
 
 ## Testing
 For tests, construct minimal `ServiceCollection`, then `new ServiceProvider(services)` or use `Container.Create(...)`. Register fakes via `AddTransient` / `AddConstant`.

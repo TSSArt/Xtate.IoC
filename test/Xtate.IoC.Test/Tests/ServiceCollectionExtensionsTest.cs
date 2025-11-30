@@ -192,6 +192,20 @@ public class ServiceCollectionExtensionsTest
 	}
 
 	[TestMethod]
+	public async Task AddTypeMultiArg4Test()
+	{
+		// Arrange
+		_services.AddType<ClassMultiArg4, (Arg1, Arg2, Arg3, Arg4)>();
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<ClassMultiArg4, (Arg1, Arg2, Arg3, Arg4)>((Arg1.Val, Arg2.Val, Arg3.Val, Arg4.Val));
+
+		// Assert
+		Assert.AreEqual(expected: "c4:a1:a2:a3:a4", obj.ToString());
+	}
+
+	[TestMethod]
 	public async Task AddTypeMultiArg8Test()
 	{
 		// Arrange
@@ -388,10 +402,31 @@ public class ServiceCollectionExtensionsTest
 	}
 
 	[TestMethod]
+	public void AddFactoryNotExistsSharedTest()
+	{
+		// Assert
+		Assert.ThrowsExactly<InvalidOperationException>(() => _services.AddFactory<FactoryNoArg>().For<IService>((SharedWithin) 444));
+	}
+
+	[TestMethod]
 	public async Task AddFactoryNoArgTest()
 	{
 		// Arrange
 		_services.AddFactory<FactoryNoArg>().For<IService>();
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService>();
+
+		// Assert
+		Assert.AreEqual(expected: "c0", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactoryNoArgExternalTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryNoArg>().For<IService>(Option.DoNotDispose);
 		var sp = _services.BuildProvider();
 
 		// Act
@@ -445,7 +480,7 @@ public class ServiceCollectionExtensionsTest
 		// Assert
 		Assert.AreEqual(expected: 1, cnt);
 	}
-
+	
 	[TestMethod]
 	public async Task AddFactorySharedNoArgTest()
 	{
@@ -465,6 +500,20 @@ public class ServiceCollectionExtensionsTest
 	{
 		// Arrange
 		_services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Scope, Option.DoNotDispose);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IService>();
+
+		// Assert
+		Assert.AreEqual(expected: "c0", obj.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedContainerNoArgTest()
+	{
+		// Arrange
+		_services.AddFactory<FactoryNoArg>().For<IService>(SharedWithin.Container);
 		var sp = _services.BuildProvider();
 
 		// Act
@@ -1193,6 +1242,13 @@ public class ServiceCollectionExtensionsTest
 	private class ClassMultiArg3(Arg1 arg1, Arg2 arg2, Arg3 arg3) : IService
 	{
 		private readonly string _val = $"c3:{arg1}:{arg2}:{arg3}";
+
+		public override string ToString() => _val;
+	}
+
+	private class ClassMultiArg4(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) : IService
+	{
+		private readonly string _val = $"c4:{arg1}:{arg2}:{arg3}:{arg4}";
 
 		public override string ToString() => _val;
 	}

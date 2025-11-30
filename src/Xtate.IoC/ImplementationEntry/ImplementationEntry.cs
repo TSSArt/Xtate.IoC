@@ -516,18 +516,47 @@ public abstract class ImplementationEntry
 	/// <summary>
 	///     Executes an asynchronous decorator factory resolving the prior service in the chain.
 	/// </summary>
-	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) =>
-		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
-			? await factory(_serviceProvider, decoratedService, argument).ConfigureAwait(false)
-			: default;
+	private ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument)
+	{
+		if (_previousEntry is null)
+		{
+			return new ValueTask<T?>(default(T));
+		}
+
+		var valueTask = _previousEntry.GetService<T, TArg>(argument);
+
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return GetDecoratorAsyncWait(valueTask, factory, argument);
+		}
+
+		return valueTask.Result is { } decoratedService ? factory(_serviceProvider, decoratedService, argument) : new ValueTask<T?>(default(T));
+	}
+
+	private async ValueTask<T?> GetDecoratorAsyncWait<T, TArg>(ValueTask<T?> valueTask, Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) => await valueTask.ConfigureAwait(false) is { } decoratedService ? await factory(_serviceProvider, decoratedService, argument).ConfigureAwait(false) : default;
 
 	/// <summary>
 	///     Executes a synchronous decorator factory that returns a value synchronously.
 	/// </summary>
-	private async ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
-		_previousEntry is not null && await _previousEntry.GetService<T, TArg>(argument).ConfigureAwait(false) is { } decoratedService
-			? factory(_serviceProvider, decoratedService, argument)
-			: default;
+	private ValueTask<T?> GetDecoratorAsync<T, TArg>(Func<IServiceProvider, T, TArg, T?> factory, TArg argument)
+	{
+		if (_previousEntry is null)
+		{
+			return new ValueTask<T?>(default(T));
+		}
+
+		var valueTask = _previousEntry.GetService<T, TArg>(argument);
+
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return GetDecoratorAsyncWait(valueTask, factory, argument);
+		}
+
+		return valueTask.Result is { } decoratedService ? new ValueTask<T?>(factory(_serviceProvider, decoratedService, argument)) : new ValueTask<T?>(default(T));
+	}
+
+	private async ValueTask<T?> GetDecoratorAsyncWait<T, TArg>(ValueTask<T?> valueTask, Func<IServiceProvider, T, TArg, T?> factory, TArg argument) =>
+		await valueTask.ConfigureAwait(false) is { } decoratedService ? factory(_serviceProvider, decoratedService, argument) : default;
 
 	/// <summary>
 	///     Executes a synchronous decorator factory within a synchronous call chain.

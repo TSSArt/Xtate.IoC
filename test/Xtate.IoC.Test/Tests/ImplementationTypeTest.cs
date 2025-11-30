@@ -145,6 +145,18 @@ public class ImplementationTypeTest
 	}
 
 	[TestMethod]
+	public void GetMethodInfo_NotResolvedTypeSync_ThrowsDependencyInjectionException()
+	{
+		// Arrange
+		var implType = ImplementationType.TypeOf<Factory<Any>>();
+
+		// Act
+
+		// Assert
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<int>, int>(true));
+	}
+
+	[TestMethod]
 	public void GetMethodInfo_NotResolvedType_ThrowsDependencyInjectionException()
 	{
 		// Arrange

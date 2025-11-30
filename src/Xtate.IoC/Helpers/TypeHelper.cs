@@ -97,9 +97,12 @@ internal static class TypeHelper
 
 	private static Type GetDeclaringType(Type type)
 	{
-		if (!type.IsGenericType || type.DeclaringType is not { IsGenericType: true } declaringType)
+		var declaringType = type.DeclaringType;
+		Infra.NotNull(declaringType);
+
+		if (!type.IsGenericType || !declaringType.IsGenericType)
 		{
-			return type.DeclaringType!;
+			return declaringType;
 		}
 
 		var parentArguments = new Type[declaringType.GetGenericArguments().Length];
@@ -120,7 +123,10 @@ internal static class TypeHelper
 			return true;
 		}
 
-		if (type.DeclaringType is { IsGenericType: true } declaringType)
+		var declaringType = type.DeclaringType;
+		Infra.NotNull(declaringType);
+
+		if (declaringType.IsGenericType)
 		{
 			return type.GetGenericArguments().Length > declaringType.GetGenericArguments().Length;
 		}
@@ -135,7 +141,7 @@ internal static class TypeHelper
 			return type.GetGenericArguments();
 		}
 
-		if (type.DeclaringType is { IsGenericType: true })
+		if (type.DeclaringType!.IsGenericType)
 		{
 			return EnumerateOwnArgs(type);
 		}

@@ -64,15 +64,27 @@ internal sealed class FactoryAsyncFactoryProvider<TImplementation, TService, TAr
 		return Expression.Lambda<Func<TImplementation, CancellationToken, TArg, ValueTask<TService>>>(bodyExpression, implPrm, tokenPrm, argPrm).Compile();
 	}
 
-	private static async ValueTask<TService> GetService(IServiceProvider serviceProvider, TArg argument)
+	private static ValueTask<TService> GetService(IServiceProvider serviceProvider, TArg argument)
 	{
 		var entry = serviceProvider.GetImplementationEntry(TypeKey.ImplementationKeyFast<TImplementation, Empty>());
 
 		Infra.NotNull(entry);
 
-		var implementation = await entry.GetRequiredService<TImplementation, Empty>(default).ConfigureAwait(false);
+		var valueTask = entry.GetRequiredService<TImplementation, Empty>(default);
 
-		return await NestedCaller.MethodCaller(implementation, serviceProvider.DisposeToken, argument).ConfigureAwait(false);
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return Wait(valueTask, serviceProvider, argument);
+		}
+
+		return NestedCaller.MethodCaller(valueTask.Result, serviceProvider.DisposeToken, argument);
+
+		static async ValueTask<TService> Wait(ValueTask<TImplementation> valueTask, IServiceProvider serviceProvider, TArg argument)
+		{
+			var implementation = await valueTask.ConfigureAwait(false);
+
+			return await NestedCaller.MethodCaller(implementation, serviceProvider.DisposeToken, argument).ConfigureAwait(false);
+		}
 	}
 
 	private static class Nested

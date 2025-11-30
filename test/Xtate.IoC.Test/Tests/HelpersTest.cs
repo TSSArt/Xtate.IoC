@@ -26,7 +26,7 @@ public class HelpersTest
 	public void ThrowIf_ObjectDisposedException_ThrownWhenConditionIsTrue()
 	{
 		// Arrange & Act & Assert
-		Assert.ThrowsExactly<ObjectDisposedException>([ExcludeFromCodeCoverage]() => XtateObjectDisposedException.ThrowIf(condition: true, instance: "44"));
+		Assert.ThrowsExactly<ObjectDisposedException>([ExcludeFromCodeCoverage]() => ObjectDisposedException.ThrowIf(condition: true, instance: "44"));
 	}
 
 	[TestMethod]

@@ -33,15 +33,27 @@ internal class ForwardAsyncFactoryProvider<TImplementation, TService, TArg> : Fa
 		throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
 	}
 
-	private static async ValueTask<TService> GetService(IServiceProvider serviceProvider, TArg argument)
+	private static ValueTask<TService> GetService(IServiceProvider serviceProvider, TArg argument)
 	{
 		var entry = serviceProvider.GetImplementationEntry(TypeKey.ImplementationKeyFast<TImplementation, TArg>());
 
 		Infra.NotNull(entry);
 
-		var implementation = await entry.GetRequiredService<TImplementation, TArg>(argument).ConfigureAwait(false);
+		var valueTask = entry.GetRequiredService<TImplementation, TArg>(argument);
 
-		return ConvertHelper<TImplementation, TService>.Convert(implementation);
+		if (!valueTask.IsCompletedSuccessfully)
+		{
+			return Wait(valueTask);
+		}
+
+		return new ValueTask<TService>(ConvertHelper<TImplementation, TService>.Convert(valueTask.Result));
+
+		static async ValueTask<TService> Wait(ValueTask<TImplementation> valueTask)
+		{
+			var implementation = await valueTask.ConfigureAwait(false);
+
+			return ConvertHelper<TImplementation, TService>.Convert(implementation);
+		}
 	}
 
 	private static class Nested

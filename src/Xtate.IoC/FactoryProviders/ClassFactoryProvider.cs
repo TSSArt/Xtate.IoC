@@ -24,6 +24,8 @@ internal abstract class ClassFactoryProvider
 {
 	private const string RequiredMemberAttr = @"System.Runtime.CompilerServices.RequiredMemberAttribute";
 
+	private static readonly ArrayPool<object?> ArgsPool = ArrayPool<object?>.Create(maxArrayLength: 32, maxArraysPerBucket: 64);
+
 	private static readonly MethodInfo GetFactory;
 
 	private static readonly MethodInfo GetFactoryArg;
@@ -301,17 +303,46 @@ internal abstract class ClassFactoryProvider
 
 	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Res.Format(Resources.Exception_FactoryOfRaisedException, Delegate.Method.ReturnType), ex);
 
-	protected object?[] RentArray() => Parameters.Length > 0 ? ArrayPool<object?>.Shared.Rent(Parameters.Length) : [];
+	protected object?[] RentArray() => Parameters.Length > 0 ? ArgsPool.Rent(Parameters.Length) : [];
 
 	protected void ReturnArray(object?[] array)
 	{
-		if (Parameters.Length == 0)
+		switch (Parameters.Length)
 		{
-			return;
+			case 0:
+				return;
+
+			case 4:
+				array[3] = null;
+
+				goto case 3;
+
+			case 3:
+				array[2] = null;
+
+				goto case 2;
+
+			case 2:
+				array[1] = null;
+
+				goto case 1;
+
+			case 1:
+				array[0] = null;
+
+				break;
+
+			default:
+#if NETSTANDARD2_1 || NETCOREAPP2_1 || NETCOREAPP2_2 || NETCOREAPP3_0_OR_GREATER
+				array.AsSpan(start: 0, Parameters.Length).Clear();
+#else
+				Array.Clear(array, index: 0, Parameters.Length);
+#endif
+
+				break;
 		}
 
-		Array.Clear(array, index: 0, Parameters.Length);
-		ArrayPool<object?>.Shared.Return(array);
+		ArgsPool.Return(array);
 	}
 
 	private static Delegate CreateDelegate(Type type)
