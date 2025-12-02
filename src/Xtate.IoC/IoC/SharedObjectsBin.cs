@@ -17,7 +17,7 @@
 
 namespace Xtate.IoC;
 
-public class SharedObjectsBin : ObjectsBin
+internal class SharedObjectsBin : ObjectsBin
 {
 	private int _referenceCount;
 

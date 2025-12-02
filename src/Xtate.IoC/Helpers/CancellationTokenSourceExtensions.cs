@@ -18,12 +18,17 @@
 #if !NET8_0_OR_GREATER
 namespace Xtate.IoC;
 
-public static class CancellationTokenSourceExtensions
+internal static class CancellationTokenSourceExtensions
 {
-	public static Task CancelAsync(this CancellationTokenSource cancellationTokenSource) =>
-		!cancellationTokenSource.IsCancellationRequested
-			? Task.Run(cancellationTokenSource.Cancel)
-			: Task.CompletedTask;
+	private static void Cancel(object state) => ((CancellationTokenSource) state).Cancel(false);
+
+	extension(CancellationTokenSource cancellationTokenSource)
+	{
+		public Task CancelAsync() =>
+			!cancellationTokenSource.IsCancellationRequested
+				? Task.Factory.StartNew(Cancel, cancellationTokenSource, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default)
+				: Task.CompletedTask;
+	}
 }
 
 #endif

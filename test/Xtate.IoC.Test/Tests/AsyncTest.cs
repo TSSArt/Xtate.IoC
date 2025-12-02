@@ -124,6 +124,7 @@ public class AsyncTest
 	public class FactoryDecor
 	{
 #pragma warning disable CA1822
+		[CalledByIoC]
 		public IDecor? Factory() => null;
 #pragma warning restore CA1822
 	}
@@ -131,6 +132,7 @@ public class AsyncTest
 	[InstantiatedByIoC]
 	public class WrapDecor(IDecor decor) : IDecor
 	{
+		[UsedImplicitly]
 		public readonly IDecor Decor = decor;
 	}
 

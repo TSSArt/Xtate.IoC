@@ -42,9 +42,22 @@ internal static class Disposer
 	/// <param name="instance">The instance to dispose.</param>
 	public static void Dispose<T>(T instance)
 	{
-		if (instance is IDisposable disposable)
+		switch (instance)
 		{
-			disposable.Dispose();
+			case IDisposable disposable:
+				disposable.Dispose();
+
+				break;
+
+			case IAsyncDisposable asyncDisposable:
+				var valueTask = asyncDisposable.DisposeAsync();
+
+				if (valueTask.IsFaulted || valueTask.IsCanceled)
+				{
+					valueTask.GetAwaiter().GetResult();
+				}
+
+				break;
 		}
 	}
 
@@ -65,10 +78,9 @@ internal static class Disposer
 			case IDisposable disposable:
 				disposable.Dispose();
 
-				return ValueTask.CompletedTask;
-
-			default:
-				return ValueTask.CompletedTask;
+				break;
 		}
+
+		return ValueTask.CompletedTask;
 	}
 }

@@ -40,25 +40,25 @@ internal class WeakReferenceStack
             return;
         }
 
-        if (!_orphanedNodesRemover.TryGetTarget(out var remover) || remover is null)
-        {
-            _orphanedNodesRemover.SetTarget(new OrphanedNodesRemover(this));
-        }
-
         var newNode = new WeakReferenceNode(instance, _node);
 
         while (Interlocked.CompareExchange(ref _node, newNode, newNode.NextNode) != newNode.NextNode)
         {
             newNode.NextNode = _node;
         }
-    }
 
-    /// <summary>
-    ///     Processes a node to check if it is alive.
-    /// </summary>
-    /// <param name="node">The node to process.</param>
-    /// <returns>True if the node is alive; otherwise, false.</returns>
-    private static bool ProcessNode(ref WeakReferenceNode? node)
+		if (!_orphanedNodesRemover.TryGetTarget(out var remover) || remover is null)
+		{
+			_orphanedNodesRemover.SetTarget(new OrphanedNodesRemover(this));
+		}
+	}
+
+	/// <summary>
+	///     Processes a node to check if it is alive.
+	/// </summary>
+	/// <param name="node">The node to process.</param>
+	/// <returns>True if the node is alive; otherwise, false.</returns>
+	private static bool ProcessNode(ref WeakReferenceNode? node)
     {
         while (true)
         {

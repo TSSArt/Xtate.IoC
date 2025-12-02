@@ -23,6 +23,8 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private readonly Cache<TypeKey, ImplementationEntry?> _services;
 
+	private readonly SharedObjectsBin _sharedObjectsBin;
+
 	private readonly ServiceProvider? _sourceServiceProvider;
 
 	private int _disposed;
@@ -30,7 +32,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	public ServiceProvider(IServiceCollection services)
 	{
 		_sourceServiceProvider = null;
-		SharedObjectsBin = new SharedObjectsBin();
+		_sharedObjectsBin = new SharedObjectsBin();
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
 
 		Initialization(services);
@@ -39,8 +41,8 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	protected ServiceProvider(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = null)
 	{
 		_sourceServiceProvider = sourceServiceProvider;
-		SharedObjectsBin = sourceServiceProvider.SharedObjectsBin;
-		SharedObjectsBin.AddReference();
+		_sharedObjectsBin = sourceServiceProvider._sharedObjectsBin;
+		_sharedObjectsBin.AddReference();
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(sourceServiceProvider, additionalServices));
 
 		if (additionalServices is not null)
@@ -51,7 +53,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public ObjectsBin ObjectsBin { get; } = new();
 
-	public SharedObjectsBin SharedObjectsBin { get; }
+	public ObjectsBin SharedObjectsBin => _sharedObjectsBin;
 
 #region Interface IAsyncDisposable
 
@@ -295,7 +297,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	{
 		if (Interlocked.Exchange(ref _disposed, value: 1) == 0)
 		{
-			var isLastReference = SharedObjectsBin.RemoveReference();
+			var isLastReference = _sharedObjectsBin.RemoveReference();
 
 			if (disposing)
 			{
@@ -305,7 +307,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 				if (isLastReference)
 				{
-					SharedObjectsBin.Dispose();
+					_sharedObjectsBin.Dispose();
 				}
 
 				_disposeTokenSource.Dispose();
@@ -321,9 +323,9 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 			await ObjectsBin.DisposeAsync().ConfigureAwait(false);
 
-			if (SharedObjectsBin.RemoveReference())
+			if (_sharedObjectsBin.RemoveReference())
 			{
-				await SharedObjectsBin.DisposeAsync().ConfigureAwait(false);
+				await _sharedObjectsBin.DisposeAsync().ConfigureAwait(false);
 			}
 
 			_disposeTokenSource.Dispose();
