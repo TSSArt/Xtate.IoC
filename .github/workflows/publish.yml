@@ -19,7 +19,7 @@ concurrency:
 jobs:
   publish:
     name: Build & Publish
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
@@ -33,6 +33,10 @@ jobs:
         source-url: https://nuget.pkg.github.com/TSSArt/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.XTATE_GITHUB_TOKEN }}
+    - name: Install Mono
+      run: |
+        sudo apt update
+        sudo apt install -y mono-complete
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v4.2.0
       with:
