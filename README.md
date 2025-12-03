@@ -68,14 +68,14 @@ Minimal dependencies (analyzers & shared content internalized).
 ```csharp
 using Xtate.IoC;
 
-var container = Container.Create(services =>
+await using var container = Container.Create(services =>
 {
-    services.AddTypeSync<MyService>();            // Transient
-    services.AddSharedTypeSync<MyRepository>(SharedWithin.Container); // Singleton
-    services.AddTransientDecorator<IMyLogic>((sp, inner) => new CachingLogic(inner));
+    services.AddType<MyService>();                                // Transient
+    services.AddSharedType<MyRepository>(SharedWithin.Container); // Singleton
+    services.AddDecorator<MyLogic>().For<IMyLogic>();               // Decorator
 });
 
-var service = container.Get<IMyService>(); // Resolves transient instance
+var service = container.GetService<IMyService>(); // Resolves transient instance
 ```
 Use `Container.Create<TModule>()` to load a module class implementing `IModule`.
 
@@ -89,10 +89,9 @@ These files double as documentation-by-execution and provide concrete scenarios 
 ## Core Concepts
 - `ServiceCollection`: Mutable registration list.
 - `ServiceEntry`: Single registration metadata (key, factory, scope).
-- `TypeKey`: Internal composite key (supports generic definition keys & argument types).
 - `ServiceProvider`: Resolution engine + disposal root.
 - `Container`: Sealed root provider with convenience `Create` overloads.
-- `ObjectsBin` / `SharedObjectsBin`: Track owned instances per scope / across scopes.
+- `ObjectsBin`: Track owned instances.
 
 ## Service Registration API Overview
 Registration extension methods (grouped by intent):
@@ -128,8 +127,8 @@ var renderer = sp.Get<Renderer, RenderSettings>(settings);
 ## Decorators
 Decorators wrap existing implementations in a chain. Order of registration determines wrapping sequence (last added executes outermost). Async and sync delegates supported:
 ```csharp
-services.AddDecoratorSync<IMyLogic>((sp, inner) => new LoggingLogic(inner));
-services.AddDecoratorSync<IMyLogic>((sp, inner) => new CachingLogic(inner));
+services.AddDecorator<LoggingLogic>().For<IMyLogic>();
+services.AddDecorator<CachingLogic>().For<IMyLogic>();
 // Resolution order: CachingLogic -> LoggingLogic -> Core Implementation
 ```
 Decorators respect target lifetime; a shared decorator over a singleton yields one decorated chain instance.
@@ -142,27 +141,27 @@ Implement `IModule`:
 ```csharp
 class CoreModule : IModule
 {
-    public IServiceCollection Services { get; set; } = null!;
     public void AddServices()
     {
-        Services.AddSharedTypeSync<ConfigProvider>(SharedWithin.Container);
-        Services.AddTypeSync<Worker>();
+        Services.AddSharedType<ConfigProvider>(SharedWithin.Container);
+        Services.AddType<Worker>();
     }
 }
 
-var container = Container.Create<CoreModule>();
+await using var container = Container.Create<CoreModule>();
 ```
 Modules auto-register themselves as `IModule` (once) via `AddModule<TModule>()`.
 
 ## Scopes
 Create nested scopes via `IServiceScopeFactory`:
 ```csharp
-using var container = Container.Create(s => s.AddSharedTypeSync<Context>(SharedWithin.Scope));
-using var scope = container.CreateScope(scopeServices =>
+await using var container = Container.Create(s => s.AddSharedTypeSync<Context>(SharedWithin.Scope));
+var serviceScopeFacory = await container.GetService<IServiceScopeFactory>();
+using var scope = serviceScopeFacory.CreateScope(scopeServices =>
 {
-    scopeServices.AddTypeSync<RequestHandler>();
+    scopeServices.AddType<RequestHandler>();
 });
-var handler = scope.ServiceProvider.Get<RequestHandler>();
+var handler = await scope.ServiceProvider.GetService<RequestHandler>();
 ```
 Scope overlay services can add or decorate without mutating parent.
 
