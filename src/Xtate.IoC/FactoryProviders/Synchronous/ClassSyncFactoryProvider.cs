@@ -43,13 +43,15 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType) : ClassF
 	{
 		for (var i = 0; i < Parameters.Length; i ++)
 		{
-			if (TupleHelper.TryMatch(Parameters[i].MemberType, ref arg, out var value))
+			var parameter = Parameters[i];
+
+			if (TupleHelper.TryMatch(parameter.MemberType, ref arg, out var value))
 			{
 				args[i] = value;
 			}
 			else
 			{
-				var syncValueGetter = Parameters[i].SyncValueGetter;
+				var syncValueGetter = parameter.SyncValueGetter;
 
 				Infra.NotNull(syncValueGetter);
 
@@ -60,19 +62,19 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType) : ClassF
 
 	private void SetRequiredMembers<TArg>(object service, IServiceProvider serviceProvider, ref TArg? arg)
 	{
-		for (var i = 0; i < RequiredMembers.Length; i ++)
+		foreach (var requiredMember in RequiredMembers)
 		{
-			var setter = RequiredMembers[i].MemberSetter;
+			var setter = requiredMember.MemberSetter;
 
 			Infra.NotNull(setter);
 
-			if (TupleHelper.TryMatch(RequiredMembers[i].MemberType, ref arg, out var value))
+			if (TupleHelper.TryMatch(requiredMember.MemberType, ref arg, out var value))
 			{
 				setter(service, value);
 			}
 			else
 			{
-				var syncValueGetter = RequiredMembers[i].SyncValueGetter;
+				var syncValueGetter = requiredMember.SyncValueGetter;
 
 				Infra.NotNull(syncValueGetter);
 

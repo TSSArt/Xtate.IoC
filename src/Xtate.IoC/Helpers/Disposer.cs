@@ -32,7 +32,6 @@ internal static class Disposer
 	///     <c>true</c> if the instance is <see cref="IDisposable" /> or <see cref="IAsyncDisposable" />; otherwise,
 	///     <c>false</c>.
 	/// </returns>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool IsDisposable<T>([NotNullWhen(true)] T instance) => instance is IDisposable or IAsyncDisposable;
 
 	/// <summary>

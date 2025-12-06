@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtate.IoC", "src\Xtate.IoC\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtate.IoC.Test", "test\Xtate.IoC.Test\Xtate.IoC.Test.csproj", "{6770FB80-A516-4B12-8128-160067F59673}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtate.IoC.Benchmark", "test\Xtate.IoC.Benchmark\Xtate.IoC.Benchmark.csproj", "{EFC22A2E-51FF-484E-BB6C-AE848F2F524C}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D52828A8-AEA0-4F46-81AD-1B85E7321F14}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{21BC8BA5-A31A-44B0-AC74-3E95C5F212FD}"
@@ -25,8 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{0AC0C2
 		Version.props = Version.props
 		Xtate.IoC.sln.DotSettings = Xtate.IoC.sln.DotSettings
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtate.IoC.Benchmark", "test\Xtate.IoC.Benchmark\Xtate.IoC.Benchmark.csproj", "{EFC22A2E-51FF-484E-BB6C-AE848F2F524C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

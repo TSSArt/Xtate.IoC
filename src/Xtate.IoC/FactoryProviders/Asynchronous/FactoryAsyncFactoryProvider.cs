@@ -36,13 +36,15 @@ internal sealed class FactoryAsyncFactoryProvider<TImplementation, TService, TAr
 
 		for (var i = 0; i < parameters.Length; i ++)
 		{
-			if (parameters[i].ParameterType == typeof(CancellationToken))
+			var parameterInfo = parameters[i];
+
+			if (parameterInfo.ParameterType == typeof(CancellationToken))
 			{
 				args[i] = tokenPrm;
 			}
 			else
 			{
-				var parameter = TupleHelper.TryBuild<TArg>(parameters[i].ParameterType, argPrm);
+				var parameter = TupleHelper.TryBuild<TArg>(parameterInfo.ParameterType, argPrm);
 
 				Infra.NotNull(parameter);
 

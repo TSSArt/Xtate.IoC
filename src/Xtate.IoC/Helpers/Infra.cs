@@ -52,7 +52,6 @@ internal static class Infra
 	/// </param>
 	/// <exception cref="InvalidOperationException"></exception>
 	[AssertionMethod]
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void Assert([AssertionCondition(AssertionConditionType.IS_TRUE)] [DoesNotReturnIf(false)] bool condition)
 	{
 		if (!condition)
@@ -71,7 +70,6 @@ internal static class Infra
 	/// </param>
 	/// <exception cref="InvalidOperationException"></exception>
 	[AssertionMethod]
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void NotNull([AssertionCondition(AssertionConditionType.IS_NOT_NULL)] [NotNull] object? value)
 	{
 		if (value is null)

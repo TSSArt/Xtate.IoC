@@ -34,17 +34,13 @@ internal static class TupleHelper
 																	   { typeof(ValueTuple<,,,,,,,>), typeof(ValueTupleArgument<,,,,,,,,>) }
 																   };
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool TryMatch<TArg, TValue>(ref TArg? arg, out TValue? value) =>
 		ArgumentBase<TValue, TArg>.Instance.TryUnwrapInternal(ref arg, out value) || ArgumentBase<TArg, TValue>.Instance.TryMatchInternal(ref arg, out value);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool TryMatch<TArg>(Type type, ref TArg? arg, out object? value) => ArgumentBase<TArg, object>.Instance.TryMatchInternal(type, ref arg, out value);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static Expression? TryBuild<TArg>(Type type, Expression arg) => ArgumentBase<TArg, object>.Instance.TryBuildInternal(type, arg);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool IsMatch<TArg>(Type type) => ArgumentBase<TArg, object>.Instance.IsMatchInternal(type);
 
 	private static MemberExpression GetItem1(Expression expr) => Expression.PropertyOrField(expr, propertyOrFieldName: @"Item1");

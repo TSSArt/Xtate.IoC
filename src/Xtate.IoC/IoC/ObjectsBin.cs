@@ -37,9 +37,33 @@ namespace Xtate.IoC;
 ///         using an atomic exchange on the underlying storage field.
 ///     </para>
 /// </remarks>
-public class ObjectsBin
+public class ObjectsBin : IDisposable, IAsyncDisposable
 {
-	private WeakReferenceStack? _instancesForDispose = new();
+	private WeakReferenceSet? _instancesForDispose = new();
+
+#region Interface IAsyncDisposable
+
+	public async ValueTask DisposeAsync()
+	{
+		await DisposeAsyncCore().ConfigureAwait(false);
+
+		Dispose(false);
+
+		GC.SuppressFinalize(this);
+	}
+
+#endregion
+
+#region Interface IDisposable
+
+	public void Dispose()
+	{
+		Dispose(true);
+
+		GC.SuppressFinalize(this);
+	}
+
+#endregion
 
 	/// <summary>
 	///     Asynchronously disposes all tracked instances and marks the bin as disposed.
@@ -49,14 +73,14 @@ public class ObjectsBin
 	///     only the first succeeds; others observe a no-op. After completion the bin rejects further additions.
 	/// </remarks>
 	/// <returns>A task representing the asynchronous disposal operation.</returns>
-	internal ValueTask DisposeAsync()
+	protected virtual ValueTask DisposeAsyncCore()
 	{
 		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is not { } instancesForDispose)
 		{
 			return ValueTask.CompletedTask;
 		}
 
-		while (instancesForDispose.TryPop(out var instance))
+		while (instancesForDispose.TryTake(out var instance))
 		{
 			var valueTask = Disposer.DisposeAsync(instance);
 
@@ -66,16 +90,20 @@ public class ObjectsBin
 			}
 		}
 
+		instancesForDispose.Dispose();
+
 		return ValueTask.CompletedTask;
 
-		static async ValueTask Wait(ValueTask valueTask, WeakReferenceStack instancesForDispose)
+		static async ValueTask Wait(ValueTask valueTask, WeakReferenceSet instancesForDispose)
 		{
 			await valueTask.ConfigureAwait(false);
 
-			while (instancesForDispose.TryPop(out var instance))
+			while (instancesForDispose.TryTake(out var instance))
 			{
 				await Disposer.DisposeAsync(instance).ConfigureAwait(false);
 			}
+
+			instancesForDispose.Dispose();
 		}
 	}
 
@@ -86,13 +114,18 @@ public class ObjectsBin
 	///     Each instance is disposed using <see cref="Disposer.Dispose" />. After completion the bin rejects further
 	///     additions. Safe to call multiple times; only the first call performs work.
 	/// </remarks>
-	internal void Dispose()
+	protected virtual void Dispose(bool disposing)
 	{
-		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
+		if (disposing)
 		{
-			while (instancesForDispose.TryPop(out var instance))
+			if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
 			{
-				Disposer.Dispose(instance);
+				while (instancesForDispose.TryTake(out var instance))
+				{
+					Disposer.Dispose(instance);
+				}
+
+				instancesForDispose.Dispose();
 			}
 		}
 	}
@@ -125,14 +158,14 @@ public class ObjectsBin
 
 		if (_instancesForDispose is { } instancesForDispose)
 		{
-			instancesForDispose.Push(instance);
+			instancesForDispose.Add(instance);
 
 			return ValueTask.CompletedTask;
 		}
 
 		var valueTask = Disposer.DisposeAsync(instance);
 
-		ObjectDisposedException.ThrowIf(condition: valueTask.IsCompletedSuccessfully, this);
+		ObjectDisposedException.ThrowIf(valueTask.IsCompletedSuccessfully, this);
 
 		return Wait(valueTask, this);
 
@@ -167,7 +200,7 @@ public class ObjectsBin
 
 		if (_instancesForDispose is { } instancesForDispose)
 		{
-			instancesForDispose.Push(instance);
+			instancesForDispose.Add(instance);
 		}
 		else
 		{

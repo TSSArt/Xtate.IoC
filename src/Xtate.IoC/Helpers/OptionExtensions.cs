@@ -40,7 +40,6 @@ internal static class OptionExtensions
 		/// </summary>
 		/// <param name="toCheck">The option to check for.</param>
 		/// <returns><c>true</c> if the specified option contains the option to check; otherwise, <c>false</c>.</returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool Has(Option toCheck) => (option & toCheck) == toCheck;
 	}
 }

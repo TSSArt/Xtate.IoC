@@ -60,11 +60,13 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 	{
 		for (var i = start; i < Parameters.Length; i ++)
 		{
-			if (TupleHelper.TryMatch(Parameters[i].MemberType, ref arg, out var value))
+			var parameter = Parameters[i];
+
+			if (TupleHelper.TryMatch(parameter.MemberType, ref arg, out var value))
 			{
 				args[i] = value;
 			}
-			else if (Parameters[i].AsyncValueGetter is { } asyncValueGetter)
+			else if (parameter.AsyncValueGetter is { } asyncValueGetter)
 			{
 				var valueTask = asyncValueGetter(serviceProvider);
 
@@ -77,7 +79,11 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 			}
 			else
 			{
-				args[i] = Parameters[i].SyncValueGetter!(serviceProvider);
+				var syncValueGetter = parameter.SyncValueGetter;
+
+				Infra.NotNull(syncValueGetter);
+
+				args[i] = syncValueGetter(serviceProvider);
 			}
 		}
 
@@ -102,14 +108,16 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 	{
 		for (var i = start; i < RequiredMembers.Length; i ++)
 		{
-			var setter = RequiredMembers[i].MemberSetter;
+			var requiredMember = RequiredMembers[i];
+
+			var setter = requiredMember.MemberSetter;
 			Infra.NotNull(setter);
 
-			if (TupleHelper.TryMatch(RequiredMembers[i].MemberType, ref arg, out var value))
+			if (TupleHelper.TryMatch(requiredMember.MemberType, ref arg, out var value))
 			{
 				setter(service, value);
 			}
-			else if (RequiredMembers[i].AsyncValueGetter is { } asyncValueGetter)
+			else if (requiredMember.AsyncValueGetter is { } asyncValueGetter)
 			{
 				var valueTask = asyncValueGetter(serviceProvider);
 
@@ -122,7 +130,11 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 			}
 			else
 			{
-				setter(service, RequiredMembers[i].SyncValueGetter!(serviceProvider));
+				var syncValueGetter = requiredMember.SyncValueGetter;
+
+				Infra.NotNull(syncValueGetter);
+
+				setter(service, syncValueGetter(serviceProvider));
 			}
 		}
 
