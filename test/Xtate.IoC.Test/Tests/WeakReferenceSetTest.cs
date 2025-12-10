@@ -272,6 +272,7 @@ public class WeakReferenceSetTest
 		// Assert
 		// ReSharper disable once AccessToDisposedClosure
 		Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.TryTake(out _));
+
 		// ReSharper disable once AccessToDisposedClosure
 		Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.Add(null!));
 
@@ -281,7 +282,7 @@ public class WeakReferenceSetTest
 		Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.TryTake(out _));
 		Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.Add(null!));
 	}
-		
+
 	[TestMethod]
 	public void Cleaner_Finalization_ShouldTriggerCompaction_AndPreserveLiveItems()
 	{
@@ -302,10 +303,11 @@ public class WeakReferenceSetTest
 		list[9] = null!;
 
 		// Act
-		GcCollect(); // should collect some targets and run Cleaner to compact
+		GcCollect();               // should collect some targets and run Cleaner to compact
 		AddObjects(wrs, count: 2); // ensure cleaner exists and activity continues
 
 		var liveCount = 0;
+
 		while (wrs.TryTake(out _))
 		{
 			liveCount ++;
@@ -337,10 +339,11 @@ public class WeakReferenceSetTest
 		}
 
 		// Act
-		GcCollect(); // should collect ~128 targets and run Cleaner to compact (threshold is 32)
+		GcCollect();               // should collect ~128 targets and run Cleaner to compact (threshold is 32)
 		AddObjects(wrs, count: 4); // keep activity and ensure cleaner remains
 
 		var liveCount = 0;
+
 		while (wrs.TryTake(out _))
 		{
 			liveCount ++;

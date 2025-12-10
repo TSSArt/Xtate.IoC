@@ -161,6 +161,72 @@ public class ObjectsBinTest
 		Assert.AreEqual(expected: 1, d2.DisposeCount);
 	}
 
+	[TestMethod]
+	public async Task DisposeAsync_ShouldInvokeVirtualOverrides_InOrder_Once()
+	{
+		// Arrange
+		var bin = new TestObjectsBin();
+		var d1 = new SyncDisposable();
+		var d2 = new AsyncDisposable();
+
+		await bin.AddAsync(d1);
+		await bin.AddAsync(d2);
+
+		// Act
+		await bin.DisposeAsync();
+
+		// Assert
+		Assert.AreEqual(expected: 1, d1.DisposeCount);
+		Assert.AreEqual(expected: 1, d2.DisposeCount);
+		Assert.AreEqual(expected: 1, bin.DisposeAsyncCoreCallCount);
+		Assert.AreEqual(expected: 1, bin.DisposeBoolCallCount);
+		CollectionAssert.AreEqual(new List<string> { "DisposeAsyncCore", "Dispose(false)" }, bin.CallOrder);
+	}
+
+	[TestMethod]
+	public void Dispose_ShouldInvokeVirtualDisposeBool_Once()
+	{
+		// Arrange
+		var bin = new TestObjectsBin();
+		var d1 = new SyncDisposable();
+		var d2 = new AsyncDisposable();
+
+		bin.AddSync(d1);
+		bin.AddSync(d2);
+
+		// Act
+		bin.Dispose();
+
+		// Assert
+		Assert.AreEqual(expected: 1, d1.DisposeCount);
+		Assert.AreEqual(expected: 1, d2.DisposeCount);
+		Assert.AreEqual(expected: 1, bin.DisposeBoolCallCount);
+		CollectionAssert.AreEqual(new List<string> { "Dispose(true)" }, bin.CallOrder);
+	}
+
+	[TestMethod]
+	public async Task DisposeAsync_OverrideWithoutBaseCall_ShouldStillAllowCustomBehavior()
+	{
+		// Arrange
+		var bin = new TestObjectsBin_NoBase();
+		var d1 = new SyncDisposable();
+		var d2 = new AsyncDisposable();
+
+		await bin.AddAsync(d1);
+		await bin.AddAsync(d2);
+
+		// Act
+		await bin.DisposeAsync();
+
+		// Assert
+		// No base disposal, so tracked disposables remain undisposed.
+		Assert.AreEqual(expected: 0, d1.DisposeCount);
+		Assert.AreEqual(expected: 0, d2.DisposeCount);
+		Assert.AreEqual(expected: 1, bin.DisposeAsyncCoreCallCount);
+		Assert.AreEqual(expected: 1, bin.DisposeBoolCallCount);
+		CollectionAssert.AreEqual(new List<string> { "DisposeAsyncCore", "Dispose(false)" }, bin.CallOrder);
+	}
+
 	private sealed class SyncDisposable : IDisposable
 	{
 		public int DisposeCount;
@@ -180,13 +246,63 @@ public class ObjectsBinTest
 
 		public async ValueTask DisposeAsync()
 		{
-			DisposeCount++;
+			DisposeCount ++;
 
 			await Task.Delay(1);
 		}
 
-		#endregion
+	#endregion
 	}
 
 	private sealed class NonDisposable;
+
+	private sealed class TestObjectsBin : ObjectsBin
+	{
+		public int DisposeAsyncCoreCallCount;
+
+		public int DisposeBoolCallCount;
+
+		public List<string> CallOrder { get; } = [];
+
+		protected override ValueTask DisposeAsyncCore()
+		{
+			DisposeAsyncCoreCallCount ++;
+			CallOrder.Add("DisposeAsyncCore");
+
+			return base.DisposeAsyncCore();
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			DisposeBoolCallCount ++;
+			CallOrder.Add(disposing ? "Dispose(true)" : "Dispose(false)");
+			base.Dispose(disposing);
+		}
+	}
+
+	private sealed class TestObjectsBin_NoBase : ObjectsBin
+	{
+		public int DisposeAsyncCoreCallCount;
+
+		public int DisposeBoolCallCount;
+
+		public List<string> CallOrder { get; } = [];
+
+		protected override ValueTask DisposeAsyncCore()
+		{
+			DisposeAsyncCoreCallCount ++;
+			CallOrder.Add("DisposeAsyncCore");
+
+			// Skip base: simulate custom disposal strategy (no disposal of tracked instances).
+			return ValueTask.CompletedTask;
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			DisposeBoolCallCount ++;
+			CallOrder.Add(disposing ? "Dispose(true)" : "Dispose(false)");
+
+			// Skip base: simulate custom finalization logic.
+		}
+	}
 }

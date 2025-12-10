@@ -201,16 +201,45 @@ internal sealed class WeakReferenceSet : IDisposable
 			return;
 		}
 
-		_cleaner.Free();
+		SafeFree(ref _cleaner);
 
 		while (_freeHandles.TryDequeue(out var handle))
 		{
-			handle.Free();
+			SafeFree(ref handle);
 		}
 
 		while (_handles.TryDequeue(out var handle))
 		{
+			SafeFree(ref handle);
+		}
+	}
+
+	/// <summary>
+	///     Safely frees the specified <see cref="GCHandle" /> if it is currently allocated.
+	/// </summary>
+	/// <param name="handle">
+	///     A reference to the <see cref="GCHandle" /> to free. If the handle is not allocated, the method returns without
+	///     action.
+	/// </param>
+	/// <remarks>
+	///     This method guards against double-free scenarios by checking <see cref="GCHandle.IsAllocated" /> and
+	///     swallowing <see cref="InvalidOperationException" /> that can be thrown if the handle has already been freed.
+	///     The <paramref name="handle" /> is passed by reference to ensure the same instance is freed.
+	/// </remarks>
+	private static void SafeFree(ref GCHandle handle)
+	{
+		if (!handle.IsAllocated)
+		{
+			return;
+		}
+
+		try
+		{
 			handle.Free();
+		}
+		catch (InvalidOperationException)
+		{
+			// Already freed
 		}
 	}
 

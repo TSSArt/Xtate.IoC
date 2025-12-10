@@ -75,10 +75,12 @@ public class ObjectsBin : IDisposable, IAsyncDisposable
 	/// <returns>A task representing the asynchronous disposal operation.</returns>
 	protected virtual ValueTask DisposeAsyncCore()
 	{
-		if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is not { } instancesForDispose)
+		if (_instancesForDispose is not { } instancesForDispose)
 		{
 			return ValueTask.CompletedTask;
 		}
+
+		_instancesForDispose = null;
 
 		while (instancesForDispose.TryTake(out var instance))
 		{
@@ -116,17 +118,16 @@ public class ObjectsBin : IDisposable, IAsyncDisposable
 	/// </remarks>
 	protected virtual void Dispose(bool disposing)
 	{
-		if (disposing)
+		if (disposing && _instancesForDispose is { } instancesForDispose)
 		{
-			if (Interlocked.CompareExchange(ref _instancesForDispose, value: null, _instancesForDispose) is { } instancesForDispose)
-			{
-				while (instancesForDispose.TryTake(out var instance))
-				{
-					Disposer.Dispose(instance);
-				}
+			_instancesForDispose = null;
 
-				instancesForDispose.Dispose();
+			while (instancesForDispose.TryTake(out var instance))
+			{
+				Disposer.Dispose(instance);
 			}
+
+			instancesForDispose.Dispose();
 		}
 	}
 
