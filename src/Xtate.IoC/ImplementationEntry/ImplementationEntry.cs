@@ -533,7 +533,8 @@ public abstract class ImplementationEntry
 		return valueTask.Result is { } decoratedService ? factory(_serviceProvider, decoratedService, argument) : new ValueTask<T?>(default(T));
 	}
 
-	private async ValueTask<T?> GetDecoratorAsyncWait<T, TArg>(ValueTask<T?> valueTask, Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) => await valueTask.ConfigureAwait(false) is { } decoratedService ? await factory(_serviceProvider, decoratedService, argument).ConfigureAwait(false) : default;
+	private async ValueTask<T?> GetDecoratorAsyncWait<T, TArg>(ValueTask<T?> valueTask, Func<IServiceProvider, T, TArg, ValueTask<T?>> factory, TArg argument) =>
+		await valueTask.ConfigureAwait(false) is { } decoratedService ? await factory(_serviceProvider, decoratedService, argument).ConfigureAwait(false) : default;
 
 	/// <summary>
 	///     Executes a synchronous decorator factory that returns a value synchronously.

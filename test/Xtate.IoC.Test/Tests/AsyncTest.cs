@@ -20,122 +20,6 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class AsyncTest
 {
-	[InstantiatedByIoC]
-	public class Service0;
-
-	[InstantiatedByIoC]
-	public class Service1;
-
-	[InstantiatedByIoC]
-	public class FactoryService;
-
-	[InstantiatedByIoC]
-	public class ServiceA : IAsyncInitialization
-	{
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class ServiceB : IAsyncInitialization
-	{
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class ServiceC : IAsyncInitialization
-	{
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class ServiceD : IAsyncInitialization
-	{
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class BigService1(Service0 service0, ServiceA? serviceA, ServiceB serviceB) : IAsyncInitialization
-	{
-		public readonly Service0 Service0 = service0;
-
-		public readonly ServiceA? ServiceA = serviceA;
-
-		public readonly ServiceB ServiceB = serviceB;
-
-		[SetByIoC]
-		public required Service1 Service1;
-
-		[SetByIoC]
-		public required ServiceC? ServiceC;
-
-		[SetByIoC]
-		public required ServiceD ServiceD;
-
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class BigService2(Service0 service0)
-	{
-		[UsedImplicitly]
-		public readonly Service0 Service0 = service0;
-
-		[UsedImplicitly]
-		public required Service1 Service1;
-	}
-
-	[UsedImplicitly]
-	public interface IBigService3;
-
-	[InstantiatedByIoC]
-	public class BigService3 : IAsyncInitialization, IBigService3
-	{
-#pragma warning disable CA1822
-		[UsedImplicitly]
-		public FactoryService GetService() => new ();
-#pragma warning restore CA1822
-
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	public interface IDecor;
-
-	[InstantiatedByIoC]
-	public class BaseDecor : IDecor, IAsyncInitialization
-	{
-		public Task Initialization => field ??= Init();
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class FactoryDecor
-	{
-#pragma warning disable CA1822
-		[CalledByIoC]
-		public IDecor? Factory() => null;
-#pragma warning restore CA1822
-	}
-
-	[InstantiatedByIoC]
-	public class WrapDecor(IDecor decor) : IDecor
-	{
-		[UsedImplicitly]
-		public readonly IDecor Decor = decor;
-	}
-
 	[TestMethod]
 	public async Task TestMethod0Async()
 	{
@@ -212,6 +96,7 @@ public class AsyncTest
 														 services.AddType<Service0>();
 														 services.AddType<Service1>();
 														 services.AddType<ServiceA>();
+
 														 //services.AddType<ServiceB>();
 														 services.AddType<ServiceC>();
 														 services.AddType<ServiceD>();
@@ -319,5 +204,149 @@ public class AsyncTest
 
 		var decor = await container.GetService<IDecor>();
 		Assert.IsNull(decor);
+	}
+
+	[InstantiatedByIoC]
+	public class Service0;
+
+	[InstantiatedByIoC]
+	public class Service1;
+
+	[InstantiatedByIoC]
+	public class FactoryService;
+
+	[InstantiatedByIoC]
+	public class ServiceA : IAsyncInitialization
+	{
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	[InstantiatedByIoC]
+	public class ServiceB : IAsyncInitialization
+	{
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	[InstantiatedByIoC]
+	public class ServiceC : IAsyncInitialization
+	{
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	[InstantiatedByIoC]
+	public class ServiceD : IAsyncInitialization
+	{
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	[InstantiatedByIoC]
+	public class BigService1(Service0 service0, ServiceA? serviceA, ServiceB serviceB) : IAsyncInitialization
+	{
+		public readonly Service0 Service0 = service0;
+
+		public readonly ServiceA? ServiceA = serviceA;
+
+		public readonly ServiceB ServiceB = serviceB;
+
+		[SetByIoC]
+		public required Service1 Service1;
+
+		[SetByIoC]
+		public required ServiceC? ServiceC;
+
+		[SetByIoC]
+		public required ServiceD ServiceD;
+
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	[InstantiatedByIoC]
+	public class BigService2(Service0 service0)
+	{
+		[UsedImplicitly]
+		public readonly Service0 Service0 = service0;
+
+		[UsedImplicitly]
+		public required Service1 Service1;
+	}
+
+	[UsedImplicitly]
+	public interface IBigService3;
+
+	[InstantiatedByIoC]
+	public class BigService3 : IAsyncInitialization, IBigService3
+	{
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+#pragma warning disable CA1822
+		[UsedImplicitly]
+		public FactoryService GetService() => new();
+#pragma warning restore CA1822
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	public interface IDecor;
+
+	[InstantiatedByIoC]
+	public class BaseDecor : IDecor, IAsyncInitialization
+	{
+	#region Interface IAsyncInitialization
+
+		public Task Initialization => field ??= Init();
+
+	#endregion
+
+		private static async Task Init() => await Task.Delay(1);
+	}
+
+	[InstantiatedByIoC]
+	public class FactoryDecor
+	{
+#pragma warning disable CA1822
+		[CalledByIoC]
+		public IDecor? Factory() => null;
+#pragma warning restore CA1822
+	}
+
+	[InstantiatedByIoC]
+	public class WrapDecor(IDecor decor) : IDecor
+	{
+		[UsedImplicitly]
+		public readonly IDecor Decor = decor;
 	}
 }

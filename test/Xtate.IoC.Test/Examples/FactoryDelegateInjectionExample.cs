@@ -16,6 +16,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // ReSharper disable All
+
 namespace Xtate.IoC.Examples;
 
 // Demonstrates injecting a dependency via a factory delegate Func<ValueTask<T>>.

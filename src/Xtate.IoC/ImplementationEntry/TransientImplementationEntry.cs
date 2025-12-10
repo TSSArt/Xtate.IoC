@@ -24,7 +24,8 @@ namespace Xtate.IoC;
 public class TransientImplementationEntry : ImplementationEntry
 {
 	/// <summary>
-	///     Bin that tracks created transient instances for disposal when the owning <see cref="ServiceProvider" /> is disposed.
+	///     Bin that tracks created transient instances for disposal when the owning <see cref="ServiceProvider" /> is
+	///     disposed.
 	/// </summary>
 	/// <remarks>
 	///     Non‑disposable instances are ignored by the bin. Disposable instances are registered so their lifetime is tied to

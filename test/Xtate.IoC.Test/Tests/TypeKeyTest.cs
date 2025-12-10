@@ -158,12 +158,12 @@ public class TypeKeyTest
 	{
 		// Arrange  
 		var key = (GenericTypeKey) TypeKey.ServiceKey<GenericClass<object>, int>();
-		
+
 		// Act  
 		var str = key.DefinitionKey.ToString();
 
 		// Assert
-		Assert.AreEqual("TypeKeyTest.GenericClass<T>", str);
+		Assert.AreEqual(expected: "TypeKeyTest.GenericClass<T>", str);
 	}
 
 	[TestMethod]
@@ -171,12 +171,12 @@ public class TypeKeyTest
 	{
 		// Arrange  
 		var key = (GenericTypeKey) TypeKey.ImplementationKey<GenericClass<object>, int>();
-		
+
 		// Act  
 		var str = key.DefinitionKey.ToString();
 
 		// Assert
-		Assert.AreEqual("^TypeKeyTest.GenericClass<T>", str);
+		Assert.AreEqual(expected: "^TypeKeyTest.GenericClass<T>", str);
 	}
 
 	private class TypedActionClass : ITypeKeyAction
