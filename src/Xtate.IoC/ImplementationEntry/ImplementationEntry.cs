@@ -374,12 +374,12 @@ public abstract class ImplementationEntry
 	/// <summary>
 	///     Creates an exception indicating a type requiring async initialization was used in a sync context.
 	/// </summary>
-	private static DependencyInjectionException TypeUsedInSynchronousInstantiationException<T>() => new(Res.Format(Resources.Exception_TypeUsedInSynchronousInstantiation, typeof(T)));
+	private static DependencyInjectionException TypeUsedInSynchronousInstantiationException<T>() => new(Resources.Exception_TypeUsedInSynchronousInstantiation(typeof(T)));
 
 	/// <summary>
 	///     Creates an exception indicating a service is not available synchronously because its factory is async-only.
 	/// </summary>
-	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Res.Format(Resources.Exception_ServiceNotAvailableInSynchronousContext, typeof(T)));
+	private static DependencyInjectionException ServiceNotAvailableInSynchronousContextException<T>() => new(Resources.Exception_ServiceNotAvailableInSynchronousContext(typeof(T)));
 
 	/// <summary>
 	///     Executes the factory (async-aware) optionally wrapping with provider actions.

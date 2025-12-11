@@ -31,7 +31,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		{
 			if (type.IsInterface || type.IsAbstract)
 			{
-				throw new ArgumentException(Res.Format(Resources.Exception_InvalidType, type), nameof(type));
+				throw new ArgumentException(Resources.Exception_InvalidType(type), nameof(type));
 			}
 		}
 
@@ -41,7 +41,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 
 	private ImplementationType(Type openGenericType) => _type = _openGenericType = openGenericType;
 
-	public Type Type => _type ?? throw new InvalidOperationException(Resources.Exception_ServiceTypeNotInitialized);
+	public Type Type => _type ?? throw new InvalidOperationException(Resources.Exception_ImplementationTypeNotInitialized);
 
 	public bool IsGeneric => _openGenericType is not null;
 
@@ -159,11 +159,9 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		}
 		catch (Exception ex)
 		{
-			var message = Res.Format(
-				synchronousOnly
-					? Resources.Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken
-					: Resources.Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken,
-				_type, typeof(TService));
+			var message = synchronousOnly
+				? Resources.Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken(_type, typeof(TService))
+				: Resources.Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken(_type, typeof(TService));
 
 			throw new DependencyInjectionException(message, ex);
 		}

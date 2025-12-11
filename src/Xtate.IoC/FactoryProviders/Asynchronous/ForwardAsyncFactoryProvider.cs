@@ -30,7 +30,7 @@ internal class ForwardAsyncFactoryProvider<TImplementation, TService, TArg> : Fa
 			return ServiceType.TypeOf<TService>().IsGeneric ? Resolver.GetResolver : GetService;
 		}
 
-		throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeCastedTo, typeof(TImplementation), typeof(TService)));
+		throw new DependencyInjectionException(Resources.Exception_TypeCantBeCastedTo(typeof(TImplementation), typeof(TService)));
 	}
 
 	private static ValueTask<TService> GetService(IServiceProvider serviceProvider, TArg argument)
@@ -93,7 +93,7 @@ internal class ForwardAsyncFactoryProvider<TImplementation, TService, TArg> : Fa
 				return GetDelegateForType(typeof(ForwardAsyncFactoryProvider<,,>), implementationType.Type, typeof(TResolved), typeof(TResolvedArg));
 			}
 
-			throw new DependencyInjectionException(Res.Format(Resources.Exception_TypeCantBeConstructedBasedOnServiceType, typeof(TImplementation), typeof(TService)));
+			throw new DependencyInjectionException(Resources.Exception_TypeCantBeConstructedBasedOnServiceType(typeof(TImplementation), typeof(TService)));
 		}
 	}
 }

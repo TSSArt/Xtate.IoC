@@ -244,7 +244,7 @@ internal abstract class ClassFactoryProvider
 		}
 		catch (Exception ex)
 		{
-			throw new DependencyInjectionException(Res.Format(Resources.Exception_CantFindFactoryForType, implementationType), ex);
+			throw new DependencyInjectionException(Resources.Exception_CantFindFactoryForType(implementationType), ex);
 		}
 	}
 
@@ -301,7 +301,7 @@ internal abstract class ClassFactoryProvider
 		throw new DependencyInjectionException(Resources.Exception_NoConstructorFound);
 	}
 
-	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Res.Format(Resources.Exception_FactoryOfRaisedException, Delegate.Method.ReturnType), ex);
+	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Resources.Exception_FactoryOfRaisedException(Delegate.Method.ReturnType), ex);
 
 	protected object?[] RentArray() => Parameters.Length > 0 ? ArgsPool.Rent(Parameters.Length) : [];
 

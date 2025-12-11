@@ -81,5 +81,5 @@ internal static class Infra
 	[DoesNotReturn]
 	private static void ThrowAssertion() => throw new InvalidOperationException(Resources.Exception_AssertionFailed);
 
-	public static InvalidOperationException Unmatched<T>(T value) => new(Res.Format(Resources.Exception_AssertUnmatched, typeof(T).FullName, value));
+	public static InvalidOperationException Unmatched<T>(T value) => new(Resources.Exception_AssertUnmatched(typeof(T), value));
 }

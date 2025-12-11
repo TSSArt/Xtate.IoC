@@ -31,7 +31,7 @@ internal static class OptionExtensions
 		{
 			if ((option & ~allowedOptions) is var notSupportedOptions && notSupportedOptions != 0)
 			{
-				throw new ArgumentException(Res.Format(Resources.Exception_OptionDoesNotSupport, notSupportedOptions));
+				throw new ArgumentException(Resources.Exception_OptionDoesNotSupport(notSupportedOptions));
 			}
 		}
 

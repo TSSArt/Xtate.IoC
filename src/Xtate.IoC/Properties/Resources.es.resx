@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,70 +118,70 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Exception_FactoryOfRaisedException" xml:space="preserve">
-    <value>Factory of [{0}] raised exception</value>
+    <value>La fábrica de [{0}] generó una excepción</value>
   </data>
   <data name="Exception_CantFindFactoryForType" xml:space="preserve">
-    <value>Can't find factory for type [{0}]</value>
+    <value>No se puede encontrar una fábrica para el tipo [{0}]</value>
   </data>
   <data name="Exception_TypeCantBeCastedTo" xml:space="preserve">
-    <value>Type {0} can't be cast to {1}</value>
+    <value>El tipo {0} no se puede convertir a {1}</value>
   </data>
   <data name="Exception_TypeCantBeConstructedBasedOnServiceType" xml:space="preserve">
-    <value>Type {0} can't be constructed based on service type {1}</value>
+    <value>El tipo {0} no se puede construir a partir del tipo de servicio {1}</value>
   </data>
   <data name="Exception_AssertUnmatched" xml:space="preserve">
-    <value>Unmatched value ({0}:{1})</value>
+    <value>Valor no coincidente ({0}:{1})</value>
   </data>
   <data name="Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contain method (or ambiguity) with return type {1} and empty or single CancellationToken input parameter</value>
+    <value>El tipo {0} no contiene un método (o es ambiguo) con tipo de retorno {1} y sin parámetros de entrada o con un único parámetro CancellationToken</value>
   </data>
   <data name="Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contain method (or ambiguity) with return type ValueTask&lt;{1}&gt; or {1} and empty or single CancellationToken input parameter</value>
+    <value>El tipo {0} no contiene un método (o es ambiguo) con tipo de retorno ValueTask&lt;{1}&gt; o {1} y sin parámetros de entrada o con un único parámetro CancellationToken</value>
   </data>
   <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
-    <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously</value>
+    <value>El tipo {0} se utiliza en una instanciación sincrónica y no se puede inicializar de forma asincrónica</value>
   </data>
   <data name="Exception_CantCastForwardDelegate" xml:space="preserve">
-    <value>Can't cast/forward delegate {0} to {1}</value>
+    <value>No se puede convertir/reenviar el delegado {0} a {1}</value>
   </data>
   <data name="Exception_ServiceTypeNotInitialized" xml:space="preserve">
-    <value>ServiceType not initialized</value>
+    <value>ServiceType no inicializado</value>
   </data>
   <data name="Exception_ImplementationTypeNotInitialized" xml:space="preserve">
-    <value>ImplementationType not initialized</value>
+    <value>ImplementationType no inicializado</value>
   </data>
   <data name="Exception_ServiceNotAvailableInSynchronousContext" xml:space="preserve">
-    <value>Service [{0}] not available in synchronous context</value>
+    <value>El servicio [{0}] no está disponible en un contexto sincrónico</value>
   </data>
   <data name="Exception_ServiceMissedInContainer" xml:space="preserve">
-    <value>Service [{0}] missed in container</value>
+    <value>El servicio [{0}] falta en el contenedor</value>
   </data>
   <data name="Exception_ServiceArgMissedInContainer" xml:space="preserve">
-    <value>Service [{0}({1:, |p1})] missed in container</value>
+    <value>El servicio [{0}({1:, |p1})] falta en el contenedor</value>
   </data>
   <data name="Exception_InvalidType" xml:space="preserve">
-    <value>Invalid type</value>
+    <value>Tipo no válido</value>
   </data>
   <data name="Exception_AssertionFailed" xml:space="preserve">
-    <value>Assertion failed</value>
+    <value>La aserción falló</value>
   </data>
   <data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
-    <value>More than one method found</value>
+    <value>Se encontró más de un método</value>
   </data>
   <data name="Exception_NoMethodFound" xml:space="preserve">
-    <value>No method found</value>
+    <value>No se encontró ningún método</value>
   </data>
   <data name="Exception_MoreThanOneConstructorFound" xml:space="preserve">
-    <value>More than one constructor found</value>
+    <value>Se encontró más de un constructor</value>
   </data>
   <data name="Exception_NoConstructorFound" xml:space="preserve">
-    <value>No constructor found</value>
+    <value>No se encontró ningún constructor</value>
   </data>
   <data name="Exception_OptionDoesNotSupport" xml:space="preserve">
-    <value>Option {0} does not support</value>
+    <value>La opción {0} no es compatible</value>
   </data>
   <data name="Exception_CycleReferenceDetectedInContainerConfiguration" xml:space="preserve">
-    <value>Cycle reference detected in container configuration</value>
+    <value>Se detectó una referencia cíclica en la configuración del contenedor</value>
   </data>
   <data name="Format_ServiceNoArgs" xml:space="preserve">
     <value>{0}</value>

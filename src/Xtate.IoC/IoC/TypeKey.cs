@@ -51,8 +51,8 @@ public abstract class TypeKey
 		private static class Nested
 		{
 			public static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
-				? Res.Format(Resources.Format_ServiceNoArgs, ServiceType.TypeOf<T>())
-				: Res.Format(Resources.Format_ServiceWithArgs, ServiceType.TypeOf<T>(), ArgumentType.TypeOf<TArg>());
+				? Resources.Format_ServiceNoArgs(ServiceType.TypeOf<T>())
+				: Resources.Format_ServiceWithArgs(ServiceType.TypeOf<T>(), ArgumentType.TypeOf<TArg>());
 		}
 
 		private class Simple : SimpleTypeKey
@@ -83,8 +83,8 @@ public abstract class TypeKey
 		private static class Nested
 		{
 			public static readonly string ToStringValue = ArgumentType.TypeOf<TArg>().IsEmpty
-				? Res.Format(Resources.Format_ImplementationNoArgs, ImplementationType.TypeOf<T>())
-				: Res.Format(Resources.Format_ImplementationWithArgs, ImplementationType.TypeOf<T>(), ArgumentType.TypeOf<TArg>());
+				? Resources.Format_ImplementationNoArgs(ImplementationType.TypeOf<T>())
+				: Resources.Format_ImplementationWithArgs(ImplementationType.TypeOf<T>(), ArgumentType.TypeOf<TArg>());
 		}
 
 		private class Simple : SimpleTypeKey
@@ -116,7 +116,7 @@ public abstract class TypeKey
 
 		public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is DefinitionServiceTypeKey other && _openGeneric.Equals(other._openGeneric));
 
-		public override string ToString() => Res.Format(Resources.Format_ServiceNoArgs, _openGeneric);
+		public override string ToString() => Resources.Format_ServiceNoArgs(_openGeneric);
 	}
 
 	private class DefinitionImplementationTypeKey(in ImplementationType openGeneric) : SimpleTypeKey
@@ -127,6 +127,6 @@ public abstract class TypeKey
 
 		public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is DefinitionImplementationTypeKey other && _openGeneric.Equals(other._openGeneric));
 
-		public override string ToString() => Res.Format(Resources.Format_ImplementationNoArgs, _openGeneric);
+		public override string ToString() => Resources.Format_ImplementationNoArgs(_openGeneric);
 	}
 }

@@ -30,7 +30,7 @@ public class MissedServiceException : DependencyInjectionException
 
 	public Type? Argument { get; init; }
 
-	public static MissedServiceException Create<T>() => new(Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))) { Service = typeof(T) };
+	public static MissedServiceException Create<T>() => new(Resources.Exception_ServiceMissedInContainer(typeof(T))) { Service = typeof(T) };
 
 	public static MissedServiceException Create<T, TArg>()
 	{
@@ -38,8 +38,8 @@ public class MissedServiceException : DependencyInjectionException
 		var isEmptyArg = argumentType.IsEmpty;
 
 		var message = isEmptyArg
-			? Res.Format(Resources.Exception_ServiceMissedInContainer, typeof(T))
-			: Res.Format(Resources.Exception_ServiceArgMissedInContainer, typeof(T), argumentType);
+			? Resources.Exception_ServiceMissedInContainer(typeof(T))
+			: Resources.Exception_ServiceArgMissedInContainer(typeof(T), argumentType);
 
 		return new MissedServiceException(message) { Service = typeof(T), Argument = isEmptyArg ? null : typeof(TArg) };
 	}

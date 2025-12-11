@@ -86,7 +86,7 @@ internal static class FuncConverter
 
 		if (!toType.IsGenericType || Array.IndexOf(FuncSet, toType.GetGenericTypeDefinition()) < 0)
 		{
-			throw new InvalidCastException(Res.Format(Resources.Exception_CantCastForwardDelegate, func.GetType(), toType));
+			throw new InvalidCastException(Resources.Exception_CantCastForwardDelegate(func.GetType(), toType));
 		}
 
 		var toArgs = toType.GetGenericArguments();

@@ -115,6 +115,15 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ImplementationType not initialized.
+        /// </summary>
+        internal static string Exception_ImplementationTypeNotInitialized {
+            get {
+                return ResourceManager.GetString("Exception_ImplementationTypeNotInitialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid type.
         /// </summary>
         internal static string Exception_InvalidType {

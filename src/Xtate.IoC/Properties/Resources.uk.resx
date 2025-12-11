@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,70 +118,70 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Exception_FactoryOfRaisedException" xml:space="preserve">
-    <value>Factory of [{0}] raised exception</value>
+    <value>Фабрика [{0}] викликала виняток</value>
   </data>
   <data name="Exception_CantFindFactoryForType" xml:space="preserve">
-    <value>Can't find factory for type [{0}]</value>
+    <value>Не вдається знайти фабрику для типу [{0}]</value>
   </data>
   <data name="Exception_TypeCantBeCastedTo" xml:space="preserve">
-    <value>Type {0} can't be cast to {1}</value>
+    <value>Тип {0} не можна перетворити на {1}</value>
   </data>
   <data name="Exception_TypeCantBeConstructedBasedOnServiceType" xml:space="preserve">
-    <value>Type {0} can't be constructed based on service type {1}</value>
+    <value>Тип {0} неможливо сконструювати на основі типу сервісу {1}</value>
   </data>
   <data name="Exception_AssertUnmatched" xml:space="preserve">
-    <value>Unmatched value ({0}:{1})</value>
+    <value>Невідповідне значення ({0}:{1})</value>
   </data>
   <data name="Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contain method (or ambiguity) with return type {1} and empty or single CancellationToken input parameter</value>
+    <value>Тип {0} не містить методу (або має неоднозначність) з типом повернення {1} та без параметрів або з єдиним параметром CancellationToken</value>
   </data>
   <data name="Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Type {0} does not contain method (or ambiguity) with return type ValueTask&lt;{1}&gt; or {1} and empty or single CancellationToken input parameter</value>
+    <value>Тип {0} не містить асинхронного методу (або має неоднозначність) з типом повернення ValueTask&lt;{1}&gt; або {1} та без параметрів або з єдиним параметром CancellationToken</value>
   </data>
   <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
-    <value>Type {0} used in synchronous instantiation and can't be initialized asynchronously</value>
+    <value>Тип {0} використовується в синхронному створенні екземпляра і не може бути ініціалізований асинхронно</value>
   </data>
   <data name="Exception_CantCastForwardDelegate" xml:space="preserve">
-    <value>Can't cast/forward delegate {0} to {1}</value>
+    <value>Неможливо перетворити/переадресувати делегат {0} до {1}</value>
   </data>
   <data name="Exception_ServiceTypeNotInitialized" xml:space="preserve">
-    <value>ServiceType not initialized</value>
+    <value>ServiceType не ініціалізовано</value>
   </data>
   <data name="Exception_ImplementationTypeNotInitialized" xml:space="preserve">
-    <value>ImplementationType not initialized</value>
+    <value>ImplementationType не ініціалізовано</value>
   </data>
   <data name="Exception_ServiceNotAvailableInSynchronousContext" xml:space="preserve">
-    <value>Service [{0}] not available in synchronous context</value>
+    <value>Сервіс [{0}] недоступний у синхронному контексті</value>
   </data>
   <data name="Exception_ServiceMissedInContainer" xml:space="preserve">
-    <value>Service [{0}] missed in container</value>
+    <value>Сервіс [{0}] відсутній у контейнері</value>
   </data>
   <data name="Exception_ServiceArgMissedInContainer" xml:space="preserve">
-    <value>Service [{0}({1:, |p1})] missed in container</value>
+    <value>Сервіс [{0}({1:, |p1})] відсутній у контейнері</value>
   </data>
   <data name="Exception_InvalidType" xml:space="preserve">
-    <value>Invalid type</value>
+    <value>Неприпустимий тип</value>
   </data>
   <data name="Exception_AssertionFailed" xml:space="preserve">
-    <value>Assertion failed</value>
+    <value>Перевірка (assertion) не пройшла</value>
   </data>
   <data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
-    <value>More than one method found</value>
+    <value>Знайдено більше ніж один метод</value>
   </data>
   <data name="Exception_NoMethodFound" xml:space="preserve">
-    <value>No method found</value>
+    <value>Метод не знайдено</value>
   </data>
   <data name="Exception_MoreThanOneConstructorFound" xml:space="preserve">
-    <value>More than one constructor found</value>
+    <value>Знайдено більше ніж один конструктор</value>
   </data>
   <data name="Exception_NoConstructorFound" xml:space="preserve">
-    <value>No constructor found</value>
+    <value>Конструктор не знайдено</value>
   </data>
   <data name="Exception_OptionDoesNotSupport" xml:space="preserve">
-    <value>Option {0} does not support</value>
+    <value>Опція {0} не підтримується</value>
   </data>
   <data name="Exception_CycleReferenceDetectedInContainerConfiguration" xml:space="preserve">
-    <value>Cycle reference detected in container configuration</value>
+    <value>Виявлено циклічне посилання в конфігурації контейнера</value>
   </data>
   <data name="Format_ServiceNoArgs" xml:space="preserve">
     <value>{0}</value>
