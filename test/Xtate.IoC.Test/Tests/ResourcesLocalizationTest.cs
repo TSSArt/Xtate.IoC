@@ -16,6 +16,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 using System.Globalization;
+using System.Threading;
 
 namespace Xtate.IoC.Test;
 
@@ -31,8 +32,10 @@ public class ResourcesLocalizationTest
 
 		try
 		{
+			const double value = 1.5;
+
 			var msg1 = Resources.Exception_ServiceMissedInContainer(typeof(ServiceX));
-			var msg2 = Resources.Exception_AssertUnmatched(typeof(double), 1.5);
+			var msg2 = Resources.Exception_AssertUnmatched(typeof(double), value);
 
 			// ReSharper disable StringLiteralTypo
 			Assert.AreEqual(expected: "Le service [ResourcesLocalizationTest.ServiceX] est manquant dans le conteneur", msg1);
@@ -42,7 +45,7 @@ public class ResourcesLocalizationTest
 		}
 		finally
 		{
-			Resources.Culture = previous;
+			Thread.CurrentThread.CurrentUICulture = previous;
 		}
 	}
 
@@ -62,16 +65,16 @@ public class ResourcesLocalizationTest
 		}
 		finally
 		{
-			Resources.Culture = previous;
+			Thread.CurrentThread.CurrentUICulture = previous;
 		}
 	}
 
-	private static CultureInfo? GetAndSetCulture(CultureInfo culture)
+	private static CultureInfo GetAndSetCulture(CultureInfo culture)
 	{
-		var prev = Resources.Culture;
-		Resources.Culture = culture;
+		var prevUi = Thread.CurrentThread.CurrentUICulture;
+		Thread.CurrentThread.CurrentUICulture = culture;
 
-		return prev;
+		return prevUi;
 	}
 
 	private sealed class TestContainer

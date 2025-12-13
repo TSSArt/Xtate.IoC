@@ -229,7 +229,7 @@ public abstract class ImplementationEntry
 	{
 		if (_serviceProvider.InitializationHandler is { } handler && handler.Initialize(obj))
 		{
-			return new ValueTask(handler.InitializeAsync(obj));
+			return handler.InitializeAsync(obj);
 		}
 
 		return ValueTask.CompletedTask;

@@ -26,7 +26,7 @@ namespace Xtate.IoC;
 ///     while automatically reclaiming and reusing <see cref="GCHandle" /> resources.
 /// </summary>
 /// <remarks>
-///     Internally, the bag uses a single buffer to store weak handles and a free pool for reclaimed handles.
+///     Internally, the set uses a single buffer to store weak handles and a free pool for reclaimed handles.
 ///     Periodic compaction segregates live and collected entries, minimizing contention and avoiding long-lived strong
 ///     references.
 ///     A lightweight finalizer-based <see cref="Cleaner" /> triggers cleanup and handle reuse without requiring explicit
@@ -37,29 +37,46 @@ internal sealed class WeakReferenceSet : IDisposable
 	/// <summary>
 	///     Pool of <see cref="GCHandle" /> instances available for reuse.
 	/// </summary>
-	private readonly ConcurrentQueue<GCHandle> _freeHandles = [];
+	private readonly ConcurrentQueue<WeakGCHandle<object>> _freeHandles = [];
 
 	/// <summary>
 	///     Buffer of weak handles currently holding targets.
 	/// </summary>
-	private readonly ConcurrentQueue<GCHandle> _handles = [];
+	private readonly ConcurrentQueue<WeakGCHandle<object>> _handles = [];
+
+	/// <summary>
+	///     Provides thread-safe read and write access to the protected resource.
+	/// </summary>
+	/// <remarks>
+	///     This lock allows multiple threads to read concurrently while ensuring exclusive access for write
+	///     operations. It should be used to synchronize access to shared data within the containing class.
+	/// </remarks>
+	private readonly ReaderWriterLockSlim _lock = new();
 
 	/// <summary>
 	///     A weak <see cref="GCHandle" /> to a <see cref="Cleaner" /> instance that triggers periodic cleanup.
 	/// </summary>
-	private GCHandle _cleaner;
+	private GCHandle _cleanerHandle;
 
 	/// <summary>
-	///     Initializes a new instance of the <see cref="WeakReferenceSet" /> class and
-	///     sets up a weakly-referenced <see cref="Cleaner" /> to perform background maintenance.
+	///     Initializes a new instance of the <see cref="WeakReferenceSet" /> class.
 	/// </summary>
-	public WeakReferenceSet() => _cleaner = GCHandle.Alloc(new Cleaner(this), GCHandleType.Weak);
+	/// <remarks>
+	///     The constructor creates a weak <see cref="GCHandle" /> to a lightweight <see cref="Cleaner" /> object.
+	///     The cleaner's finalizer periodically compacts the set, reclaiming collected handles and reusing them,
+	///     without holding strong references to the owning set.
+	/// </remarks>
+	public WeakReferenceSet() => _cleanerHandle = GCHandle.Alloc(new Cleaner(this), GCHandleType.Weak);
 
 #region Interface IDisposable
 
 	/// <summary>
-	///     Releases all resources used by the bag, freeing handles and suppressing finalization.
+	///     Releases all resources used by the set, freeing handles and suppressing finalization.
 	/// </summary>
+	/// <remarks>
+	///     This method frees both active and reclaimed <see cref="GCHandle" /> instances and suppresses the finalizer
+	///     to avoid double-free. It is safe to call multiple times.
+	/// </remarks>
 	public void Dispose()
 	{
 		FreeHandles();
@@ -70,38 +87,49 @@ internal sealed class WeakReferenceSet : IDisposable
 #endregion
 
 	/// <summary>
-	///     Adds an instance to the bag using a weak reference.
+	///     Adds an instance to the set using a weak reference.
 	/// </summary>
 	/// <param name="instance">The object instance to store. If <c>null</c>, the call is ignored.</param>
 	/// <remarks>
 	///     The object is stored via a <see cref="GCHandleType.Weak" /> handle. If a recycled handle is available,
-	///     it is reused to reduce allocations. A <see cref="Cleaner" /> is ensured to exist to keep the bag compact.
+	///     it is reused to reduce allocations. A <see cref="Cleaner" /> is ensured to exist to keep the set compact.
 	/// </remarks>
 	public void Add(object instance)
 	{
-		ObjectDisposedException.ThrowIf(!_cleaner.IsAllocated, this);
-
-		if (instance is null)
-		{
-			return;
-		}
+		ObjectDisposedException.ThrowIf(!_cleanerHandle.IsAllocated, this);
 
 		if (_freeHandles.TryDequeue(out var handle))
 		{
-			handle.Target = instance;
+			handle.SetTarget(instance);
+			_handles.Enqueue(handle);
 		}
 		else
 		{
-			handle = GCHandle.Alloc(instance, GCHandleType.Weak);
+			_handles.Enqueue(new WeakGCHandle<object>(instance));
+		}
+	}
+
+	private bool TryDequeueSafe(out WeakGCHandle<object> handle)
+	{
+		if (_handles.TryDequeue(out handle))
+		{
+			return true;
 		}
 
-		_handles.Enqueue(handle);
+		try
+		{
+			_lock.EnterReadLock();
 
-		_cleaner.Target ??= new Cleaner(this);
+			return _handles.TryDequeue(out handle);
+		}
+		finally
+		{
+			_lock.ExitReadLock();
+		}
 	}
 
 	/// <summary>
-	///     Attempts to retrieve a live instance from the bag.
+	///     Attempts to retrieve a live instance from the set.
 	/// </summary>
 	/// <param name="instance">When this method returns <c>true</c>, contains a live object instance; otherwise <c>null</c>.</param>
 	/// <returns><c>true</c> if a live instance was found; otherwise, <c>false</c>.</returns>
@@ -110,42 +138,20 @@ internal sealed class WeakReferenceSet : IDisposable
 	/// </remarks>
 	public bool TryTake([NotNullWhen(true)] out object? instance)
 	{
-		ObjectDisposedException.ThrowIf(!_cleaner.IsAllocated, this);
+		ObjectDisposedException.ThrowIf(!_cleanerHandle.IsAllocated, this);
 
-		if (TryTakeLiveInstance(out instance))
+		while (TryDequeueSafe(out var handle))
 		{
-			return true;
-		}
-
-		lock (_handles)
-		{
-			return TryTakeLiveInstance(out instance);
-		}
-	}
-
-	/// <summary>
-	///     Internal retrieval helper that scans a buffer for a live target.
-	/// </summary>
-	/// <param name="instance">When this method returns <c>true</c>, contains a live object instance; otherwise <c>null</c>.</param>
-	/// <returns><c>true</c> if a live instance was found; otherwise, <c>false</c>.</returns>
-	private bool TryTakeLiveInstance([NotNullWhen(true)] out object? instance)
-	{
-		while (_handles.TryDequeue(out var handle))
-		{
-			if (handle.Target is not { } target)
+			if (handle.TryGetTarget(out instance))
 			{
+				handle.SetTarget(null!);
+
 				_freeHandles.Enqueue(handle);
 
-				continue;
+				return true;
 			}
 
-			instance = target;
-
-			handle.Target = null;
-
 			_freeHandles.Enqueue(handle);
-
-			return true;
 		}
 
 		instance = null;
@@ -157,33 +163,50 @@ internal sealed class WeakReferenceSet : IDisposable
 	///     Performs maintenance: compacts the buffer by moving live handles back and reclaiming dead ones.
 	///     Reclaimed handles are kept for reuse and only freed upon dispose/finalization.
 	/// </summary>
+	/// <remarks>
+	///     This method disposes previously reclaimed handles to release their underlying <see cref="GCHandle" /> resources
+	///     and then iteratively compacts the active buffer in fixed-size batches to reduce contention.
+	///     After cleaning, a new <see cref="Cleaner" /> instance is assigned to the weak cleaner handle's target
+	///     (if still allocated) to ensure future periodic maintenance cycles.
+	/// </remarks>
 	private void Clean()
 	{
 		while (_freeHandles.TryDequeue(out var handle))
 		{
-			handle.Free();
+			handle.Dispose();
 		}
 
-		var count = _handles.Count;
-
-		if (count <= 32)
+		for (var count = _handles.Count; count > 0; count --)
 		{
-			return;
-		}
+			WeakGCHandle<object> handle;
 
-		lock (_handles)
-		{
-			for (; count > 0 && _handles.TryDequeue(out var handle); count --)
+			try
 			{
-				if (handle.Target is null)
+				_lock.EnterWriteLock();
+
+				if (!_handles.TryDequeue(out handle))
 				{
-					_freeHandles.Enqueue(handle);
+					break;
 				}
-				else
+
+				if (handle.TryGetTarget(out _))
 				{
 					_handles.Enqueue(handle);
+
+					continue;
 				}
 			}
+			finally
+			{
+				_lock.ExitWriteLock();
+			}
+
+			_freeHandles.Enqueue(handle);
+		}
+
+		if (_cleanerHandle.IsAllocated)
+		{
+			_cleanerHandle.Target = new Cleaner(this);
 		}
 	}
 
@@ -196,50 +219,28 @@ internal sealed class WeakReferenceSet : IDisposable
 	/// </remarks>
 	private void FreeHandles()
 	{
-		if (!_cleaner.IsAllocated)
-		{
-			return;
-		}
-
-		SafeFree(ref _cleaner);
-
-		while (_freeHandles.TryDequeue(out var handle))
-		{
-			SafeFree(ref handle);
-		}
-
-		while (_handles.TryDequeue(out var handle))
-		{
-			SafeFree(ref handle);
-		}
-	}
-
-	/// <summary>
-	///     Safely frees the specified <see cref="GCHandle" /> if it is currently allocated.
-	/// </summary>
-	/// <param name="handle">
-	///     A reference to the <see cref="GCHandle" /> to free. If the handle is not allocated, the method returns without
-	///     action.
-	/// </param>
-	/// <remarks>
-	///     This method guards against double-free scenarios by checking <see cref="GCHandle.IsAllocated" /> and
-	///     swallowing <see cref="InvalidOperationException" /> that can be thrown if the handle has already been freed.
-	///     The <paramref name="handle" /> is passed by reference to ensure the same instance is freed.
-	/// </remarks>
-	private static void SafeFree(ref GCHandle handle)
-	{
-		if (!handle.IsAllocated)
+		if (!_cleanerHandle.IsAllocated)
 		{
 			return;
 		}
 
 		try
 		{
-			handle.Free();
+			_cleanerHandle.Free();
 		}
 		catch (InvalidOperationException)
 		{
-			// Already freed
+			return; // Already freed
+		}
+
+		while (_freeHandles.TryDequeue(out var handle))
+		{
+			handle.Dispose();
+		}
+
+		while (TryDequeueSafe(out var handle))
+		{
+			handle.Dispose();
 		}
 	}
 
@@ -249,7 +250,7 @@ internal sealed class WeakReferenceSet : IDisposable
 	~WeakReferenceSet() => FreeHandles();
 
 	/// <summary>
-	///     Lightweight helper whose finalizer triggers bag cleanup without holding strong references.
+	///     Lightweight helper whose finalizer triggers set cleanup without holding strong references.
 	/// </summary>
 	/// <param name="weakReferenceSet">
 	///     The owning <see cref="WeakReferenceSet" /> to clean when this helper is
@@ -258,7 +259,7 @@ internal sealed class WeakReferenceSet : IDisposable
 	private class Cleaner(WeakReferenceSet weakReferenceSet)
 	{
 		/// <summary>
-		///     Finalizer that invokes <see cref="WeakReferenceSet.Clean" /> on the owning bag instance.
+		///     Finalizer that invokes <see cref="WeakReferenceSet.Clean" /> on the owning set instance.
 		/// </summary>
 		~Cleaner() => weakReferenceSet.Clean();
 	}

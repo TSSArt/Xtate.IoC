@@ -168,7 +168,7 @@ public class CustomInitTest
 		public bool Initialize<T>(T instance) => async;
 
 		[ExcludeFromCodeCoverage]
-		public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
+		public ValueTask InitializeAsync<T>(T instance) => ValueTask.CompletedTask;
 
 	#endregion
 	}

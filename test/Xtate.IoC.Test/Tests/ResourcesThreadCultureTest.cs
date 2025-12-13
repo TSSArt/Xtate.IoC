@@ -29,14 +29,14 @@ public class ResourcesThreadCultureTest
 	public void French_Resources_ShouldRespect_Thread_CurrentUICulture()
 	{
 		var prevUi = Thread.CurrentThread.CurrentUICulture;
-		var prevCulture = Resources.Culture; // ensure we don't override
-		Resources.Culture = null;            // use thread UI culture
 		Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr");
 
 		try
 		{
+			const double value = 1.5;
+
 			var msg1 = Resources.Exception_ServiceMissedInContainer(typeof(ServiceX));
-			var msg2 = Resources.Exception_AssertUnmatched(typeof(double), 1.5);
+			var msg2 = Resources.Exception_AssertUnmatched(typeof(double), value);
 
 			// ReSharper disable StringLiteralTypo
 			Assert.AreEqual(expected: "Le service [ResourcesThreadCultureTest.ServiceX] est manquant dans le conteneur", msg1);
@@ -47,7 +47,6 @@ public class ResourcesThreadCultureTest
 		finally
 		{
 			Thread.CurrentThread.CurrentUICulture = prevUi;
-			Resources.Culture = prevCulture;
 		}
 	}
 }

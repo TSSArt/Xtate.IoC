@@ -1,198 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ReSharper disable MarkupTextTypo -->
+<!-- ReSharper disable OverriddenWithSameValue -->
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human-readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Exception_FactoryOfRaisedException" xml:space="preserve">
-    <value>La fabrique de [{0}] a levé une exception</value>
-  </data>
-  <data name="Exception_CantFindFactoryForType" xml:space="preserve">
-    <value>Impossible de trouver une fabrique pour le type [{0}]</value>
-  </data>
-  <data name="Exception_TypeCantBeCastedTo" xml:space="preserve">
-    <value>Le type {0} ne peut pas être converti en {1}</value>
-  </data>
-  <data name="Exception_TypeCantBeConstructedBasedOnServiceType" xml:space="preserve">
-    <value>Le type {0} ne peut pas être construit à partir du type de service {1}</value>
-  </data>
-  <data name="Exception_AssertUnmatched" xml:space="preserve">
-    <value>Valeur non correspondante ({0}:{1})</value>
-  </data>
-  <data name="Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Le type {0} ne contient pas de méthode (ou ambiguïté) avec le type de retour {1} et aucun ou un seul paramètre d’entrée CancellationToken</value>
-  </data>
-  <data name="Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
-    <value>Le type {0} ne contient pas de méthode (ou ambiguïté) avec le type de retour ValueTask&lt;{1}&gt; ou {1} et aucun ou un seul paramètre d’entrée CancellationToken</value>
-  </data>
-  <data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
-    <value>Le type {0} est utilisé dans une instanciation synchrone et ne peut pas être initialisé de manière asynchrone</value>
-  </data>
-  <data name="Exception_CantCastForwardDelegate" xml:space="preserve">
-    <value>Impossible de convertir/rediriger le délégué {0} vers {1}</value>
-  </data>
-  <data name="Exception_ServiceTypeNotInitialized" xml:space="preserve">
-    <value>ServiceType non initialisé</value>
-  </data>
-  <data name="Exception_ImplementationTypeNotInitialized" xml:space="preserve">
-    <value>ImplementationType non initialisé</value>
-  </data>
-  <data name="Exception_ServiceNotAvailableInSynchronousContext" xml:space="preserve">
-    <value>Le service [{0}] n’est pas disponible dans un contexte synchrone</value>
-  </data>
-  <data name="Exception_ServiceMissedInContainer" xml:space="preserve">
-    <value>Le service [{0}] est manquant dans le conteneur</value>
-  </data>
-  <data name="Exception_ServiceArgMissedInContainer" xml:space="preserve">
-    <value>Le service [{0}({1:, |p1})] est manquant dans le conteneur</value>
-  </data>
-  <data name="Exception_InvalidType" xml:space="preserve">
-    <value>Type invalide</value>
-  </data>
-  <data name="Exception_AssertionFailed" xml:space="preserve">
-    <value>L’assertion a échoué</value>
-  </data>
-  <data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
-    <value>Plus d’une méthode trouvée</value>
-  </data>
-  <data name="Exception_NoMethodFound" xml:space="preserve">
-    <value>Aucune méthode trouvée</value>
-  </data>
-  <data name="Exception_MoreThanOneConstructorFound" xml:space="preserve">
-    <value>Plus d’un constructeur trouvé</value>
-  </data>
-  <data name="Exception_NoConstructorFound" xml:space="preserve">
-    <value>Aucun constructeur trouvé</value>
-  </data>
-  <data name="Exception_OptionDoesNotSupport" xml:space="preserve">
-    <value>L’option {0} n’est pas prise en charge</value>
-  </data>
-  <data name="Exception_CycleReferenceDetectedInContainerConfiguration" xml:space="preserve">
-    <value>Référence circulaire détectée dans la configuration du conteneur</value>
-  </data>
-  <data name="Format_ServiceNoArgs" xml:space="preserve">
-    <value>{0}</value>
-  </data>
-  <data name="Format_ServiceWithArgs" xml:space="preserve">
-    <value>{0}({1:, |p1})</value>
-  </data>
-  <data name="Format_ImplementationNoArgs" xml:space="preserve">
-    <value>^{0}</value>
-  </data>
-  <data name="Format_ImplementationWithArgs" xml:space="preserve">
-    <value>^{0}({1:, |p1})</value>
-  </data>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Exception_FactoryOfRaisedException" xml:space="preserve">
+		<value>La fabrique de [{0}] a levé une exception</value>
+	</data>
+	<data name="Exception_CantFindFactoryForType" xml:space="preserve">
+		<value>Impossible de trouver une fabrique pour le type [{0}]</value>
+	</data>
+	<data name="Exception_TypeCantBeCastedTo" xml:space="preserve">
+		<value>Le type {0} ne peut pas être converti en {1}</value>
+	</data>
+	<data name="Exception_TypeCantBeConstructedBasedOnServiceType" xml:space="preserve">
+		<value>Le type {0} ne peut pas être construit à partir du type de service {1}</value>
+	</data>
+	<data name="Exception_AssertUnmatched" xml:space="preserve">
+		<value>Valeur non correspondante ({0}:{1})</value>
+	</data>
+	<data name="Exception_TypeDoesNotContainSyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
+		<value>Le type {0} ne contient pas de méthode (ou ambiguïté) avec le type de retour {1} et aucun ou un seul paramètre d’entrée CancellationToken</value>
+	</data>
+	<data name="Exception_TypeDoesNotContainAsyncMethodWithSignatureMethodCancellationToken" xml:space="preserve">
+		<value>Le type {0} ne contient pas de méthode (ou ambiguïté) avec le type de retour ValueTask&lt;{1}&gt; ou {1} et aucun ou un seul paramètre d’entrée CancellationToken</value>
+	</data>
+	<data name="Exception_TypeUsedInSynchronousInstantiation" xml:space="preserve">
+		<value>Le type {0} est utilisé dans une instanciation synchrone et ne peut pas être initialisé de manière asynchrone</value>
+	</data>
+	<data name="Exception_CantCastForwardDelegate" xml:space="preserve">
+		<value>Impossible de convertir/rediriger le délégué {0} vers {1}</value>
+	</data>
+	<data name="Exception_ServiceTypeNotInitialized" xml:space="preserve">
+		<value>ServiceType non initialisé</value>
+	</data>
+	<data name="Exception_ImplementationTypeNotInitialized" xml:space="preserve">
+		<value>ImplementationType non initialisé</value>
+	</data>
+	<data name="Exception_ServiceNotAvailableInSynchronousContext" xml:space="preserve">
+		<value>Le service [{0}] n’est pas disponible dans un contexte synchrone</value>
+	</data>
+	<data name="Exception_ServiceMissedInContainer" xml:space="preserve">
+		<value>Le service [{0}] est manquant dans le conteneur</value>
+	</data>
+	<data name="Exception_ServiceArgMissedInContainer" xml:space="preserve">
+		<value>Le service [{0}({1:, |p1})] est manquant dans le conteneur</value>
+	</data>
+	<data name="Exception_InvalidType" xml:space="preserve">
+		<value>Type invalide</value>
+	</data>
+	<data name="Exception_AssertionFailed" xml:space="preserve">
+		<value>L’assertion a échoué</value>
+	</data>
+	<data name="Exception_MoreThanOneMethodFound" xml:space="preserve">
+		<value>Plus d’une méthode trouvée</value>
+	</data>
+	<data name="Exception_NoMethodFound" xml:space="preserve">
+		<value>Aucune méthode trouvée</value>
+	</data>
+	<data name="Exception_MoreThanOneConstructorFound" xml:space="preserve">
+		<value>Plus d’un constructeur trouvé</value>
+	</data>
+	<data name="Exception_NoConstructorFound" xml:space="preserve">
+		<value>Aucun constructeur trouvé</value>
+	</data>
+	<data name="Exception_OptionDoesNotSupport" xml:space="preserve">
+		<value>L’option {0} n’est pas prise en charge</value>
+	</data>
+	<data name="Exception_CycleReferenceDetectedInContainerConfiguration" xml:space="preserve">
+		<value>Référence circulaire détectée dans la configuration du conteneur</value>
+	</data>
+	<data name="Format_ServiceNoArgs" xml:space="preserve">
+		<value>{0}</value>
+	</data>
+	<data name="Format_ServiceWithArgs" xml:space="preserve">
+		<value>{0}({1:, |p1})</value>
+	</data>
+	<data name="Format_ImplementationNoArgs" xml:space="preserve">
+		<value>^{0}</value>
+	</data>
+	<data name="Format_ImplementationWithArgs" xml:space="preserve">
+		<value>^{0}({1:, |p1})</value>
+	</data>
 </root>

@@ -15,23 +15,45 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace Xtate.IoC;
+#if !NET10_0_OR_GREATER
+namespace System.Runtime.InteropServices;
 
-public interface IInitializationHandler
+internal struct WeakGCHandle<T>(T target) where T : class
 {
-	/// <summary>
-	///     Runs synchronous initialization.
-	/// </summary>
-	/// <typeparam name="T">Instance type</typeparam>
-	/// <param name="instance">Instance to initialize</param>
-	/// <returns>true - if additional asynchronous initialization required</returns>
-	bool Initialize<T>(T instance);
+	private GCHandle _handle = GCHandle.Alloc(target, GCHandleType.Weak);
 
-	/// <summary>
-	///     Runs asynchronous initialization.
-	/// </summary>
-	/// <typeparam name="T">Instance type</typeparam>
-	/// <param name="instance">Instance to initialize</param>
-	/// <returns>Initialization ValueTask</returns>
-	ValueTask InitializeAsync<T>(T instance);
+	public void Dispose()
+	{
+		if (!_handle.IsAllocated)
+		{
+			return;
+		}
+
+		try
+		{
+			_handle.Free();
+		}
+		catch (InvalidOperationException)
+		{
+			// already freed
+		}
+	}
+
+	public readonly bool TryGetTarget([NotNullWhen(true)] out T? target)
+	{
+		if (_handle.Target is T val)
+		{
+			target = val;
+
+			return true;
+		}
+
+		target = null;
+
+		return false;
+	}
+
+	public void SetTarget(T target) => _handle.Target = target;
 }
+
+#endif

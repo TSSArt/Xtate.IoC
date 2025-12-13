@@ -784,7 +784,7 @@ public class ImplementationEntryTest
 
 		public bool Initialize<T>(T instance) => instance is IAsyncInitialization;
 
-		public Task InitializeAsync<T>(T instance) => ((IAsyncInitialization) instance!).Initialization;
+		public ValueTask InitializeAsync<T>(T instance) => new(((IAsyncInitialization) instance!).Initialization);
 
 	#endregion
 	}
@@ -842,7 +842,7 @@ public class ImplementationEntryTest
 
 		public bool Initialize<T>(T instance) => true;
 
-		public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
+		public ValueTask InitializeAsync<T>(T instance) => ValueTask.CompletedTask;
 
 	#endregion
 	}
@@ -856,7 +856,7 @@ public class ImplementationEntryTest
 		public bool Initialize<T>(T instance) => false;
 
 		[ExcludeFromCodeCoverage]
-		public Task InitializeAsync<T>(T instance) => Task.CompletedTask;
+		public ValueTask InitializeAsync<T>(T instance) => ValueTask.CompletedTask;
 
 	#endregion
 	}

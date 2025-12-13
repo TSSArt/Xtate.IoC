@@ -20,8 +20,7 @@ namespace Xtate.IoC;
 /// <summary>
 ///     Default <see cref="IInitializationHandler" /> implementation for asynchronous initialization.
 ///     Determines whether an instance requires asynchronous initialization (implements <see cref="IAsyncInitialization" />
-///     ) and
-///     provides access to its initialization <see cref="Task" />.
+///     ) and provides access to its initialization <see cref="ValueTask" />.
 /// </summary>
 internal class AsyncInitializationHandler : IInitializationHandler
 {
@@ -49,10 +48,11 @@ internal class AsyncInitializationHandler : IInitializationHandler
 	/// <typeparam name="T">Instance type.</typeparam>
 	/// <param name="instance">Instance to initialize asynchronously.</param>
 	/// <returns>
-	///     A <see cref="Task" /> representing the asynchronous initialization operation; a completed task if no asynchronous
+	///     A <see cref="ValueTask" /> representing the asynchronous initialization operation; a completed task if no
+	///     asynchronous
 	///     initialization is required.
 	/// </returns>
-	Task IInitializationHandler.InitializeAsync<T>(T instance) => InitializeAsync(instance).AsTask();
+	ValueTask IInitializationHandler.InitializeAsync<T>(T instance) => InitializeAsync(instance);
 
 #endregion
 
