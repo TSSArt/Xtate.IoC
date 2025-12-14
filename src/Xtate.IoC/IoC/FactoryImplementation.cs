@@ -37,15 +37,26 @@ public readonly struct FactoryImplementation<TImplementation> where TImplementat
 
 	public FactoryImplementation<TImplementation> For<TService>(Option option = Option.Default) => Register<TService, Empty>(sharedWithin: null, option);
 
-	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default) => Register<TService, TArg>(sharedWithin: null, option);
-
-	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(sharedWithin: null, option);
-
 	public FactoryImplementation<TImplementation> For<TService>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, Empty>(sharedWithin, option);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg>(Option option = Option.Default) => Register<TService, TArg>(sharedWithin: null, option);
 
 	public FactoryImplementation<TImplementation> For<TService, TArg>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, TArg>(sharedWithin, option);
 
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(sharedWithin: null, option);
+
 	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2>(SharedWithin sharedWithin, Option option = Option.Default) => Register<TService, (TArg1, TArg2)>(sharedWithin, option);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2, TArg3>(Option option = Option.Default) => Register<TService, (TArg1, TArg2, TArg3)>(sharedWithin: null, option);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2, TArg3>(SharedWithin sharedWithin, Option option = Option.Default) =>
+		Register<TService, (TArg1, TArg2, TArg3)>(sharedWithin, option);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2, TArg3, TArg4>(Option option = Option.Default) =>
+		Register<TService, (TArg1, TArg2, TArg3, TArg4)>(sharedWithin: null, option);
+
+	public FactoryImplementation<TImplementation> For<TService, TArg1, TArg2, TArg3, TArg4>(SharedWithin sharedWithin, Option option = Option.Default) =>
+		Register<TService, (TArg1, TArg2, TArg3, TArg4)>(sharedWithin, option);
 
 	private FactoryImplementation<TImplementation> Register<TService, TArg>(SharedWithin? sharedWithin, Option option)
 	{

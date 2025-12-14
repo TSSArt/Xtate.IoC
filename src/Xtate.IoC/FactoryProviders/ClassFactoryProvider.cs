@@ -20,75 +20,27 @@ using System.Reflection;
 
 namespace Xtate.IoC;
 
-internal abstract class ClassFactoryProvider
+internal abstract partial class ClassFactoryProvider
 {
 	private const string RequiredMemberAttr = @"System.Runtime.CompilerServices.RequiredMemberAttribute";
 
+	private static readonly GetterDelegateCreator[] GetterDelegateCreators =
+	[
+		new EnumerableGetterDelegateCreator(),
+		new FuncNoArgsGetterDelegateCreator(),
+		new FuncArg1GetterDelegateCreator(),
+		new FuncArg2GetterDelegateCreator(),
+		new FuncArg3GetterDelegateCreator(),
+		new FuncArg4GetterDelegateCreator()
+	];
+
 	private static readonly ArrayPool<object?> ArgsPool = ArrayPool<object?>.Create(maxArrayLength: 32, maxArraysPerBucket: 64);
-
-	private static readonly MethodInfo GetFactory;
-
-	private static readonly MethodInfo GetFactoryArg;
-
-	private static readonly MethodInfo GetFactoryArg2;
-
-	private static readonly MethodInfo GetSyncFactory;
-
-	private static readonly MethodInfo GetSyncFactoryArg;
-
-	private static readonly MethodInfo GetSyncFactoryArg2;
-
-	private static readonly MethodInfo GetRequiredFactory;
-
-	private static readonly MethodInfo GetRequiredFactoryArg;
-
-	private static readonly MethodInfo GetRequiredFactoryArg2;
-
-	private static readonly MethodInfo GetRequiredSyncFactory;
-
-	private static readonly MethodInfo GetRequiredSyncFactoryArg;
-
-	private static readonly MethodInfo GetRequiredSyncFactoryArg2;
-
-	private static readonly MethodInfo GetServices;
-
-	private static readonly MethodInfo GetServicesFactoryArg;
-
-	private static readonly MethodInfo GetServicesFactoryArg2;
-
-	private static readonly MethodInfo GetServicesSync;
-
-	private static readonly MethodInfo GetServicesSyncFactoryArg;
-
-	private static readonly MethodInfo GetServicesSyncFactoryArg2;
 
 	protected readonly Delegate Delegate;
 
 	protected readonly Member[] Parameters;
 
 	protected readonly Member[] RequiredMembers;
-
-	static ClassFactoryProvider()
-	{
-		GetServices = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesWrapper));
-		GetServicesSync = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesSyncWrapper));
-		GetFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetFactoryWrapper));
-		GetRequiredFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredFactoryWrapper));
-		GetSyncFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetSyncFactoryWrapper));
-		GetRequiredSyncFactory = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredSyncFactoryWrapper));
-		GetServicesFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesFactoryArgWrapper));
-		GetServicesSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesSyncFactoryArgWrapper));
-		GetFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetFactoryArgWrapper));
-		GetRequiredFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredFactoryArgWrapper));
-		GetSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetSyncFactoryArgWrapper));
-		GetRequiredSyncFactoryArg = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredSyncFactoryArgWrapper));
-		GetServicesFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesFactoryArg2Wrapper));
-		GetServicesSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetServicesSyncFactoryArg2Wrapper));
-		GetFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetFactoryArg2Wrapper));
-		GetRequiredFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredFactoryArg2Wrapper));
-		GetSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetSyncFactoryArg2Wrapper));
-		GetRequiredSyncFactoryArg2 = GetMethodInfo<ClassFactoryProvider>(nameof(GetRequiredSyncFactoryArg2Wrapper));
-	}
 
 	protected ClassFactoryProvider(Type implementationType)
 	{
@@ -129,51 +81,14 @@ internal abstract class ClassFactoryProvider
 		return methodInfo;
 	}
 
-	protected Delegate CreateGetterDelegate(MemberBase member)
+	private Delegate CreateGetterDelegate(MemberBase member)
 	{
-		if (IsEnumerable(member.Type, out var async) is { } serviceType1)
+		foreach (var getterDelegateCreator in GetterDelegateCreators)
 		{
-			return CreateDelegate(async ? GetServices : GetServicesSync, serviceType1);
-		}
-
-		if (IsFunc(member.Type) is { } resultType)
-		{
-			if (IsValueTask(resultType) is { } serviceType)
+			if (getterDelegateCreator.TryCreate(member) is { } getterDelegate)
 			{
-				return CreateDelegate(member.IsNotNull(@"00") ? GetRequiredFactory : GetFactory, serviceType);
+				return getterDelegate;
 			}
-
-			return CreateDelegate(member.IsNotNull(@"0") ? GetRequiredSyncFactory : GetSyncFactory, resultType);
-		}
-
-		if (IsFunc2(member.Type) is { Type: { } resultType2, ArgType: { } argType })
-		{
-			if (IsEnumerable(resultType2, out async) is { } serviceType2)
-			{
-				return CreateDelegate(async ? GetServicesFactoryArg : GetServicesSyncFactoryArg, serviceType2, argType);
-			}
-
-			if (IsValueTask(resultType2) is { } serviceType3)
-			{
-				return CreateDelegate(member.IsNotNull(@"10") ? GetRequiredFactoryArg : GetFactoryArg, serviceType3, argType);
-			}
-
-			return CreateDelegate(member.IsNotNull(@"1") ? GetRequiredSyncFactoryArg : GetSyncFactoryArg, resultType2, argType);
-		}
-
-		if (IsFunc3(member.Type) is { Type: { } resultType3, ArgType1: { } argType1, ArgType2: { } argType2 })
-		{
-			if (IsEnumerable(resultType3, out async) is { } serviceType2)
-			{
-				return CreateDelegate(async ? GetServicesFactoryArg2 : GetServicesSyncFactoryArg2, serviceType2, argType1, argType2);
-			}
-
-			if (IsValueTask(resultType3) is { } serviceType3)
-			{
-				return CreateDelegate(member.IsNotNull(@"20") ? GetRequiredFactoryArg2 : GetFactoryArg2, serviceType3, argType1, argType2);
-			}
-
-			return CreateDelegate(member.IsNotNull(@"2") ? GetRequiredSyncFactoryArg2 : GetSyncFactoryArg2, resultType3, argType1, argType2);
 		}
 
 		return CreateDelegate(member.IsNotNull() ? GetRequiredServiceMethodInfo : GetServiceMethodInfo, member.Type);
@@ -197,12 +112,6 @@ internal abstract class ClassFactoryProvider
 	}
 
 	private static Type? IsFunc(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>) ? type.GetGenericArguments()[0] : null;
-
-	private static (Type? Type, Type? ArgType) IsFunc2(Type type) =>
-		type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<,>) && type.GetGenericArguments() is { } args ? (args[1], args[0]) : default;
-
-	private static (Type? Type, Type? ArgType1, Type? ArgType2) IsFunc3(Type type) =>
-		type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<,,>) && type.GetGenericArguments() is { } args ? (args[2], args[0], args[1]) : default;
 
 	private static Type? IsValueTask(Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>) ? type.GetGenericArguments()[0] : null;
 
@@ -371,7 +280,12 @@ internal abstract class ClassFactoryProvider
 		return Expression.Lambda(serviceExpression, arrayParameter).Compile();
 	}
 
-	protected abstract class MemberBase
+	private abstract class GetterDelegateCreator
+	{
+		public abstract Delegate? TryCreate(MemberBase member);
+	}
+
+	internal abstract class MemberBase
 	{
 		public abstract Type Type { get; }
 
@@ -389,7 +303,7 @@ internal abstract class ClassFactoryProvider
 		public override Action<object, object?>? CreateSetter() => null;
 	}
 
-	private class Field(FieldInfo fieldInfo) : MemberBase
+	protected class Field(FieldInfo fieldInfo) : MemberBase
 	{
 		public override Type Type => fieldInfo.FieldType;
 
@@ -448,44 +362,4 @@ internal abstract class ClassFactoryProvider
 			MemberSetter = memberBase.CreateSetter();
 		}
 	}
-
-#region Wrappers
-
-	private static object GetServicesWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServices<T>();
-
-	private static object GetServicesSyncWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSync<T>();
-
-	private static object GetRequiredFactoryWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T>();
-
-	private static object GetFactoryWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T>();
-
-	private static object GetRequiredSyncFactoryWrapper<T>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T>();
-
-	private static object GetSyncFactoryWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T>();
-
-	private static object GetRequiredFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T, TArg>();
-
-	private static object GetFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T, TArg>();
-
-	private static object GetRequiredSyncFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T, TArg>();
-
-	private static object GetSyncFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T, TArg>();
-
-	private static object GetServicesFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg>();
-
-	private static object GetServicesSyncFactoryArgWrapper<T, TArg>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSyncFactory<T, TArg>();
-
-	private static object GetRequiredFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T, TArg1, TArg2>();
-
-	private static object GetFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T, TArg1, TArg2>();
-
-	private static object GetRequiredSyncFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T, TArg1, TArg2>();
-
-	private static object GetSyncFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T, TArg1, TArg2>();
-
-	private static object GetServicesFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg1, TArg2>();
-
-	private static object GetServicesSyncFactoryArg2Wrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSyncFactory<T, TArg1, TArg2>();
-
-#endregion
 }
