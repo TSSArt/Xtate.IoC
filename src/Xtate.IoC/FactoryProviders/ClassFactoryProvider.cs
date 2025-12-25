@@ -42,12 +42,12 @@ internal abstract partial class ClassFactoryProvider
 
 	protected readonly Member[] RequiredMembers;
 
-	protected ClassFactoryProvider(Type implementationType)
+	protected ClassFactoryProvider(Type implementationType, Type serviceType, bool async)
 	{
-		var factory = GetConstructor(implementationType);
+		var factory = FindFactory(implementationType);
 		var parameters = factory?.GetParameters();
 
-		Delegate = factory is not null && parameters is not null ? CreateDelegate(factory, parameters) : CreateDelegate(implementationType);
+		Delegate = factory is not null ? CreateDelegate(factory, parameters!, serviceType, async) : CreateDelegate(implementationType, serviceType, async);
 
 		if (parameters?.Length > 0)
 		{
@@ -65,7 +65,14 @@ internal abstract partial class ClassFactoryProvider
 			Parameters = [];
 		}
 
-		RequiredMembers = [..EnumerateRequiredMembers(implementationType)];
+		if (factory is ConstructorInfo or null)
+		{
+			RequiredMembers = [..EnumerateRequiredMembers(implementationType)];
+		}
+		else
+		{
+			RequiredMembers = [];
+		}
 	}
 
 	protected abstract MethodInfo GetServiceMethodInfo { get; }
@@ -145,11 +152,39 @@ internal abstract partial class ClassFactoryProvider
 		}
 	}
 
-	private static ConstructorInfo? GetConstructor(Type implementationType)
+	private static IEnumerable<MethodBase> EnumerateFactoryMethods(Type implementationType)
+	{
+		foreach (var constructorInfo in implementationType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+		{
+			yield return constructorInfo;
+		}
+
+		foreach (var methodInfo in implementationType.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+		{
+			if (IsFactoryMethod(methodInfo, implementationType))
+			{
+				yield return methodInfo;
+			}
+		}
+	}
+
+	private static bool IsFactoryMethod(MethodInfo methodInfo, Type implementationType) =>
+		!methodInfo.IsSpecialName && !methodInfo.ContainsGenericParameters && IsValueTask(methodInfo.ReturnType) == implementationType;
+
+	private static MethodBase? FindFactory(Type implementationType)
 	{
 		try
 		{
-			return FindConstructorInfo(implementationType.IsValueType, implementationType.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+			var factoryMethods = EnumerateFactoryMethods(implementationType);
+
+			var method = FindMethod(factoryMethods);
+
+			if (implementationType.IsValueType)
+			{
+				return method;
+			}
+
+			return method ?? throw new DependencyInjectionException(Resources.Exception_NoConstructorFound);
 		}
 		catch (Exception ex)
 		{
@@ -157,20 +192,20 @@ internal abstract partial class ClassFactoryProvider
 		}
 	}
 
-	private static ConstructorInfo? FindConstructorInfo(bool isValueType, IEnumerable<ConstructorInfo> constructorInfos)
+	private static MethodBase? FindMethod(IEnumerable<MethodBase> methods)
 	{
-		ConstructorInfo? obsoleteConstructorInfo = null;
-		ConstructorInfo? actualConstructorInfo = null;
+		MethodBase? obsoleteMethod = null;
+		MethodBase? actualMethod = null;
 		var multipleObsolete = false;
 		var multipleActual = false;
 
-		foreach (var constructorInfo in constructorInfos)
+		foreach (var method in methods)
 		{
-			if (constructorInfo.GetCustomAttribute<ObsoleteAttribute>(false) is { IsError: false })
+			if (method.GetCustomAttribute<ObsoleteAttribute>(false) is not null)
 			{
-				if (obsoleteConstructorInfo is null)
+				if (obsoleteMethod is null)
 				{
-					obsoleteConstructorInfo = constructorInfo;
+					obsoleteMethod = method;
 				}
 				else
 				{
@@ -179,9 +214,9 @@ internal abstract partial class ClassFactoryProvider
 			}
 			else
 			{
-				if (actualConstructorInfo is null)
+				if (actualMethod is null)
 				{
-					actualConstructorInfo = constructorInfo;
+					actualMethod = method;
 				}
 				else
 				{
@@ -192,25 +227,26 @@ internal abstract partial class ClassFactoryProvider
 			}
 		}
 
-		if (multipleActual || (actualConstructorInfo is null && multipleObsolete))
+		if (multipleActual || (actualMethod is null && multipleObsolete))
 		{
 			throw new DependencyInjectionException(Resources.Exception_MoreThanOneConstructorFound);
 		}
 
-		if ((actualConstructorInfo ?? obsoleteConstructorInfo) is { } resultConstructorInfo)
+		if ((actualMethod ?? obsoleteMethod) is { } resultMethod)
 		{
-			return resultConstructorInfo;
+			return resultMethod;
 		}
 
-		if (isValueType)
-		{
-			return null;
-		}
-
-		throw new DependencyInjectionException(Resources.Exception_NoConstructorFound);
+		return null;
 	}
 
-	protected DependencyInjectionException GetFactoryException(Exception ex) => new(Resources.Exception_FactoryOfRaisedException(Delegate.Method.ReturnType), ex);
+	protected DependencyInjectionException GetFactoryException(Exception ex)
+	{
+		var returnType = Delegate.Method.ReturnType;
+		var implementationType = IsValueTask(returnType) ?? returnType;
+
+		return new DependencyInjectionException(Resources.Exception_FactoryOfRaisedException(implementationType), ex);
+	}
 
 	protected object?[] RentArray() => Parameters.Length > 0 ? ArgsPool.Rent(Parameters.Length) : [];
 
@@ -254,16 +290,48 @@ internal abstract partial class ClassFactoryProvider
 		ArgsPool.Return(array);
 	}
 
-	private static Delegate CreateDelegate(Type type)
+	private static NewExpression NewValueTaskExpression(Expression expression)
+	{
+		var constructorInfo = typeof(ValueTask<>).MakeGenericType(expression.Type).GetConstructor([expression.Type]);
+
+		return Expression.New(constructorInfo!, expression);
+	}
+
+	private static async ValueTask<TService> ConvertValueTask<TImplementation, TService>(ValueTask<TImplementation> implementation) where TImplementation : TService =>
+		await implementation.ConfigureAwait(false);
+
+	private static MethodCallExpression ConvertValueTaskExpression(Expression expression, Type implementationType, Type serviceType)
+	{
+		var methodInfo = typeof(ClassFactoryProvider)
+						 .GetMethod(nameof(ConvertValueTask), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)!
+						 .MakeGenericMethod(implementationType, serviceType);
+
+		return Expression.Call(instance: null, methodInfo, expression);
+	}
+
+	private static Delegate CreateDelegate(Type type, Type serviceType, bool async)
 	{
 		var arrayParameter = Expression.Parameter(typeof(object?[]));
 
-		var serviceExpression = Expression.New(type);
+		Expression body = Expression.New(type);
 
-		return Expression.Lambda(serviceExpression, arrayParameter).Compile();
+		if (serviceType != type)
+		{
+			body = Expression.Convert(body, serviceType);
+		}
+
+		if (async)
+		{
+			body = NewValueTaskExpression(body);
+		}
+
+		return Expression.Lambda(body, arrayParameter).Compile();
 	}
 
-	private static Delegate CreateDelegate(ConstructorInfo factory, ParameterInfo[] parameters)
+	private static Delegate CreateDelegate(MethodBase factory,
+										   ParameterInfo[] parameters,
+										   Type serviceType,
+										   bool async)
 	{
 		var arrayParameter = Expression.Parameter(typeof(object?[]));
 
@@ -275,9 +343,39 @@ internal abstract partial class ClassFactoryProvider
 			args[i] = Expression.Convert(itemExpression, parameters[i].ParameterType);
 		}
 
-		var serviceExpression = Expression.New(factory, args);
+		Expression body = factory switch
+						  {
+							  ConstructorInfo constructorInfo => Expression.New(constructorInfo, args),
+							  MethodInfo methodInfo           => Expression.Call(methodInfo, args),
+							  _                               => throw Infra.Unmatched(factory)
+						  };
 
-		return Expression.Lambda(serviceExpression, arrayParameter).Compile();
+		if (IsValueTask(body.Type) is { } factoryValueTask)
+		{
+			if (!async)
+			{
+				throw new DependencyInjectionException(Resources.Exception_ServiceNotAvailableInSynchronousContext(factoryValueTask));
+			}
+
+			if (serviceType != factoryValueTask)
+			{
+				body = ConvertValueTaskExpression(body, factoryValueTask, serviceType);
+			}
+		}
+		else
+		{
+			if (serviceType != body.Type)
+			{
+				body = Expression.Convert(body, serviceType);
+			}
+
+			if (async)
+			{
+				body = NewValueTaskExpression(body);
+			}
+		}
+
+		return Expression.Lambda(body, arrayParameter).Compile();
 	}
 
 	private abstract class GetterDelegateCreator

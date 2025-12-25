@@ -467,6 +467,38 @@ public class ServiceCollectionExtensionsTest
 	}
 
 	[TestMethod]
+	public async Task AddFactoryMultiArg3Test()
+	{
+		// Arrange
+		_services.AddFactory<FactoryMultiArg3>().For<IService, Arg1, Arg2, Arg3>();
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj1 = await sp.GetRequiredService<IService, Arg1, Arg2, Arg3>(Arg1.Val, Arg2.Val, Arg3.Val);
+		var obj2 = await sp.GetRequiredService<IService, (Arg1, Arg2, Arg3)>((Arg1.Val, Arg2.Val, Arg3.Val));
+
+		// Assert
+		Assert.AreEqual(expected: "c3:a1:a2:a3", obj1.ToString());
+		Assert.AreEqual(expected: "c3:a1:a2:a3", obj2.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactoryMultiArg4Test()
+	{
+		// Arrange
+		_services.AddFactory<FactoryMultiArg4>().For<IService, Arg1, Arg2, Arg3, Arg4>();
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj1 = await sp.GetRequiredService<IService, Arg1, Arg2, Arg3, Arg4>(Arg1.Val, Arg2.Val, Arg3.Val, Arg4.Val);
+		var obj2 = await sp.GetRequiredService<IService, (Arg1, Arg2, Arg3, Arg4)>((Arg1.Val, Arg2.Val, Arg3.Val, Arg4.Val));
+
+		// Assert
+		Assert.AreEqual(expected: "c4:a1:a2:a3:a4", obj1.ToString());
+		Assert.AreEqual(expected: "c4:a1:a2:a3:a4", obj2.ToString());
+	}
+
+	[TestMethod]
 	public void AddFactoryIfNotRegisteredNoArgTest()
 	{
 		// Arrange
@@ -593,6 +625,38 @@ public class ServiceCollectionExtensionsTest
 		// Assert
 		Assert.AreEqual(expected: "c2:a1:a2", obj1.ToString());
 		Assert.AreEqual(expected: "c2:a1:a2", obj2.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedMultiArg3Test()
+	{
+		// Arrange
+		_services.AddFactory<FactoryMultiArg3>().For<IService, Arg1, Arg2, Arg3>(SharedWithin.Scope);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj1 = await sp.GetRequiredService<IService, Arg1, Arg2, Arg3>(Arg1.Val, Arg2.Val, Arg3.Val);
+		var obj2 = await sp.GetRequiredService<IService, (Arg1, Arg2, Arg3)>((Arg1.Val, Arg2.Val, Arg3.Val));
+
+		// Assert
+		Assert.AreEqual(expected: "c3:a1:a2:a3", obj1.ToString());
+		Assert.AreEqual(expected: "c3:a1:a2:a3", obj2.ToString());
+	}
+
+	[TestMethod]
+	public async Task AddFactorySharedMultiArg4Test()
+	{
+		// Arrange
+		_services.AddFactory<FactoryMultiArg4>().For<IService, Arg1, Arg2, Arg3, Arg4>(SharedWithin.Scope);
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj1 = await sp.GetRequiredService<IService, Arg1, Arg2, Arg3, Arg4>(Arg1.Val, Arg2.Val, Arg3.Val, Arg4.Val);
+		var obj2 = await sp.GetRequiredService<IService, (Arg1, Arg2, Arg3, Arg4)>((Arg1.Val, Arg2.Val, Arg3.Val, Arg4.Val));
+
+		// Assert
+		Assert.AreEqual(expected: "c4:a1:a2:a3:a4", obj1.ToString());
+		Assert.AreEqual(expected: "c4:a1:a2:a3:a4", obj2.ToString());
 	}
 
 	[TestMethod]
@@ -1218,6 +1282,16 @@ public class ServiceCollectionExtensionsTest
 	private class FactoryMultiArg : IService
 	{
 		public IService CreateService(Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2);
+	}
+
+	private class FactoryMultiArg3 : IService
+	{
+		public IService CreateService(Arg1 arg1, Arg2 arg2, Arg3 arg3) => new ClassMultiArg3(arg1, arg2, arg3);
+	}
+
+	private class FactoryMultiArg4 : IService
+	{
+		public IService CreateService(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) => new ClassMultiArg4(arg1, arg2, arg3, arg4);
 	}
 
 	private class ClassNoArg : IService

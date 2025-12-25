@@ -17,6 +17,8 @@
 
 namespace Xtate.IoC;
 
+[SuppressMessage(category: "ReSharper", checkId: "UnusedType.Global")]
+[SuppressMessage(category: "ReSharper", checkId: "UnusedMember.Global")]
 public static class ServiceCollectionArg3Extensions
 {
 	extension(IServiceCollection services)

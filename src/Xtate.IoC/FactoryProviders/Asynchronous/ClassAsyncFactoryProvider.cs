@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Xtate.IoC;
 
-internal sealed class ClassAsyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
+internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type serviceType, bool async) : ClassFactoryProvider(implementationType, serviceType, async)
 {
 	private static readonly MethodInfo GetAsyncService;
 
@@ -181,13 +181,13 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 
 	private ValueTask<TService> CreateInstance<TService, TArg>(IServiceProvider serviceProvider, TArg? arg)
 	{
-		var factory = (Func<object?[], TService>) Delegate;
+		var factory = (Func<object?[], ValueTask<TService>>) Delegate;
 
 		if (Parameters.Length == 0)
 		{
 			try
 			{
-				return new ValueTask<TService>(factory([]));
+				return factory([]);
 			}
 			catch (Exception ex)
 			{
@@ -207,7 +207,7 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 				var service = factory(args);
 				ReturnArray(args);
 
-				return new ValueTask<TService>(service);
+				return service;
 			}
 		}
 		catch (Exception ex)
@@ -226,7 +226,9 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType) : Class
 		{
 			await valueTask.ConfigureAwait(false);
 
-			return ((Func<object?[], TService>) Delegate)(args);
+			var factory = (Func<object?[], ValueTask<TService>>) Delegate;
+
+			return await factory(args).ConfigureAwait(false);
 		}
 		catch (Exception ex)
 		{
@@ -282,6 +284,6 @@ internal static class ClassAsyncFactoryProvider<TImplementation, TService>
 
 	private static class Nested
 	{
-		public static readonly ClassAsyncFactoryProvider ProviderField = new(typeof(TImplementation));
+		public static readonly ClassAsyncFactoryProvider ProviderField = new(typeof(TImplementation), typeof(TService), async: true);
 	}
 }

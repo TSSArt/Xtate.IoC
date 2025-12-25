@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Xtate.IoC;
 
-internal sealed class ClassSyncFactoryProvider(Type implementationType) : ClassFactoryProvider(implementationType)
+internal sealed class ClassSyncFactoryProvider(Type implementationType, Type serviceType, bool async) : ClassFactoryProvider(implementationType, serviceType, async)
 {
 	private static readonly MethodInfo GetSyncService;
 
@@ -124,6 +124,6 @@ internal static class ClassSyncFactoryProvider<TImplementation, TService>
 
 	private static class Nested
 	{
-		public static readonly ClassSyncFactoryProvider ProviderField = new(typeof(TImplementation));
+		public static readonly ClassSyncFactoryProvider ProviderField = new(typeof(TImplementation), typeof(TService), async: false);
 	}
 }

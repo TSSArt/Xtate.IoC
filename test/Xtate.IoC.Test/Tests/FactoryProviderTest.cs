@@ -478,6 +478,35 @@ public class FactoryProviderTest
 		// Assert
 		await Assert.ThrowsExactlyAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<ErrorClass>());
 	}
+	
+	[TestMethod]
+	public async Task AsyncStaticFactoryAddTypeTest()
+	{
+		// Arrange
+		_services.AddType<AsyncStaticFactoryClass>();
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<AsyncStaticFactoryClass>();
+
+		// Assert
+		Assert.AreEqual(expected: nameof(AsyncStaticFactoryClass), obj.ToString());
+	}
+	
+	[TestMethod]
+	public async Task DecorAsyncStaticFactoryAddTypeTest()
+	{
+		// Arrange
+		_services.AddImplementation<AsyncStaticFactoryClass>().For<IDecor>();
+		_services.AddDecorator<DecoratorAsyncStaticFactoryClass>().For<IDecor>();
+		var sp = _services.BuildProvider();
+
+		// Act
+		var obj = await sp.GetRequiredService<IDecor>();
+
+		// Assert
+		Assert.AreEqual(expected: nameof(DecoratorAsyncStaticFactoryClass), obj.ToString());
+	}
 
 	public class Integer : IStub
 	{
@@ -619,5 +648,37 @@ public class FactoryProviderTest
 	public class ErrorClass
 	{
 		public ErrorClass() => throw new ApplicationException("Hmm");
+	}
+
+	public interface IDecor;
+
+	[ExcludeFromCodeCoverage]
+	public class AsyncStaticFactoryClass : IDecor
+	{
+		private AsyncStaticFactoryClass() { }
+
+		public static async ValueTask<AsyncStaticFactoryClass> CreateAsync()
+		{
+			await Task.Yield();
+
+			return new AsyncStaticFactoryClass();
+		}
+
+		public override string ToString() => nameof(AsyncStaticFactoryClass);
+	}
+
+	[ExcludeFromCodeCoverage]
+	public class DecoratorAsyncStaticFactoryClass : IDecor
+	{
+		private DecoratorAsyncStaticFactoryClass() { }
+
+		public static async ValueTask<DecoratorAsyncStaticFactoryClass> CreateAsync(IDecor innerDecor)
+		{
+			await Task.Yield();
+
+			return new DecoratorAsyncStaticFactoryClass();
+		}
+
+		public override string ToString() => nameof(DecoratorAsyncStaticFactoryClass);
 	}
 }
