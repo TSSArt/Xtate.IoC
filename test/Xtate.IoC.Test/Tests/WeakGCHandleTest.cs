@@ -22,6 +22,9 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class WeakGCHandleTest
 {
+	[ExcludeFromCodeCoverage]
+	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith(value: "Mono", StringComparison.OrdinalIgnoreCase);
+
 	[TestMethod]
 	public void TryGetTarget_ShouldReturnTrue_ForAliveTarget()
 	{
@@ -40,6 +43,11 @@ public class WeakGCHandleTest
 	[TestMethod]
 	public void TryGetTarget_ShouldReturnFalse_WhenTargetCollected()
 	{
+		if (!IsGcCollectsAll)
+		{
+			return;
+		}
+
 		// Arrange
 		var handle = CreateWeakHandle(CreateCollectibleObject());
 
