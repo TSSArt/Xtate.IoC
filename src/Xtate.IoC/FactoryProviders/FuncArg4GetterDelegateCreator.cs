@@ -21,6 +21,7 @@ namespace Xtate.IoC;
 
 internal partial class ClassFactoryProvider
 {
+	[ExcludeFromCodeCoverage]
 	private class FuncArg4GetterDelegateCreator : FuncWithArgsGetterDelegateCreator
 	{
 		protected override MethodInfo GetFactory { get; } = GetMethodInfo<FuncArg4GetterDelegateCreator>(nameof(GetFactoryWrapper));

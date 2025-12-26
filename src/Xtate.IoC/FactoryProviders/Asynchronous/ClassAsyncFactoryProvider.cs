@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Xtate.IoC;
 
-internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type serviceType, bool async) : ClassFactoryProvider(implementationType, serviceType, async)
+internal class ClassAsyncFactoryProvider(Type implementationType, Type serviceType) : ClassFactoryProvider(implementationType, serviceType, async: true)
 {
 	private static readonly MethodInfo GetAsyncService;
 
@@ -53,10 +53,10 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 		static async ValueTask<object?> Wait(ValueTask<T?> valueTask) => await valueTask.ConfigureAwait(false);
 	}
 
-	private ValueTask FillParameters<TArg>(int start,
-										   object?[] args,
-										   IServiceProvider serviceProvider,
-										   TArg? arg)
+	protected ValueTask FillParameters<TArg>(int start,
+											 object?[] args,
+											 IServiceProvider serviceProvider,
+											 TArg? arg)
 	{
 		for (var i = start; i < Parameters.Length; i ++)
 		{
@@ -101,10 +101,10 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 		await FillParameters(index + 1, args, serviceProvider, arg).ConfigureAwait(false);
 	}
 
-	private ValueTask SetRequiredMembers<TArg>(int start,
-											   object service,
-											   IServiceProvider serviceProvider,
-											   TArg? arg)
+	protected ValueTask SetRequiredMembers<TArg>(int start,
+												 object service,
+												 IServiceProvider serviceProvider,
+												 TArg? arg)
 	{
 		for (var i = start; i < RequiredMembers.Length; i ++)
 		{
@@ -151,13 +151,23 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 
 		await SetRequiredMembers(index + 1, service, serviceProvider, arg).ConfigureAwait(false);
 	}
+}
 
-	public ValueTask<TService> GetDecoratorService<TService, TArg>(IServiceProvider serviceProvider, TService? service, TArg? arg) =>
-		GetService<TService, (TService?, TArg?)>(serviceProvider, (service, arg));
+internal class ClassAsyncFactoryProvider<TImplementation, TService> : ClassAsyncFactoryProvider
+{
+	private readonly Func<object?[], ValueTask<TService>> _factory;
 
-	public ValueTask<TService> GetService<TService, TArg>(IServiceProvider serviceProvider, TArg? arg)
+	private ClassAsyncFactoryProvider() : base(typeof(TImplementation), typeof(TService)) => _factory = (Func<object?[], ValueTask<TService>>) Delegate;
+
+	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TArg>;
+
+	public static Delegate GetDecoratorServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetDecoratorService<TArg>;
+
+	private ValueTask<TService> GetDecoratorService<TArg>(IServiceProvider serviceProvider, TService? service, TArg? arg) => GetService<(TService?, TArg?)>(serviceProvider, (service, arg));
+
+	private ValueTask<TService> GetService<TArg>(IServiceProvider serviceProvider, TArg? arg)
 	{
-		var valueTask = CreateInstance<TService, TArg>(serviceProvider, arg);
+		var valueTask = CreateInstance(serviceProvider, arg);
 
 		if (RequiredMembers.Length == 0)
 		{
@@ -172,22 +182,20 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 		return GetServiceWait(valueTask, serviceProvider, arg);
 	}
 
-	private async ValueTask<TService> GetServiceWait<TService, TArg>(ValueTask<TService> valueTask, IServiceProvider serviceProvider, TArg? arg)
+	private async ValueTask<TService> GetServiceWait<TArg>(ValueTask<TService> valueTask, IServiceProvider serviceProvider, TArg? arg)
 	{
 		var service = await valueTask.ConfigureAwait(false);
 
 		return await PostCreateInstance(service, serviceProvider, arg).ConfigureAwait(false);
 	}
 
-	private ValueTask<TService> CreateInstance<TService, TArg>(IServiceProvider serviceProvider, TArg? arg)
+	private ValueTask<TService> CreateInstance<TArg>(IServiceProvider serviceProvider, TArg? arg)
 	{
-		var factory = (Func<object?[], ValueTask<TService>>) Delegate;
-
 		if (Parameters.Length == 0)
 		{
 			try
 			{
-				return factory([]);
+				return _factory([]);
 			}
 			catch (Exception ex)
 			{
@@ -204,7 +212,7 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 
 			if (valueTask.IsCompletedSuccessfully)
 			{
-				var service = factory(args);
+				var service = _factory(args);
 				ReturnArray(args);
 
 				return service;
@@ -217,18 +225,16 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 			throw GetFactoryException(ex);
 		}
 
-		return CreateInstanceWait<TService>(valueTask, args);
+		return CreateInstanceWait(valueTask, args);
 	}
 
-	private async ValueTask<TService> CreateInstanceWait<TService>(ValueTask valueTask, object?[] args)
+	private async ValueTask<TService> CreateInstanceWait(ValueTask valueTask, object?[] args)
 	{
 		try
 		{
 			await valueTask.ConfigureAwait(false);
 
-			var factory = (Func<object?[], ValueTask<TService>>) Delegate;
-
-			return await factory(args).ConfigureAwait(false);
+			return await _factory(args).ConfigureAwait(false);
 		}
 		catch (Exception ex)
 		{
@@ -240,7 +246,7 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 		}
 	}
 
-	private ValueTask<TService> PostCreateInstance<TService, TArg>(TService service, IServiceProvider serviceProvider, TArg? arg)
+	private ValueTask<TService> PostCreateInstance<TArg>(TService service, IServiceProvider serviceProvider, TArg? arg)
 	{
 		ValueTask valueTask;
 
@@ -261,7 +267,7 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 		return PostCreateInstanceWait(valueTask, service);
 	}
 
-	private async ValueTask<TService> PostCreateInstanceWait<TService>(ValueTask valueTask, TService service)
+	private async ValueTask<TService> PostCreateInstanceWait(ValueTask valueTask, TService service)
 	{
 		try
 		{
@@ -274,16 +280,9 @@ internal sealed class ClassAsyncFactoryProvider(Type implementationType, Type se
 			throw GetFactoryException(ex);
 		}
 	}
-}
-
-internal static class ClassAsyncFactoryProvider<TImplementation, TService>
-{
-	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TService, TArg>;
-
-	public static Delegate GetDecoratorServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetDecoratorService<TService, TArg>;
 
 	private static class Nested
 	{
-		public static readonly ClassAsyncFactoryProvider ProviderField = new(typeof(TImplementation), typeof(TService), async: true);
+		public static readonly ClassAsyncFactoryProvider<TImplementation, TService> ProviderField = new();
 	}
 }

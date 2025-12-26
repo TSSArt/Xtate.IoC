@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Xtate.IoC;
 
-internal sealed class ClassSyncFactoryProvider(Type implementationType, Type serviceType, bool async) : ClassFactoryProvider(implementationType, serviceType, async)
+internal class ClassSyncFactoryProvider(Type implementationType, Type serviceType) : ClassFactoryProvider(implementationType, serviceType, async: false)
 {
 	private static readonly MethodInfo GetSyncService;
 
@@ -39,7 +39,7 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType, Type ser
 
 	private static object GetServiceSyncWrapper<T>(IServiceProvider serviceProvider) => serviceProvider.GetServiceSync<T>()!;
 
-	private void FillParameters<TArg>(object?[] args, IServiceProvider serviceProvider, ref TArg? arg)
+	protected void FillParameters<TArg>(object?[] args, IServiceProvider serviceProvider, ref TArg? arg)
 	{
 		for (var i = 0; i < Parameters.Length; i ++)
 		{
@@ -60,7 +60,7 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType, Type ser
 		}
 	}
 
-	private void SetRequiredMembers<TArg>(object service, IServiceProvider serviceProvider, ref TArg? arg)
+	protected void SetRequiredMembers<TArg>(object service, IServiceProvider serviceProvider, ref TArg? arg)
 	{
 		foreach (var requiredMember in RequiredMembers)
 		{
@@ -82,8 +82,19 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType, Type ser
 			}
 		}
 	}
+}
 
-	public TService GetService<TService, TArg>(IServiceProvider serviceProvider, TArg? arg)
+internal class ClassSyncFactoryProvider<TImplementation, TService> : ClassSyncFactoryProvider
+{
+	private readonly Func<object?[], TService> _factory;
+
+	private ClassSyncFactoryProvider() : base(typeof(TImplementation), typeof(TService)) => _factory = (Func<object?[], TService>) Delegate;
+
+	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TArg>;
+
+	public static Delegate GetDecoratorServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetDecoratorService<TArg>;
+
+	private TService GetService<TArg>(IServiceProvider serviceProvider, TArg? arg)
 	{
 		var args = RentArray();
 
@@ -94,7 +105,7 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType, Type ser
 				FillParameters(args, serviceProvider, ref arg);
 			}
 
-			var service = ((Func<object?[], TService>) Delegate)(args);
+			var service = _factory(args);
 
 			if (RequiredMembers.Length > 0)
 			{
@@ -113,17 +124,10 @@ internal sealed class ClassSyncFactoryProvider(Type implementationType, Type ser
 		}
 	}
 
-	public TService GetDecoratorService<TService, TArg>(IServiceProvider serviceProvider, TService? service, TArg? arg) => GetService<TService, (TService?, TArg?)>(serviceProvider, (service, arg));
-}
-
-internal static class ClassSyncFactoryProvider<TImplementation, TService>
-{
-	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TService, TArg>;
-
-	public static Delegate GetDecoratorServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetDecoratorService<TService, TArg>;
+	private TService GetDecoratorService<TArg>(IServiceProvider serviceProvider, TService? service, TArg? arg) => GetService<(TService?, TArg?)>(serviceProvider, (service, arg));
 
 	private static class Nested
 	{
-		public static readonly ClassSyncFactoryProvider ProviderField = new(typeof(TImplementation), typeof(TService), async: false);
+		public static readonly ClassSyncFactoryProvider<TImplementation, TService> ProviderField = new();
 	}
 }

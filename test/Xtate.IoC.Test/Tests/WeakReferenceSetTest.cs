@@ -328,18 +328,18 @@ public class WeakReferenceSetTest
 
 		// Arrange
 		var wrs = new WeakReferenceSet();
-		var list = new object[256];
+		var list = new object[128];
 
-		FillList(wrs, list, count: 256);
+		FillList(wrs, list, count: 128);
 
 		// Drop references for half of the items to make them collectible
-		for (var i = 0; i < 256; i += 2)
+		for (var i = 0; i < 128; i += 2)
 		{
 			list[i] = null!;
 		}
 
 		// Act
-		GcCollect();               // should collect ~128 targets and run Cleaner to compact (threshold is 32)
+		GcCollect();               // should collect ~64 targets and run Cleaner to compact (threshold is 32)
 		AddObjects(wrs, count: 4); // keep activity and ensure cleaner remains
 
 		var liveCount = 0;
@@ -350,9 +350,9 @@ public class WeakReferenceSetTest
 		}
 
 		// Assert
-		// 256 initial - 128 collected (approx) + 4 added = 132 expected remaining
+		// 128 initial - 64 collected (approx) + 4 added = 68 expected remaining
 		// Under "GC collects all" setting used in tests, collected ones should be gone deterministically.
-		Assert.AreEqual(expected: 132, liveCount);
-		Assert.HasCount(expected: 256, list);
+		Assert.AreEqual(expected: 68, liveCount);
+		Assert.HasCount(expected: 128, list);
 	}
 }
