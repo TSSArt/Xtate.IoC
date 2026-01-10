@@ -1,4 +1,4 @@
-// Copyright © 2019-2025 Sergii Artemenko
+// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -53,6 +53,5 @@ internal partial class ClassFactoryProvider
 		private static object GetServicesFactoryWrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg1, TArg2>();
 
 		private static object GetServicesSyncFactoryWrapper<T, TArg1, TArg2>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSyncFactory<T, TArg1, TArg2>();
-
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright © 2019-2025 Sergii Artemenko
+// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -47,13 +47,14 @@ internal partial class ClassFactoryProvider
 
 		private static object GetFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T, TArg1, TArg2, TArg3>();
 
-		private static object GetRequiredSyncFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T, TArg1, TArg2, TArg3>();
+		private static object GetRequiredSyncFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) where T : notnull =>
+			serviceProvider.GetRequiredSyncFactory<T, TArg1, TArg2, TArg3>();
 
 		private static object GetSyncFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T, TArg1, TArg2, TArg3>();
 
 		private static object GetServicesFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg1, TArg2, TArg3>();
 
-		private static object GetServicesSyncFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSyncFactory<T, TArg1, TArg2, TArg3>();
-
+		private static object GetServicesSyncFactoryWrapper<T, TArg1, TArg2, TArg3>(IServiceProvider serviceProvider) where T : notnull =>
+			serviceProvider.GetServicesSyncFactory<T, TArg1, TArg2, TArg3>();
 	}
 }

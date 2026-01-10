@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2025 Sergii Artemenko
+﻿// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -54,8 +54,7 @@ public static class ServiceCollectionArg1Extensions
 		public void AddShared<T, TArg>(SharedWithin sharedWithin, Func<IServiceProvider, TArg, ValueTask<T>> factory) =>
 			services.AddEntry(TypeKey.ServiceKey<T, TArg>(), sharedWithin.GetScope(), factory);
 
-		public void AddShared<T, TArg>(SharedWithin sharedWithin, Func<IServiceProvider, TArg, T> factory) =>
-			services.AddEntry(TypeKey.ServiceKey<T, TArg>(), sharedWithin.GetScope(), factory);
+		public void AddShared<T, TArg>(SharedWithin sharedWithin, Func<IServiceProvider, TArg, T> factory) => services.AddEntry(TypeKey.ServiceKey<T, TArg>(), sharedWithin.GetScope(), factory);
 
 		public void AddSharedDecorator<T, TArg>(SharedWithin sharedWithin, Func<IServiceProvider, T, TArg, ValueTask<T>> factory) =>
 			services.AddEntry(TypeKey.ServiceKey<T, TArg>(), sharedWithin.GetScope(), factory);

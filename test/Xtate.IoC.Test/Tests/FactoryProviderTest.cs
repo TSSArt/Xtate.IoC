@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2025 Sergii Artemenko
+﻿// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -478,7 +478,7 @@ public class FactoryProviderTest
 		// Assert
 		await Assert.ThrowsExactlyAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await sp.GetRequiredService<ErrorClass>());
 	}
-	
+
 	[TestMethod]
 	public async Task AsyncStaticFactoryAddTypeTest()
 	{
@@ -492,7 +492,7 @@ public class FactoryProviderTest
 		// Assert
 		Assert.AreEqual(expected: nameof(AsyncStaticFactoryClass), obj.ToString());
 	}
-	
+
 	[TestMethod]
 	public async Task DecorAsyncStaticFactoryAddTypeTest()
 	{

@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2025 Sergii Artemenko
+﻿// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -81,6 +81,6 @@ public static class ServiceCollectionArg0Extensions
 
 		[Obsolete(message: "ValueTask<> shouldn't be passed as a constant. Pass Result or Convert ValueTask<> to Task<>.", error: true)]
 		public void AddConstant<T>(ValueTask<T> value) =>
-			services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>([ExcludeFromCodeCoverage] (_, _) => value));
+			services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>([ExcludeFromCodeCoverage](_, _) => value));
 	}
 }

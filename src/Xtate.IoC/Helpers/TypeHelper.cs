@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2025 Sergii Artemenko
+﻿// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -253,7 +253,7 @@ internal static class TypeHelper
 			{
 				if (i == 7)
 				{
-					foreach (var itemType in DecomposeType(genericArguments[7]))
+					foreach (var itemType in genericArguments[7].DecomposeType())
 					{
 						yield return itemType;
 					}
@@ -273,7 +273,7 @@ internal static class TypeHelper
 		{
 			if (type.IsNested && !type.IsGenericParameter)
 			{
-				AppendFriendlyName(sb, GetDeclaringType(type)).Append('.');
+				sb.AppendFriendlyName(GetDeclaringType(type)).Append('.');
 			}
 
 			var name = type.Name;
@@ -303,7 +303,7 @@ internal static class TypeHelper
 				return sb.Append('(').AppendTupleArgs(type).Append(')');
 			}
 
-			return ContainsGenericArgs(type) ? AppendGenericType(sb, type) : AppendQualifiedName(sb, type);
+			return ContainsGenericArgs(type) ? sb.AppendGenericType(type) : sb.AppendQualifiedName(type);
 		}
 
 		/// <summary>
@@ -313,13 +313,13 @@ internal static class TypeHelper
 		/// <returns>The StringBuilder with the appended generic type name.</returns>
 		private StringBuilder AppendGenericType(Type type)
 		{
-			AppendQualifiedName(sb, type);
+			sb.AppendQualifiedName(type);
 
 			var first = true;
 
 			foreach (var t in GetGenericArgs(type))
 			{
-				AppendFriendlyName(sb.Append(first ? @"<" : @", "), t);
+				sb.Append(first ? @"<" : @", ").AppendFriendlyName(t);
 				first = false;
 			}
 
@@ -334,7 +334,7 @@ internal static class TypeHelper
 		{
 			string? delimiter = null;
 
-			foreach (var typeItem in DecomposeType(type))
+			foreach (var typeItem in type.DecomposeType())
 			{
 				if (delimiter is not null)
 				{

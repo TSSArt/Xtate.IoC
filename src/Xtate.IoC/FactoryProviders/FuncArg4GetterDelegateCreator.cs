@@ -1,4 +1,4 @@
-// Copyright © 2019-2025 Sergii Artemenko
+// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -43,17 +43,20 @@ internal partial class ClassFactoryProvider
 		protected override (Type? Type, Type[]? ArgTypes) IsFuncN(Type type) =>
 			type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<,,,,>) && type.GetGenericArguments() is { } args ? (args[4], [args[0], args[1], args[2], args[3]]) : default;
 
-		private static object GetRequiredFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredFactory<T, TArg1, TArg2, TArg3, TArg4>();
+		private static object GetRequiredFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull =>
+			serviceProvider.GetRequiredFactory<T, TArg1, TArg2, TArg3, TArg4>();
 
 		private static object GetFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) => serviceProvider.GetFactory<T, TArg1, TArg2, TArg3, TArg4>();
 
-		private static object GetRequiredSyncFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetRequiredSyncFactory<T, TArg1, TArg2, TArg3, TArg4>();
+		private static object GetRequiredSyncFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull =>
+			serviceProvider.GetRequiredSyncFactory<T, TArg1, TArg2, TArg3, TArg4>();
 
 		private static object GetSyncFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) => serviceProvider.GetSyncFactory<T, TArg1, TArg2, TArg3, TArg4>();
 
-		private static object GetServicesFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesFactory<T, TArg1, TArg2, TArg3, TArg4>();
+		private static object GetServicesFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull =>
+			serviceProvider.GetServicesFactory<T, TArg1, TArg2, TArg3, TArg4>();
 
-		private static object GetServicesSyncFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull => serviceProvider.GetServicesSyncFactory<T, TArg1, TArg2, TArg3, TArg4>();
-
+		private static object GetServicesSyncFactoryWrapper<T, TArg1, TArg2, TArg3, TArg4>(IServiceProvider serviceProvider) where T : notnull =>
+			serviceProvider.GetServicesSyncFactory<T, TArg1, TArg2, TArg3, TArg4>();
 	}
 }

@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2025 Sergii Artemenko
+﻿// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -1291,7 +1291,11 @@ public class ServiceCollectionExtensionsTest
 
 	private class FactoryMultiArg4 : IService
 	{
-		public IService CreateService(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) => new ClassMultiArg4(arg1, arg2, arg3, arg4);
+		public IService CreateService(Arg1 arg1,
+									  Arg2 arg2,
+									  Arg3 arg3,
+									  Arg4 arg4) =>
+			new ClassMultiArg4(arg1, arg2, arg3, arg4);
 	}
 
 	private class ClassNoArg : IService
