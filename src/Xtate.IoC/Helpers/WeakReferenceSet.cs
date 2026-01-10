@@ -96,8 +96,6 @@ internal sealed class WeakReferenceSet : IDisposable
 	/// </remarks>
 	public void Add(object instance)
 	{
-		ObjectDisposedException.ThrowIf(!_cleanerHandle.IsAllocated, this);
-
 		if (_freeHandles.TryDequeue(out var handle))
 		{
 			handle.SetTarget(instance);
@@ -105,6 +103,8 @@ internal sealed class WeakReferenceSet : IDisposable
 		}
 		else
 		{
+			ObjectDisposedException.ThrowIf(!_cleanerHandle.IsAllocated, this);
+
 			_handles.Enqueue(new WeakGCHandle<object>(instance));
 		}
 	}
@@ -138,8 +138,6 @@ internal sealed class WeakReferenceSet : IDisposable
 	/// </remarks>
 	public bool TryTake([NotNullWhen(true)] out object? instance)
 	{
-		ObjectDisposedException.ThrowIf(!_cleanerHandle.IsAllocated, this);
-
 		while (TryDequeueSafe(out var handle))
 		{
 			if (handle.TryGetTarget(out instance))
@@ -206,7 +204,14 @@ internal sealed class WeakReferenceSet : IDisposable
 
 		if (_cleanerHandle.IsAllocated)
 		{
-			_cleanerHandle.Target = new Cleaner(this);
+			try
+			{
+				_cleanerHandle.Target = new Cleaner(this);
+			}
+			catch (InvalidOperationException)
+			{
+				// Already freed
+			}
 		}
 	}
 
