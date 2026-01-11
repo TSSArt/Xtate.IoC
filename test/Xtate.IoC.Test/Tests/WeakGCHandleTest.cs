@@ -49,7 +49,7 @@ public class WeakGCHandleTest
 		}
 
 		// Arrange
-		var handle = CreateWeakHandle(CreateCollectibleObject());
+		var handle = Make();
 
 		// Force GC
 		GC.Collect();
@@ -62,6 +62,10 @@ public class WeakGCHandleTest
 		// Assert
 		Assert.IsFalse(result);
 		Assert.IsNull(target);
+
+		return;
+
+		static WeakGCHandle<object> Make() => CreateWeakHandle(CreateCollectibleObject());
 	}
 
 	[TestMethod]

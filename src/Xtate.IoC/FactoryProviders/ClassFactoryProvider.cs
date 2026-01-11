@@ -201,7 +201,7 @@ internal abstract partial class ClassFactoryProvider
 
 		foreach (var method in methods)
 		{
-			if (method.GetCustomAttribute<ObsoleteAttribute>(false) is not null)
+			if (method.GetCustomAttribute<ObsoleteAttribute>(false) is { IsError: false })
 			{
 				if (obsoleteMethod is null)
 				{
