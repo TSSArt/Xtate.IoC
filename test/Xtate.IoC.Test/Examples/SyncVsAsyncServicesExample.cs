@@ -28,46 +28,44 @@ public class SyncService;
 
 public class AsyncInitService : IAsyncInitialization
 {
-	public string Data { get; private set; } = string.Empty;
+    public string Data { get; private set; } = string.Empty;
 
 #region Interface IAsyncInitialization
 
-	Task IAsyncInitialization.Initialization => field ??= Init();
+    async ValueTask IAsyncInitialization.InitializeAsync()
+    {
+        await Task.Yield();
+        Data = "Initialized";
+    }
 
 #endregion
-
-	private async Task Init()
-	{
-		await Task.Yield();
-		Data = "Initialized";
-	}
 }
 
 [TestClass]
 public class SyncVsAsyncServicesExample
 {
-	[TestMethod]
-	public async ValueTask Resolve()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddTypeSync<SyncService>();  // synchronous construction
-														 services.AddType<AsyncInitService>(); // asynchronous initialization
-													 });
+    [TestMethod]
+    public async ValueTask Resolve()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddTypeSync<SyncService>();  // synchronous construction
+                                                         services.AddType<AsyncInitService>(); // asynchronous initialization
+                                                     });
 
-		// Synchronous resolution of SyncService
-		var syncInst1 = container.GetRequiredServiceSync<SyncService>();
-		Assert.IsNotNull(syncInst1);
+        // Synchronous resolution of SyncService
+        var syncInst1 = container.GetRequiredServiceSync<SyncService>();
+        Assert.IsNotNull(syncInst1);
 
-		// Asynchronous resolution of synchronous SyncService is acceptable too
-		var syncInst2 = await container.GetRequiredService<SyncService>();
-		Assert.IsNotNull(syncInst2);
+        // Asynchronous resolution of synchronous SyncService is acceptable too
+        var syncInst2 = await container.GetRequiredService<SyncService>();
+        Assert.IsNotNull(syncInst2);
 
-		// Asynchronous resolution of AsyncInitService (awaits initialization internally)
-		var asyncInst = await container.GetRequiredService<AsyncInitService>();
-		Assert.AreEqual(expected: "Initialized", asyncInst.Data);
+        // Asynchronous resolution of AsyncInitService (awaits initialization internally)
+        var asyncInst = await container.GetRequiredService<AsyncInitService>();
+        Assert.AreEqual(expected: "Initialized", asyncInst.Data);
 
-		// Synchronous resolution attempt for async initialized service should throw
-		Assert.ThrowsExactly<DependencyInjectionException>(() => container.GetRequiredServiceSync<AsyncInitService>());
-	}
+        // Synchronous resolution attempt for async initialized service should throw
+        Assert.ThrowsExactly<DependencyInjectionException>(() => container.GetRequiredServiceSync<AsyncInitService>());
+    }
 }

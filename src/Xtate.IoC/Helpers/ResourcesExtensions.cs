@@ -192,5 +192,12 @@ internal static class ResourcesExtensions
 		/// <returns>A localized formatted string.</returns>
 		public static string Format_ImplementationWithArgs(ImplementationType implementationType, ArgumentType argumentType) =>
 			Format(Resources.Format_ImplementationWithArgs, implementationType, argumentType);
+
+		/// <summary>
+		///     Formats an error message indicating that a base class implements the IAsyncInitialization interface.
+		/// </summary>
+		/// <param name="baseType">The type of the base class that implements IAsyncInitialization. Cannot be null.</param>
+		/// <returns>A formatted error message describing the base class that implements IAsyncInitialization.</returns>
+		public static string Format_BaseClassImplementsIAsyncInitialization(Type baseType) => Format(Resources.Exception_BaseClassImplementsIAsyncInitialization, baseType.FriendlyName);
 	}
 }

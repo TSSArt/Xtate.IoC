@@ -27,61 +27,59 @@ namespace Xtate.IoC.Examples;
 
 public class SimpleAsyncService : IAsyncInitialization
 {
-	public string? Message { get; private set; }
+    public string? Message { get; private set; }
 
 #region Interface IAsyncInitialization
 
-	Task IAsyncInitialization.Initialization => field ??= Init();
+    ValueTask IAsyncInitialization.InitializeAsync() => Init();
 
 #endregion
 
-	private async Task Init()
-	{
-		// Simulate async work
-		await Task.Yield();
+    private async ValueTask Init()
+    {
+        // Simulate async work
+        await Task.Yield();
 
-		Message = nameof(SimpleAsyncService) + " initialized";
-	}
+        Message = nameof(SimpleAsyncService) + " initialized";
+    }
 }
 
 public class AsyncServiceWithDependency : IAsyncInitialization
 {
-	public required SimpleAsyncService SimpleAsyncService { private get; init; }
+    public required SimpleAsyncService SimpleAsyncService { private get; init; }
 
-	public string? CombinedMessage { get; private set; }
+    public string? CombinedMessage { get; private set; }
 
 #region Interface IAsyncInitialization
 
-	Task IAsyncInitialization.Initialization => field ??= Init();
+    async ValueTask IAsyncInitialization.InitializeAsync()
+    {
+        // Ensure asynchronous scheduling to demonstrate awaiting.
+        await Task.Yield();
+
+        // At this point the dependency's Initialization has already completed.
+        CombinedMessage = SimpleAsyncService.Message + " -> " + nameof(AsyncServiceWithDependency) + " initialized";
+    }
 
 #endregion
-
-	private async Task Init()
-	{
-		// Ensure asynchronous scheduling to demonstrate awaiting.
-		await Task.Yield();
-
-		// At this point the dependency's Initialization has already completed.
-		CombinedMessage = SimpleAsyncService.Message + " -> " + nameof(AsyncServiceWithDependency) + " initialized";
-	}
 }
 
 [TestClass]
 public class AsyncInitializationExample
 {
-	[TestMethod]
-	public async ValueTask Resolve()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddType<SimpleAsyncService>();
-														 services.AddType<AsyncServiceWithDependency>();
-													 });
+    [TestMethod]
+    public async ValueTask Resolve()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddType<SimpleAsyncService>();
+                                                         services.AddType<AsyncServiceWithDependency>();
+                                                     });
 
-		var simple = await container.GetRequiredService<SimpleAsyncService>();
-		Assert.AreEqual(expected: "SimpleAsyncService initialized", simple.Message);
+        var simple = await container.GetRequiredService<SimpleAsyncService>();
+        Assert.AreEqual(expected: "SimpleAsyncService initialized", simple.Message);
 
-		var withDep = await container.GetRequiredService<AsyncServiceWithDependency>();
-		Assert.AreEqual(expected: "SimpleAsyncService initialized -> AsyncServiceWithDependency initialized", withDep.CombinedMessage);
-	}
+        var withDep = await container.GetRequiredService<AsyncServiceWithDependency>();
+        Assert.AreEqual(expected: "SimpleAsyncService initialized -> AsyncServiceWithDependency initialized", withDep.CombinedMessage);
+    }
 }

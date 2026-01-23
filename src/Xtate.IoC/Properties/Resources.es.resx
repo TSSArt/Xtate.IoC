@@ -138,4 +138,10 @@
 	<data name="Format_ImplementationWithArgs" xml:space="preserve">
 		<value>^{0}({1:, |p1})</value>
 	</data>
+	<data name="Exception_ObjectMustBeInitialized" xml:space="preserve">
+		<value>El objeto debe ser inicializado antes de acceder a este miembro.</value>
+	</data>
+	<data name="Exception_BaseClassImplementsIAsyncInitialization" xml:space="preserve">
+		<value>La clase base '{0}' implementa IAsyncInitialization. Use la sobrecarga del constructor que acepta el parámetro baseInitializeAsync.</value>
+	</data>
 </root>

@@ -79,6 +79,15 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Base class &apos;{0}&apos; implements IAsyncInitialization. Use the constructor overload that accepts baseInitializeAsync parameter..
+        /// </summary>
+        internal static string Exception_BaseClassImplementsIAsyncInitialization {
+            get {
+                return ResourceManager.GetString("Exception_BaseClassImplementsIAsyncInitialization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t cast/forward delegate {0} to {1}.
         /// </summary>
         internal static string Exception_CantCastForwardDelegate {
@@ -165,6 +174,15 @@ namespace Xtate.IoC {
         internal static string Exception_NoMethodFound {
             get {
                 return ResourceManager.GetString("Exception_NoMethodFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object must be initialized before accessing this member..
+        /// </summary>
+        internal static string Exception_ObjectMustBeInitialized {
+            get {
+                return ResourceManager.GetString("Exception_ObjectMustBeInitialized", resourceCulture);
             }
         }
         

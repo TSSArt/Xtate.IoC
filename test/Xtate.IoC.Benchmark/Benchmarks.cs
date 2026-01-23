@@ -43,8 +43,7 @@ public class AsyncInitClass : IAsyncInitialization
 {
 #region Interface IAsyncInitialization
 
-	/// <inheritdoc />
-	public Task Initialization => Task.CompletedTask;
+    public ValueTask InitializeAsync() => ValueTask.CompletedTask;
 
 #endregion
 }
@@ -56,11 +55,11 @@ public class AsyncDisposeClass : IAsyncDisposable
 {
 #region Interface IAsyncDisposable
 
-	/// <summary>
-	///     Performs asynchronous disposal. In this benchmark implementation no resources are released.
-	/// </summary>
-	/// <returns>A completed <see cref="ValueTask" />.</returns>
-	public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+    /// <summary>
+    ///     Performs asynchronous disposal. In this benchmark implementation no resources are released.
+    /// </summary>
+    /// <returns>A completed <see cref="ValueTask" />.</returns>
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
 #endregion
 }
@@ -73,58 +72,58 @@ public class AsyncDisposeClass : IAsyncDisposable
 [CPUUsageDiagnoser]
 public class Benchmarks
 {
-	/// <summary>
-	///     The IoC container instance used for resolution benchmarks. Created once in <see cref="Setup" />.
-	/// </summary>
-	private Container _container = null!;
+    /// <summary>
+    ///     The IoC container instance used for resolution benchmarks. Created once in <see cref="Setup" />.
+    /// </summary>
+    private Container _container = null!;
 
-	/// <summary>
-	///     Global setup for the benchmark suite. Registers test types in the IoC container.
-	/// </summary>
-	[GlobalSetup]
-	public void Setup()
-	{
-		// ReSharper disable once NotDisposedResource
-		_container = Container.Create(sp =>
-									  {
-										  sp.AddType<EmptyClass>();
-										  sp.AddType<AsyncInitClass>();
-										  sp.AddType<AsyncDisposeClass>();
-									  });
-	}
+    /// <summary>
+    ///     Global setup for the benchmark suite. Registers test types in the IoC container.
+    /// </summary>
+    [GlobalSetup]
+    public void Setup()
+    {
+        // ReSharper disable once NotDisposedResource
+        _container = Container.Create(sp =>
+                                      {
+                                          sp.AddType<EmptyClass>();
+                                          sp.AddType<AsyncInitClass>();
+                                          sp.AddType<AsyncDisposeClass>();
+                                      });
+    }
 
-	/// <summary>
-	///     Benchmarks direct instantiation of <see cref="EmptyClass" />.
-	/// </summary>
-	/// <returns>A new instance of <see cref="EmptyClass" />.</returns>
-	[Benchmark]
-	public EmptyClass CreateEmptyClass() => new();
+    /// <summary>
+    ///     Benchmarks direct instantiation of <see cref="EmptyClass" />.
+    /// </summary>
+    /// <returns>A new instance of <see cref="EmptyClass" />.</returns>
+    [Benchmark]
+    public EmptyClass CreateEmptyClass() => new();
 
-	/// <summary>
-	///     Benchmarks resolving <see cref="EmptyClass" /> through the IoC container.
-	/// </summary>
-	/// <returns>The resolved <see cref="EmptyClass" /> instance.</returns>
-	[Benchmark]
-	public EmptyClass IoCRequireEmptyClass() => _container.GetRequiredService<EmptyClass>().GetAwaiter().GetResult();
+    /// <summary>
+    ///     Benchmarks resolving <see cref="EmptyClass" /> through the IoC container.
+    /// </summary>
+    /// <returns>The resolved <see cref="EmptyClass" /> instance.</returns>
+    [Benchmark]
+    public EmptyClass IoCRequireEmptyClass() => _container.GetRequiredService<EmptyClass>().GetAwaiter().GetResult();
 
-	/// <summary>
-	///     Benchmarks resolving an asynchronously initialized class via the IoC container.
-	/// </summary>
-	/// <returns>The resolved <see cref="AsyncInitClass" /> instance.</returns>
-	[Benchmark]
-	public AsyncInitClass IoCRequireAsyncInitClass() => _container.GetRequiredService<AsyncInitClass>().GetAwaiter().GetResult();
+    /// <summary>
+    ///     Benchmarks resolving an asynchronously initialized class via the IoC container.
+    /// </summary>
+    /// <returns>The resolved <see cref="AsyncInitClass" /> instance.</returns>
+    [Benchmark]
+    public AsyncInitClass IoCRequireAsyncInitClass() => _container.GetRequiredService<AsyncInitClass>().GetAwaiter().GetResult();
 
-	/// <summary>
-	///     Benchmarks creation of a <see cref="WeakReferenceNode" /> wrapping an <see cref="AsyncDisposeClass" />.
-	/// </summary>
-	/// <returns>A new <see cref="WeakReferenceNode" /> instance.</returns>
-	[Benchmark]
-	public WeakReferenceNode WeakRefEmpty() => new(new AsyncDisposeClass());
+    /// <summary>
+    ///     Benchmarks creation of a <see cref="WeakReferenceNode" /> wrapping an <see cref="AsyncDisposeClass" />.
+    /// </summary>
+    /// <returns>A new <see cref="WeakReferenceNode" /> instance.</returns>
+    [Benchmark]
+    public WeakReferenceNode WeakRefEmpty() => new(new AsyncDisposeClass());
 
-	/// <summary>
-	///     Benchmarks resolving an asynchronously disposable class via the IoC container.
-	/// </summary>
-	/// <returns>The resolved <see cref="AsyncDisposeClass" /> instance.</returns>
-	[Benchmark]
-	public AsyncDisposeClass IoCRequireAsyncDisposeClass() => _container.GetRequiredService<AsyncDisposeClass>().GetAwaiter().GetResult();
+    /// <summary>
+    ///     Benchmarks resolving an asynchronously disposable class via the IoC container.
+    /// </summary>
+    /// <returns>The resolved <see cref="AsyncDisposeClass" /> instance.</returns>
+    [Benchmark]
+    public AsyncDisposeClass IoCRequireAsyncDisposeClass() => _container.GetRequiredService<AsyncDisposeClass>().GetAwaiter().GetResult();
 }

@@ -28,14 +28,14 @@ namespace Xtate.IoC.Examples;
 
 public interface IMessageFormatter
 {
-	string Format(string message);
+    string Format(string message);
 }
 
 public class BaseFormatter : IMessageFormatter
 {
 #region Interface IMessageFormatter
 
-	public string Format(string message) => message + "!";
+    public string Format(string message) => message + "!";
 
 #endregion
 }
@@ -44,7 +44,7 @@ public class BracketsFormatter(IMessageFormatter inner) : IMessageFormatter
 {
 #region Interface IMessageFormatter
 
-	public string Format(string message) => "[" + inner.Format(message) + "]";
+    public string Format(string message) => "[" + inner.Format(message) + "]";
 
 #endregion
 }
@@ -53,65 +53,57 @@ public class UpperFormatter(IMessageFormatter inner) : IMessageFormatter
 {
 #region Interface IMessageFormatter
 
-	public string Format(string message) => inner.Format(message).ToUpperInvariant();
+    public string Format(string message) => inner.Format(message).ToUpperInvariant();
 
 #endregion
 }
 
 // Async decorator example (simulates async initialization) -- shows that async decorator is awaited automatically.
-public class AsyncSuffixFormatter : IMessageFormatter, IAsyncInitialization
+public class AsyncSuffixFormatter(IMessageFormatter inner) : IMessageFormatter, IAsyncInitialization
 {
-	private readonly IMessageFormatter _inner;
+    private readonly IMessageFormatter _inner = inner;
 
-	private string _suffix = string.Empty;
-
-	public AsyncSuffixFormatter(IMessageFormatter inner)
-	{
-		_inner = inner;
-		Initialization = Init();
-	}
+    private string _suffix = string.Empty;
 
 #region Interface IAsyncInitialization
 
-	public Task Initialization { get; }
+    async ValueTask IAsyncInitialization.InitializeAsync()
+    {
+        await Task.Yield(); // simulate async work
+        _suffix = "#";
+    }
 
 #endregion
 
 #region Interface IMessageFormatter
 
-	public string Format(string message) => _inner.Format(message) + _suffix;
+    public string Format(string message) => _inner.Format(message) + _suffix;
 
 #endregion
-
-	private async Task Init()
-	{
-		await Task.Yield(); // simulate async work
-		_suffix = "#";
-	}
 }
 
 [TestClass]
 public class DecoratorExample
 {
-	[TestMethod]
-	public async ValueTask Resolve()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddImplementation<BaseFormatter>().For<IMessageFormatter>();
-														 services.AddDecorator<BracketsFormatter>().For<IMessageFormatter>();
-														 services.AddDecorator<UpperFormatter>().For<IMessageFormatter>();
-														 services.AddDecorator<AsyncSuffixFormatter>().For<IMessageFormatter>();
-													 });
+    [TestMethod]
+    public async ValueTask Resolve()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddImplementation<BaseFormatter>().For<IMessageFormatter>();
+                                                         services.AddDecorator<BracketsFormatter>().For<IMessageFormatter>();
+                                                         services.AddDecorator<UpperFormatter>().For<IMessageFormatter>();
+                                                         services.AddDecorator<AsyncSuffixFormatter>().For<IMessageFormatter>();
+                                                     });
 
-		var formatter = await container.GetRequiredService<IMessageFormatter>();
-		var result = formatter.Format("hello");
+        var formatter = await container.GetRequiredService<IMessageFormatter>();
+        var result = formatter.Format("hello");
 
-		// Expected layering:
-		// BaseFormatter: "hello!"
-		// BracketsFormatter: "[hello!]"
-		// UpperFormatter: "[HELLO!]"
-		// AsyncSuffixFormatter: "[HELLO!]#"
-		Assert.AreEqual(expected: "[HELLO!]#", result);
-	}
+        // Expected layering:
+        // BaseFormatter: "hello!"
+        // BracketsFormatter: "[hello!]"
+        // UpperFormatter: "[HELLO!]"
+        // AsyncSuffixFormatter: "[HELLO!]#"
+        Assert.AreEqual(expected: "[HELLO!]#", result);
+    }
 }

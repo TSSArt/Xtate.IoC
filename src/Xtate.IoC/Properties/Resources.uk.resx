@@ -138,4 +138,10 @@
 	<data name="Format_ImplementationWithArgs" xml:space="preserve">
 		<value>^{0}({1:, |p1})</value>
 	</data>
+	<data name="Exception_ObjectMustBeInitialized" xml:space="preserve">
+		<value>Об'єкт повинен бути ініціалізований перед доступом до цього члена.</value>
+	</data>
+	<data name="Exception_BaseClassImplementsIAsyncInitialization" xml:space="preserve">
+		<value>Базовий клас '{0}' реалізує IAsyncInitialization. Використовуйте перевантаження конструктора, яке приймає параметр baseInitializeAsync.</value>
+	</data>
 </root>

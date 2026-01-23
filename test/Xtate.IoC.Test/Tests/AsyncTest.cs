@@ -20,333 +20,307 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class AsyncTest
 {
-	[TestMethod]
-	public async Task TestMethod0Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddType<Service0>();
-														 services.AddType<Service1>();
-														 services.AddType<ServiceA>();
-														 services.AddType<ServiceB>();
-														 services.AddType<ServiceC>();
-														 services.AddType<ServiceD>();
-														 services.AddType<BigService1>();
-													 });
+    [TestMethod]
+    public async Task TestMethod0Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddType<Service0>();
+                                                         services.AddType<Service1>();
+                                                         services.AddType<ServiceA>();
+                                                         services.AddType<ServiceB>();
+                                                         services.AddType<ServiceC>();
+                                                         services.AddType<ServiceD>();
+                                                         services.AddType<BigService1>();
+                                                     });
 
-		var bigService1 = await container.GetRequiredService<BigService1>();
-		Assert.IsNotNull(bigService1);
-		Assert.IsNotNull(bigService1.Service0);
-		Assert.IsNotNull(bigService1.Service1);
-		Assert.IsNotNull(bigService1.ServiceA);
-		Assert.IsNotNull(bigService1.ServiceB);
-		Assert.IsNotNull(bigService1.ServiceC);
-		Assert.IsNotNull(bigService1.ServiceD);
-	}
+        var bigService1 = await container.GetRequiredService<BigService1>();
+        Assert.IsNotNull(bigService1);
+        Assert.IsNotNull(bigService1.Service0);
+        Assert.IsNotNull(bigService1.Service1);
+        Assert.IsNotNull(bigService1.ServiceA);
+        Assert.IsNotNull(bigService1.ServiceB);
+        Assert.IsNotNull(bigService1.ServiceC);
+        Assert.IsNotNull(bigService1.ServiceD);
+    }
 
-	[TestMethod]
-	public async Task TestMethod1Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddType<Service0>();
-														 services.AddType<Service1>();
-														 services.AddType<ServiceA>();
-														 services.AddType<ServiceC>();
-														 services.AddType<ServiceD>();
-														 services.AddType<BigService1>();
-													 });
+    [TestMethod]
+    public async Task TestMethod1Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddType<Service0>();
+                                                         services.AddType<Service1>();
+                                                         services.AddType<ServiceA>();
+                                                         services.AddType<ServiceC>();
+                                                         services.AddType<ServiceD>();
+                                                         services.AddType<BigService1>();
+                                                     });
 
-		await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService1>());
-	}
+        await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService1>());
+    }
 
-	[TestMethod]
-	public async Task TestMethod2Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddType<Service0>();
-														 services.AddType<Service1>();
-														 services.AddType<ServiceA>();
-														 services.AddType<ServiceB>();
-														 services.AddType<ServiceC>();
-														 services.AddType<BigService1>();
-													 });
+    [TestMethod]
+    public async Task TestMethod2Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddType<Service0>();
+                                                         services.AddType<Service1>();
+                                                         services.AddType<ServiceA>();
+                                                         services.AddType<ServiceB>();
+                                                         services.AddType<ServiceC>();
+                                                         services.AddType<BigService1>();
+                                                     });
 
-		await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService1>());
-	}
+        await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService1>());
+    }
 
-	[TestMethod]
-	public async Task TestMethod3Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddType<Service0>();
-														 services.AddType<BigService2>();
-													 });
+    [TestMethod]
+    public async Task TestMethod3Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddType<Service0>();
+                                                         services.AddType<BigService2>();
+                                                     });
 
-		await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService2>());
-	}
+        await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService2>());
+    }
 
-	[TestMethod]
-	public async Task TestMethod4Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddType<Service0>();
-														 services.AddType<Service1>();
-														 services.AddType<ServiceA>();
+    [TestMethod]
+    public async Task TestMethod4Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddType<Service0>();
+                                                         services.AddType<Service1>();
+                                                         services.AddType<ServiceA>();
 
-														 //services.AddType<ServiceB>();
-														 services.AddType<ServiceC>();
-														 services.AddType<ServiceD>();
-														 services.AddType<BigService1>();
-													 });
+                                                         //services.AddType<ServiceB>();
+                                                         services.AddType<ServiceC>();
+                                                         services.AddType<ServiceD>();
+                                                         services.AddType<BigService1>();
+                                                     });
 
-		await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService1>());
-	}
+        await Assert.ThrowsExactlyAsync<DependencyInjectionException>(async () => await container.GetRequiredService<BigService1>());
+    }
 
-	[TestMethod]
-	public async Task TestMethod5Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddFactory<BigService3>().For<FactoryService>();
-													 });
+    [TestMethod]
+    public async Task TestMethod5Async()
+    {
+        await using var container = Container.Create(services => { services.AddFactory<BigService3>().For<FactoryService>(); });
 
-		var factoryService = await container.GetRequiredService<FactoryService>();
-		Assert.IsNotNull(factoryService);
-	}
+        var factoryService = await container.GetRequiredService<FactoryService>();
+        Assert.IsNotNull(factoryService);
+    }
 
-	[TestMethod]
-	public async Task TestMethod6Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddImplementation<BigService3>().For<IBigService3>();
-													 });
+    [TestMethod]
+    public async Task TestMethod6Async()
+    {
+        await using var container = Container.Create(services => { services.AddImplementation<BigService3>().For<IBigService3>(); });
 
-		var bigService3 = await container.GetRequiredService<IBigService3>();
-		Assert.IsNotNull(bigService3);
-	}
+        var bigService3 = await container.GetRequiredService<IBigService3>();
+        Assert.IsNotNull(bigService3);
+    }
 
-	[TestMethod]
-	public async Task DecorTestMethod1Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddImplementation<BaseDecor>().For<IDecor>();
-														 services.AddDecorator<WrapDecor>().For<IDecor>();
-													 });
+    [TestMethod]
+    public async Task DecorTestMethod1Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddImplementation<BaseDecor>().For<IDecor>();
+                                                         services.AddDecorator<WrapDecor>().For<IDecor>();
+                                                     });
 
-		var decor = await container.GetRequiredService<IDecor>();
-		Assert.IsNotNull(decor);
-	}
+        var decor = await container.GetRequiredService<IDecor>();
+        Assert.IsNotNull(decor);
+    }
 
-	[TestMethod]
-	public async Task DecorTestMethod2Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddDecorator<WrapDecor>().For<IDecor>();
-													 });
+    [TestMethod]
+    public async Task DecorTestMethod2Async()
+    {
+        await using var container = Container.Create(services => { services.AddDecorator<WrapDecor>().For<IDecor>(); });
 
-		var decor = await container.GetService<IDecor>();
-		Assert.IsNull(decor);
-	}
+        var decor = await container.GetService<IDecor>();
+        Assert.IsNull(decor);
+    }
 
-	[TestMethod]
-	public async Task DecorTestMethod3Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddFactory<FactoryDecor>().For<IDecor>();
-														 services.AddDecorator<WrapDecor>().For<IDecor>();
-													 });
+    [TestMethod]
+    public async Task DecorTestMethod3Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddFactory<FactoryDecor>().For<IDecor>();
+                                                         services.AddDecorator<WrapDecor>().For<IDecor>();
+                                                     });
 
-		var decor = await container.GetService<IDecor>();
-		Assert.IsNull(decor);
-	}
+        var decor = await container.GetService<IDecor>();
+        Assert.IsNull(decor);
+    }
 
-	[TestMethod]
-	public async Task DecorTestMethod4Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddImplementation<BaseDecor>().For<IDecor>();
-														 services.AddDecoratorSync<WrapDecor>().For<IDecor>();
-													 });
+    [TestMethod]
+    public async Task DecorTestMethod4Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddImplementation<BaseDecor>().For<IDecor>();
+                                                         services.AddDecoratorSync<WrapDecor>().For<IDecor>();
+                                                     });
 
-		var decor = await container.GetRequiredService<IDecor>();
-		Assert.IsNotNull(decor);
-	}
+        var decor = await container.GetRequiredService<IDecor>();
+        Assert.IsNotNull(decor);
+    }
 
-	[TestMethod]
-	public async Task DecorTestMethod5Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddDecoratorSync<WrapDecor>().For<IDecor>();
-													 });
+    [TestMethod]
+    public async Task DecorTestMethod5Async()
+    {
+        await using var container = Container.Create(services => { services.AddDecoratorSync<WrapDecor>().For<IDecor>(); });
 
-		var decor = await container.GetService<IDecor>();
-		Assert.IsNull(decor);
-	}
+        var decor = await container.GetService<IDecor>();
+        Assert.IsNull(decor);
+    }
 
-	[TestMethod]
-	public async Task DecorTestMethod6Async()
-	{
-		await using var container = Container.Create(services =>
-													 {
-														 services.AddFactory<FactoryDecor>().For<IDecor>();
-														 services.AddDecoratorSync<WrapDecor>().For<IDecor>();
-													 });
+    [TestMethod]
+    public async Task DecorTestMethod6Async()
+    {
+        await using var container = Container.Create(services =>
+                                                     {
+                                                         services.AddFactory<FactoryDecor>().For<IDecor>();
+                                                         services.AddDecoratorSync<WrapDecor>().For<IDecor>();
+                                                     });
 
-		var decor = await container.GetService<IDecor>();
-		Assert.IsNull(decor);
-	}
+        var decor = await container.GetService<IDecor>();
+        Assert.IsNull(decor);
+    }
 
-	[InstantiatedByIoC]
-	public class Service0;
+    [InstantiatedByIoC]
+    public class Service0;
 
-	[InstantiatedByIoC]
-	public class Service1;
+    [InstantiatedByIoC]
+    public class Service1;
 
-	[InstantiatedByIoC]
-	public class FactoryService;
+    [InstantiatedByIoC]
+    public class FactoryService;
 
-	[InstantiatedByIoC]
-	public class ServiceA : IAsyncInitialization
-	{
-	#region Interface IAsyncInitialization
+    [InstantiatedByIoC]
+    public class ServiceA : IAsyncInitialization
+    {
+    #region Interface IAsyncInitialization
 
-		public Task Initialization => field ??= Init();
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-	#endregion
+    #endregion
+    }
 
-		private static async Task Init() => await Task.Delay(1);
-	}
+    [InstantiatedByIoC]
+    public class ServiceB : IAsyncInitialization
+    {
+    #region Interface IAsyncInitialization
 
-	[InstantiatedByIoC]
-	public class ServiceB : IAsyncInitialization
-	{
-	#region Interface IAsyncInitialization
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-		public Task Initialization => field ??= Init();
+    #endregion
+    }
 
-	#endregion
+    [InstantiatedByIoC]
+    public class ServiceC : IAsyncInitialization
+    {
+    #region Interface IAsyncInitialization
 
-		private static async Task Init() => await Task.Delay(1);
-	}
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-	[InstantiatedByIoC]
-	public class ServiceC : IAsyncInitialization
-	{
-	#region Interface IAsyncInitialization
+    #endregion
+    }
 
-		public Task Initialization => field ??= Init();
+    [InstantiatedByIoC]
+    public class ServiceD : IAsyncInitialization
+    {
+    #region Interface IAsyncInitialization
 
-	#endregion
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-		private static async Task Init() => await Task.Delay(1);
-	}
+    #endregion
+    }
 
-	[InstantiatedByIoC]
-	public class ServiceD : IAsyncInitialization
-	{
-	#region Interface IAsyncInitialization
+    [InstantiatedByIoC]
+    public class BigService1(Service0 service0, ServiceA? serviceA, ServiceB serviceB) : IAsyncInitialization
+    {
+        public readonly Service0 Service0 = service0;
 
-		public Task Initialization => field ??= Init();
+        public readonly ServiceA? ServiceA = serviceA;
 
-	#endregion
+        public readonly ServiceB ServiceB = serviceB;
 
-		private static async Task Init() => await Task.Delay(1);
-	}
+        [SetByIoC]
+        public required Service1 Service1;
 
-	[InstantiatedByIoC]
-	public class BigService1(Service0 service0, ServiceA? serviceA, ServiceB serviceB) : IAsyncInitialization
-	{
-		public readonly Service0 Service0 = service0;
+        [SetByIoC]
+        public required ServiceC? ServiceC;
 
-		public readonly ServiceA? ServiceA = serviceA;
+        [SetByIoC]
+        public required ServiceD ServiceD;
 
-		public readonly ServiceB ServiceB = serviceB;
+    #region Interface IAsyncInitialization
 
-		[SetByIoC]
-		public required Service1 Service1;
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-		[SetByIoC]
-		public required ServiceC? ServiceC;
+    #endregion
+    }
 
-		[SetByIoC]
-		public required ServiceD ServiceD;
+    [InstantiatedByIoC]
+    public class BigService2(Service0 service0)
+    {
+        [UsedImplicitly]
+        public readonly Service0 Service0 = service0;
 
-	#region Interface IAsyncInitialization
+        [UsedImplicitly]
+        public required Service1 Service1;
+    }
 
-		public Task Initialization => field ??= Init();
+    [UsedImplicitly]
+    public interface IBigService3;
 
-	#endregion
+    [InstantiatedByIoC]
+    public class BigService3 : IAsyncInitialization, IBigService3
+    {
+    #region Interface IAsyncInitialization
 
-		private static async Task Init() => await Task.Delay(1);
-	}
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-	[InstantiatedByIoC]
-	public class BigService2(Service0 service0)
-	{
-		[UsedImplicitly]
-		public readonly Service0 Service0 = service0;
-
-		[UsedImplicitly]
-		public required Service1 Service1;
-	}
-
-	[UsedImplicitly]
-	public interface IBigService3;
-
-	[InstantiatedByIoC]
-	public class BigService3 : IAsyncInitialization, IBigService3
-	{
-	#region Interface IAsyncInitialization
-
-		public Task Initialization => field ??= Init();
-
-	#endregion
+    #endregion
 
 #pragma warning disable CA1822
-		[UsedImplicitly]
-		public FactoryService GetService() => new();
+        [UsedImplicitly]
+        public FactoryService GetService() => new();
 #pragma warning restore CA1822
+    }
 
-		private static async Task Init() => await Task.Delay(1);
-	}
+    public interface IDecor;
 
-	public interface IDecor;
+    [InstantiatedByIoC]
+    public class BaseDecor : IDecor, IAsyncInitialization
+    {
+    #region Interface IAsyncInitialization
 
-	[InstantiatedByIoC]
-	public class BaseDecor : IDecor, IAsyncInitialization
-	{
-	#region Interface IAsyncInitialization
+        public ValueTask InitializeAsync() => new(Task.Delay(1));
 
-		public Task Initialization => field ??= Init();
+    #endregion
+    }
 
-	#endregion
-
-		private static async Task Init() => await Task.Delay(1);
-	}
-
-	[InstantiatedByIoC]
-	public class FactoryDecor
-	{
+    [InstantiatedByIoC]
+    public class FactoryDecor
+    {
 #pragma warning disable CA1822
-		[CalledByIoC]
-		public IDecor? Factory() => null;
+        [CalledByIoC]
+        public IDecor? Factory() => null;
 #pragma warning restore CA1822
-	}
+    }
 
-	[InstantiatedByIoC]
-	public class WrapDecor(IDecor decor) : IDecor
-	{
-		[UsedImplicitly]
-		public readonly IDecor Decor = decor;
-	}
+    [InstantiatedByIoC]
+    public class WrapDecor(IDecor decor) : IDecor
+    {
+        [UsedImplicitly]
+        public readonly IDecor Decor = decor;
+    }
 }
