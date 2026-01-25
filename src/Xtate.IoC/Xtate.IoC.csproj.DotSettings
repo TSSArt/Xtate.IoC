@@ -1,7 +1,13 @@
-﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:s="clr-namespace:System;assembly=mscorlib"
-                        xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml"
-                        xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeEditing/Localization/Localizable/@EntryValue">Yes</s:String>
 	<s:String x:Key="/Default/CodeEditing/Localization/LocalizableInspector/@EntryValue">Pessimistic</s:String>
-	<s:String x:Key="/Default/CodeInspection/Daemon/ConfigureAwaitAnalysisMode/@EntryValue">Library</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/CodeInspection/Daemon/ConfigureAwaitAnalysisMode/@EntryValue">Library</s:String>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=asyncinitialization/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=exceptions/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=factoryproviders/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=factoryproviders_005Casynchronous/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=factoryproviders_005Csynchronous/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=helpers/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=implementationentry/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=interfaces/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ioc/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

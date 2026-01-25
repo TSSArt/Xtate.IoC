@@ -20,8 +20,9 @@ namespace Xtate.IoC;
 public class ServiceCollection : IServiceCollection
 {
 	private readonly List<ServiceEntry> _registrations = [];
+	private readonly HashSet<TypeKey> _keys = [];
 
-#region Interface IEnumerable
+	#region Interface IEnumerable
 
 	IEnumerator IEnumerable.GetEnumerator() => _registrations.GetEnumerator();
 
@@ -41,22 +42,15 @@ public class ServiceCollection : IServiceCollection
 
 #region Interface IServiceCollection
 
-	public void Add(ServiceEntry serviceEntry) => _registrations.Add(serviceEntry);
-
-	public bool IsRegistered(TypeKey key)
+	public void Add(ServiceEntry serviceEntry)
 	{
-		foreach (var entry in _registrations)
-		{
-			if (entry.Key == key)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		_registrations.Add(serviceEntry);
+		_keys.Add(serviceEntry.Key);
 	}
 
-#endregion
+	public bool IsRegistered(TypeKey key) => _keys.Contains(key);
+
+	#endregion
 
 	public List<ServiceEntry>.Enumerator GetEnumerator() => _registrations.GetEnumerator();
 

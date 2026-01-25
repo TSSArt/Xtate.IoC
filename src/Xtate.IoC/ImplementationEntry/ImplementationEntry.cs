@@ -640,14 +640,14 @@ public abstract class ImplementationEntry
 	{
 		for (var entry = _delegateEntry; entry is not null; entry = entry.Next)
 		{
-			if (entry is ServicesDelegateEntry<TDelegate> servicesDelegateEntry)
+			if (entry is ServicesSyncDelegateEntry<TDelegate> servicesSyncDelegateEntry)
 			{
-				return servicesDelegateEntry.Delegate;
+				return servicesSyncDelegateEntry.Delegate;
 			}
 		}
 
 		var newDelegate = FuncConverter.Cast<TDelegate>(new Func<TArg, IEnumerable<T>>(GetServicesSync<T, TArg>));
-		_delegateEntry = new ServicesDelegateEntry<TDelegate>(newDelegate, _delegateEntry);
+		_delegateEntry = new ServicesSyncDelegateEntry<TDelegate>(newDelegate, _delegateEntry);
 
 		return newDelegate;
 	}
@@ -855,6 +855,17 @@ public abstract class ImplementationEntry
 	///     Stores a delegate retrieving an optional service asynchronously.
 	/// </summary>
 	private class ServiceDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
+	{
+		/// <summary>
+		///     The cached delegate instance.
+		/// </summary>
+		public T Delegate { get; } = @delegate;
+	}
+
+	/// <summary>
+	///     Stores a delegate returning synchronous enumeration of services.
+	/// </summary>
+	private class ServicesSyncDelegateEntry<T>(T @delegate, DelegateEntry? next) : DelegateEntry(next)
 	{
 		/// <summary>
 		///     The cached delegate instance.

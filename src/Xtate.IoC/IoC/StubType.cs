@@ -41,9 +41,9 @@ internal static class StubType
 
 	public static bool IsResolvedType(Type type)
 	{
-		if (type.HasElementType)
+		while (type.HasElementType)
 		{
-			return IsResolvedType(type.GetElementType()!);
+			type = type.GetElementType()!;
 		}
 
 		if (type.IsGenericParameter || IsStubType(type))
@@ -107,6 +107,7 @@ internal static class StubType
 
 		if ((arg1?.IsArray ?? true) && (arg2?.IsArray ?? true))
 		{
+			// ReSharper disable once TailRecursiveCall
 			return TryMap(typesToMap1, typesToMap2, arg1?.GetElementType(), arg2?.GetElementType());
 		}
 

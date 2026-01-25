@@ -208,7 +208,7 @@ public class ObjectsBinTest
 	public async Task DisposeAsync_OverrideWithoutBaseCall_ShouldStillAllowCustomBehavior()
 	{
 		// Arrange
-		var bin = new TestObjectsBin_NoBase();
+		var bin = new TestObjectsBinNoBase();
 		var d1 = new SyncDisposable();
 		var d2 = new AsyncDisposable();
 
@@ -280,7 +280,7 @@ public class ObjectsBinTest
 		}
 	}
 
-	private sealed class TestObjectsBin_NoBase : ObjectsBin
+	private sealed class TestObjectsBinNoBase : ObjectsBin
 	{
 		public int DisposeAsyncCoreCallCount;
 

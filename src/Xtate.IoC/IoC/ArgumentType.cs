@@ -122,7 +122,12 @@ internal readonly struct ArgumentType : IFormattable
 		return true;
 	}
 
-	public static ArgumentType TypeOf<T>() => new(typeof(T));
+	public static ArgumentType TypeOf<T>() => Container<T>.Instance;
 
 	public override string ToString() => ToString(format: null, formatProvider: null);
+
+	private static class Container<T>
+	{
+		public static readonly ArgumentType Instance = new(typeof(T));
+	}
 }

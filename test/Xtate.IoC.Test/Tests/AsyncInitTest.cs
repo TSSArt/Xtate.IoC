@@ -66,7 +66,7 @@ public class AsyncInitTest
 		var instance = new ClassWithEnsureInitialized();
 
 		// Act & Assert
-		Assert.ThrowsExactly<InvalidOperationException>(() => instance.EnsureInit());
+		Assert.ThrowsExactly<InvalidOperationException>(instance.EnsureInit);
 	}
 
 	[TestMethod]
