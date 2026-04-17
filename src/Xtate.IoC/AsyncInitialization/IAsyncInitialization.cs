@@ -24,14 +24,14 @@ namespace Xtate.IoC;
 /// </summary>
 public interface IAsyncInitialization
 {
-    /// <summary>
-    ///     Asynchronously initializes the instance.
-    /// </summary>
-    /// <returns>A task that represents the asynchronous initialization operation.</returns>
-    /// <remarks>
-    ///     Implementations should be idempotent and handle multiple calls to this method safely.
-    ///     Note that this method may not be invoked if the instance is created manually outside
-    ///     the IoC container.
-    /// </remarks>
-    ValueTask InitializeAsync();
+	/// <summary>
+	///     Asynchronously initializes the instance.
+	/// </summary>
+	/// <returns>A task that represents the asynchronous initialization operation.</returns>
+	/// <remarks>
+	///     Implementations should be idempotent and handle multiple calls to this method safely.
+	///     Note that this method may not be invoked if the instance is created manually outside
+	///     the IoC container.
+	/// </remarks>
+	ValueTask InitializeAsync();
 }

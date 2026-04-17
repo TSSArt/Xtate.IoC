@@ -83,7 +83,7 @@ public static class ServiceCollectionArg0Extensions
 		{
 			value = value.Preserve();
 
-			services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>([ExcludeFromCodeCoverage] (_, _) => value));
+			services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>([ExcludeFromCodeCoverage](_, _) => value));
 		}
 	}
 }

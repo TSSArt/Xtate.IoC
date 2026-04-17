@@ -24,351 +24,351 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class WeakReferenceSetTest
 {
-    [ExcludeFromCodeCoverage]
-    private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith(value: "Mono", StringComparison.OrdinalIgnoreCase);
+	[ExcludeFromCodeCoverage]
+	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith(value: "Mono", StringComparison.OrdinalIgnoreCase);
 
-    [TestMethod]
-    public void WeakReferenceStack_ShouldStoreAndRetrieveAllObjects()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var objects = Enumerable.Range(start: 0, count: 16).Select(_ => CreateObject()).ToList();
-
-        // Act
-        foreach (var o in objects)
-        {
-            wrs.Add(o);
-        }
-
-        while (wrs.TryTake(out var obj))
-        {
-            objects.Remove(obj);
-        }
-
-        // Assert
-        Assert.IsEmpty(objects);
-    }
-
-    private static void AddObjects(WeakReferenceSet wrs, int count)
+	[TestMethod]
+	public void WeakReferenceStack_ShouldStoreAndRetrieveAllObjects()
 	{
-        for (var i = 0; i < count; i ++)
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var objects = Enumerable.Range(start: 0, count: 16).Select(_ => CreateObject()).ToList();
+
+		// Act
+		foreach (var o in objects)
 		{
-            wrs.Add(CreateObject());
-        }
+			wrs.Add(o);
+		}
+
+		while (wrs.TryTake(out var obj))
+		{
+			objects.Remove(obj);
+		}
+
+		// Assert
+		Assert.IsEmpty(objects);
 	}
 
-    private static List<object> AddObjectsAndReturnList(WeakReferenceSet wrs, int count)
+	private static void AddObjects(WeakReferenceSet wrs, int count)
+	{
+		for (var i = 0; i < count; i ++)
+		{
+			wrs.Add(CreateObject());
+		}
+	}
+
+	private static List<object> AddObjectsAndReturnList(WeakReferenceSet wrs, int count)
 	{
 		var list = new List<object>();
 
-        for (var i = 0; i < count; i ++)
+		for (var i = 0; i < count; i ++)
 		{
 			var obj = CreateObject();
-            list.Add(obj);
-            wrs.Add(obj);
-        }
+			list.Add(obj);
+			wrs.Add(obj);
+		}
 
 		return list;
 	}
 
-    private static object CreateObject() => new();
+	private static object CreateObject() => new();
 
-    private static void GcCollect()
-    {
-        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-        GC.WaitForPendingFinalizers();
-    }
+	private static void GcCollect()
+	{
+		GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+		GC.WaitForPendingFinalizers();
+	}
 
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(1)]
-    [DataRow(8)]
-    [DataRow(16)]
-    public void WeakReferenceStack_ShouldCollectAllObjects_WhenGcCollectsAll(int n)
-    {
-        if (!IsGcCollectsAll)
-        {
-            return;
-        }
+	[TestMethod]
+	[DataRow(0)]
+	[DataRow(1)]
+	[DataRow(8)]
+	[DataRow(16)]
+	public void WeakReferenceStack_ShouldCollectAllObjects_WhenGcCollectsAll(int n)
+	{
+		if (!IsGcCollectsAll)
+		{
+			return;
+		}
 
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        AddObjects(wrs, n);
-
-        // Act
-        GcCollect();
-        var result = wrs.TryTake(out _);
-
-        // Assert
-        Assert.IsFalse(result);
-    }
-
-    [TestMethod]
-    public void WeakReferenceStack_ShouldCollectSomeObjects_WhenGcCollectsAll()
-    {
-        if (!IsGcCollectsAll)
-        {
-            return;
-        }
-
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var list = new object[8];
-        FillList(wrs, list, count: 8);
-
-		list[0] = null!;
-        list[1] = null!;
-        list[4] = null!;
-        list[5] = null!;
-        list[6] = null!;
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		AddObjects(wrs, n);
 
 		// Act
 		GcCollect();
-        var listOf1 = AddObjectsAndReturnList(wrs, count: 1);
-		
+		var result = wrs.TryTake(out _);
+
+		// Assert
+		Assert.IsFalse(result);
+	}
+
+	[TestMethod]
+	public void WeakReferenceStack_ShouldCollectSomeObjects_WhenGcCollectsAll()
+	{
+		if (!IsGcCollectsAll)
+		{
+			return;
+		}
+
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var list = new object[8];
+		FillList(wrs, list, count: 8);
+
+		list[0] = null!;
+		list[1] = null!;
+		list[4] = null!;
+		list[5] = null!;
+		list[6] = null!;
+
+		// Act
+		GcCollect();
+		var listOf1 = AddObjectsAndReturnList(wrs, count: 1);
+
 		var count = 0;
 
-        while (wrs.TryTake(out _))
-        {
-			count++;
-        }
+		while (wrs.TryTake(out _))
+		{
+			count ++;
+		}
 
-        // Assert
-        Assert.AreEqual(expected: 4, count);
-        Assert.HasCount(expected: 8, list);
+		// Assert
+		Assert.AreEqual(expected: 4, count);
+		Assert.HasCount(expected: 8, list);
 		Assert.HasCount(expected: 1, listOf1);
-    }
+	}
 
-    private static void FillList(WeakReferenceSet wrs, object[] list, int count)
-    {
-        for (var i = 0; i < count; i ++)
-        {
-            list[i] = CreateObject();
-            wrs.Add(list[i]);
-        }
-    }
+	private static void FillList(WeakReferenceSet wrs, object[] list, int count)
+	{
+		for (var i = 0; i < count; i ++)
+		{
+			list[i] = CreateObject();
+			wrs.Add(list[i]);
+		}
+	}
 
-    [TestMethod]
-    public void WeakReferenceStack_ShouldHandleMultiThreadedAccess()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
+	[TestMethod]
+	public void WeakReferenceStack_ShouldHandleMultiThreadedAccess()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
 
-        var thread1 = new Thread(o => Put((WeakReferenceSet)o!));
-        var thread2 = new Thread(o => Put((WeakReferenceSet)o!));
-        var thread3 = new Thread(o => Take((WeakReferenceSet)o!));
-        var thread4 = new Thread(o => Take((WeakReferenceSet)o!));
+		var thread1 = new Thread(o => Put((WeakReferenceSet) o!));
+		var thread2 = new Thread(o => Put((WeakReferenceSet) o!));
+		var thread3 = new Thread(o => Take((WeakReferenceSet) o!));
+		var thread4 = new Thread(o => Take((WeakReferenceSet) o!));
 
-        // Act
-        thread1.Start(wrs);
-        thread2.Start(wrs);
-        thread3.Start(wrs);
-        thread4.Start(wrs);
+		// Act
+		thread1.Start(wrs);
+		thread2.Start(wrs);
+		thread3.Start(wrs);
+		thread4.Start(wrs);
 
-        thread1.Join();
-        thread2.Join();
-        thread3.Join();
-        thread4.Join();
+		thread1.Join();
+		thread2.Join();
+		thread3.Join();
+		thread4.Join();
 
-        // Assert
-        while (wrs.TryTake(out _)) { }
-    }
+		// Assert
+		while (wrs.TryTake(out _)) { }
+	}
 
-    private static void Put(WeakReferenceSet wrs)
-    {
-        for (var i = 0; i < 10000; i ++)
-        {
-            wrs.Add(new object());
-        }
-    }
+	private static void Put(WeakReferenceSet wrs)
+	{
+		for (var i = 0; i < 10000; i ++)
+		{
+			wrs.Add(new object());
+		}
+	}
 
-    private static void Take(WeakReferenceSet wrs)
-    {
-        while (wrs.TryTake(out _)) { }
-    }
+	private static void Take(WeakReferenceSet wrs)
+	{
+		while (wrs.TryTake(out _)) { }
+	}
 
-    [TestMethod]
-    public void Put_ShouldAddObjectToCollection()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var obj = new object();
+	[TestMethod]
+	public void Put_ShouldAddObjectToCollection()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var obj = new object();
 
-        // Act
-        wrs.Add(obj);
+		// Act
+		wrs.Add(obj);
 
-        // Assert
-        Assert.IsTrue(wrs.TryTake(out var retrievedObj));
-        Assert.AreSame(obj, retrievedObj);
-    }
+		// Assert
+		Assert.IsTrue(wrs.TryTake(out var retrievedObj));
+		Assert.AreSame(obj, retrievedObj);
+	}
 
-    [TestMethod]
-    public void Put_ShouldNotAddNullObjectToCollection()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
+	[TestMethod]
+	public void Put_ShouldNotAddNullObjectToCollection()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
 
-        // Act
-        wrs.Add(null!);
+		// Act
+		wrs.Add(null!);
 
-        // Assert
-        Assert.IsFalse(wrs.TryTake(out _));
-    }
+		// Assert
+		Assert.IsFalse(wrs.TryTake(out _));
+	}
 
-    [TestMethod]
-    public void TryTake_ShouldReturnFalseWhenCollectionIsEmpty()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
+	[TestMethod]
+	public void TryTake_ShouldReturnFalseWhenCollectionIsEmpty()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
 
-        // Act
-        var result = wrs.TryTake(out var obj);
+		// Act
+		var result = wrs.TryTake(out var obj);
 
-        // Assert
-        Assert.IsFalse(result);
-        Assert.IsNull(obj);
-    }
+		// Assert
+		Assert.IsFalse(result);
+		Assert.IsNull(obj);
+	}
 
-    [TestMethod]
-    public void TryTake_ShouldReturnTrueAndRemoveObjectFromCollection()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var obj = new object();
-        wrs.Add(obj);
+	[TestMethod]
+	public void TryTake_ShouldReturnTrueAndRemoveObjectFromCollection()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var obj = new object();
+		wrs.Add(obj);
 
-        // Act
-        var result = wrs.TryTake(out var retrievedObj);
+		// Act
+		var result = wrs.TryTake(out var retrievedObj);
 
-        // Assert
-        Assert.IsTrue(result);
-        Assert.AreSame(obj, retrievedObj);
-        Assert.IsFalse(wrs.TryTake(out _));
-    }
+		// Assert
+		Assert.IsTrue(result);
+		Assert.AreSame(obj, retrievedObj);
+		Assert.IsFalse(wrs.TryTake(out _));
+	}
 
-    [TestMethod]
-    public void WeakReferenceStack_ShouldHandleConcurrentAccess()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var obj1 = new object();
-        var obj2 = new object();
+	[TestMethod]
+	public void WeakReferenceStack_ShouldHandleConcurrentAccess()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var obj1 = new object();
+		var obj2 = new object();
 
-        // Act
-        var thread1 = new Thread(() => wrs.Add(obj1));
-        var thread2 = new Thread(() => wrs.Add(obj2));
-        thread1.Start();
-        thread2.Start();
-        thread1.Join();
-        thread2.Join();
+		// Act
+		var thread1 = new Thread(() => wrs.Add(obj1));
+		var thread2 = new Thread(() => wrs.Add(obj2));
+		thread1.Start();
+		thread2.Start();
+		thread1.Join();
+		thread2.Join();
 
-        // Assert
-        var retrievedObjects = new List<object>();
+		// Assert
+		var retrievedObjects = new List<object>();
 
-        while (wrs.TryTake(out var obj))
-        {
-            retrievedObjects.Add(obj);
-        }
+		while (wrs.TryTake(out var obj))
+		{
+			retrievedObjects.Add(obj);
+		}
 
-        CollectionAssert.Contains(retrievedObjects, obj1);
-        CollectionAssert.Contains(retrievedObjects, obj2);
-    }
+		CollectionAssert.Contains(retrievedObjects, obj1);
+		CollectionAssert.Contains(retrievedObjects, obj2);
+	}
 
-    [TestMethod]
-    public void Dispose_ShouldFreeHandles_AndSubsequentOperationsAreSafe()
-    {
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        AddObjects(wrs, count: 32);
+	[TestMethod]
+	public void Dispose_ShouldFreeHandles_AndSubsequentOperationsAreSafe()
+	{
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		AddObjects(wrs, count: 32);
 
-        // Act
-        wrs.Dispose();
+		// Act
+		wrs.Dispose();
 
-        // Assert
-        wrs.TryTake(out _);
+		// Assert
+		wrs.TryTake(out _);
 
-        // ReSharper disable once AccessToDisposedClosure
-        Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.Add(null!));
+		// ReSharper disable once AccessToDisposedClosure
+		Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.Add(null!));
 
-        // Further Act/Assert: calling Dispose again should be safe
-        wrs.Dispose();
+		// Further Act/Assert: calling Dispose again should be safe
+		wrs.Dispose();
 
-        wrs.TryTake(out _);
-        Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.Add(null!));
-    }
+		wrs.TryTake(out _);
+		Assert.ThrowsExactly<ObjectDisposedException>(() => wrs.Add(null!));
+	}
 
-    [TestMethod]
-    public void Cleaner_Finalization_ShouldTriggerCompaction_AndPreserveLiveItems()
-    {
-        if (!IsGcCollectsAll)
-        {
-            return;
-        }
+	[TestMethod]
+	public void Cleaner_Finalization_ShouldTriggerCompaction_AndPreserveLiveItems()
+	{
+		if (!IsGcCollectsAll)
+		{
+			return;
+		}
 
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var list = new object[10];
-        FillList(wrs, list, count: 10);
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var list = new object[10];
+		FillList(wrs, list, count: 10);
 
-        // drop references to some objects to make them collectible
-        list[2] = null!;
-        list[3] = null!;
-        list[6] = null!;
-        list[9] = null!;
+		// drop references to some objects to make them collectible
+		list[2] = null!;
+		list[3] = null!;
+		list[6] = null!;
+		list[9] = null!;
 
-        // Act
-        GcCollect();               // should collect some targets and run Cleaner to compact
-        var listOf2 = AddObjectsAndReturnList(wrs, count: 2); // ensure cleaner exists and activity continues
+		// Act
+		GcCollect();                                          // should collect some targets and run Cleaner to compact
+		var listOf2 = AddObjectsAndReturnList(wrs, count: 2); // ensure cleaner exists and activity continues
 
-        var liveCount = 0;
+		var liveCount = 0;
 
-        while (wrs.TryTake(out _))
-        {
-            liveCount ++;
-        }
+		while (wrs.TryTake(out _))
+		{
+			liveCount ++;
+		}
 
-        // 10 initial - 4 collected + 2 added = expected 8 remaining
-        Assert.AreEqual(expected: 8, liveCount);
-        Assert.HasCount(expected: 10, list);
+		// 10 initial - 4 collected + 2 added = expected 8 remaining
+		Assert.AreEqual(expected: 8, liveCount);
+		Assert.HasCount(expected: 10, list);
 		Assert.HasCount(expected: 2, listOf2);
-    }
+	}
 
-    [TestMethod]
-    public void Cleaner_ShouldCompactLargeBuffer_With256Items_PreservingLiveOnes()
-    {
-        if (!IsGcCollectsAll)
-        {
-            return;
-        }
+	[TestMethod]
+	public void Cleaner_ShouldCompactLargeBuffer_With256Items_PreservingLiveOnes()
+	{
+		if (!IsGcCollectsAll)
+		{
+			return;
+		}
 
-        // Arrange
-        var wrs = new WeakReferenceSet();
-        var list = new object[128];
+		// Arrange
+		var wrs = new WeakReferenceSet();
+		var list = new object[128];
 
-        FillList(wrs, list, count: 128);
+		FillList(wrs, list, count: 128);
 
-        // Drop references for half of the items to make them collectible
-        for (var i = 0; i < 128; i += 2)
-        {
-            list[i] = null!;
-        }
+		// Drop references for half of the items to make them collectible
+		for (var i = 0; i < 128; i += 2)
+		{
+			list[i] = null!;
+		}
 
-        // Act
-        GcCollect();               // should collect ~64 targets and run Cleaner to compact (threshold is 32)
-        var listOf4 = AddObjectsAndReturnList(wrs, count: 4); // keep activity and ensure cleaner remains
+		// Act
+		GcCollect();                                          // should collect ~64 targets and run Cleaner to compact (threshold is 32)
+		var listOf4 = AddObjectsAndReturnList(wrs, count: 4); // keep activity and ensure cleaner remains
 
-        var liveCount = 0;
+		var liveCount = 0;
 
-        while (wrs.TryTake(out _))
-        {
-            liveCount ++;
-        }
+		while (wrs.TryTake(out _))
+		{
+			liveCount ++;
+		}
 
-        // Assert
-        // 128 initial - 64 collected (approx) + 4 added = 68 expected remaining
-        // Under "GC collects all" setting used in tests, collected ones should be gone deterministically.
-        Assert.AreEqual(expected: 68, liveCount);
-        Assert.HasCount(expected: 128, list);
-        Assert.HasCount(expected: 4, listOf4);
-    }
+		// Assert
+		// 128 initial - 64 collected (approx) + 4 added = 68 expected remaining
+		// Under "GC collects all" setting used in tests, collected ones should be gone deterministically.
+		Assert.AreEqual(expected: 68, liveCount);
+		Assert.HasCount(expected: 128, list);
+		Assert.HasCount(expected: 4, listOf4);
+	}
 }

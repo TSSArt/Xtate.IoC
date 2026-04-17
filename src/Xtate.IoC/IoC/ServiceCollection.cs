@@ -19,10 +19,11 @@ namespace Xtate.IoC;
 
 public class ServiceCollection : IServiceCollection
 {
-	private readonly List<ServiceEntry> _registrations = [];
 	private readonly HashSet<TypeKey> _keys = [];
 
-	#region Interface IEnumerable
+	private readonly List<ServiceEntry> _registrations = [];
+
+#region Interface IEnumerable
 
 	IEnumerator IEnumerable.GetEnumerator() => _registrations.GetEnumerator();
 
@@ -50,7 +51,7 @@ public class ServiceCollection : IServiceCollection
 
 	public bool IsRegistered(TypeKey key) => _keys.Contains(key);
 
-	#endregion
+#endregion
 
 	public List<ServiceEntry>.Enumerator GetEnumerator() => _registrations.GetEnumerator();
 

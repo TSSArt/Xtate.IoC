@@ -24,58 +24,58 @@ namespace Xtate.IoC;
 /// </summary>
 internal class AsyncInitializationHandler : IInitializationHandler
 {
-    /// <summary>
-    ///     Singleton instance of the handler.
-    /// </summary>
-    public static readonly IInitializationHandler Instance = new AsyncInitializationHandler();
+	/// <summary>
+	///     Singleton instance of the handler.
+	/// </summary>
+	public static readonly IInitializationHandler Instance = new AsyncInitializationHandler();
 
 #region Interface IInitializationHandler
 
-    /// <summary>
-    ///     Executes the synchronous phase of initialization.
-    /// </summary>
-    /// <typeparam name="T">Instance type.</typeparam>
-    /// <param name="instance">Instance to inspect for asynchronous initialization support.</param>
-    /// <returns>
-    ///     <see langword="true" /> if the instance implements <see cref="IAsyncInitialization" /> and requires an asynchronous
-    ///     phase; otherwise <see langword="false" />.
-    /// </returns>
-    bool IInitializationHandler.Initialize<T>(T instance) => Initialize(instance);
+	/// <summary>
+	///     Executes the synchronous phase of initialization.
+	/// </summary>
+	/// <typeparam name="T">Instance type.</typeparam>
+	/// <param name="instance">Instance to inspect for asynchronous initialization support.</param>
+	/// <returns>
+	///     <see langword="true" /> if the instance implements <see cref="IAsyncInitialization" /> and requires an asynchronous
+	///     phase; otherwise <see langword="false" />.
+	/// </returns>
+	bool IInitializationHandler.Initialize<T>(T instance) => Initialize(instance);
 
-    /// <summary>
-    ///     Executes the asynchronous phase of initialization (if required).
-    /// </summary>
-    /// <typeparam name="T">Instance type.</typeparam>
-    /// <param name="instance">Instance to initialize asynchronously.</param>
-    /// <returns>
-    ///     A <see cref="ValueTask" /> representing the asynchronous initialization operation; a completed task if no
-    ///     asynchronous
-    ///     initialization is required.
-    /// </returns>
-    ValueTask IInitializationHandler.InitializeAsync<T>(T instance) => InitializeAsync(instance);
+	/// <summary>
+	///     Executes the asynchronous phase of initialization (if required).
+	/// </summary>
+	/// <typeparam name="T">Instance type.</typeparam>
+	/// <param name="instance">Instance to initialize asynchronously.</param>
+	/// <returns>
+	///     A <see cref="ValueTask" /> representing the asynchronous initialization operation; a completed task if no
+	///     asynchronous
+	///     initialization is required.
+	/// </returns>
+	ValueTask IInitializationHandler.InitializeAsync<T>(T instance) => InitializeAsync(instance);
 
 #endregion
 
-    /// <summary>
-    ///     Determines whether the specified instance requires asynchronous initialization.
-    /// </summary>
-    /// <typeparam name="T">Instance type.</typeparam>
-    /// <param name="instance">Instance to inspect.</param>
-    /// <returns>
-    ///     <see langword="true" /> if the instance implements <see cref="IAsyncInitialization" />; otherwise
-    ///     <see langword="false" />.
-    /// </returns>
-    public static bool Initialize<T>(T instance) => instance is IAsyncInitialization;
+	/// <summary>
+	///     Determines whether the specified instance requires asynchronous initialization.
+	/// </summary>
+	/// <typeparam name="T">Instance type.</typeparam>
+	/// <param name="instance">Instance to inspect.</param>
+	/// <returns>
+	///     <see langword="true" /> if the instance implements <see cref="IAsyncInitialization" />; otherwise
+	///     <see langword="false" />.
+	/// </returns>
+	public static bool Initialize<T>(T instance) => instance is IAsyncInitialization;
 
-    /// <summary>
-    ///     Returns a <see cref="ValueTask" /> representing the asynchronous initialization for the specified instance,
-    ///     or a completed task if the instance does not support asynchronous initialization.
-    /// </summary>
-    /// <typeparam name="T">Instance type.</typeparam>
-    /// <param name="instance">Instance to initialize.</param>
-    /// <returns>
-    ///     A <see cref="ValueTask" /> wrapping the <see cref="IAsyncInitialization.InitializeAsync" /> task if supported;
-    ///     otherwise <see cref="ValueTask.CompletedTask" />.
-    /// </returns>
-    public static ValueTask InitializeAsync<T>(T instance) => instance is IAsyncInitialization init ? init.InitializeAsync() : ValueTask.CompletedTask;
+	/// <summary>
+	///     Returns a <see cref="ValueTask" /> representing the asynchronous initialization for the specified instance,
+	///     or a completed task if the instance does not support asynchronous initialization.
+	/// </summary>
+	/// <typeparam name="T">Instance type.</typeparam>
+	/// <param name="instance">Instance to initialize.</param>
+	/// <returns>
+	///     A <see cref="ValueTask" /> wrapping the <see cref="IAsyncInitialization.InitializeAsync" /> task if supported;
+	///     otherwise <see cref="ValueTask.CompletedTask" />.
+	/// </returns>
+	public static ValueTask InitializeAsync<T>(T instance) => instance is IAsyncInitialization init ? init.InitializeAsync() : ValueTask.CompletedTask;
 }
