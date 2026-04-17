@@ -54,6 +54,20 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 		return null;
 	}
 
+	public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey)
+	{
+		GetLogger().ServiceRequested();
+
+		return null;
+	}
+
+	public IServiceProviderDataActions? ServiceRequestError(TypeKey typeKey)
+	{
+		GetLogger().ServiceRequestError();
+
+		return null;
+	}
+
 	public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
 	{
 		var stat = GetStat(typeKey);
@@ -71,9 +85,9 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 		return null;
 	}
 
-	public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey)
+	public IServiceProviderDataActions? FactoryCallError(TypeKey typeKey)
 	{
-		GetLogger().ServiceRequested();
+		GetStat(typeKey).FactoryCallError();
 
 		return null;
 	}
@@ -105,10 +119,16 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 	public void ServiceRequested<T, TArg>(T? instance) => throw new NotSupportedException();
 
 	[ExcludeFromCodeCoverage]
+	public void ServiceRequestError<T, TArg>(Exception exception) => throw new NotSupportedException();
+
+	[ExcludeFromCodeCoverage]
 	public void FactoryCalling<T, TArg>(TArg argument) => throw new NotSupportedException();
 
 	[ExcludeFromCodeCoverage]
 	public void FactoryCalled<T, TArg>(T? instance) => throw new NotSupportedException();
+
+	[ExcludeFromCodeCoverage]
+	public void FactoryCallError<T, TArg>(Exception exception) => throw new NotSupportedException();
 
 #endregion
 
@@ -254,6 +274,14 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
+		public void ServiceRequestError()
+		{
+			Writer.Write(@" (ERROR)");
+
+			ServiceRequested();
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void ServiceRequested()
 		{
 			if (_noFactory)
@@ -358,12 +386,14 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 		{
 			CallsCount ++;
 
-			if (++ _deepLevel > 100)
+			if (++ _deepLevel > 500)
 			{
 				throw new DependencyInjectionException(Resources.Exception_CycleReferenceDetectedInContainerConfiguration);
 			}
 		}
 
 		public void FactoryCalled() => _deepLevel --;
+
+		public void FactoryCallError() => _deepLevel --;
 	}
 }

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Linq;
 using System.Threading;
 
 namespace Xtate.IoC.Test;
@@ -97,12 +98,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var list = new List<Service>();
-
-		foreach (var vc in sp.GetServicesSync<Service, int>(4))
-		{
-			list.Add(vc);
-		}
+		var list = sp.GetServicesSync<Service, int>(4).ToList();
 
 		// Assert
 		Assert.HasCount(expected: 1, list);
@@ -119,12 +115,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var list = new List<Service>();
-
-		foreach (var vc in sp.GetServicesSync<Service>())
-		{
-			list.Add(vc);
-		}
+		var list = sp.GetServicesSync<Service>().ToList();
 
 		// Assert
 		Assert.HasCount(expected: 1, list);
@@ -156,12 +147,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var list = new List<Service>();
-
-		foreach (var vc in sp.GetServicesSync<Service, int, int>(arg1: 1, arg2: 2))
-		{
-			list.Add(vc);
-		}
+		var list = sp.GetServicesSync<Service, int, int>(arg1: 1, arg2: 2).ToList();
 
 		// Assert
 		Assert.HasCount(expected: 1, list);
@@ -200,12 +186,7 @@ public class ServiceProviderExtensionsTest
 		var sp = sc.BuildProvider();
 
 		// Act
-		var list = new List<Service>();
-
-		foreach (var vc in sp.GetServicesSyncFactory<Service, int, int>()(arg1: 1, arg2: 2))
-		{
-			list.Add(vc);
-		}
+		var list = sp.GetServicesSyncFactory<Service, int, int>()(arg1: 1, arg2: 2).ToList();
 
 		// Assert
 		Assert.HasCount(expected: 1, list);

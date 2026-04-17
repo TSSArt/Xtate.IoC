@@ -1068,6 +1068,7 @@ public class ServiceCollectionExtensionsTest
 
 		// Act
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+		// ReSharper disable AsyncMethodWithoutAwait
 
 		_services.AddShared(SharedWithin.Container, [ExcludeFromCodeCoverage](sp) => new ClassNoArg());
 		_services.AddShared(SharedWithin.Container, [ExcludeFromCodeCoverage] async (sp) => new ClassNoArg());
@@ -1117,6 +1118,7 @@ public class ServiceCollectionExtensionsTest
 		_services.AddForwarding([ExcludeFromCodeCoverage] async (IServiceProvider sp, Arg1 arg) => new ClassArg(arg));
 		_services.AddForwarding([ExcludeFromCodeCoverage](IServiceProvider sp, Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2));
 		_services.AddForwarding([ExcludeFromCodeCoverage] async (IServiceProvider sp, Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2));
+		// ReSharper enable AsyncMethodWithoutAwait
 
 		var sp = _services.BuildProvider();
 

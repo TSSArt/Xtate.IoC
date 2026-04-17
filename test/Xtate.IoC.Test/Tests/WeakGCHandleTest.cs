@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 namespace Xtate.IoC.Test;
 
 [TestClass]
-public class WeakGCHandleTest
+public class WeakGcHandleTest
 {
 	[ExcludeFromCodeCoverage]
 	private static bool IsGcCollectsAll => !RuntimeInformation.FrameworkDescription.StartsWith(value: "Mono", StringComparison.OrdinalIgnoreCase);

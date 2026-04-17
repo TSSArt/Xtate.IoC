@@ -59,7 +59,7 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
 	<data name="Exception_FactoryOfRaisedException" xml:space="preserve">
-		<value>Factory of [{0}] raised exception</value>
+		<value>[{0}] factory exception</value>
 	</data>
 	<data name="Exception_CantFindFactoryForType" xml:space="preserve">
 		<value>Can't find factory for type [{0}]</value>

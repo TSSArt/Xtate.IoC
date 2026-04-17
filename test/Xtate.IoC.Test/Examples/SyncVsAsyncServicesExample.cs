@@ -66,6 +66,6 @@ public class SyncVsAsyncServicesExample
         Assert.AreEqual(expected: "Initialized", asyncInst.Data);
 
         // Synchronous resolution attempt for async initialized service should throw
-        Assert.ThrowsExactly<DependencyInjectionException>(() => container.GetRequiredServiceSync<AsyncInitService>());
+        Assert.ThrowsExactly<DependencyInjectionException>(container.GetRequiredServiceSync<AsyncInitService>);
     }
 }

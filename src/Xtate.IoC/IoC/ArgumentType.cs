@@ -37,7 +37,7 @@ internal readonly struct ArgumentType : IFormattable
 			return string.Empty;
 		}
 
-		if (format is null || format.Length == 0 || format.Split('|') is not [var dlm, var arg] || !TryGetArgFormat(arg, out var argFormat, out var index))
+		if (format?.Split('|') is not [var dlm, var arg] || !TryGetArgFormat(arg, out var argFormat, out var index))
 		{
 			return _type.FriendlyName;
 		}

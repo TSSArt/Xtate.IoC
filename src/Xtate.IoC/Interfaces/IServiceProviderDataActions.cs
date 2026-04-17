@@ -24,8 +24,12 @@ public interface IServiceProviderDataActions
 	void ServiceRequesting<T, TArg>(TArg argument);
 
 	void ServiceRequested<T, TArg>(T? instance);
+	
+	void ServiceRequestError<T, TArg>(Exception exception);
 
 	void FactoryCalling<T, TArg>(TArg argument);
 
 	void FactoryCalled<T, TArg>(T? instance);
+	
+	void FactoryCallError<T, TArg>(Exception exception);
 }

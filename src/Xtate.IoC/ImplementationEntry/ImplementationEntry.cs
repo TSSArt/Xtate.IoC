@@ -161,10 +161,7 @@ public abstract class ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>A task whose result is the service instance or <c>null</c>.</returns>
-	public ValueTask<T?> GetService<T, TArg>(TArg argument) =>
-		_serviceProvider.Actions is not { } actions
-			? GetServiceNoActions<T, TArg>(argument)
-			: GetServiceWithActions<T, TArg>(argument, actions);
+	public ValueTask<T?> GetService<T, TArg>(TArg argument) => _serviceProvider.Actions is null ? GetServiceNoActions<T, TArg>(argument) : GetServiceWithActions<T, TArg>(argument);
 
 	/// <summary>
 	///     Retrieves a service without invoking provider actions (fast path).
@@ -236,45 +233,73 @@ public abstract class ImplementationEntry
 	}
 
 	/// <summary>
+	///     Gets the action at the specified index.
+	/// </summary>
+	/// <param name="index">The index of the action.</param>
+	/// <returns>The action at the specified index, or <c>null</c> if not found.</returns>
+	private IServiceProviderActions? GetAction(int index)
+	{
+		var actions = _serviceProvider.Actions;
+
+		Infra.NotNull(actions);
+
+		return index < actions.Length ? actions[index] : null;
+	}
+
+	/// <summary>
 	///     Retrieves a service executing provider-wide actions around the request lifecycle.
 	/// </summary>
-	private ValueTask<T?> GetServiceWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	private ValueTask<T?> GetServiceWithActions<T, TArg>(TArg argument, int index = 0)
 	{
+		if (GetAction(index) is not { } action)
+		{
+			return GetServiceNoActions<T, TArg>(argument);
+		}
+
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
 
-		foreach (var action in actions)
+		try
 		{
 			action.ServiceRequesting(typeKey)?.ServiceRequesting<T, TArg>(argument);
-		}
 
-		var valueTask = GetServiceNoActions<T, TArg>(argument);
+			var valueTask = GetServiceWithActions<T, TArg>(argument, index + 1);
 
-		if (!valueTask.IsCompletedSuccessfully)
-		{
-			return Wait(valueTask, actions);
-		}
-
-		var instance = valueTask.Result;
-
-		for (var i = actions.Length - 1; i >= 0; i --)
-		{
-			actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
-		}
-
-		return new ValueTask<T?>(instance);
-
-		static async ValueTask<T?> Wait(ValueTask<T?> valueTask, IServiceProviderActions[] actions)
-		{
-			var instance = await valueTask.ConfigureAwait(false);
-
-			var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
-
-			for (var i = actions.Length - 1; i >= 0; i --)
+			if (!valueTask.IsCompletedSuccessfully)
 			{
-				actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
+				return Wait(valueTask, action);
 			}
 
-			return instance;
+			var instance = valueTask.Result;
+
+			action.ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
+
+			return new ValueTask<T?>(instance);
+		}
+		catch (Exception ex)
+		{
+			action.ServiceRequestError(typeKey)?.ServiceRequestError<T, TArg>(ex);
+
+			throw;
+		}
+
+		static async ValueTask<T?> Wait(ValueTask<T?> valueTask, IServiceProviderActions action)
+		{
+			var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+			try
+			{
+				var instance = await valueTask.ConfigureAwait(false);
+
+				action.ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
+
+				return instance;
+			}
+			catch (Exception ex)
+			{
+				action.ServiceRequestError(typeKey)?.ServiceRequestError<T, TArg>(ex);
+
+				throw;
+			}
 		}
 	}
 
@@ -297,10 +322,7 @@ public abstract class ImplementationEntry
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
 	/// <returns>The service or null if not found.</returns>
-	public T? GetServiceSync<T, TArg>(TArg argument) =>
-		_serviceProvider.Actions is not { } actions
-			? GetServiceSyncNoActions<T, TArg>(argument)
-			: GetServiceSyncWithActions<T, TArg>(argument, actions);
+	public T? GetServiceSync<T, TArg>(TArg argument) => _serviceProvider.Actions is null ? GetServiceSyncNoActions<T, TArg>(argument) : GetServiceSyncWithActions<T, TArg>(argument);
 
 	/// <summary>
 	///     Gets the service of type <typeparamref name="T" /> with the specified argument.
@@ -310,25 +332,33 @@ public abstract class ImplementationEntry
 	/// <typeparam name="T">The type of the service to get.</typeparam>
 	/// <typeparam name="TArg">The type of the argument to pass to the service factory.</typeparam>
 	/// <param name="argument">The argument to pass to the service factory.</param>
-	/// <param name="actions">The actions to execute before and after the service is requested.</param>
+	/// <param name="index">The index of the action to execute.</param>
 	/// <returns>The service or null if not found.</returns>
-	private T? GetServiceSyncWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	private T? GetServiceSyncWithActions<T, TArg>(TArg argument, int index = 0)
 	{
+		if (GetAction(index) is not { } action)
+		{
+			return GetServiceSyncNoActions<T, TArg>(argument);
+		}
+
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
 
-		foreach (var action in actions)
+		try
 		{
 			action.ServiceRequesting(typeKey)?.ServiceRequesting<T, TArg>(argument);
+
+			var instance = GetServiceSyncWithActions<T, TArg>(argument, index + 1);
+
+			action.ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
+
+			return instance;
 		}
-
-		var instance = GetServiceSyncNoActions<T, TArg>(argument);
-
-		for (var i = actions.Length - 1; i >= 0; i --)
+		catch (Exception ex)
 		{
-			actions[i].ServiceRequested(typeKey)?.ServiceRequested<T, TArg>(instance);
-		}
+			action.ServiceRequestError(typeKey)?.ServiceRequestError<T, TArg>(ex);
 
-		return instance;
+			throw;
+		}
 	}
 
 	/// <summary>
@@ -385,9 +415,7 @@ public abstract class ImplementationEntry
 	///     Executes the factory (async-aware) optionally wrapping with provider actions.
 	/// </summary>
 	protected virtual ValueTask<T?> ExecuteFactory<T, TArg>(TArg argument) =>
-		_serviceProvider.Actions is not { } actions
-			? ExecuteFactoryNoActions<T, TArg>(argument)
-			: ExecuteFactoryWithActions<T, TArg>(argument, actions);
+		_serviceProvider.Actions is null ? ExecuteFactoryNoActions<T, TArg>(argument) : ExecuteFactoryWithActions<T, TArg>(argument);
 
 	/// <summary>
 	///     Executes the factory without invoking actions.
@@ -406,43 +434,57 @@ public abstract class ImplementationEntry
 	/// <summary>
 	///     Executes the factory while triggering actions before and after invocation.
 	/// </summary>
-	private ValueTask<T?> ExecuteFactoryWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	private ValueTask<T?> ExecuteFactoryWithActions<T, TArg>(TArg argument, int index = 0)
 	{
+		if (GetAction(index) is not { } action)
+		{
+			return ExecuteFactoryNoActions<T, TArg>(argument);
+		}
+
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
 
-		foreach (var action in actions)
+		try
 		{
 			action.FactoryCalling(typeKey)?.FactoryCalling<T, TArg>(argument);
-		}
 
-		var valueTask = ExecuteFactoryNoActions<T, TArg>(argument);
+			var valueTask = ExecuteFactoryWithActions<T, TArg>(argument, index + 1);
 
-		if (!valueTask.IsCompletedSuccessfully)
-		{
-			return Wait(valueTask, actions);
-		}
-
-		var instance = valueTask.Result;
-
-		for (var i = actions.Length - 1; i >= 0; i --)
-		{
-			actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
-		}
-
-		return new ValueTask<T?>(instance);
-
-		static async ValueTask<T?> Wait(ValueTask<T?> valueTask, IServiceProviderActions[] actions)
-		{
-			var instance = await valueTask.ConfigureAwait(false);
-
-			var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
-
-			for (var i = actions.Length - 1; i >= 0; i --)
+			if (!valueTask.IsCompletedSuccessfully)
 			{
-				actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+				return Wait(valueTask, action);
 			}
 
-			return instance;
+			var instance = valueTask.Result;
+
+			action.FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+
+			return new ValueTask<T?>(instance);
+		}
+		catch (Exception ex)
+		{
+			action.FactoryCallError(typeKey)?.FactoryCallError<T, TArg>(ex);
+
+			throw;
+		}
+
+		static async ValueTask<T?> Wait(ValueTask<T?> valueTask, IServiceProviderActions action)
+		{
+			var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
+
+			try
+			{
+				var instance = await valueTask.ConfigureAwait(false);
+
+				action.FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+
+				return instance;
+			}
+			catch (Exception ex)
+			{
+				action.FactoryCallError(typeKey)?.FactoryCallError<T, TArg>(ex);
+
+				throw;
+			}
 		}
 	}
 
@@ -450,9 +492,7 @@ public abstract class ImplementationEntry
 	///     Executes the factory synchronously optionally invoking actions.
 	/// </summary>
 	protected virtual T? ExecuteFactorySync<T, TArg>(TArg argument) =>
-		_serviceProvider.Actions is not { } actions
-			? ExecuteFactorySyncNoActions<T, TArg>(argument)
-			: ExecuteFactorySyncWithActions<T, TArg>(argument, actions);
+		_serviceProvider.Actions is null ? ExecuteFactorySyncNoActions<T, TArg>(argument) : ExecuteFactorySyncWithActions<T, TArg>(argument);
 
 	/// <summary>
 	///     Executes the factory synchronously without actions.
@@ -471,23 +511,31 @@ public abstract class ImplementationEntry
 	/// <summary>
 	///     Executes the synchronous factory while firing provider actions.
 	/// </summary>
-	private T? ExecuteFactorySyncWithActions<T, TArg>(TArg argument, IServiceProviderActions[] actions)
+	private T? ExecuteFactorySyncWithActions<T, TArg>(TArg argument, int index = 0)
 	{
+		if (GetAction(index) is not { } action)
+		{
+			return ExecuteFactorySyncNoActions<T, TArg>(argument);
+		}
+
 		var typeKey = TypeKey.ServiceKeyFast<T, TArg>();
 
-		foreach (var action in actions)
+		try
 		{
 			action.FactoryCalling(typeKey)?.FactoryCalling<T, TArg>(argument);
+
+			var instance = ExecuteFactorySyncWithActions<T, TArg>(argument, index + 1);
+
+			action.FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
+
+			return instance;
 		}
-
-		var instance = ExecuteFactorySyncNoActions<T, TArg>(argument);
-
-		for (var i = actions.Length - 1; i >= 0; i --)
+		catch (Exception ex)
 		{
-			actions[i].FactoryCalled(typeKey)?.FactoryCalled<T, TArg>(instance);
-		}
+			action.FactoryCallError(typeKey)?.FactoryCallError<T, TArg>(ex);
 
-		return instance;
+			throw;
+		}
 	}
 
 	/// <summary>

@@ -79,8 +79,11 @@ public static class ServiceCollectionArg0Extensions
 
 		public void AddConstant<T>(T value) => services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, T>((_, _) => value));
 
-		[Obsolete(message: "ValueTask<> shouldn't be passed as a constant. Pass Result or Convert ValueTask<> to Task<>.", error: true)]
-		public void AddConstant<T>(ValueTask<T> value) =>
-			services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>([ExcludeFromCodeCoverage](_, _) => value));
+		public void AddConstant<T>(ValueTask<T> value)
+		{
+			value = value.Preserve();
+
+			services.AddEntry(TypeKey.ServiceKey<T, Empty>(), InstanceScope.Forwarding, new Func<IServiceProvider, Empty, ValueTask<T>>([ExcludeFromCodeCoverage] (_, _) => value));
+		}
 	}
 }

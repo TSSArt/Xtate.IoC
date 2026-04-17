@@ -3,7 +3,7 @@
 	<Import Condition="'$(Version)'==''" Project="..\..\Version.props" />
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0;net9.0;net8.0;netstandard2.0;net462</TargetFrameworks>
+		<TargetFrameworks>net11.0;net10.0;net9.0;net8.0;netstandard2.0;net462</TargetFrameworks>
 		<RepositoryUrl>https://github.com/TSSArt/Xtate.IoC</RepositoryUrl>
 		<PackageId>Xtate.IoC</PackageId>
 		<WarningLevel>9999</WarningLevel>

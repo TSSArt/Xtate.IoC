@@ -115,7 +115,7 @@ namespace Xtate.IoC {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Factory of [{0}] raised exception.
+        ///   Looks up a localized string similar to [{0}] factory exception.
         /// </summary>
         internal static string Exception_FactoryOfRaisedException {
             get {

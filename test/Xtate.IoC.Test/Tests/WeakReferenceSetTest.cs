@@ -50,12 +50,26 @@ public class WeakReferenceSetTest
     }
 
     private static void AddObjects(WeakReferenceSet wrs, int count)
-    {
+	{
         for (var i = 0; i < count; i ++)
-        {
+		{
             wrs.Add(CreateObject());
         }
-    }
+	}
+
+    private static List<object> AddObjectsAndReturnList(WeakReferenceSet wrs, int count)
+	{
+		var list = new List<object>();
+
+        for (var i = 0; i < count; i ++)
+		{
+			var obj = CreateObject();
+            list.Add(obj);
+            wrs.Add(obj);
+        }
+
+		return list;
+	}
 
     private static object CreateObject() => new();
 
@@ -102,26 +116,27 @@ public class WeakReferenceSetTest
         var list = new object[8];
         FillList(wrs, list, count: 8);
 
-        list[0] = null!;
+		list[0] = null!;
         list[1] = null!;
         list[4] = null!;
         list[5] = null!;
-        list[7] = null!;
+        list[6] = null!;
 
-        // Act
-        GcCollect();
-        AddObjects(wrs, count: 1);
-
-        var count = 0;
+		// Act
+		GcCollect();
+        var listOf1 = AddObjectsAndReturnList(wrs, count: 1);
+		
+		var count = 0;
 
         while (wrs.TryTake(out _))
         {
-            count ++;
+			count++;
         }
 
         // Assert
         Assert.AreEqual(expected: 4, count);
         Assert.HasCount(expected: 8, list);
+		Assert.HasCount(expected: 1, listOf1);
     }
 
     private static void FillList(WeakReferenceSet wrs, object[] list, int count)
@@ -303,7 +318,7 @@ public class WeakReferenceSetTest
 
         // Act
         GcCollect();               // should collect some targets and run Cleaner to compact
-        AddObjects(wrs, count: 2); // ensure cleaner exists and activity continues
+        var listOf2 = AddObjectsAndReturnList(wrs, count: 2); // ensure cleaner exists and activity continues
 
         var liveCount = 0;
 
@@ -315,6 +330,7 @@ public class WeakReferenceSetTest
         // 10 initial - 4 collected + 2 added = expected 8 remaining
         Assert.AreEqual(expected: 8, liveCount);
         Assert.HasCount(expected: 10, list);
+		Assert.HasCount(expected: 2, listOf2);
     }
 
     [TestMethod]
@@ -339,7 +355,7 @@ public class WeakReferenceSetTest
 
         // Act
         GcCollect();               // should collect ~64 targets and run Cleaner to compact (threshold is 32)
-        AddObjects(wrs, count: 4); // keep activity and ensure cleaner remains
+        var listOf4 = AddObjectsAndReturnList(wrs, count: 4); // keep activity and ensure cleaner remains
 
         var liveCount = 0;
 
@@ -353,5 +369,6 @@ public class WeakReferenceSetTest
         // Under "GC collects all" setting used in tests, collected ones should be gone deterministically.
         Assert.AreEqual(expected: 68, liveCount);
         Assert.HasCount(expected: 128, list);
+        Assert.HasCount(expected: 4, listOf4);
     }
 }

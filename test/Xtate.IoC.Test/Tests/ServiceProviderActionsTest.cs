@@ -76,6 +76,10 @@ public class ServiceProviderActionsTest
 
 		public void FactoryCalled<T, TArg>(T? instance) => throw new NotSupportedException(instance?.ToString());
 
+		public void ServiceRequestError<T, TArg>(Exception exception) => throw new NotSupportedException(exception.ToString());
+
+		public void FactoryCallError<T, TArg>(Exception exception) => throw new NotSupportedException(exception.ToString());
+
 	#endregion
 	}
 }

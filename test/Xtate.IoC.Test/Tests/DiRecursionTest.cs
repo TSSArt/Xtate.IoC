@@ -49,7 +49,7 @@ public class DiRecursionTest
 		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => null;
 
 		[ExcludeFromCodeCoverage]
-		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException(typeKey?.ToString());
+		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException();
 
 		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
 		{
@@ -68,6 +68,10 @@ public class DiRecursionTest
 
 			return null;
 		}
+
+		public IServiceProviderDataActions? ServiceRequestError(TypeKey typeKey) => null;
+
+		public IServiceProviderDataActions? FactoryCallError(TypeKey typeKey) => null;
 
 	#endregion
 	}
