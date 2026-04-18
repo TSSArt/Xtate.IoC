@@ -96,25 +96,20 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		}
 	}
 
-	private static Method FindMethod(IEnumerable<Method> methods)
+	private static MethodInfo FindMethod(IEnumerable<MethodInfo> methodInfos)
 	{
-		Method? obsoleteMethod = null;
-		Method? actualMethod = null;
+		MethodInfo? obsoleteMethodInfo = null;
+		MethodInfo? actualMethodInfo = null;
 		var multipleObsolete = false;
 		var multipleActual = false;
 
-		foreach (var method in methods)
+		foreach (var methodInfo in methodInfos)
 		{
-			if (!method.CanCreateMethodInfo())
+			if (methodInfo.GetCustomAttribute<ObsoleteAttribute>(inherit: false) is { IsError: false })
 			{
-				continue;
-			}
-
-			if (method.HasObsoleteAttribute())
-			{
-				if (obsoleteMethod is null)
+				if (obsoleteMethodInfo is null)
 				{
-					obsoleteMethod = method;
+					obsoleteMethodInfo = methodInfo;
 				}
 				else
 				{
@@ -123,9 +118,9 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 			}
 			else
 			{
-				if (actualMethod is null)
+				if (actualMethodInfo is null)
 				{
-					actualMethod = method;
+					actualMethodInfo = methodInfo;
 				}
 				else
 				{
@@ -136,12 +131,12 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 			}
 		}
 
-		if (multipleActual || (actualMethod is null && multipleObsolete))
+		if (multipleActual || (actualMethodInfo is null && multipleObsolete))
 		{
 			throw new DependencyInjectionException(Resources.Exception_MoreThanOneMethodFound);
 		}
 
-		if ((actualMethod ?? obsoleteMethod) is { } resultMethod)
+		if ((actualMethodInfo ?? obsoleteMethodInfo) is { } resultMethod)
 		{
 			return resultMethod;
 		}
@@ -153,9 +148,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 	{
 		try
 		{
-			var method = FindMethod(EnumerateMethods<TArg>(typeof(TService), synchronousOnly));
-
-			return method.CreateMethodInfo();
+			return FindMethod(EnumerateMethods<TArg>(typeof(TService), synchronousOnly));
 		}
 		catch (Exception ex)
 		{
@@ -167,7 +160,7 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		}
 	}
 
-	private IEnumerable<Method> EnumerateMethods<TArg>(Type serviceType, bool synchronousOnly)
+	private IEnumerable<MethodInfo> EnumerateMethods<TArg>(Type serviceType, bool synchronousOnly)
 	{
 		var implType = _openGenericType ?? _type;
 
@@ -176,16 +169,113 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 
 		foreach (var methodInfo in allMethods)
 		{
-			if (ValidParameters<TArg>(methodInfo, synchronousOnly))
-			{
-				var typeArguments = implType.IsGenericType ? implType.GetGenericArguments() : null;
-				var methodArguments = methodInfo.IsGenericMethod ? methodInfo.GetGenericArguments() : null;
+			var typeArgs = implType.IsGenericType ? implType.GetGenericArguments() : null;
+			var methodArgs = methodInfo.IsGenericMethod ? methodInfo.GetGenericArguments() : null;
 
-				if (StubType.TryMap(typeArguments, methodArguments, serviceType, GetReturnType(methodInfo, synchronousOnly)) &&
-					StubType.TryMap(typeArguments, methodArguments, resolvedTypeArguments, typeArguments))
+			if (!StubType.TryMap(typeArgs, methodArgs, serviceType, GetReturnType(methodInfo, synchronousOnly)))
+			{
+				continue;
+			}
+
+			if (!StubType.TryMap(typeArgs, methodArgs, resolvedTypeArguments, typeArgs))
+			{
+				continue;
+			}
+
+			if (typeArgs is not null && !Array.TrueForAll(typeArgs, StubType.IsResolvedType))
+			{
+				continue;
+			}
+
+			if (methodArgs is not null && !Array.TrueForAll(methodArgs, StubType.IsResolvedType))
+			{
+				continue;
+			}
+
+			var typedMethodInfo = MakeTypedMethodInfo(methodInfo, typeArgs, methodArgs);
+
+			if (ValidParameters<TArg>(typedMethodInfo, synchronousOnly))
+			{
+				yield return typedMethodInfo;
+			}
+		}
+	}
+
+	private static MethodInfo MakeTypedMethodInfo(MethodInfo methodInfo, Type[]? typeArgs, Type[]? methodArgs)
+	{
+		if (typeArgs is not null)
+		{
+			var metadataToken = methodInfo.MetadataToken;
+
+			foreach (var mi in methodInfo.ReflectedType!.MakeGenericType(typeArgs).GetMethods())
+			{
+				if (mi.MetadataToken == metadataToken)
 				{
-					yield return new Method(implType, methodInfo, typeArguments, methodArguments);
+					methodInfo = mi;
+
+					break;
 				}
+			}
+		}
+
+		return methodArgs is not null ? methodInfo.MakeGenericMethod(methodArgs) : methodInfo;
+	}
+
+	private IEnumerable<MethodInfo> EnumerateMethods1<TArg>(Type serviceType, bool synchronousOnly)
+	{
+		var implType = _openGenericType ?? _type;
+
+		var allMethods = implType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+		var resolvedTypeArguments = _type.IsGenericType ? _type.GetGenericArguments() : null;
+
+		foreach (var methodInfo in allMethods)
+		{
+			if (TryProcessGenericMethod() is { } newMethodInfo && ValidParameters<TArg>(newMethodInfo, synchronousOnly))
+			{
+				yield return newMethodInfo;
+			}
+
+			continue;
+
+			MethodInfo? TryProcessGenericMethod()
+			{
+				var typeArgs = implType.IsGenericType ? implType.GetGenericArguments() : null;
+				var methodArgs = methodInfo.IsGenericMethod ? methodInfo.GetGenericArguments() : null;
+
+				if (!StubType.TryMap(typeArgs, methodArgs, serviceType, GetReturnType(methodInfo, synchronousOnly)))
+				{
+					return null;
+				}
+
+				if (!StubType.TryMap(typeArgs, methodArgs, resolvedTypeArguments, typeArgs))
+				{
+					return null;
+				}
+
+				if (typeArgs is not null && !Array.TrueForAll(typeArgs, StubType.IsResolvedType))
+				{
+					return null;
+				}
+
+				if (methodArgs is not null && !Array.TrueForAll(methodArgs, StubType.IsResolvedType))
+				{
+					return null;
+				}
+
+				if (typeArgs is null)
+				{
+					return methodArgs is not null ? methodInfo.MakeGenericMethod(methodArgs) : methodInfo;
+				}
+
+				foreach (var mi in implType.MakeGenericType(typeArgs).GetMethods())
+				{
+					if (mi.MetadataToken == methodInfo.MetadataToken)
+					{
+						return methodArgs is not null ? mi.MakeGenericMethod(methodArgs) : mi;
+					}
+				}
+
+				return null;
 			}
 		}
 	}
@@ -250,72 +340,6 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 				if (!StubType.IsResolvedType(arg))
 				{
 					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
-	private readonly struct Method(
-		Type type,
-		MethodInfo methodInfo,
-		Type[]? typeArguments,
-		Type[]? methodArguments)
-	{
-		private readonly Type[]? _methodArguments = methodArguments;
-
-		private readonly MethodInfo _methodInfo = methodInfo;
-
-		private readonly Type _type = type;
-
-		private readonly Type[]? _typeArguments = typeArguments;
-
-		public MethodInfo CreateMethodInfo()
-		{
-			var resultMethodInfo = _methodInfo;
-
-			if (_typeArguments is not null)
-			{
-				var metadataToken = _methodInfo.MetadataToken;
-
-				foreach (var mi in _type.MakeGenericType(_typeArguments).GetMethods())
-				{
-					if (mi.MetadataToken == metadataToken)
-					{
-						resultMethodInfo = mi;
-
-						break;
-					}
-				}
-			}
-
-			return _methodArguments is null ? resultMethodInfo : resultMethodInfo.MakeGenericMethod(_methodArguments);
-		}
-
-		public bool HasObsoleteAttribute() => _methodInfo.GetCustomAttribute<ObsoleteAttribute>(inherit: false) is { IsError: false };
-
-		public bool CanCreateMethodInfo()
-		{
-			if (_typeArguments is not null)
-			{
-				foreach (var arg in _typeArguments)
-				{
-					if (!StubType.IsResolvedType(arg))
-					{
-						return false;
-					}
-				}
-			}
-
-			if (_methodArguments is not null)
-			{
-				foreach (var arg in _methodArguments)
-				{
-					if (!StubType.IsResolvedType(arg))
-					{
-						return false;
-					}
 				}
 			}
 
