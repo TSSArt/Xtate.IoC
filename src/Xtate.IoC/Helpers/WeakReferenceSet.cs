@@ -202,16 +202,18 @@ internal sealed class WeakReferenceSet : IDisposable
 			_freeHandles.Enqueue(handle);
 		}
 
-		if (_cleanerHandle.IsAllocated)
+		try
 		{
-			try
+			_lock.EnterWriteLock();
+
+			if (_cleanerHandle.IsAllocated)
 			{
 				_cleanerHandle.Target = new Cleaner(this);
 			}
-			catch (InvalidOperationException)
-			{
-				// Already freed
-			}
+		}
+		finally
+		{
+			_lock.ExitWriteLock();
 		}
 	}
 
@@ -231,11 +233,16 @@ internal sealed class WeakReferenceSet : IDisposable
 
 		try
 		{
-			_cleanerHandle.Free();
+			_lock.EnterWriteLock();
+
+			if (_cleanerHandle.IsAllocated)
+			{
+				_cleanerHandle.Free();
+			}
 		}
-		catch (InvalidOperationException)
+		finally
 		{
-			return; // Already freed
+			_lock.ExitWriteLock();
 		}
 
 		while (_freeHandles.TryDequeue(out var handle))

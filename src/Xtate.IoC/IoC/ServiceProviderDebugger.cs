@@ -47,47 +47,34 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 
 	public IServiceProviderDataActions RegisterServices(int _) => this;
 
-	public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey)
+	public IServiceProviderDataActions? Event(ActionsEventType type, ref ActionsContext context)
 	{
-		GetLogger().ServiceRequesting(typeKey);
+		// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+		switch (type)
+		{
+			case ActionsEventType.ServiceRequesting:
+				var logger = GetLogger();
+				context.UserDataObject = logger;
 
-		return null;
-	}
+				logger.ServiceRequesting(context.TypeKey);
 
-	public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey)
-	{
-		GetLogger().ServiceRequested();
+				break;
 
-		return null;
-	}
+			case ActionsEventType.ServiceRequested:    ((ServiceLogger) context.UserDataObject!).ServiceRequested(); break;
+			case ActionsEventType.ServiceRequestError: ((ServiceLogger) context.UserDataObject!).ServiceRequestError(); break;
 
-	public IServiceProviderDataActions? ServiceRequestError(TypeKey typeKey)
-	{
-		GetLogger().ServiceRequestError();
+			case ActionsEventType.FactoryCalling:
+				var stat = GetStat(context.TypeKey);
+				context.UserDataObject = stat;
+				stat.FactoryCalling();
 
-		return null;
-	}
+				GetLogger().FactoryCalling(stat.CallsCount);
 
-	public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
-	{
-		var stat = GetStat(typeKey);
-		stat.FactoryCalling();
+				break;
 
-		GetLogger().FactoryCalling(stat.CallsCount);
-
-		return null;
-	}
-
-	public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey)
-	{
-		GetStat(typeKey).FactoryCalled();
-
-		return null;
-	}
-
-	public IServiceProviderDataActions? FactoryCallError(TypeKey typeKey)
-	{
-		GetStat(typeKey).FactoryCallError();
+			case ActionsEventType.FactoryCalled:    ((Stat) context.UserDataObject!).FactoryCalled(); break;
+			case ActionsEventType.FactoryCallError: ((Stat) context.UserDataObject!).FactoryCallError(); break;
+		}
 
 		return null;
 	}
@@ -113,22 +100,7 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 	}
 
 	[ExcludeFromCodeCoverage]
-	public void ServiceRequesting<T, TArg>(TArg argument) => throw new NotSupportedException();
-
-	[ExcludeFromCodeCoverage]
-	public void ServiceRequested<T, TArg>(T? instance) => throw new NotSupportedException();
-
-	[ExcludeFromCodeCoverage]
-	public void ServiceRequestError<T, TArg>(Exception exception) => throw new NotSupportedException();
-
-	[ExcludeFromCodeCoverage]
-	public void FactoryCalling<T, TArg>(TArg argument) => throw new NotSupportedException();
-
-	[ExcludeFromCodeCoverage]
-	public void FactoryCalled<T, TArg>(T? instance) => throw new NotSupportedException();
-
-	[ExcludeFromCodeCoverage]
-	public void FactoryCallError<T, TArg>(Exception exception) => throw new NotSupportedException();
+	public void Event<T, TArg>(ActionsEventType eventType, ref DataActionsContext<T, TArg> context) => throw new NotSupportedException();
 
 #endregion
 

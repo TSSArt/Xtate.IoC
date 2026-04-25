@@ -783,17 +783,7 @@ public class ImplementationEntryTest
 
 		public IServiceProviderDataActions RegisterServices(int count) => this;
 
-		public IServiceProviderDataActions ServiceRequesting(TypeKey typeKey) => this;
-
-		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => this;
-
-		public IServiceProviderDataActions FactoryCalling(TypeKey typeKey) => this;
-
-		public IServiceProviderDataActions FactoryCalled(TypeKey typeKey) => this;
-
-		public IServiceProviderDataActions ServiceRequestError(TypeKey typeKey) => this;
-
-		public IServiceProviderDataActions FactoryCallError(TypeKey typeKey) => this;
+		public IServiceProviderDataActions Event(ActionsEventType type, ref ActionsContext context) => this;
 
 	#endregion
 
@@ -801,17 +791,7 @@ public class ImplementationEntryTest
 
 		public void RegisterService(ServiceEntry serviceEntry) { }
 
-		public void ServiceRequesting<T, TArg>(TArg argument) { }
-
-		public void ServiceRequested<T, TArg>(T? instance) { }
-
-		public void FactoryCalling<T, TArg>(TArg argument) { }
-
-		public void FactoryCalled<T, TArg>(T? instance) { }
-
-		public void ServiceRequestError<T, TArg>(Exception exception) { }
-
-		public void FactoryCallError<T, TArg>(Exception exception) { }
+		public void Event<T, TArg>(ActionsEventType type, ref DataActionsContext<T, TArg> context) { }
 
 	#endregion
 	}

@@ -310,6 +310,7 @@ GNU Affero General Public License for more details.&#xD;
 You should have received a copy of the GNU Affero General Public License&#xD;
 along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=DTO/@EntryIndexedValue">DTO</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=GC/@EntryIndexedValue">GC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=JSON/@EntryIndexedValue">JSON</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=MID/@EntryIndexedValue">MID</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=TSS/@EntryIndexedValue">TSS</s:String>

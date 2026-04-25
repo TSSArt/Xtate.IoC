@@ -22,7 +22,7 @@ public static class ServiceProviderArg1Extensions
 	extension(IServiceProvider serviceProvider)
 	{
 		public ValueTask<T> GetRequiredService<T, TArg>(TArg arg) where T : notnull =>
-			serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredService<T, TArg>(arg) ?? throw MissedServiceException.Create<T, TArg>();
+			serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetRequiredService<T, TArg>(arg) ?? ValueTask.FromException<T>(MissedServiceException.Create<T, TArg>());
 
 		public ValueTask<T?> GetService<T, TArg>(TArg arg) => serviceProvider.GetImplementationEntry(TypeKey.ServiceKeyFast<T, TArg>())?.GetService<T, TArg>(arg) ?? default;
 

@@ -17,9 +17,19 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProviderDataActions
+public struct ActionsContext(TypeKey typeKey, Type serviceType, Type argumentType)
 {
-	void RegisterService(ServiceEntry serviceEntry);
+	public TypeKey TypeKey { get; } = typeKey;
 
-	void Event<T, TArg>(ActionsEventType eventType, ref DataActionsContext<T, TArg> context);
+	public Type ServiceType { get; } = serviceType;
+
+	public Type ArgumentType { get; } = argumentType;
+
+	public Exception? Exception { get; internal set; }
+
+	public int UserDataInt32 { get; set; }
+
+	public object? UserDataObject { get; set; }
+
+	public static ActionsContext Create<T, TArg>() => new(TypeKey.ServiceKeyFast<T, TArg>(), typeof(T), typeof(TArg));
 }

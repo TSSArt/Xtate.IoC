@@ -45,10 +45,11 @@ public class ServiceProviderDebuggerTest
 		var stringWriter = new StringWriter();
 		var debugger = new ServiceProviderDebugger(stringWriter);
 		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+		var context = ActionsContext.Create<object, ValueTuple>();
 
 		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.ServiceRequested(typeKey);
+		debugger.Event(ActionsEventType.ServiceRequesting, ref context);
+		debugger.Event(ActionsEventType.ServiceRequested, ref context);
 
 		// Assert
 		Assert.Contains(typeKey.ToString() ?? string.Empty, stringWriter.ToString());
@@ -60,13 +61,14 @@ public class ServiceProviderDebuggerTest
 		// Arrange
 		var stringWriter = new StringWriter();
 		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+		var context = ActionsContext.Create<object, ValueTuple>();
+		var context2 = ActionsContext.Create<object, ValueTuple>();
 
 		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.FactoryCalling(typeKey);
-		debugger.FactoryCalled(typeKey);
-		debugger.ServiceRequested(typeKey);
+		debugger.Event(ActionsEventType.ServiceRequesting, ref context);
+		debugger.Event(ActionsEventType.FactoryCalling, ref context2);
+		debugger.Event(ActionsEventType.FactoryCalled, ref context2);
+		debugger.Event(ActionsEventType.ServiceRequested, ref context);
 
 		// Assert
 		Assert.Contains(substring: "{#1}", stringWriter.ToString());
@@ -78,13 +80,16 @@ public class ServiceProviderDebuggerTest
 		// Arrange
 		var stringWriter = new StringWriter();
 		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+		var context = ActionsContext.Create<object, ValueTuple>();
+		var context2 = ActionsContext.Create<object, ValueTuple>();
 
 		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.FactoryCalling(typeKey);
-		debugger.FactoryCalled(typeKey);
-		debugger.ServiceRequested(typeKey);
+		debugger.Event(ActionsEventType.ServiceRequesting, ref context);
+		debugger.Event(ActionsEventType.ServiceRequestRunning, ref context);
+		debugger.Event(ActionsEventType.FactoryCalling, ref context2);
+		debugger.Event(ActionsEventType.FactoryCallRunning, ref context2);
+		debugger.Event(ActionsEventType.FactoryCalled, ref context2);
+		debugger.Event(ActionsEventType.ServiceRequested, ref context);
 		debugger.Dispose();
 
 		// Assert
@@ -97,11 +102,11 @@ public class ServiceProviderDebuggerTest
 		// Arrange
 		var stringWriter = new StringWriter();
 		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+		var context = ActionsContext.Create<object, ValueTuple>();
 
 		// Act
-		debugger.ServiceRequesting(typeKey);
-		debugger.ServiceRequested(typeKey);
+		debugger.Event(ActionsEventType.ServiceRequesting, ref context);
+		debugger.Event(ActionsEventType.ServiceRequested, ref context);
 
 		// Assert
 		Assert.Contains(substring: "CACHED", stringWriter.ToString());
@@ -113,13 +118,11 @@ public class ServiceProviderDebuggerTest
 		// Arrange
 		var stringWriter = new StringWriter();
 		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
-		var typeKey2 = TypeKey.ServiceKey<long, (int, long)>();
 
 		// Act
-		var asyncDebug1 = AsyncDebug(debugger, typeKey, typeKey2);
-		var asyncDebug2 = AsyncDebug(debugger, typeKey, typeKey2);
-		var asyncDebug3 = AsyncDebug(debugger, typeKey, typeKey2);
+		var asyncDebug1 = AsyncDebug(debugger);
+		var asyncDebug2 = AsyncDebug(debugger);
+		var asyncDebug3 = AsyncDebug(debugger);
 
 		await asyncDebug1;
 		await asyncDebug2;
@@ -132,21 +135,26 @@ public class ServiceProviderDebuggerTest
 		Assert.Contains(substring: "{#3}", stringWriter.ToString());
 	}
 
-	private static async Task AsyncDebug(ServiceProviderDebugger debugger, TypeKey typeKey, TypeKey typeKey2)
+	private static async Task AsyncDebug(ServiceProviderDebugger debugger)
 	{
-		debugger.ServiceRequesting(typeKey);
-		debugger.FactoryCalling(typeKey);
+		var context1 = ActionsContext.Create<object, ValueTuple>();
+		var context2 = ActionsContext.Create<object, ValueTuple>();
+		var context3 = ActionsContext.Create<long, (int, long)>();
+		var context4 = ActionsContext.Create<long, (int, long)>();
 
-		debugger.ServiceRequesting(typeKey2);
-		debugger.FactoryCalling(typeKey2);
+		debugger.Event(ActionsEventType.ServiceRequesting, ref context1);
+		debugger.Event(ActionsEventType.FactoryCalling, ref context2);
+
+		debugger.Event(ActionsEventType.ServiceRequesting, ref context3);
+		debugger.Event(ActionsEventType.FactoryCalling, ref context4);
 
 		await Task.Yield();
 
-		debugger.FactoryCalled(typeKey2);
-		debugger.ServiceRequested(typeKey2);
+		debugger.Event(ActionsEventType.FactoryCalled, ref context4);
+		debugger.Event(ActionsEventType.ServiceRequested, ref context3);
 
-		debugger.FactoryCalled(typeKey);
-		debugger.ServiceRequested(typeKey);
+		debugger.Event(ActionsEventType.FactoryCalled, ref context2);
+		debugger.Event(ActionsEventType.ServiceRequested, ref context1);
 	}
 
 	[TestMethod]
@@ -155,15 +163,15 @@ public class ServiceProviderDebuggerTest
 		// Arrange
 		var stringWriter = new StringWriter();
 		var debugger = new ServiceProviderDebugger(stringWriter);
-		var typeKey = TypeKey.ServiceKey<object, ValueTuple>();
+		var context = ActionsContext.Create<object, ValueTuple>();
 
 		// Act
 		for (var i = 0; i < 500; i ++)
 		{
-			debugger.FactoryCalling(typeKey);
+			debugger.Event(ActionsEventType.FactoryCalling, ref context);
 		}
 
 		// Assert
-		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => debugger.FactoryCalling(typeKey));
+		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => debugger.Event(ActionsEventType.FactoryCalling, ref context));
 	}
 }

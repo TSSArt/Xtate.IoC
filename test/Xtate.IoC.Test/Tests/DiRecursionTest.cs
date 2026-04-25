@@ -46,32 +46,27 @@ public class DiRecursionTest
 
 		public IServiceProviderDataActions? RegisterServices(int _) => null;
 
-		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey) => null;
-
-		[ExcludeFromCodeCoverage]
-		public IServiceProviderDataActions ServiceRequested(TypeKey typeKey) => throw new NotSupportedException();
-
-		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey)
+		public IServiceProviderDataActions? Event(ActionsEventType type, ref ActionsContext context)
 		{
-			if (_level ++ > 20)
+			// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+			switch (type)
 			{
-				throw new DependencyInjectionException();
+				case ActionsEventType.FactoryCalling:
+					if (_level ++ > 20)
+					{
+						throw new DependencyInjectionException();
+					}
+
+					break;
+
+				case ActionsEventType.FactoryCalled:
+					_level --;
+
+					break;
 			}
 
 			return null;
 		}
-
-		[ExcludeFromCodeCoverage]
-		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey)
-		{
-			_level --;
-
-			return null;
-		}
-
-		public IServiceProviderDataActions? ServiceRequestError(TypeKey typeKey) => null;
-
-		public IServiceProviderDataActions? FactoryCallError(TypeKey typeKey) => null;
 
 	#endregion
 	}

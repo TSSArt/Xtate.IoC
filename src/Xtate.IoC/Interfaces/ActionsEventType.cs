@@ -17,9 +17,34 @@
 
 namespace Xtate.IoC;
 
-public interface IServiceProviderDataActions
+[Flags]
+public enum ActionsEventType
 {
-	void RegisterService(ServiceEntry serviceEntry);
+	ServiceRequest = 256,
 
-	void Event<T, TArg>(ActionsEventType eventType, ref DataActionsContext<T, TArg> context);
+	FactoryCall = 512,
+
+	Enter = 1,
+
+	Exit = 2,
+
+	Error = 4,
+
+	SyncExit = 8,
+
+	ServiceRequesting = ServiceRequest | Enter,
+
+	ServiceRequestRunning = ServiceRequest | SyncExit,
+
+	ServiceRequested = ServiceRequest | Exit,
+
+	ServiceRequestError = ServiceRequest | Error,
+
+	FactoryCalling = FactoryCall | Enter,
+
+	FactoryCallRunning = FactoryCall | SyncExit,
+
+	FactoryCalled = FactoryCall | Exit,
+
+	FactoryCallError = FactoryCall | Error
 }

@@ -27,12 +27,37 @@ public class ServiceProviderActionsTest
 	{
 		// Arrange
 		var dataActions = new Mock<IServiceProviderDataActions>();
+		dataActions.Setup(providerDataActions => providerDataActions.Event(It.IsAny<ActionsEventType>(), ref It.Ref<DataActionsContext<IServiceProviderActions, ValueTuple>>.IsAny))
+				   .Callback((ActionsEventType type, ref DataActionsContext<IServiceProviderActions, ValueTuple> ctx) =>
+							 {
+								 Assert.IsNotNull(ctx.TypeKey);
+
+								 if (type is ActionsEventType.FactoryCallError or ActionsEventType.ServiceRequestError)
+								 {
+									 Assert.IsNotNull(ctx.Exception);
+								 }
+								 else
+								 {
+									 Assert.IsNull(ctx.Exception);
+								 }
+
+								 Assert.AreEqual(expected: default, ctx.Argument);
+
+								 if (type is ActionsEventType.FactoryCalled or ActionsEventType.ServiceRequested)
+								 {
+									 Assert.IsNotNull(ctx.Instance);
+								 }
+								 else
+								 {
+									 Assert.IsNull(ctx.Instance);
+								 }
+
+								 Assert.AreEqual(expected: 0, ctx.UserDataInt32);
+								 Assert.IsNull(ctx.UserDataObject);
+							 });
 
 		var actions = new Mock<IServiceProviderActions>();
-		actions.Setup(x => x.ServiceRequesting(It.IsAny<TypeKey>())).Returns(dataActions.Object);
-		actions.Setup(x => x.ServiceRequested(It.IsAny<TypeKey>())).Returns(dataActions.Object);
-		actions.Setup(x => x.FactoryCalling(It.IsAny<TypeKey>())).Returns(dataActions.Object);
-		actions.Setup(x => x.FactoryCalled(It.IsAny<TypeKey>())).Returns(dataActions.Object);
+		actions.Setup(x => x.Event(It.IsAny<ActionsEventType>(), ref It.Ref<ActionsContext>.IsAny)).Returns(dataActions.Object);
 		actions.Setup(x => x.RegisterServices(It.IsAny<int>())).Returns(dataActions.Object);
 
 		var sc = new ServiceCollection();
@@ -52,10 +77,7 @@ public class ServiceProviderActionsTest
 		Assert.AreSame(rServiceSync, actions.Object);
 		Assert.AreSame(oServiceSync, actions.Object);
 
-		dataActions.Verify(x => x.ServiceRequesting<IServiceProviderActions, ValueTuple>(It.IsAny<ValueTuple>()), Times.Exactly(4));
-		dataActions.Verify(x => x.ServiceRequested<IServiceProviderActions, ValueTuple>(It.IsAny<IServiceProviderActions>()), Times.Exactly(4));
-		dataActions.Verify(x => x.FactoryCalling<IServiceProviderActions, ValueTuple>(It.IsAny<ValueTuple>()), Times.Exactly(4));
-		dataActions.Verify(x => x.FactoryCalled<IServiceProviderActions, ValueTuple>(It.IsAny<IServiceProviderActions>()), Times.Exactly(4));
+		dataActions.Verify(x => x.Event(It.IsAny<ActionsEventType>(), ref It.Ref<DataActionsContext<IServiceProviderActions, ValueTuple>>.IsAny), Times.Exactly(16));
 		dataActions.Verify(x => x.RegisterService(It.IsAny<ServiceEntry>()), Times.Exactly(2));
 		dataActions.VerifyNoOtherCalls();
 	}
@@ -68,17 +90,7 @@ public class ServiceProviderActionsTest
 
 		public void RegisterService(ServiceEntry serviceEntry) => throw new NotSupportedException();
 
-		public void ServiceRequesting<T, TArg>(TArg argument) => throw new NotSupportedException(argument?.ToString());
-
-		public void ServiceRequested<T, TArg>(T? instance) => throw new NotSupportedException(instance?.ToString());
-
-		public void FactoryCalling<T, TArg>(TArg argument) => throw new NotSupportedException(argument?.ToString());
-
-		public void FactoryCalled<T, TArg>(T? instance) => throw new NotSupportedException(instance?.ToString());
-
-		public void ServiceRequestError<T, TArg>(Exception exception) => throw new NotSupportedException(exception.ToString());
-
-		public void FactoryCallError<T, TArg>(Exception exception) => throw new NotSupportedException(exception.ToString());
+		public void Event<T, TArg>(ActionsEventType type, ref DataActionsContext<T, TArg> context) => throw new NotSupportedException(context.Argument?.ToString());
 
 	#endregion
 	}

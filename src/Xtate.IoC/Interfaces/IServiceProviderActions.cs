@@ -21,15 +21,5 @@ public interface IServiceProviderActions
 {
 	IServiceProviderDataActions? RegisterServices(int count);
 
-	IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey);
-
-	IServiceProviderDataActions? ServiceRequested(TypeKey typeKey);
-
-	IServiceProviderDataActions? ServiceRequestError(TypeKey typeKey);
-
-	IServiceProviderDataActions? FactoryCalling(TypeKey typeKey);
-
-	IServiceProviderDataActions? FactoryCalled(TypeKey typeKey);
-
-	IServiceProviderDataActions? FactoryCallError(TypeKey typeKey);
+	IServiceProviderDataActions? Event(ActionsEventType type, ref ActionsContext context);
 }

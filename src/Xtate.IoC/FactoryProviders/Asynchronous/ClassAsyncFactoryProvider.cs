@@ -199,7 +199,7 @@ internal class ClassAsyncFactoryProvider<TImplementation, TService> : ClassAsync
 			}
 			catch (Exception ex)
 			{
-				throw GetFactoryException(ex);
+				return ValueTask.FromException<TService>(GetFactoryException(ex));
 			}
 		}
 
@@ -222,7 +222,7 @@ internal class ClassAsyncFactoryProvider<TImplementation, TService> : ClassAsync
 		{
 			ReturnArray(args);
 
-			throw GetFactoryException(ex);
+			return ValueTask.FromException<TService>(GetFactoryException(ex));
 		}
 
 		return CreateInstanceWait(valueTask, args);
@@ -261,7 +261,7 @@ internal class ClassAsyncFactoryProvider<TImplementation, TService> : ClassAsync
 		}
 		catch (Exception ex)
 		{
-			throw GetFactoryException(ex);
+			return ValueTask.FromException<TService>(GetFactoryException(ex));
 		}
 
 		return PostCreateInstanceWait(valueTask, service);

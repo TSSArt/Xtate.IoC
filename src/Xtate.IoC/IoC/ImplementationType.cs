@@ -221,65 +221,6 @@ internal readonly struct ImplementationType : IEquatable<ImplementationType>
 		return methodArgs is not null ? methodInfo.MakeGenericMethod(methodArgs) : methodInfo;
 	}
 
-	private IEnumerable<MethodInfo> EnumerateMethods1<TArg>(Type serviceType, bool synchronousOnly)
-	{
-		var implType = _openGenericType ?? _type;
-
-		var allMethods = implType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
-		var resolvedTypeArguments = _type.IsGenericType ? _type.GetGenericArguments() : null;
-
-		foreach (var methodInfo in allMethods)
-		{
-			if (TryProcessGenericMethod() is { } newMethodInfo && ValidParameters<TArg>(newMethodInfo, synchronousOnly))
-			{
-				yield return newMethodInfo;
-			}
-
-			continue;
-
-			MethodInfo? TryProcessGenericMethod()
-			{
-				var typeArgs = implType.IsGenericType ? implType.GetGenericArguments() : null;
-				var methodArgs = methodInfo.IsGenericMethod ? methodInfo.GetGenericArguments() : null;
-
-				if (!StubType.TryMap(typeArgs, methodArgs, serviceType, GetReturnType(methodInfo, synchronousOnly)))
-				{
-					return null;
-				}
-
-				if (!StubType.TryMap(typeArgs, methodArgs, resolvedTypeArguments, typeArgs))
-				{
-					return null;
-				}
-
-				if (typeArgs is not null && !Array.TrueForAll(typeArgs, StubType.IsResolvedType))
-				{
-					return null;
-				}
-
-				if (methodArgs is not null && !Array.TrueForAll(methodArgs, StubType.IsResolvedType))
-				{
-					return null;
-				}
-
-				if (typeArgs is null)
-				{
-					return methodArgs is not null ? methodInfo.MakeGenericMethod(methodArgs) : methodInfo;
-				}
-
-				foreach (var mi in implType.MakeGenericType(typeArgs).GetMethods())
-				{
-					if (mi.MetadataToken == methodInfo.MetadataToken)
-					{
-						return methodArgs is not null ? mi.MakeGenericMethod(methodArgs) : mi;
-					}
-				}
-
-				return null;
-			}
-		}
-	}
-
 	private static bool ValidParameters<TArg>(MethodBase methodBase, bool synchronousOnly)
 	{
 		foreach (var parameterInfo in methodBase.GetParameters())

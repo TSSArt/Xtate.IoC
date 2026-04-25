@@ -114,34 +114,25 @@ public class AncestorTest
 
 		public IServiceProviderDataActions? RegisterServices(int count) => count >= 0 ? null : throw new InvalidOperationException();
 
-		public IServiceProviderDataActions? ServiceRequesting(TypeKey typeKey)
+		public IServiceProviderDataActions? Event(ActionsEventType eventType, ref ActionsContext context)
 		{
-			Infra.NotNull(typeKey);
+			if (!context.TypeKey.IsEmptyArg)
+			{
+				return null;
+			}
 
-			return null;
-		}
+			// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+			switch (eventType)
+			{
+				case ActionsEventType.FactoryCalling:
+					GetCurrentContainer().Add((context.ServiceType, null));
 
-		public IServiceProviderDataActions? ServiceRequested(TypeKey typeKey)
-		{
-			Infra.NotNull(typeKey);
+					Assert.IsNotNull(context.ArgumentType);
 
-			return null;
-		}
+					break;
 
-		public IServiceProviderDataActions? FactoryCalling(TypeKey typeKey) => typeKey.IsEmptyArg ? this : null;
-
-		public IServiceProviderDataActions? FactoryCalled(TypeKey typeKey) => typeKey.IsEmptyArg ? this : null;
-
-		public IServiceProviderDataActions? ServiceRequestError(TypeKey typeKey)
-		{
-			Infra.NotNull(typeKey);
-
-			return null;
-		}
-
-		public IServiceProviderDataActions? FactoryCallError(TypeKey typeKey)
-		{
-			Infra.NotNull(typeKey);
+				case ActionsEventType.FactoryCalled: return this;
+			}
 
 			return null;
 		}
@@ -153,16 +144,10 @@ public class AncestorTest
 		[ExcludeFromCodeCoverage]
 		public void RegisterService(ServiceEntry serviceEntry) { }
 
-		[ExcludeFromCodeCoverage]
-		public void ServiceRequesting<T, TArg>(TArg argument) { }
-
-		[ExcludeFromCodeCoverage]
-		public void ServiceRequested<T, TArg>(T? instance) { }
-
-		public void FactoryCalling<T, TArg>(TArg argument) => GetCurrentContainer().Add((typeof(T), null));
-
-		public void FactoryCalled<T, TArg>(T? instance)
+		public void Event<T, TArg>(ActionsEventType eventType, ref DataActionsContext<T, TArg> context)
 		{
+			Infra.Assert(eventType is ActionsEventType.FactoryCalled);
+
 			var container = GetCurrentContainer();
 
 			for (var i = 0; i < container.Count; i ++)
@@ -175,7 +160,7 @@ public class AncestorTest
 
 					if (lazy is LazyImpl<T> lazyImpl)
 					{
-						lazyImpl.SetValue(instance);
+						lazyImpl.SetValue(context.Instance);
 					}
 				}
 			}
@@ -189,10 +174,6 @@ public class AncestorTest
 				ContainerPool.Add(container);
 			}
 		}
-
-		public void ServiceRequestError<T, TArg>(Exception exception) { }
-
-		public void FactoryCallError<T, TArg>(Exception exception) { }
 
 	#endregion
 
