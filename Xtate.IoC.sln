@@ -16,16 +16,24 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{0AC0C24E-87C3-421D-9279-C6A6183D8819}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		LICENSE = LICENSE
+		NuGet.Config = NuGet.Config
+		README.md = README.md
+		Xtate.IoC.sln.DotSettings = Xtate.IoC.sln.DotSettings
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Actions", "GitHub Actions", "{138EA4EA-2CE1-4B02-A9EE-94370F0690E8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Props", "Props", "{ED12D34C-6AE1-459F-9A89-B3F42D973549}"
+	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		Global.Packages.props = Global.Packages.props
-		LICENSE = LICENSE
-		NuGet.Config = NuGet.Config
-		.github\workflows\publish-dependencies.yml = .github\workflows\publish-dependencies.yml
-		.github\workflows\publish.yml = .github\workflows\publish.yml
-		README.md = README.md
 		Version.props = Version.props
-		Xtate.IoC.sln.DotSettings = Xtate.IoC.sln.DotSettings
 	EndProjectSection
 EndProject
 Global
@@ -82,6 +90,8 @@ Global
 		{E4837CE8-2C4A-4FA7-B5AC-B91A0EAB15BC} = {D52828A8-AEA0-4F46-81AD-1B85E7321F14}
 		{6770FB80-A516-4B12-8128-160067F59673} = {21BC8BA5-A31A-44B0-AC74-3E95C5F212FD}
 		{EFC22A2E-51FF-484E-BB6C-AE848F2F524C} = {21BC8BA5-A31A-44B0-AC74-3E95C5F212FD}
+		{138EA4EA-2CE1-4B02-A9EE-94370F0690E8} = {0AC0C24E-87C3-421D-9279-C6A6183D8819}
+		{ED12D34C-6AE1-459F-9A89-B3F42D973549} = {0AC0C24E-87C3-421D-9279-C6A6183D8819}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFEE919D-5043-4EB8-B372-06E0408305E9}

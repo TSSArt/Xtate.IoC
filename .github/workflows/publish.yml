@@ -23,11 +23,11 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5.0.0
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v5.0.0
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '11.0.x'
         source-url: https://nuget.pkg.github.com/TSSArt/index.json
@@ -38,11 +38,11 @@ jobs:
         sudo apt update
         sudo apt install -y mono-complete
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v4.2.0
+      uses: gittools/actions/gitversion/setup@v4.5.0
       with:
         versionSpec: '6.5.x'
     - name: Determine Version
-      uses: gittools/actions/gitversion/execute@v4.2.0
+      uses: gittools/actions/gitversion/execute@v4.5.0
     - name: Restore
       run: dotnet restore
     - name: Build

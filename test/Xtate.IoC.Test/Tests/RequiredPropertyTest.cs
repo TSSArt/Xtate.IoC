@@ -54,6 +54,7 @@ namespace Xtate.IoC.Test
 
 	public class Sync2Class
 	{
+		[UsedImplicitly]
 		public required DepSyncClass DepSyncClass;
 	}
 
