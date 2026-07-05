@@ -172,6 +172,8 @@ public abstract class ImplementationEntry
 	/// </summary>
 	private ValueTask<T?> GetServiceNoActions<T, TArg>(TArg argument)
 	{
+		ObjectDisposedException.ThrowIf(_serviceProvider.DisposeToken.IsCancellationRequested, _serviceProvider);
+
 		var valueTask = ExecuteFactory<T, TArg>(argument);
 
 		if (!valueTask.IsCompletedSuccessfully)

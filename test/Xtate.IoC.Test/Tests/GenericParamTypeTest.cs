@@ -55,6 +55,75 @@ public class GenericParamTypeTest
 		Assert.IsNotNull(service2);
 	}
 
+	[TestMethod]
+	public void GenericSingletonTest()
+	{
+		// Arrange
+		var services = new ServiceCollection();
+		services.AddSharedTypeSync<Gen2<Any>>(SharedWithin.Container);
+		var serviceProvider = services.BuildProvider();
+
+		// Act
+		var scopeFactory = serviceProvider.GetRequiredServiceSync<IServiceScopeFactory>();
+		var scopeServiceProvider = scopeFactory.CreateScope().ServiceProvider;
+
+		var service1 = serviceProvider.GetRequiredServiceSync<Gen2<int>>();
+		var service2 = scopeServiceProvider.GetRequiredServiceSync<Gen2<int>>();
+
+		// Assert
+		Assert.IsNotNull(service1);
+		Assert.IsNotNull(service2);
+		Assert.AreSame(service1, service2);
+	}
+
+	[TestMethod]
+	public void GenericSingletonReverseTest()
+	{
+		// Arrange
+		var services = new ServiceCollection();
+		services.AddSharedTypeSync<Gen2<Any>>(SharedWithin.Container);
+		var serviceProvider = services.BuildProvider();
+
+		// Act
+		var scopeFactory = serviceProvider.GetRequiredServiceSync<IServiceScopeFactory>();
+		var scopeServiceProvider = scopeFactory.CreateScope().ServiceProvider;
+
+		var service2 = scopeServiceProvider.GetRequiredServiceSync<Gen2<int>>();
+		var service1 = serviceProvider.GetRequiredServiceSync<Gen2<int>>();
+
+		// Assert
+		Assert.IsNotNull(service1);
+		Assert.IsNotNull(service2);
+		Assert.AreSame(service1, service2);
+	}
+
+	[TestMethod]
+	public void GenericSingletonTwoChildScopesTest()
+	{
+		// Arrange
+		var services = new ServiceCollection();
+		services.AddSharedTypeSync<Gen2<Any>>(SharedWithin.Container);
+		var serviceProvider = services.BuildProvider();
+
+		// Act
+		var scopeFactory = serviceProvider.GetRequiredServiceSync<IServiceScopeFactory>();
+
+		var serviceScope1 = scopeFactory.CreateScope();
+		var scopeServiceProvider1 = serviceScope1.ServiceProvider;
+		var service1 = scopeServiceProvider1.GetRequiredServiceSync<Gen2<int>>();
+		serviceScope1.Dispose();
+
+		var serviceScope2 = scopeFactory.CreateScope();
+		var scopeServiceProvider2 = serviceScope2.ServiceProvider;
+		var service2 = scopeServiceProvider2.GetRequiredServiceSync<Gen2<int>>();
+		serviceScope2.Dispose();
+
+		// Assert
+		Assert.IsNotNull(service1);
+		Assert.IsNotNull(service2);
+		Assert.AreSame(service1, service2);
+	}
+
 	private interface IInterface<[UsedImplicitly] T>;
 
 	private class Class<T> : IInterface<T>;
@@ -63,4 +132,6 @@ public class GenericParamTypeTest
 	{
 		public T Val { get; } = val;
 	}
+
+	private class Gen2<[UsedImplicitly]T>;
 }

@@ -49,7 +49,6 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 
 	public IServiceProviderDataActions? Event(ActionsEventType type, ref ActionsContext context)
 	{
-		// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
 		switch (type)
 		{
 			case ActionsEventType.ServiceRequesting:
@@ -60,8 +59,15 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 
 				break;
 
-			case ActionsEventType.ServiceRequested:    ((ServiceLogger) context.UserDataObject!).ServiceRequested(); break;
-			case ActionsEventType.ServiceRequestError: ((ServiceLogger) context.UserDataObject!).ServiceRequestError(); break;
+			case ActionsEventType.ServiceRequested:
+				((ServiceLogger) context.UserDataObject!).ServiceRequested();
+
+				break;
+
+			case ActionsEventType.ServiceRequestError:
+				((ServiceLogger) context.UserDataObject!).ServiceRequestError();
+
+				break;
 
 			case ActionsEventType.FactoryCalling:
 				var stat = GetStat(context.TypeKey);
@@ -72,8 +78,26 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 
 				break;
 
-			case ActionsEventType.FactoryCalled:    ((Stat) context.UserDataObject!).FactoryCalled(); break;
-			case ActionsEventType.FactoryCallError: ((Stat) context.UserDataObject!).FactoryCallError(); break;
+			case ActionsEventType.FactoryCalled:
+				((Stat) context.UserDataObject!).FactoryCalled();
+
+				break;
+			case ActionsEventType.FactoryCallError:
+				((Stat) context.UserDataObject!).FactoryCallError();
+
+				break;
+
+			case ActionsEventType.ServiceRequest:
+			case ActionsEventType.FactoryCall:
+			case ActionsEventType.Enter:
+			case ActionsEventType.Exit:
+			case ActionsEventType.Error:
+			case ActionsEventType.SyncExit:
+			case ActionsEventType.ServiceRequestRunning:
+			case ActionsEventType.FactoryCallRunning:
+
+			default:
+				break;
 		}
 
 		return null;

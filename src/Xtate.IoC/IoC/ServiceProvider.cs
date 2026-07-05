@@ -19,7 +19,7 @@ namespace Xtate.IoC;
 
 public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyAction, IDisposable, IAsyncDisposable
 {
-	private readonly CancellationTokenSource _disposeTokenSource = new();
+	private CancellationTokenSource? _disposeTokenSource;
 
 	private readonly Cache<TypeKey, ImplementationEntry?> _services;
 
@@ -27,13 +27,14 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private readonly ServiceProvider? _sourceServiceProvider;
 
-	private int _disposed;
-
 	public ServiceProvider(IServiceCollection services)
 	{
 		_sourceServiceProvider = null;
 		_sharedObjectsBin = new SharedObjectsBin();
+		
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
+		_disposeTokenSource = new CancellationTokenSource();
+		DisposeToken = _disposeTokenSource.Token;
 
 		Initialization(services);
 	}
@@ -43,7 +44,10 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		_sourceServiceProvider = sourceServiceProvider;
 		_sharedObjectsBin = sourceServiceProvider._sharedObjectsBin;
 		_sharedObjectsBin.AddReference();
-		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(sourceServiceProvider, additionalServices));
+		
+		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(additionalServices));
+		_disposeTokenSource = new CancellationTokenSource();
+		DisposeToken = _disposeTokenSource.Token;
 
 		if (additionalServices is not null)
 		{
@@ -83,8 +87,6 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public ImplementationEntry? GetImplementationEntry(TypeKey typeKey)
 	{
-		ObjectDisposedException.ThrowIf(_disposed != 0, this);
-
 		if (_services.TryGetValue(typeKey, out var entry))
 		{
 			return entry;
@@ -106,7 +108,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	public IServiceProviderActions[]? Actions { get; private set; }
 
-	public CancellationToken DisposeToken => _disposeTokenSource.Token;
+	public CancellationToken DisposeToken { get; }
 
 #endregion
 
@@ -151,63 +153,66 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		}
 	}
 
-	private Dictionary<TypeKey, ImplementationEntry?> GroupServices(IServiceCollection services)
+	private IEnumerable<KeyValuePair<TypeKey, ImplementationEntry?>> GroupServices(IServiceCollection? services)
 	{
-		const int internalServicesCount = 3; /*IInitializationHandler, IServiceProvider, IServiceScopeFactory*/
+		var servicesCount = services?.Count ?? 0;
 
-		var groupedServices = new Dictionary<TypeKey, ImplementationEntry?>(services.Count + internalServicesCount);
-
-		AddForwarding(groupedServices, static (_, _) => AsyncInitializationHandler.Instance);
-
-		foreach (var registration in services)
-		{
-			AddRegistration(groupedServices, sourceServiceProvider: null, registration);
-		}
-
-		AddForwarding(groupedServices, static (serviceProvider, _) => serviceProvider);
-		AddForwarding(groupedServices, static (serviceProvider, _) => (IServiceScopeFactory) serviceProvider);
-
-		return groupedServices;
-	}
-
-	private void AddForwarding<T>(Dictionary<TypeKey, ImplementationEntry?> services, Func<IServiceProvider, Empty, T> evaluator) =>
-		AddRegistration(services, sourceServiceProvider: null, new ServiceEntry(TypeKey.ServiceKeyFast<T, Empty>(), InstanceScope.Forwarding, evaluator));
-
-	private IEnumerable<KeyValuePair<TypeKey, ImplementationEntry?>> GroupServices(ServiceProvider sourceServiceProvider, IServiceCollection? services)
-	{
-		if (services?.Count is not ({ } count and > 0))
+		if (_sourceServiceProvider is not null && servicesCount == 0)
 		{
 			return [];
 		}
 
-		var groupedServices = new Dictionary<TypeKey, ImplementationEntry?>(count);
+		const int internalServicesCount = 3; /*IInitializationHandler, IServiceProvider, IServiceScopeFactory*/
+		var groupedServices = new Dictionary<TypeKey, ImplementationEntry?>(servicesCount + internalServicesCount);
 
-		foreach (var registration in services)
+		if (_sourceServiceProvider is null)
 		{
-			AddRegistration(groupedServices, sourceServiceProvider, registration);
+			AddRegistration(groupedServices, new ServiceEntry(TypeKey.ServiceKeyFast<IInitializationHandler, Empty>(), InstanceScope.Forwarding, GetInitializationHandler));
+
+			static IInitializationHandler GetInitializationHandler(IServiceProvider serviceProvider, Empty _) => AsyncInitializationHandler.Instance;
+		}
+
+		if (services is not null)
+		{
+			foreach (var registration in services)
+			{
+				AddRegistration(groupedServices, registration);
+			}
+		}
+
+		var serviceProviderKey = TypeKey.ServiceKeyFast<IServiceProvider, Empty>();
+
+		if (_sourceServiceProvider is null || groupedServices.ContainsKey(serviceProviderKey))
+		{
+			AddRegistration(groupedServices, new ServiceEntry(serviceProviderKey, InstanceScope.Forwarding, GetServiceProvider));
+
+			static IServiceProvider GetServiceProvider(IServiceProvider serviceProvider, Empty _) => serviceProvider;
+		}
+
+		var serviceScopeFactoryKey = TypeKey.ServiceKeyFast<IServiceScopeFactory, Empty>();
+
+		if (_sourceServiceProvider is null || groupedServices.ContainsKey(serviceScopeFactoryKey))
+		{
+			AddRegistration(groupedServices, new ServiceEntry(serviceScopeFactoryKey, InstanceScope.Forwarding, GetServiceScopeFactory));
+
+			static IServiceScopeFactory GetServiceScopeFactory(IServiceProvider serviceProvider, Empty _) => (IServiceScopeFactory) serviceProvider;
 		}
 
 		return groupedServices.AsEnumerable();
 	}
 
-	private void AddRegistration(Dictionary<TypeKey, ImplementationEntry?> services, ServiceProvider? sourceServiceProvider, in ServiceEntry service)
+	private void AddRegistration(Dictionary<TypeKey, ImplementationEntry?> services, in ServiceEntry service)
 	{
-		var simpleKey = service.Key as SimpleTypeKey;
-		var key = simpleKey ?? ((GenericTypeKey) service.Key).DefinitionKey;
+		var simpleTypeKey = service.Key as SimpleTypeKey;
+		var typeKey = simpleTypeKey ?? ((GenericTypeKey) service.Key).DefinitionKey;
 
-		if (!services.TryGetValue(key, out var lastEntry))
+		if (!services.TryGetValue(typeKey, out var lastEntry) && simpleTypeKey is not null)
 		{
-			if (sourceServiceProvider?.GetImplementationEntry(key) is { } sourceEntry)
-			{
-				foreach (var entry in sourceEntry.AsChain())
-				{
-					entry.CreateNew(this).AddToChain(ref lastEntry);
-				}
-			}
+			lastEntry = CopyEntries(simpleTypeKey);
 		}
 
 		CreateImplementationEntry(service).AddToChain(ref lastEntry);
-		services[key] = lastEntry;
+		services[typeKey] = lastEntry;
 	}
 
 	private ImplementationEntry? GetImplementationEntry(SimpleTypeKey typeKey)
@@ -236,7 +241,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		return entry?.GetServicesSync<IServiceProviderActions, Empty>(default).ToArray();
 	}
 
-	private ImplementationEntry? CopyEntries(SimpleTypeKey typeKey)
+	private ImplementationEntry? CopyEntries(TypeKey typeKey)
 	{
 		ImplementationEntry? lastEntry = null;
 
@@ -253,9 +258,9 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private ImplementationEntry? CreateEntries<T, TArg>(GenericTypeKey typeKey)
 	{
-		ImplementationEntry? lastEntry = null;
+		var lastEntry = CopyEntries(typeKey);
 
-		if (GetImplementationEntry(typeKey.DefinitionKey) is { } genericEntry)
+		if (_services.TryGetValue(typeKey.DefinitionKey, out var genericEntry) && genericEntry is not null)
 		{
 			foreach (var entry in genericEntry.AsChain())
 			{
@@ -295,13 +300,13 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	protected virtual void Dispose(bool disposing)
 	{
-		if (Interlocked.Exchange(ref _disposed, value: 1) == 0)
+		if (Interlocked.Exchange(ref _disposeTokenSource, value: null) is { } disposeTokenSource)
 		{
 			var isLastReference = _sharedObjectsBin.RemoveReference();
 
 			if (disposing)
 			{
-				_disposeTokenSource.Cancel();
+				disposeTokenSource.Cancel();
 
 				ObjectsBin.Dispose();
 
@@ -310,16 +315,16 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 					_sharedObjectsBin.Dispose();
 				}
 
-				_disposeTokenSource.Dispose();
+				disposeTokenSource.Dispose();
 			}
 		}
 	}
 
 	protected virtual async ValueTask DisposeAsyncCore()
 	{
-		if (Interlocked.Exchange(ref _disposed, value: 1) == 0)
+		if (Interlocked.Exchange(ref _disposeTokenSource, value: null) is { } disposeTokenSource)
 		{
-			await _disposeTokenSource.CancelAsync().ConfigureAwait(false);
+			await disposeTokenSource.CancelAsync().ConfigureAwait(false);
 
 			await ObjectsBin.DisposeAsync().ConfigureAwait(false);
 
@@ -328,7 +333,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 				await _sharedObjectsBin.DisposeAsync().ConfigureAwait(false);
 			}
 
-			_disposeTokenSource.Dispose();
+			disposeTokenSource.Dispose();
 		}
 	}
 

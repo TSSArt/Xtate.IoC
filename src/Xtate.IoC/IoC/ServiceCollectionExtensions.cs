@@ -49,13 +49,15 @@ public static class ServiceCollectionExtensions
 
 		public void AddModule<TModule>() where TModule : IModule, new()
 		{
-			if (!services.IsRegistered(TypeKey.ImplementationKeyFast<TModule, Empty>()))
+			if (!services.IsModuleRegistered<TModule>())
 			{
-				new TModule { Services = services }.AddServices();
-
 				services.AddImplementationSync<TModule>().For<IModule>();
+
+				new TModule { Services = services }.AddServices();
 			}
 		}
+
+		public bool IsModuleRegistered<TModule>() where TModule : IModule, new() => services.IsRegistered(TypeKey.ImplementationKeyFast<TModule, Empty>());
 
 		public FactoryImplementation<T> AddFactory<T>() where T : notnull => new(services, InstanceScope.Transient, synchronous: false);
 

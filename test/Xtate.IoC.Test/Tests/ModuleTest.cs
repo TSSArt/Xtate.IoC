@@ -48,7 +48,13 @@ public class ModuleTest
 	public void AddModule_ShouldReturnDefaultShortValue()
 	{
 		// Arrange
-		using var container = Container.Create(services => services.AddModule<MyModule<short>>());
+		using var container = Container.Create(services =>
+											   {
+												   if(!services.IsModuleRegistered<MyModule<short>>())
+												   {
+													   services.AddModule<MyModule<short>>();
+												   }
+											   });
 
 		// Act
 		var val = container.GetRequiredServiceSync<short>();
