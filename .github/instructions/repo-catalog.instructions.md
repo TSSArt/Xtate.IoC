@@ -486,7 +486,7 @@ graph TD
 - SCXML processing is layered: parsing/serialization (`Scxml`) delegates model creation/validation to `StateMachine` and resource retrieval to `ResourceLoaders`.
 - Data model behavior is pluggable via provider modules (`Null`, `Runtime`, `XPath`) selected through handler services.
 - Host/runtime orchestration (`StateMachineHost`) composes interpreter + scheduling + external services; it is the practical runtime entry point.
-- Tests depend on production modules through composition roots; no production-to-test dependency was identified.
+- Tests depend on production modules through composition roots; production code has no dependency on test code.
 
 ## Unclear Areas
 
@@ -495,4 +495,4 @@ graph TD
 | Boundary between `Common`, `DataTypes`, and root `Xtate` helper namespace | Utilities and primitive types are spread across several folders with shared namespace usage | Add explicit package-level architecture notes describing which helper categories belong in each folder |
 | `ExternalServicesModule` usage path | Module exists as an aggregate, but runtime registration path appears centered in `StateMachineHost/ExternalServiceModule` | Document recommended composition patterns for enabling built-in external services |
 | `Persistence` adoption flow | Core persistence abstractions and services are clear, but end-user integration sequence is not documented | Add a short usage guide showing how to compose `PersistenceModule` with host/interpreter |
-| `IoProcessors/Http` vs `Http` split | HTTP functionality is split between transport-independent factory and IO-processor modules | Add a note in docs clarifying when to use `HttpModule` alone vs `HttpIoProcessorModule`
+| `IoProcessors/Http` vs `Http` split | HTTP functionality is split between transport-independent factory and IO-processor modules | Add a note in docs clarifying when to use `HttpModule` alone vs `HttpIoProcessorModule` |
