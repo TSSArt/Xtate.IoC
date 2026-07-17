@@ -25,4 +25,4 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.XTATE_GITHUB_TOKEN }}
     - name: Test
-      run: dotnet test test/Xtate.Core.Test/Xtate.Core.Test.csproj --configuration ${{ env.Configuration }}
+      run: dotnet test --configuration ${{ env.Configuration }}
