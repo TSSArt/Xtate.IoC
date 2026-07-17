@@ -54,7 +54,7 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration ${{ env.Configuration }} --no-restore --no-build -p:PackageVersion=${{ env.fullSemVer }} --include-symbols -p:SymbolPackageFormat=snupkg -o bin/packages
     - name: Upload Packages
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: packages
         path: |
@@ -89,7 +89,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
     - name: Download Packages
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: packages
         path: bin/packages
