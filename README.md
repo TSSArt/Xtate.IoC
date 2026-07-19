@@ -57,7 +57,7 @@ A modern, async-first, attribute-light Inversion of Control (IoC) / Dependency I
 ## Supported Frameworks
 | Target | Notes |
 |--------|-------|
-| net10.0 / net9.0 / net8.0 | Full feature set |
+| net11.0 / net10.0 / net9.0 / net8.0 | Full feature set |
 | netstandard2.0 | Compatibility layer; async interfaces via packages |
 | net462 | Backport support; adds `System.ValueTuple`, async interfaces |
 
