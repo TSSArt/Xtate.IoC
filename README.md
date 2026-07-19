@@ -1,5 +1,9 @@
 ﻿# Xtate.IoC
 
+[![NuGet](https://img.shields.io/nuget/v/Xtate.IoC.svg)](https://www.nuget.org/packages/Xtate.IoC)
+[![CodeQL](https://github.com/TSSArt/Xtate.IoC/actions/workflows/codeql.yml/badge.svg)](https://github.com/TSSArt/Xtate.IoC/actions/workflows/codeql.yml)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE)
+
 A modern, async-first, attribute-light Inversion of Control (IoC) / Dependency Injection (DI) container for .NET with explicit lifetime semantics, argument-aware service resolution, rich decorator and factory patterns, and fine‑grained disposal tracking. Targets `net10.0`, `net9.0`, `net8.0`, `netstandard2.0`, and `net462`.
 
 ## Table of Contents
