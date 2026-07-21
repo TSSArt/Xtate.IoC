@@ -60,12 +60,12 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 				break;
 
 			case ActionsEventType.ServiceRequested:
-				((ServiceLogger) context.UserDataObject!).ServiceRequested();
+				((ServiceLogger)context.UserDataObject!).ServiceRequested();
 
 				break;
 
 			case ActionsEventType.ServiceRequestError:
-				((ServiceLogger) context.UserDataObject!).ServiceRequestError();
+				((ServiceLogger)context.UserDataObject!).ServiceRequestError();
 
 				break;
 
@@ -79,11 +79,11 @@ public class ServiceProviderDebugger(TextWriter writer, bool leaveOpen = false) 
 				break;
 
 			case ActionsEventType.FactoryCalled:
-				((Stat) context.UserDataObject!).FactoryCalled();
+				((Stat)context.UserDataObject!).FactoryCalled();
 
 				break;
 			case ActionsEventType.FactoryCallError:
-				((Stat) context.UserDataObject!).FactoryCallError();
+				((Stat)context.UserDataObject!).FactoryCallError();
 
 				break;
 

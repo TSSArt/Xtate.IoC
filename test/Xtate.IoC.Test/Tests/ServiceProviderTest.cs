@@ -47,10 +47,10 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)sp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsTrue(isRegistered);
@@ -62,10 +62,10 @@ public class ServiceProviderTest
 		// Arrange
 		var sc = new ServiceCollection();
 		var sp = sc.BuildProvider();
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)sp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsFalse(isRegistered);
@@ -78,10 +78,10 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)sp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsTrue(isRegistered);
@@ -95,10 +95,10 @@ public class ServiceProviderTest
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
 		var childSp = sp.GetRequiredServiceSync<IServiceScopeFactory>().CreateScope().ServiceProvider;
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) childSp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)childSp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsTrue(isRegistered);
@@ -111,10 +111,10 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)sp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsTrue(isRegistered);
@@ -126,10 +126,10 @@ public class ServiceProviderTest
 		// Arrange
 		var sc = new ServiceCollection();
 		var sp = sc.BuildProvider();
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)sp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsFalse(isRegistered);
@@ -142,10 +142,10 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 		sc.AddType<Class>();
 		var sp = sc.BuildProvider();
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) sp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)sp);
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsTrue(isRegistered);
@@ -158,11 +158,11 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 		var sp = sc.BuildProvider();
 		var childSp = sp.GetRequiredServiceSync<IServiceScopeFactory>().CreateScope().ServiceProvider;
-		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider) childSp);
+		var sourceServiceCollection = new ServiceProvider.SourceServiceCollection((ServiceProvider)childSp);
 		sourceServiceCollection.AddType<Class>();
 
 		// Act
-		var isRegistered = ((IServiceCollection) sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
+		var isRegistered = ((IServiceCollection)sourceServiceCollection).IsRegistered(TypeKey.ServiceKeyFast<Class, ValueTuple>());
 
 		// Assert
 		Assert.IsTrue(isRegistered);
@@ -251,7 +251,7 @@ public class ServiceProviderTest
 		var sc = new ServiceCollection();
 
 		// Act & Assert
-		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin) (-99), [ExcludeFromCodeCoverage](sp) => sp));
+		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.AddShared<object>((SharedWithin)(-99), [ExcludeFromCodeCoverage](sp) => sp));
 	}
 
 	[TestMethod]
@@ -320,7 +320,7 @@ public class ServiceProviderTest
 	public void Should_Throw_Exception_For_Wrong_Instance_Scope()
 	{
 		// Arrange
-		var sc = new ServiceCollection { new ServiceEntry(TypeKey.ServiceKey<int, int>(), (InstanceScope) 456456456, Factory) };
+		var sc = new ServiceCollection { new ServiceEntry(TypeKey.ServiceKey<int, int>(), (InstanceScope)456456456, Factory) };
 
 		// Act & Assert
 		Assert.ThrowsExactly<InvalidOperationException>([ExcludeFromCodeCoverage]() => sc.BuildProvider());

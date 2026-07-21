@@ -66,8 +66,8 @@ public class TypeKeyTest
 	public void ImplementationKey_DefinitionKey_Equals()
 	{
 		// Arrange  
-		var key1 = ((GenericTypeKey) TypeKey.ImplementationKey<GenericClass<int>, int>()).DefinitionKey;
-		var key2 = ((GenericTypeKey) TypeKey.ImplementationKey<GenericClass<long>, int>()).DefinitionKey;
+		var key1 = ((GenericTypeKey)TypeKey.ImplementationKey<GenericClass<int>, int>()).DefinitionKey;
+		var key2 = ((GenericTypeKey)TypeKey.ImplementationKey<GenericClass<long>, int>()).DefinitionKey;
 
 		// Act  
 		object key3 = key1;
@@ -82,8 +82,8 @@ public class TypeKeyTest
 	public void ServiceKey_DefinitionKey_Equals()
 	{
 		// Arrange  
-		var key1 = ((GenericTypeKey) TypeKey.ServiceKey<GenericClass<int>, int>()).DefinitionKey;
-		var key2 = ((GenericTypeKey) TypeKey.ServiceKey<GenericClass<long>, int>()).DefinitionKey;
+		var key1 = ((GenericTypeKey)TypeKey.ServiceKey<GenericClass<int>, int>()).DefinitionKey;
+		var key2 = ((GenericTypeKey)TypeKey.ServiceKey<GenericClass<long>, int>()).DefinitionKey;
 
 		// Act  
 		object key3 = key1;
@@ -157,7 +157,7 @@ public class TypeKeyTest
 	public void GenericServiceKey_DefinitionKey_StringIsValid()
 	{
 		// Arrange  
-		var key = (GenericTypeKey) TypeKey.ServiceKey<GenericClass<object>, int>();
+		var key = (GenericTypeKey)TypeKey.ServiceKey<GenericClass<object>, int>();
 
 		// Act  
 		var str = key.DefinitionKey.ToString();
@@ -170,7 +170,7 @@ public class TypeKeyTest
 	public void GenericImplementationKey_DefinitionKey_StringIsValid()
 	{
 		// Arrange  
-		var key = (GenericTypeKey) TypeKey.ImplementationKey<GenericClass<object>, int>();
+		var key = (GenericTypeKey)TypeKey.ImplementationKey<GenericClass<object>, int>();
 
 		// Act  
 		var str = key.DefinitionKey.ToString();

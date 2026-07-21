@@ -41,9 +41,9 @@ public class ServiceCollectionExtensionsTest
 		_services.AddType<ClassArg>();
 
 		// Act
-		var enumerator = ((IEnumerable) _services).GetEnumerator();
+		var enumerator = ((IEnumerable)_services).GetEnumerator();
 		var next = enumerator.MoveNext();
-		((IDisposable) enumerator).Dispose();
+		((IDisposable)enumerator).Dispose();
 
 		// Assert
 		Assert.IsTrue(next);
@@ -405,7 +405,7 @@ public class ServiceCollectionExtensionsTest
 	public void AddFactoryNotExistsSharedTest()
 	{
 		// Assert
-		Assert.ThrowsExactly<InvalidOperationException>(() => _services.AddFactory<FactoryNoArg>().For<IService>((SharedWithin) 444));
+		Assert.ThrowsExactly<InvalidOperationException>(() => _services.AddFactory<FactoryNoArg>().For<IService>((SharedWithin)444));
 	}
 
 	[TestMethod]

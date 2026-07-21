@@ -50,7 +50,7 @@ public class ModuleTest
 		// Arrange
 		using var container = Container.Create(services =>
 											   {
-												   if(!services.IsModuleRegistered<MyModule<short>>())
+												   if (!services.IsModuleRegistered<MyModule<short>>())
 												   {
 													   services.AddModule<MyModule<short>>();
 												   }

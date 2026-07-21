@@ -88,7 +88,7 @@ internal class ClassSyncFactoryProvider<TImplementation, TService> : ClassSyncFa
 {
 	private readonly Func<object?[], TService> _factory;
 
-	private ClassSyncFactoryProvider() : base(typeof(TImplementation), typeof(TService)) => _factory = (Func<object?[], TService>) Delegate;
+	private ClassSyncFactoryProvider() : base(typeof(TImplementation), typeof(TService)) => _factory = (Func<object?[], TService>)Delegate;
 
 	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TArg>;
 

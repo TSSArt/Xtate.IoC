@@ -67,7 +67,7 @@ internal abstract partial class ClassFactoryProvider
 
 		if (factory is ConstructorInfo or null)
 		{
-			RequiredMembers = [..EnumerateRequiredMembers(implementationType)];
+			RequiredMembers = [.. EnumerateRequiredMembers(implementationType)];
 		}
 		else
 		{
@@ -453,7 +453,7 @@ internal abstract partial class ClassFactoryProvider
 			}
 			else
 			{
-				SyncValueGetter = (Func<IServiceProvider, object?>) valueGetter;
+				SyncValueGetter = (Func<IServiceProvider, object?>)valueGetter;
 			}
 
 			MemberType = memberBase.Type;

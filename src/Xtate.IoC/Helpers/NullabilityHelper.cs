@@ -191,19 +191,19 @@ internal static class NullabilityHelper
 
 			if (argument.ArgumentType == typeof(byte[]))
 			{
-				var bytes = (IReadOnlyList<CustomAttributeTypedArgument>) argument.Value!;
+				var bytes = (IReadOnlyList<CustomAttributeTypedArgument>)argument.Value!;
 
-				return (byte) bytes[index].Value! == CanBeNull;
+				return (byte)bytes[index].Value! == CanBeNull;
 			}
 
-			return (byte) argument.Value! == CanBeNull;
+			return (byte)argument.Value! == CanBeNull;
 		}
 
 		for (; declaringType != null; declaringType = declaringType.DeclaringType)
 		{
 			if (declaringType.CustomAttributes.FirstOrDefault(data => data.AttributeType.FullName == NullableContextAttr) is { } ncData)
 			{
-				return (byte) ncData.ConstructorArguments[0].Value! == CanBeNull;
+				return (byte)ncData.ConstructorArguments[0].Value! == CanBeNull;
 			}
 		}
 

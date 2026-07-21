@@ -26,7 +26,7 @@ public class ScopeTest
 
 		await foreach (var svc in asyncEnumerable)
 		{
-			list.Add(((ISomeValue) svc!).Value);
+			list.Add(((ISomeValue)svc!).Value);
 		}
 
 		return [.. list];

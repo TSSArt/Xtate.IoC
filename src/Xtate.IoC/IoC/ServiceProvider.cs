@@ -19,19 +19,19 @@ namespace Xtate.IoC;
 
 public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyAction, IDisposable, IAsyncDisposable
 {
-	private CancellationTokenSource? _disposeTokenSource;
-
 	private readonly Cache<TypeKey, ImplementationEntry?> _services;
 
 	private readonly SharedObjectsBin _sharedObjectsBin;
 
 	private readonly ServiceProvider? _sourceServiceProvider;
 
+	private CancellationTokenSource? _disposeTokenSource;
+
 	public ServiceProvider(IServiceCollection services)
 	{
 		_sourceServiceProvider = null;
 		_sharedObjectsBin = new SharedObjectsBin();
-		
+
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
 		_disposeTokenSource = new CancellationTokenSource();
 		DisposeToken = _disposeTokenSource.Token;
@@ -44,7 +44,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		_sourceServiceProvider = sourceServiceProvider;
 		_sharedObjectsBin = sourceServiceProvider._sharedObjectsBin;
 		_sharedObjectsBin.AddReference();
-		
+
 		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(additionalServices));
 		_disposeTokenSource = new CancellationTokenSource();
 		DisposeToken = _disposeTokenSource.Token;
@@ -128,7 +128,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 #region Interface ITypeKeyAction
 
-	void ITypeKeyAction.TypedAction<T, TArg>(TypeKey typeKey) => _services.TryAdd(typeKey, CreateEntries<T, TArg>((GenericTypeKey) typeKey));
+	void ITypeKeyAction.TypedAction<T, TArg>(TypeKey typeKey) => _services.TryAdd(typeKey, CreateEntries<T, TArg>((GenericTypeKey)typeKey));
 
 #endregion
 
@@ -195,7 +195,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 		{
 			AddRegistration(groupedServices, new ServiceEntry(serviceScopeFactoryKey, InstanceScope.Forwarding, GetServiceScopeFactory));
 
-			static IServiceScopeFactory GetServiceScopeFactory(IServiceProvider serviceProvider, Empty _) => (IServiceScopeFactory) serviceProvider;
+			static IServiceScopeFactory GetServiceScopeFactory(IServiceProvider serviceProvider, Empty _) => (IServiceScopeFactory)serviceProvider;
 		}
 
 		return groupedServices.AsEnumerable();
@@ -204,7 +204,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	private void AddRegistration(Dictionary<TypeKey, ImplementationEntry?> services, in ServiceEntry service)
 	{
 		var simpleTypeKey = service.Key as SimpleTypeKey;
-		var typeKey = simpleTypeKey ?? ((GenericTypeKey) service.Key).DefinitionKey;
+		var typeKey = simpleTypeKey ?? ((GenericTypeKey)service.Key).DefinitionKey;
 
 		if (!services.TryGetValue(typeKey, out var lastEntry) && simpleTypeKey is not null)
 		{
@@ -227,7 +227,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private IInitializationHandler? GetInitializationHandlerService()
 	{
-		var entry = GetImplementationEntry((SimpleTypeKey) TypeKey.ServiceKeyFast<IInitializationHandler, Empty>());
+		var entry = GetImplementationEntry((SimpleTypeKey)TypeKey.ServiceKeyFast<IInitializationHandler, Empty>());
 
 		Infra.NotNull(entry);
 
@@ -236,7 +236,7 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	private IServiceProviderActions[]? GetActionsService()
 	{
-		var entry = GetImplementationEntry((SimpleTypeKey) TypeKey.ServiceKeyFast<IServiceProviderActions, Empty>());
+		var entry = GetImplementationEntry((SimpleTypeKey)TypeKey.ServiceKeyFast<IServiceProviderActions, Empty>());
 
 		return entry?.GetServicesSync<IServiceProviderActions, Empty>(default).ToArray();
 	}

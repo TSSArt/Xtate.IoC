@@ -81,8 +81,8 @@ public class ImplementationTypeTest
 		// Assert
 		Assert.IsTrue(listIntType.Definition.Equals(listIntType.Definition));
 		Assert.IsTrue(listIntType.Definition.Equals(listLongType.Definition));
-		Assert.IsTrue(listIntType.Definition.Equals((object) listIntType.Definition));
-		Assert.IsTrue(listIntType.Definition.Equals((object) listLongType.Definition));
+		Assert.IsTrue(listIntType.Definition.Equals((object)listIntType.Definition));
+		Assert.IsTrue(listIntType.Definition.Equals((object)listLongType.Definition));
 		Assert.IsFalse(listIntType.Definition.Equals(new object()));
 	}
 

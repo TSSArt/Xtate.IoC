@@ -20,7 +20,7 @@ namespace Xtate.IoC;
 
 internal static class CancellationTokenSourceExtensions
 {
-	private static void Cancel(object state) => ((CancellationTokenSource) state).Cancel(false);
+	private static void Cancel(object state) => ((CancellationTokenSource)state).Cancel(false);
 
 	extension(CancellationTokenSource cancellationTokenSource)
 	{

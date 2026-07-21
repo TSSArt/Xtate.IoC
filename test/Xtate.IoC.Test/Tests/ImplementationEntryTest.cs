@@ -415,7 +415,7 @@ public class ImplementationEntryTest
 			list4.Add(enumerator.Current);
 		}
 
-		((IDisposable) enumerator).Dispose();
+		((IDisposable)enumerator).Dispose();
 
 		// Assert
 		Assert.HasCount(expected: 2, list1);
@@ -771,7 +771,7 @@ public class ImplementationEntryTest
 
 		public bool Initialize<T>(T instance) => instance is IAsyncInitialization;
 
-		public ValueTask InitializeAsync<T>(T instance) => ((IAsyncInitialization) instance!).InitializeAsync();
+		public ValueTask InitializeAsync<T>(T instance) => ((IAsyncInitialization)instance!).InitializeAsync();
 
 	#endregion
 	}

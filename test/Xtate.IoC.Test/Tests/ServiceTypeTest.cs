@@ -57,8 +57,8 @@ public class ServiceTypeTest
 		// Assert
 		Assert.IsTrue(listIntDefinition.Equals(listIntDefinition));
 		Assert.IsTrue(listIntDefinition.Equals(listLongDefinition));
-		Assert.IsTrue(listIntDefinition.Equals((object) listIntDefinition));
-		Assert.IsTrue(listIntDefinition.Equals((object) listLongDefinition));
+		Assert.IsTrue(listIntDefinition.Equals((object)listIntDefinition));
+		Assert.IsTrue(listIntDefinition.Equals((object)listLongDefinition));
 		Assert.IsFalse(listIntDefinition.Equals(new object()));
 	}
 

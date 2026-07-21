@@ -236,7 +236,7 @@ internal static class TypeHelper
 		/// </summary>
 		/// <typeparam name="T">The type of the instance to create.</typeparam>
 		/// <returns>An instance of the specified type.</returns>
-		public T CreateInstance<T>() => (T) Activator.CreateInstance(type)!;
+		public T CreateInstance<T>() => (T)Activator.CreateInstance(type)!;
 
 		public IEnumerable<Type> DecomposeType()
 		{

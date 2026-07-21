@@ -154,10 +154,10 @@ public class WeakReferenceSetTest
 		// Arrange
 		var wrs = new WeakReferenceSet();
 
-		var thread1 = new Thread(o => Put((WeakReferenceSet) o!));
-		var thread2 = new Thread(o => Put((WeakReferenceSet) o!));
-		var thread3 = new Thread(o => Take((WeakReferenceSet) o!));
-		var thread4 = new Thread(o => Take((WeakReferenceSet) o!));
+		var thread1 = new Thread(o => Put((WeakReferenceSet)o!));
+		var thread2 = new Thread(o => Put((WeakReferenceSet)o!));
+		var thread3 = new Thread(o => Take((WeakReferenceSet)o!));
+		var thread4 = new Thread(o => Take((WeakReferenceSet)o!));
 
 		// Act
 		thread1.Start(wrs);

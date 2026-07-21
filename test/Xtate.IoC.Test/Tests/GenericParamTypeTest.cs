@@ -133,5 +133,5 @@ public class GenericParamTypeTest
 		public T Val { get; } = val;
 	}
 
-	private class Gen2<[UsedImplicitly]T>;
+	private class Gen2<[UsedImplicitly] T>;
 }

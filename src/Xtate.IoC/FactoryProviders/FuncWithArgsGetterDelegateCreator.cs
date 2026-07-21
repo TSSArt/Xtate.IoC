@@ -47,15 +47,15 @@ internal partial class ClassFactoryProvider
 			{
 				if (IsEnumerable(resultType, out var async) is { } itemServiceType)
 				{
-					return CreateDelegate(async ? GetServicesFactory : GetServicesSyncFactory, [itemServiceType, ..argTypes]);
+					return CreateDelegate(async ? GetServicesFactory : GetServicesSyncFactory, [itemServiceType, .. argTypes]);
 				}
 
 				if (IsValueTask(resultType) is { } serviceType)
 				{
-					return CreateDelegate(member.IsNotNull(AsyncPath) ? GetRequiredFactory : GetFactory, [serviceType, ..argTypes]);
+					return CreateDelegate(member.IsNotNull(AsyncPath) ? GetRequiredFactory : GetFactory, [serviceType, .. argTypes]);
 				}
 
-				return CreateDelegate(member.IsNotNull(SyncPath) ? GetRequiredSyncFactory : GetSyncFactory, [resultType, ..argTypes]);
+				return CreateDelegate(member.IsNotNull(SyncPath) ? GetRequiredSyncFactory : GetSyncFactory, [resultType, .. argTypes]);
 			}
 
 			return null;

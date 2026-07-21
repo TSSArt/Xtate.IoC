@@ -157,7 +157,7 @@ internal class ClassAsyncFactoryProvider<TImplementation, TService> : ClassAsync
 {
 	private readonly Func<object?[], ValueTask<TService>> _factory;
 
-	private ClassAsyncFactoryProvider() : base(typeof(TImplementation), typeof(TService)) => _factory = (Func<object?[], ValueTask<TService>>) Delegate;
+	private ClassAsyncFactoryProvider() : base(typeof(TImplementation), typeof(TService)) => _factory = (Func<object?[], ValueTask<TService>>)Delegate;
 
 	public static Delegate GetServiceDelegate<TArg>() => Infra.TypeInitHandle(() => Nested.ProviderField).GetService<TArg>;
 

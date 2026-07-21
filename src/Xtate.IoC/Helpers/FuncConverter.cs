@@ -68,7 +68,7 @@ internal static class FuncConverter
 	/// <param name="func">The delegate to cast.</param>
 	/// <returns>The cast delegate.</returns>
 	/// <exception cref="InvalidCastException">Thrown when the delegate cannot be cast to the specified type.</exception>
-	public static TDelegate Cast<TDelegate>(Delegate func) where TDelegate : Delegate => (TDelegate) Cast(func, typeof(TDelegate));
+	public static TDelegate Cast<TDelegate>(Delegate func) where TDelegate : Delegate => (TDelegate)Cast(func, typeof(TDelegate));
 
 	/// <summary>
 	///     Casts a delegate to a specified type.
@@ -100,7 +100,7 @@ internal static class FuncConverter
 		var arg = args.Length switch
 				  {
 					  0 => Expression.Default(typeof(Empty)),
-					  1 => (Expression) args[0],
+					  1 => (Expression)args[0],
 					  _ => CreateSingleArgument(args, start: 0)
 				  };
 

@@ -66,7 +66,7 @@ public class AncestorTest
 		Assert.IsTrue(k1.IsEmptyArg);
 		Assert.IsFalse(k2.IsEmptyArg);
 		Assert.IsFalse(k3.IsEmptyArg);
-		Assert.IsTrue(((GenericTypeKey) k3).DefinitionKey.IsEmptyArg);
+		Assert.IsTrue(((GenericTypeKey)k3).DefinitionKey.IsEmptyArg);
 	}
 
 	private delegate T Lazy<out T>();
