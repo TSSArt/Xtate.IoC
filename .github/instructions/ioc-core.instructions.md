@@ -22,7 +22,7 @@ Core container APIs, service registration DSL, resolution APIs, scopes, and type
 
 ## Testing rules
 
-- Mirror API changes in `/home/runner/work/Xtate.IoC/Xtate.IoC/test/Xtate.IoC.Test/Tests` and add or update usage coverage in `/home/runner/work/Xtate.IoC/Xtate.IoC/test/Xtate.IoC.Test/Examples`.
+- Mirror API changes in `test/Xtate.IoC.Test/Tests` and add or update usage coverage in `test/Xtate.IoC.Test/Examples`.
 
 ## Avoid
 

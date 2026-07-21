@@ -12,7 +12,7 @@ BenchmarkDotNet performance measurements for container resolution and lifecycle 
 
 - Keep benchmark setup in `[GlobalSetup]` and benchmark methods focused on a single measurable operation.
 - Use lightweight benchmark fixture types and deterministic behavior to reduce noise.
-- Keep BenchmarkDotNet attributes/cofiguration style consistent with existing benchmark classes.
+- Keep BenchmarkDotNet attributes/configuration style consistent with existing benchmark classes.
 
 ## Implementation rules
 

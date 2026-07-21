@@ -1,29 +1,25 @@
 ---
-applyTo: "test/Xtate.IoC.Test/Tests/**/*.cs"
+applyTo: "test/Xtate.IoC.Test/**/*.cs"
 ---
 
-# Test suite instructions
+# Test source instructions
 
-## Purpose
+## Test style
 
-Behavioral and regression tests for IoC internals and public APIs.
+- Use MSTest attributes and the assertion style already used by nearby tests.
+- Keep tests focused, deterministic, independent, and safe under parallel execution.
+- Keep scenario-specific helper types nested or local to the test area when practical.
+- Do not rely on execution order, shared mutable state, timing, or console inspection.
 
-## Follow existing patterns
+## Coverage
 
-- Keep MSTest style: `[TestClass]` / `[TestMethod]`, explicit Arrange/Act/Assert sections, and focused assertions.
-- Prefer assertion styles already used here (`Assert.ThrowsExactly`, `Assert.AreSame`, `Assert.AreNotSame`, `Assert.IsInstanceOfType`).
-- Keep helper test types nested/private within the test class when they are scenario-specific.
+- Cover sync and async variants when shared behavior changes.
+- Cover every affected argument arity or prove the common underlying path with targeted tests.
+- For lifetime changes, assert instance identity, scope boundaries, initialization, ownership, and disposal.
+- For decorator or factory changes, assert chain order, arguments, missing-service behavior, and exceptions.
+- Keep examples executable and focused on recommended public API usage.
 
-## Implementation rules
+## Verification
 
-- Cover both async and sync API variants when changing shared behavior.
-- For lifetime/scoping changes, include disposal and ownership assertions, not only type checks.
-
-## Testing rules
-
-- Keep test method names scenario-driven (`Action_State_ExpectedResult` style used in this folder).
-- Keep tests independent and parallel-safe under method-level parallelization.
-
-## Avoid
-
-- Do not rely on execution order or shared mutable static state across tests.
+- Run the narrowest matching test on one modern framework first.
+- Run broader solution tests and legacy targets when shared or compatibility-sensitive behavior changes.
