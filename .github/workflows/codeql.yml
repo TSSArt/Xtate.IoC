@@ -14,21 +14,29 @@ env:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
       packages: read
       security-events: write
-
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: actions
+          build-mode: none
+        - language: csharp
+          build-mode: none
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
       with:
-        languages: csharp
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v5
       with:
@@ -36,13 +44,7 @@ jobs:
         source-url: https://nuget.pkg.github.com/TSSArt/index.json
       env:
         NUGET_AUTH_TOKEN: ${{ secrets.XTATE_GITHUB_TOKEN }}
-    - name: Install Mono
-      run: |
-        sudo apt update
-        sudo apt install -y mono-complete
-    - name: Restore
-      run: dotnet restore
     - name: Build
-      run: dotnet build --configuration ${{ env.Configuration }} --no-restore
+      run: dotnet build --configuration ${{ env.Configuration }}
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
