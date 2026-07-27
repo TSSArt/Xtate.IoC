@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates registering and resolving synchronous vs asynchronous services.
 // Sync service: registered with AddTypeSync<T>() and resolved via GetRequiredServiceSync<T>().

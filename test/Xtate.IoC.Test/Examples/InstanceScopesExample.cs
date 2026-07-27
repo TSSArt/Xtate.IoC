@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates instance scopes:
 // Transient      -> AddType<T>() : new instance every resolution.

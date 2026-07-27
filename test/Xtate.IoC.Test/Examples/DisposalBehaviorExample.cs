@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates difference between AddConstant / AddForwarding (Forwarding scope) and AddType (Transient scope)
 // regarding lifetime & disposal responsibility.

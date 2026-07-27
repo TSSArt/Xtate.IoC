@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates injecting a dependency via a factory delegate Func<ValueTask<T>>.
 // Container provides the delegate automatically so the consumer can defer resolution

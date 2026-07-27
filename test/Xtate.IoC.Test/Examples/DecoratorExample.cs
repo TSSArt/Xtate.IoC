@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates registering decorators.
 // Order of registration defines wrapping order: last registered decorator is outermost.

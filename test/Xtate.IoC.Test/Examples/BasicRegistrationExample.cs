@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Basic transient registration and resolution.
 // Shows how to register a simple service and resolve it asynchronously.

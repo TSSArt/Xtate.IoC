@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates open generic registration and resolution.
 // Pattern: register implementation with placeholder generic parameter `Any` then forward to matching service interface.

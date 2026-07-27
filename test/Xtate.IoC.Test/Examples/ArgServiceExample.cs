@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Service with constructor argument.
 // Demonstrates resolving a service that requires an argument at resolution time.

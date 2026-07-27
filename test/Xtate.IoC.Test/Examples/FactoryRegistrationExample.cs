@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates factory registration via AddFactory<TFactory>().For<TService...>()
 // The IoC container creates the factory type and calls its method returning the service.

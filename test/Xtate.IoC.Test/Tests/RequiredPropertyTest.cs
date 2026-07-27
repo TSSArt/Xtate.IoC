@@ -22,168 +22,165 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace System.Runtime.CompilerServices
+namespace Xtate.IoC.Test;
+
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Property)]
+[SuppressMessage(category: "ReSharper", checkId: "ClassNeverInstantiated.Global")]
+internal sealed class RequiredMemberAttribute : Attribute;
+
+[AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
+[SuppressMessage(category: "ReSharper", checkId: "UnusedType.Global")]
+[ExcludeFromCodeCoverage]
+internal sealed class CompilerFeatureRequiredAttribute(string featureName) : Attribute
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Property)]
-	[SuppressMessage(category: "ReSharper", checkId: "ClassNeverInstantiated.Global")]
-	internal sealed class RequiredMemberAttribute : Attribute;
+	[SuppressMessage(category: "ReSharper", checkId: "MemberCanBePrivate.Global")]
+	[SuppressMessage(category: "ReSharper", checkId: "UnusedAutoPropertyAccessor.Global")]
+	public string FeatureName { get; } = featureName;
 
-	[AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
-	[SuppressMessage(category: "ReSharper", checkId: "UnusedType.Global")]
-	[ExcludeFromCodeCoverage]
-	internal sealed class CompilerFeatureRequiredAttribute(string featureName) : Attribute
-	{
-		[SuppressMessage(category: "ReSharper", checkId: "MemberCanBePrivate.Global")]
-		[SuppressMessage(category: "ReSharper", checkId: "UnusedAutoPropertyAccessor.Global")]
-		public string FeatureName { get; } = featureName;
-
-		[SuppressMessage(category: "ReSharper", checkId: "UnusedMember.Global")]
-		public string? Language { get; init; }
-	}
+	[SuppressMessage(category: "ReSharper", checkId: "UnusedMember.Global")]
+	public string? Language { get; init; }
 }
-namespace Xtate.IoC.Test
+
+public class ArgClass
 {
-	public class ArgClass
+	public required int Arg;
+}
+
+public class DepClass;
+
+public class DepSyncClass;
+
+public class Sync2Class
+{
+	[UsedImplicitly]
+	public required DepSyncClass DepSyncClass;
+}
+
+public class SyncClass
+{
+	public required Func<DepSyncClass> Factory;
+
+	public required Func<int, DepSyncClass> Factory2;
+
+	public required Func<int, long, DepSyncClass> Factory3;
+
+	public required Func<int, long, DepSyncClass?> FactoryOpt3;
+}
+
+public class Class
+{
+	public required Func<int, long, ValueTask<DepClass>> DepClass2ArgsFieldFactory;
+
+	public required Func<int, long, ValueTask<DepClass?>> DepClass2ArgsFieldOptFactory;
+
+	public required Func<int, long, IAsyncEnumerable<DepClass>> DepClass2ArgsFieldServices;
+
+	public required DepClass DepClassField;
+
+	public required Func<ValueTask<DepClass>> DepClassFieldFactory;
+
+	public required DepClass DepClassPropPrivate { private get; init; }
+
+	public required DepClass DepClassProp { get; init; }
+
+	public DepClass DepClassPropPublic => DepClassPropPrivate;
+}
+
+[TestClass]
+public class RequiredPropertyTest
+{
+	[TestMethod]
+	public async Task Should_ResolveRequiredProperties_When_UsingAsyncFactories()
 	{
-		public required int Arg;
+		// Arrange
+		var serviceCollection = new ServiceCollection();
+		serviceCollection.AddType<Class>();
+		serviceCollection.AddType<DepClass>();
+		serviceCollection.AddType<DepClass, int, long>();
+		var serviceProvider = serviceCollection.BuildProvider();
+
+		// Act
+		var class1Instance = await serviceProvider.GetRequiredService<Class>();
+		var inst = await class1Instance.DepClassFieldFactory();
+		var inst2 = await class1Instance.DepClass2ArgsFieldFactory(arg1: 3, arg2: 3);
+		var inst3 = await class1Instance.DepClass2ArgsFieldOptFactory(arg1: 3, arg2: 3);
+
+		// Assert
+		Assert.IsNotNull(class1Instance);
+		Assert.IsNotNull(class1Instance.DepClassProp);
+		Assert.IsNotNull(class1Instance.DepClassField);
+		Assert.IsNotNull(class1Instance.DepClassPropPublic);
+		Assert.IsNotNull(inst);
+		Assert.IsNotNull(inst2);
+		Assert.IsNotNull(inst3);
+		Assert.IsNotNull(class1Instance.DepClass2ArgsFieldServices);
 	}
 
-	public class DepClass;
-
-	public class DepSyncClass;
-
-	public class Sync2Class
+	[TestMethod]
+	public async Task Should_ResolveRequiredProperties_When_UsingSyncFactories()
 	{
-		[UsedImplicitly]
-		public required DepSyncClass DepSyncClass;
+		// Arrange
+		var serviceCollection = new ServiceCollection();
+		serviceCollection.AddTypeSync<SyncClass>();
+		serviceCollection.AddTypeSync<DepSyncClass>();
+		serviceCollection.AddTypeSync<DepSyncClass, int>();
+		serviceCollection.AddTypeSync<DepSyncClass, int, long>();
+		var serviceProvider = serviceCollection.BuildProvider();
+
+		// Act
+		var class1Instance = await serviceProvider.GetRequiredService<SyncClass>();
+		var inst1 = class1Instance.Factory();
+		var inst2 = class1Instance.Factory2(1);
+		var inst3 = class1Instance.Factory3(arg1: 1, arg2: 4);
+		var inst4 = class1Instance.FactoryOpt3(arg1: 1, arg2: 4);
+
+		// Assert
+		Assert.IsNotNull(inst1);
+		Assert.IsNotNull(inst2);
+		Assert.IsNotNull(inst3);
+		Assert.IsNotNull(inst4);
 	}
 
-	public class SyncClass
+	[TestMethod]
+	public async Task Should_ThrowException_When_RequiredSyncPropertyIsMissing()
 	{
-		public required Func<DepSyncClass> Factory;
+		// Arrange
+		var serviceCollection = new ServiceCollection();
+		serviceCollection.AddTypeSync<Sync2Class>();
+		serviceCollection.AddType<DepSyncClass>();
+		var serviceProvider = serviceCollection.BuildProvider();
 
-		public required Func<int, DepSyncClass> Factory2;
-
-		public required Func<int, long, DepSyncClass> Factory3;
-
-		public required Func<int, long, DepSyncClass?> FactoryOpt3;
+		// Act & Assert
+		await Assert.ThrowsExactlyAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await serviceProvider.GetRequiredService<Sync2Class>());
 	}
 
-	public class Class
+	[TestMethod]
+	public async Task Should_ResolveRequiredProperties_When_UsingAsyncFactoryWithArguments()
 	{
-		public required Func<int, long, ValueTask<DepClass>> DepClass2ArgsFieldFactory;
+		// Arrange
+		var serviceCollection = new ServiceCollection();
+		serviceCollection.AddType<ArgClass, int>();
+		var serviceProvider = serviceCollection.BuildProvider();
 
-		public required Func<int, long, ValueTask<DepClass?>> DepClass2ArgsFieldOptFactory;
+		// Act
+		var class1Instance = await serviceProvider.GetRequiredService<ArgClass, int>(55);
 
-		public required Func<int, long, IAsyncEnumerable<DepClass>> DepClass2ArgsFieldServices;
-
-		public required DepClass DepClassField;
-
-		public required Func<ValueTask<DepClass>> DepClassFieldFactory;
-
-		public required DepClass DepClassPropPrivate { private get; init; }
-
-		public required DepClass DepClassProp { get; init; }
-
-		public DepClass DepClassPropPublic => DepClassPropPrivate;
+		// Assert
+		Assert.AreEqual(expected: 55, class1Instance.Arg);
 	}
 
-	[TestClass]
-	public class RequiredPropertyTest
+	[TestMethod]
+	public async Task Should_ResolveRequiredProperties_When_UsingSyncFactoryWithArguments()
 	{
-		[TestMethod]
-		public async Task Should_ResolveRequiredProperties_When_UsingAsyncFactories()
-		{
-			// Arrange
-			var serviceCollection = new ServiceCollection();
-			serviceCollection.AddType<Class>();
-			serviceCollection.AddType<DepClass>();
-			serviceCollection.AddType<DepClass, int, long>();
-			var serviceProvider = serviceCollection.BuildProvider();
+		// Arrange
+		var serviceCollection = new ServiceCollection();
+		serviceCollection.AddTypeSync<ArgClass, int>();
+		var serviceProvider = serviceCollection.BuildProvider();
 
-			// Act
-			var class1Instance = await serviceProvider.GetRequiredService<Class>();
-			var inst = await class1Instance.DepClassFieldFactory();
-			var inst2 = await class1Instance.DepClass2ArgsFieldFactory(arg1: 3, arg2: 3);
-			var inst3 = await class1Instance.DepClass2ArgsFieldOptFactory(arg1: 3, arg2: 3);
+		// Act
+		var class1Instance = await serviceProvider.GetRequiredService<ArgClass, int>(55);
 
-			// Assert
-			Assert.IsNotNull(class1Instance);
-			Assert.IsNotNull(class1Instance.DepClassProp);
-			Assert.IsNotNull(class1Instance.DepClassField);
-			Assert.IsNotNull(class1Instance.DepClassPropPublic);
-			Assert.IsNotNull(inst);
-			Assert.IsNotNull(inst2);
-			Assert.IsNotNull(inst3);
-			Assert.IsNotNull(class1Instance.DepClass2ArgsFieldServices);
-		}
-
-		[TestMethod]
-		public async Task Should_ResolveRequiredProperties_When_UsingSyncFactories()
-		{
-			// Arrange
-			var serviceCollection = new ServiceCollection();
-			serviceCollection.AddTypeSync<SyncClass>();
-			serviceCollection.AddTypeSync<DepSyncClass>();
-			serviceCollection.AddTypeSync<DepSyncClass, int>();
-			serviceCollection.AddTypeSync<DepSyncClass, int, long>();
-			var serviceProvider = serviceCollection.BuildProvider();
-
-			// Act
-			var class1Instance = await serviceProvider.GetRequiredService<SyncClass>();
-			var inst1 = class1Instance.Factory();
-			var inst2 = class1Instance.Factory2(1);
-			var inst3 = class1Instance.Factory3(arg1: 1, arg2: 4);
-			var inst4 = class1Instance.FactoryOpt3(arg1: 1, arg2: 4);
-
-			// Assert
-			Assert.IsNotNull(inst1);
-			Assert.IsNotNull(inst2);
-			Assert.IsNotNull(inst3);
-			Assert.IsNotNull(inst4);
-		}
-
-		[TestMethod]
-		public async Task Should_ThrowException_When_RequiredSyncPropertyIsMissing()
-		{
-			// Arrange
-			var serviceCollection = new ServiceCollection();
-			serviceCollection.AddTypeSync<Sync2Class>();
-			serviceCollection.AddType<DepSyncClass>();
-			var serviceProvider = serviceCollection.BuildProvider();
-
-			// Act & Assert
-			await Assert.ThrowsExactlyAsync<DependencyInjectionException>([ExcludeFromCodeCoverage] async () => await serviceProvider.GetRequiredService<Sync2Class>());
-		}
-
-		[TestMethod]
-		public async Task Should_ResolveRequiredProperties_When_UsingAsyncFactoryWithArguments()
-		{
-			// Arrange
-			var serviceCollection = new ServiceCollection();
-			serviceCollection.AddType<ArgClass, int>();
-			var serviceProvider = serviceCollection.BuildProvider();
-
-			// Act
-			var class1Instance = await serviceProvider.GetRequiredService<ArgClass, int>(55);
-
-			// Assert
-			Assert.AreEqual(expected: 55, class1Instance.Arg);
-		}
-
-		[TestMethod]
-		public async Task Should_ResolveRequiredProperties_When_UsingSyncFactoryWithArguments()
-		{
-			// Arrange
-			var serviceCollection = new ServiceCollection();
-			serviceCollection.AddTypeSync<ArgClass, int>();
-			var serviceProvider = serviceCollection.BuildProvider();
-
-			// Act
-			var class1Instance = await serviceProvider.GetRequiredService<ArgClass, int>(55);
-
-			// Assert
-			Assert.AreEqual(expected: 55, class1Instance.Arg);
-		}
+		// Assert
+		Assert.AreEqual(expected: 55, class1Instance.Arg);
 	}
 }

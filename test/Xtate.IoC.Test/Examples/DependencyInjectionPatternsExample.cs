@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates two dependency injection styles:
 // 1. Constructor injection (ServiceA depends on ServiceB via constructor parameter).

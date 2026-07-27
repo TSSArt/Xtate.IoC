@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Asynchronous initialization example.
 // Shows how services that implement IAsyncInitialization are automatically awaited

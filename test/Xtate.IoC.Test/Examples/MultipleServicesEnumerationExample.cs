@@ -17,7 +17,7 @@
 
 // ReSharper disable All
 
-namespace Xtate.IoC.Examples;
+namespace Xtate.IoC.Test.Examples;
 
 // Demonstrates resolving multiple services via GetServices<T>() and GetServices<T,TArg>(arg)
 // Each registration creates a new entry; enumeration executes each factory and yields non-null results.
