@@ -23,8 +23,6 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ResourcesLocalizationTest
 {
-	private class ServiceX;
-
 	[TestMethod]
 	public void French_Resources_ShouldFormatExpectedStrings()
 	{
@@ -84,4 +82,6 @@ public class ResourcesLocalizationTest
 		public object Resolve(Type type) => throw new InvalidOperationException(Resources.Exception_ServiceMissedInContainer(type));
 #pragma warning restore CA1822
 	}
+
+	private class ServiceX;
 }

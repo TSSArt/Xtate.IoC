@@ -363,12 +363,17 @@ public class ServiceProviderTest
 		Assert.IsTrue(service.Disposed);
 	}
 
-	// ReSharper disable All
-	private class Class { }
+	// Public fixtures are constructed through container reflection, including members unused by direct calls.
+	// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
+	[UsedImplicitly] // Constructed through container reflection.
+	private class Class;
 
-	private class Class2 { }
+	[UsedImplicitly] // Constructed through container reflection.
+	private class Class2;
 
-	public class GenericClass<T> { }
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public class GenericClass<T>;
 
 	public class DisposableClass : IDisposable
 	{
@@ -385,5 +390,5 @@ public class ServiceProviderTest
 	#endregion
 	}
 
-	// ReSharper restore All
+	// ReSharper restore MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 }

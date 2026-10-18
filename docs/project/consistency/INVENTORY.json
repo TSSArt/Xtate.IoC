@@ -1,0 +1,778 @@
+[
+  {
+    "path": ".agents/AGENTS.md",
+    "sha256": "E3094770BEA73784CB727689323481BC1F4F9526EEFC7277EB164E2C3BF27812"
+  },
+  {
+    "path": ".editorconfig",
+    "sha256": "41F38D898449AD32B59A9A5AD0F1740887BF46494D3500BE767AB57039A13896"
+  },
+  {
+    "path": ".github/copilot-instructions.md",
+    "sha256": "03ECF5854F206C2CD2EF5BD6093F45895592CC8C515207F3B4A7D6E6CB64A540"
+  },
+  {
+    "path": ".github/instructions/benchmarks.instructions.md",
+    "sha256": "08428CCF3720CA9D1BB5738E9BCB7518AB5591DED386150864838DEDDF5D8416"
+  },
+  {
+    "path": ".github/instructions/csharp.instructions.md",
+    "sha256": "95D4B9E11C8340FC147D4543FF817EDBFC2C5FDF779CD56A6575E0C6EEBA5A90"
+  },
+  {
+    "path": ".github/instructions/examples.instructions.md",
+    "sha256": "100236DF697C88834D757128B82B7D50C8F144E968CA516C80B335398919BFA6"
+  },
+  {
+    "path": ".github/instructions/factory-providers.instructions.md",
+    "sha256": "3E3315FB4FB6E94D3D3660693EA21EE286DD361F3FD8101FA976C48149087A78"
+  },
+  {
+    "path": ".github/instructions/github-actions.instructions.md",
+    "sha256": "880C0B2CBDFCD2E2B75D99F208BB242CEE52D64A6747D2B2AD8679A116A9626D"
+  },
+  {
+    "path": ".github/instructions/implementation-entry.instructions.md",
+    "sha256": "182F96EB52B5821AC67E7ED569C4B1FACF63B1DA61FEB1A21A52F01AD77B3B53"
+  },
+  {
+    "path": ".github/instructions/ioc-core.instructions.md",
+    "sha256": "69FB3BF716963521B5CF2ED620E76FCF0493AE88693B578DE6DCD9367EBACA18"
+  },
+  {
+    "path": ".github/instructions/resources.instructions.md",
+    "sha256": "532F6F296AB988F704E3B6B473113885041ABBD50D9BC554DD1DDADD088C4241"
+  },
+  {
+    "path": ".github/instructions/tests.instructions.md",
+    "sha256": "914ACCF42FDD6463600A931B0937F061C2AF4C58B4C389740A287A1781675767"
+  },
+  {
+    "path": ".github/workflows/codeql.yml",
+    "sha256": "B57E769CCAB586C6A590D3F6B7FBAA9207517D3290F530E40E7993680025984A"
+  },
+  {
+    "path": ".github/workflows/publish.yml",
+    "sha256": "11D567A5EB4E5C7943A3388CE5C2FC4ACD577CE77EC811A22124828797443997"
+  },
+  {
+    "path": ".gitignore",
+    "sha256": "48B05908F299A5571EB225A418D48F9CBBA054D7861D78B0032C8D975CA1CCAA"
+  },
+  {
+    "path": "Directory.Build.props",
+    "sha256": "E5A495800255EAB4A24A2C9F588A900ADD2AB05ED1B3A1E8B58BFC194020B874"
+  },
+  {
+    "path": "Directory.Packages.props",
+    "sha256": "AEC04250D6266F3BD8E69864B8E7F6FE1198F4221CD313F1706A95E7C9C8893A"
+  },
+  {
+    "path": "Global.Packages.props",
+    "sha256": "F1FE9E15FF1825EE146AC7780A091D195A8123A4652B306433632E3DE7E11362"
+  },
+  {
+    "path": "LICENSE",
+    "sha256": "13FB48A6C31A72E0E2B69650B1CEBE8954F7B73449848492DCFD22B25BD91AFA"
+  },
+  {
+    "path": "NuGet.Config",
+    "sha256": "C42E8A25671E5B274A1EC7E8E379A26A648DFD382C2E7DBDA86012722ED21B81"
+  },
+  {
+    "path": "README.md",
+    "sha256": "1F5E1FA24AACD3D46E4F4F219B131F3E422D184A60807AA4431F49BA7ED4013E"
+  },
+  {
+    "path": "src/Xtate.IoC/AsyncInitialization/AsyncInit.cs",
+    "sha256": "1F0940EAFEACC00CAF53E72C6E2ED87D9189C4A0B307CCC156356617CBCD3FE9"
+  },
+  {
+    "path": "src/Xtate.IoC/AsyncInitialization/AsyncInitializationHandler.cs",
+    "sha256": "84721930404A6E4C6266D48FD4CE16A42E147C3E50EEEE2C98BADACCD29019D4"
+  },
+  {
+    "path": "src/Xtate.IoC/AsyncInitialization/IAsyncInitialization.cs",
+    "sha256": "A9B82843C4A23B95D4AD5B8CB3B091F26E350340E4DB0B231C209FFA11593476"
+  },
+  {
+    "path": "src/Xtate.IoC/AsyncInitialization/IInitializationHandler.cs",
+    "sha256": "836C5A441D9DD38E3A772CD5563B0C9BDFA5A48E67E5D4E652D13B0B753DE238"
+  },
+  {
+    "path": "src/Xtate.IoC/Exceptions/DependencyInjectionException.cs",
+    "sha256": "FAAD6864670F9A60E20F4E8739E54205525D4B2A703A2746379E84FF3DB7A371"
+  },
+  {
+    "path": "src/Xtate.IoC/Exceptions/MissedServiceException.cs",
+    "sha256": "7AB2357F309D787657470389692809D15F8B491CFE93AD1ADBFE7D48A4A91F22"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Asynchronous/ClassAsyncFactoryProvider.cs",
+    "sha256": "F683C3E6390195CE1463EDB8AAC1FFBC638DB7AE77DC4EFAFC5E4BF0F860A52B"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Asynchronous/DecoratorAsyncFactoryProvider.cs",
+    "sha256": "70494E7D0FB387E562AFAE17F3078ADAD02FD8CA1F3E1AAD622E64A225ADFFC2"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Asynchronous/FactoryAsyncFactoryProvider.cs",
+    "sha256": "9DFFB55E323CD52455579F0FD37D547A22EAAFF28CFCD3583E643BA2481A94F8"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Asynchronous/ForwardAsyncFactoryProvider.cs",
+    "sha256": "4C964EFF8CADB5C8F5BE2E9F32C411C498C10F368852F3AF0798040A43FED8E0"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Asynchronous/ImplementationAsyncFactoryProvider.cs",
+    "sha256": "45AC8E471A8EF33656DF367BC6ADECB0527E1174F65E53385C7DD9AF928BFAE5"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/ClassFactoryProvider.cs",
+    "sha256": "42FF036A188C0039E8FE44497E50AA4AF4B103ABCF6AC05D6E37798C0F874756"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/EnumerableGetterDelegateCreator.cs",
+    "sha256": "C2645B79A5D2D2160E1959726F1FC9AE7CD12B195B4A7B0BAA11DA0B29B482E4"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FactoryProviderBase.cs",
+    "sha256": "B6E77D5BE8785172C3B486446618D821666D8F91BE7C21A176BCE61AF6716168"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FuncArg1GetterDelegateCreator.cs",
+    "sha256": "F95C62A64225E562C6A58E3FAC4F3F1DF973E6BEB521B03B4C2E83DF32EBC187"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FuncArg2GetterDelegateCreator.cs",
+    "sha256": "B285BA16C6F6D5E8FEE5C60942B3AC15141663ED5F801887F8A97DF752C29853"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FuncArg3GetterDelegateCreator.cs",
+    "sha256": "3DE4CA02F0DC3BBC429129E6879CC9932C12841A10B589BF9C37E64B808D0B08"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FuncArg4GetterDelegateCreator.cs",
+    "sha256": "0F7EA2C631C0303E4BDDFA602E9DD1D0D9347DC70DD74201ACC05C41629E518E"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FuncNoArgsGetterDelegateCreator.cs",
+    "sha256": "B6127876F07FBBCDC5AC8C29EB9416B78D5950844308BD77A6BA7F28DC7BB070"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/FuncWithArgsGetterDelegateCreator.cs",
+    "sha256": "E9F391A308D92B39B37A79A57FB1142ED71790434B173EC861FDCFB1D99F2DEA"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Synchronous/ClassSyncFactoryProvider.cs",
+    "sha256": "8AAF4CB7A53604FD7B5CCC790BBECA1EC55AA2B53E2ABCB6DF2AFD532004043B"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Synchronous/DecoratorSyncFactoryProvider.cs",
+    "sha256": "862D73CB537961C07020612208469E688D4E6AF3B2BB28339770AE21D91E950C"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Synchronous/FactorySyncFactoryProvider.cs",
+    "sha256": "1B85F73AFB685843BC775F94044A2BEA61D108E77DD14362272848E501296E6F"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Synchronous/ForwardSyncFactoryProvider.cs",
+    "sha256": "C2B8B213816428DA42A4989CE1665252B8FEFB2FA06665380A70F51E6DCBEC2B"
+  },
+  {
+    "path": "src/Xtate.IoC/FactoryProviders/Synchronous/ImplementationSyncFactoryProvider.cs",
+    "sha256": "2322F8DD6AA2978EA761A286A983F8B738E2500246F37959D518B06421496F25"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/AsyncEnumerable.cs",
+    "sha256": "459E9841E1039A0BD56A40FB40D94C8BB6E73598057362E975C12023887860AE"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/Cache.cs",
+    "sha256": "4BD3968E60829475728B598B81DE47121F6D95FCACB493CE563EE5DCEDE5ACA1"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/CancellationTokenSourceExtensions.cs",
+    "sha256": "1A83B1F5FB6648FDA03FEA0730C5F65F4628F94202EDCF0E3912207BA7ACA15A"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/ConvertHelper.cs",
+    "sha256": "D3D7BEDC7F39D06B0BBF3389ADFA94B48B8B80194440C5B4B3E2D7285D778BA0"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/Disposer.cs",
+    "sha256": "3072B2159E701379259EC76BC72F72CF132ABBB25F28A4A8BA9719E543868D38"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/FuncConverter.cs",
+    "sha256": "7B2D7753FF1F4C4E5C4CDB14096124FC1E93EC25A6E1B0EDF63D4AB5F3174AA1"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/Infra.cs",
+    "sha256": "56DAC876A91F2875C72467CDA8460F5C39F14E4297FF3934DD19EE7A0DFC8CE4"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/NullabilityHelper.cs",
+    "sha256": "CFC2BF7C1546858759DAE2A3D25E3A922C5A656582FB5728E0926CEDEA31D882"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/ObjectDisposedExceptionExtensions.cs",
+    "sha256": "F4C8BAF357BC3C7E5F16F9B04F60B4A1F018F1E351ABF929682C8CAF89785E85"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/OptionExtensions.cs",
+    "sha256": "4D8B67C02DFF72961B63C5984CFA3FEB09CD877391BDC14CFD41FD8B27BA4433"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/ResourcesExtensions.cs",
+    "sha256": "DB42784B2920682BBD55406DB3429BCE734A420BD9F92B5020BF3481AFC4EF35"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/TaskCompletionSource.cs",
+    "sha256": "6A8CC9C3E0855E5C15793BEA40F983A16B9C188577A6BBD110EDBDD140436A77"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/TupleHelper.cs",
+    "sha256": "441FC74AC2C7EE5C6D040E77EBD946F8ECD4620584A6B459FFD1F2E3A7EDE5EC"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/TypeHelper.cs",
+    "sha256": "4894176E5A5F835543509DE3A478794120D7068C0FDBF38413A5661D5FE6EDAC"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/UnscopedRefAttribute.cs",
+    "sha256": "A546F85BB63804EB429516F2E27B92F38ED9B393D0D8CE3633F80F0E9BDD6C6A"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/ValueTaskExtensions.cs",
+    "sha256": "28C9E6F32A14E810C5E4E6D0C0F9639B589900BCE78AACB7D31E27315EF9756D"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/WeakGCHandle.cs",
+    "sha256": "53E0EF2EBEA4A6BE09EA8DCC5A2E86062AAC76B59944AE4CE95C3226F3EEC518"
+  },
+  {
+    "path": "src/Xtate.IoC/Helpers/WeakReferenceSet.cs",
+    "sha256": "40D99FE883D973240D5976B63925AA217242D913E31C99A535AE40114198FC05"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/ForwardingImplementationEntry.cs",
+    "sha256": "620B17DF76B3896D05BD4A805D0D18AF4CFC7B9227BA9F0A3AF4B1188C62652F"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/ImplementationEntry.cs",
+    "sha256": "CA98B453524220D1994D0537AD3F5A6EA4B92ABB6CA18435C2D4F4C5301352D2"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/ScopedImplementationEntry.cs",
+    "sha256": "B96F315CF83F2C85175B981BAC86675469B66A546BAAABD5C5E6FE35126A11E7"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/ScopedOwnerImplementationEntry.cs",
+    "sha256": "69B526521CA225A375589BD3AC58D72827C5FEE80783EC685530946A1650D0D1"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/SingletonImplementationEntry.cs",
+    "sha256": "E1C2E6844FBD6F290BF2886D761CA07275005F34AA81A2ECB4424822D036D0CE"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/SingletonOwnerImplementationEntry.cs",
+    "sha256": "869EE52349978E4C8CABF8A11FF52FEE0EEAF5EFC2820977CFE115F4FE5A04BA"
+  },
+  {
+    "path": "src/Xtate.IoC/ImplementationEntry/TransientImplementationEntry.cs",
+    "sha256": "54D1D05485B46D416A4361BB5C2C2FDA8A33A6E569D01AB89389C5D065A11641"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/ActionsContext.cs",
+    "sha256": "7793FB6168C468FB616961D0F13ED2063774DCB8AF63E3FC50F9F0C2FB87EA66"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/ActionsEventType.cs",
+    "sha256": "03B83C76A2843569B368BB89C23E4F351D240DA0B106519F90B871D6E1F9C934"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/DataActionsContext.cs",
+    "sha256": "337B2BF5E071A9D6D5AAB67ABE8E27D406AEBFE0830694543CE67BFFD9E3D7A4"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IModule.cs",
+    "sha256": "6364A1A411C1024D72780B3489375C1E307CCF935FD3B308442DDAE504A25B13"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IServiceCollection.cs",
+    "sha256": "85C87AB25CFE72AE5781AD892C32F447BDC603EF93A6C0973712452482717389"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IServiceProvider.cs",
+    "sha256": "AD4DC98368E011161F24C632B0FE539B4F04E8E1B06BA36CD66414A16DB53D31"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IServiceProviderActions.cs",
+    "sha256": "E07BD6F20B32A20FE56C9272622F9971B357F39EFC0DA908785C936799F9ED7F"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IServiceProviderDataActions.cs",
+    "sha256": "E0FEE4C102D19ABA9EA2C085B6AD7F509528D3D80A7C6BA3156A757C74094849"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IServiceScope.cs",
+    "sha256": "B33C8ADBCD8B10CF31D5A6FB536847A24FB1EE8AC4B8832ED074F810D3A70F32"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IServiceScopeFactory.cs",
+    "sha256": "EE5AF0012931937E48DFA4BD5A0C91B9629B593B3ADD027E34AFBE634BD16C2E"
+  },
+  {
+    "path": "src/Xtate.IoC/Interfaces/IStub.cs",
+    "sha256": "3EAE909AD105FC9236A813688EAA722B5B6A77150726679B5F65ACC97884F4E2"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/Any.cs",
+    "sha256": "8B42DD84397275D3D951F9CD74C5135CE92032BF7B8D2F628A9FC8DA6D4BE86E"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ArgumentType.cs",
+    "sha256": "73985748F6CB044D2C62377CB8D383A3CFC24DAFA47B23B16BB8DA534107DE68"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/Container.cs",
+    "sha256": "2E549EF0B03A9630B43161C8D7DA60432B3C3DA4FCD6F3EB42B4317C36E17000"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/DecoratorImplementation.cs",
+    "sha256": "4F08D841549E2A42F125A93F38C7ED8C49F5BF8236486AD9490D7AC74DF8842E"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/DelegateFactory.cs",
+    "sha256": "1DDFDF254D6672BBE0C1F6CDE54ABBE54BC7691DB9E9CC3BC339E209A947156F"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/FactoryImplementation.cs",
+    "sha256": "D1BF51EC1BDE8B2A2321C773FBD302218ED6EB05965F25A6BA3FF2924B3C6EE8"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ImplementationType.cs",
+    "sha256": "2C518DFFE461DA45C8B5D4D33A27B9334ED912689A6A8CB23F1C893F3D547267"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/InstanceScope.cs",
+    "sha256": "89977889BEC04514BCB05221A2EB5E42F54E8378D282DF033FF9B29E13938BC2"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/Module.cs",
+    "sha256": "BE4B4501E202B1DDC736DA9DDB64B3D9B18CB4C406D42573CB59F04D9AA727E1"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ObjectsBin.cs",
+    "sha256": "5FE2B45E5B8B8907B8080C8A5C90E3769F3F0EEC2F5E31AA22DD7B123801345E"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/Option.cs",
+    "sha256": "8288649A84816E81EAA2D468A60C36090E09A36F6539164C808736FC8DEFB10F"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollection.cs",
+    "sha256": "DDDAC5CD52C6B18250B522E29B4E0C0059C8707EABCE28307E30C4FAB918AD57"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollectionArg0Extensions.cs",
+    "sha256": "F5366B768AA515C88E4F720B8AA2679D63DF97B5A5CB1E874C54907D6B5E3F50"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollectionArg1Extensions.cs",
+    "sha256": "938F940D6FE6D73BE1A3DA4C525B5E0E243B840C0F239D7746B38BD451BD1E8F"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollectionArg2Extensions.cs",
+    "sha256": "02D10E4BC96771D488F3AD9298F919126225E0E52D1D796DCA1EC0A681ADEAD0"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollectionArg3Extensions.cs",
+    "sha256": "4CB24FA8C9FE22248EE08F11710A20ADF0D6832C10E4CF87A862855860979816"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollectionArg4Extensions.cs",
+    "sha256": "93F36C28DCA65D5BF31174284FD715A2E28C90F6FAB24D9893D89859FA3BE8E8"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceCollectionExtensions.cs",
+    "sha256": "9B94E37FF123AB0A93AE0E4F7F80526F5855084DB02ED501E6D3AB68301212A5"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceEntry.cs",
+    "sha256": "5EAEF6D15B713EC48C899294D5A2F4CB0FB970BBA95BBC09E5DAF2EBE8519488"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceImplementation.cs",
+    "sha256": "FE91560941E88614FB39DD88F323216733B4FFE5D2DF202FCB5F80815B3CC29A"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProvider.cs",
+    "sha256": "EF0EB87C89EE27C4E1EE3209B8E05E9754897FB8DA81989AC6C519A1B9A1D88D"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderArg0Extensions.cs",
+    "sha256": "82CD991B2F325B17BC2B6DC3ABD8859E8D30B4E45D9E465DFAB06CAF961E6DD3"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderArg1Extensions.cs",
+    "sha256": "1C98716EFA4E2DB945BEC0F602BEC5D882B2BF8E3E69645037B25BFEB839A0D7"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderArg2Extensions.cs",
+    "sha256": "A40F8E2C6711E8E0852339128E25629978B1403106729AB116FC619B801EB141"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderArg3Extensions.cs",
+    "sha256": "63EF1B72CE3280C88D41562D124A8F2DF9D6998B6FA9746C52CD215D3C2672DB"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderArg4Extensions.cs",
+    "sha256": "5E7F52B84E9179422E78FB842B4A29F9DC613F83898A485CCE956C388332D60C"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderDebugger.cs",
+    "sha256": "A6CDEE5156C0D0664D246682A78439ABDFE5CD9D553FB83521910F3BB225F357"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderExtensions.cs",
+    "sha256": "02E9ED5ECE0E8D8BA725257E3EAB46B71DEDA61DBDC8F590BB23CF3390F88388"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceProviderScope.cs",
+    "sha256": "F1DAEF2801912E61084D9C245DA20AE95C71DCFC15BDD886E9D4F491E58341C6"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/ServiceType.cs",
+    "sha256": "9848E5EB08BBA3AD8E5D3D63B3DC7029F58F7EF4A36B7EBB45BDF2688406FB1E"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/SharedObjectsBin.cs",
+    "sha256": "D41A5D1B049EF6ED71074C9E6B23840222B656047027647D3BDB73A2D32BDB01"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/SharedWithin.cs",
+    "sha256": "7A66AF40BB1BB92B3C16FD85FF63AB92BA19C58294567A7A2BF233FEDE94DA2A"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/StubType.cs",
+    "sha256": "04CB7BF93553273A92EBB63FD16F66D8796710CBA2F72DCFB5F6E778C38C2065"
+  },
+  {
+    "path": "src/Xtate.IoC/IoC/TypeKey.cs",
+    "sha256": "91CB5D1B0453B5CCD82971EC4A704198609C5F96A4F663FFB98C287CC705C444"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/GlobalUsings.cs",
+    "sha256": "B9907B636454BD1A64D98751FF2D0D344753EDB6133C810C3B2608963168B25C"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.de.resx",
+    "sha256": "E46C893D106ECED7EB24E130897D6A1061A3E73E2EF4140A7431BC4464BA5C2D"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.Designer.cs",
+    "sha256": "ABFCFB0223733D4D62E293A21161E233E24C1E75F3A4D618617AEE9C52AAC345"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.es.resx",
+    "sha256": "7E1F97AB102664C3339DCF3D2DBD37FD4049F694FB9DD79053440E09F38BEDD6"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.fr.resx",
+    "sha256": "C5DDA65BDC7669D43A764A87FD6891931873CA5172D6BFD21F12873EB92198CD"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.pl.resx",
+    "sha256": "091251A04AB0C291367C49F4FFBB6840A10AB6EFFF1987A9898431665749BB38"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.resx",
+    "sha256": "05DD2827EA9B1D1A41BD1269C5C59914DF312DFFB82CC73BDCE39B47AFE67AD5"
+  },
+  {
+    "path": "src/Xtate.IoC/Properties/Resources.uk.resx",
+    "sha256": "583D389E55F6D8D31AACB236E105B7E08321DCE96EB1A968A9BBC66960EFD605"
+  },
+  {
+    "path": "src/Xtate.IoC/Xtate.IoC.csproj",
+    "sha256": "F61E693C48A7E21544B3CAFFA3333FCD625D75A5D4EF92ACB8D1EBE7DFE64160"
+  },
+  {
+    "path": "src/Xtate.IoC/Xtate.IoC.csproj.DotSettings",
+    "sha256": "502A07E28548995E1CEBC8BF25EDBF06D53AB166EA22AA832AD9C4218A39E4FC"
+  },
+  {
+    "path": "test/Xtate.IoC.Benchmark/Benchmarks.cs",
+    "sha256": "54B149DC0D24D9937CC7805FE711C29DCC822C89BF3ADD319786BE11844BB01F"
+  },
+  {
+    "path": "test/Xtate.IoC.Benchmark/Program.cs",
+    "sha256": "058F612EFBC996D2317A1E0F8DB5F922F8541252233E85A9559ED6D5D608F477"
+  },
+  {
+    "path": "test/Xtate.IoC.Benchmark/Xtate.IoC.Benchmark.csproj",
+    "sha256": "05927DB6400569700A3CBC0A1A7576B35E9B90F84B557C24F323DC0B2A739B8A"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/ArgServiceExample.cs",
+    "sha256": "36A698EE1409811689857119122D90267EDE4819931175CCBB9D9AA66BDE8D68"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/AsyncInitializationExample.cs",
+    "sha256": "6F60B5BD5E110F5BE8280655C8EBD4D35B17A8D879C4E55336AEE9346B3E4031"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/BasicRegistrationExample.cs",
+    "sha256": "62591E3A5A4BADF0B04702129C79DE0E95E3A9B70E81AC80A430A8965362049A"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/DecoratorExample.cs",
+    "sha256": "4B91DF09F8F61C3A70AC22248F2330B7A5D16AE5C11717686D938A1C77CBF349"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/DependencyInjectionPatternsExample.cs",
+    "sha256": "5C40F6C5629B090C1CE9E77DB3C8930B96A5D685C7CB60DFF8C20B9AFE434137"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/DisposalBehaviorExample.cs",
+    "sha256": "5D5115A618B8C9D3444666ED07DD901B350A94DC92E2BF563DF2DAA10F02A3A2"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/FactoryDelegateInjectionExample.cs",
+    "sha256": "1EC7A13323F4AC65276EB74FD9740F94304AAF7C0397C9E5E657370084422392"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/FactoryRegistrationExample.cs",
+    "sha256": "5B0E0DF00429ECC708B2433ECB07B24C8E8D3A5CC05DCC65D666614B1EE1F6BB"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/GenericLoggingExample.cs",
+    "sha256": "65E05B2D22498CD3517CE77BD930528576A2AFA740BFE153B67DE06697719E3C"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/InstanceScopesExample.cs",
+    "sha256": "172B01EE74DFC57D38CD59D892F543BF4381F21B79A87CFD2CA2F8069218A398"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/MultipleServicesEnumerationExample.cs",
+    "sha256": "5FA653469814DB1D76A5A1F4E7EE0AA034B07785058FE81D9AAD83906D7EA510"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Examples/SyncVsAsyncServicesExample.cs",
+    "sha256": "CDFEC85F8980157A11E181FAE3FA2FC451749837C876353F2A4DC3239E8057AE"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/GlobalUsings.cs",
+    "sha256": "F1B1320ADA4D213C6555B5DF3AE46DCC3AAAF9A06CC212747FD45FB7BE976FC3"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/ParallelizeAttribute.cs",
+    "sha256": "6277638D5E62355438529782E98654A7EEE1710A6DA96B004D9AECF29E057469"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/AncestorTest.cs",
+    "sha256": "63558162D3DC2E673FF3838ABC44BCE8A5C40BA2325AA0E2EA9DE39A15237148"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ArgumentTypeTest.cs",
+    "sha256": "8D38ECD5BBB19BB849CC67D70EC05A9F30BBB5EFDF7E5C6D384BB628BB50701D"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/AsyncInitializationHandlerTest.cs",
+    "sha256": "40C6032730E7BECC451541ACF55DFC02606699A676878D69170C8D5FFA64C5F9"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/AsyncInitTest.cs",
+    "sha256": "20FD1B9A792EF01CDAE5A0A044096E10663CB5657D6F59934BF6EFE0EB305522"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/AsyncTest.cs",
+    "sha256": "6F80F388179E1DAD5692FCD07E1681E40E3C8385A18F221C22926F5E6413F4F0"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/CacheTest.cs",
+    "sha256": "1D9E0ADA2B826DBE17F333497510A7A120655D74A1C23DAE85A42C6ECBA369C0"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/CancellationTokenSourceExtensionsTest.cs",
+    "sha256": "2C145FD8DDAFDAA2C4BC6920A0BFD68C61F16392D3C3BFD595E0120D097A6ECB"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/CustomInitTest.cs",
+    "sha256": "2A4957569A4AD253074B25B41AAAA79F3468382A8B5D722EE0C31EE2D7CE1835"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/DataActionsContextCoverageTest.cs",
+    "sha256": "C4DAEADDFA090FC35D7FFE99564308930027DD2262E0904023A71513AB92D98F"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/DiRecursionTest.cs",
+    "sha256": "8EE51D4F53FD4A9DA58C8393E8EECA5FDB48C99712F64363A55D5B37FCD3C068"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/DisposerTest.cs",
+    "sha256": "CE59FF12A7EB19890CB7448919F66D1765C61573FAACE24D51C6097821966A85"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/DiTest.cs",
+    "sha256": "4519B8490033E39891D74A4B40BE058D6D0394A7064C67FAC75E473D25E68F8D"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/DiTest2.cs",
+    "sha256": "272573A76E0B9812377B3E84B3831A243ED7FE44F767C3E3FE690F7AAF79399E"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ExceptionsTest.cs",
+    "sha256": "088D53F883AD349EA0D907F7B8C276E67BC0843C7A788F8D0E27FEF0E187207B"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/FactoryImplementationTest.cs",
+    "sha256": "159DCB31722E910BA77C8C9ACFDB0E9E6A9E3F2C54D7A41E5457B25988E58381"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/FactoryProviderTest.cs",
+    "sha256": "D0102B6FCC74084AF54F3E6A081852E663781900C03139C344AB9AC53596D7D0"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/FriendlyTypeTest.cs",
+    "sha256": "661A461AC5C7BC0F401065AC7324AB21FB138FD17E76A6E0712742AF50DE9B80"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/FuncConverterTest.cs",
+    "sha256": "874B2ABC009D2A5A4411653916B991A4184BDB5AA1950CB56C2270D0FB27F9A6"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/GenericParamTypeTest.cs",
+    "sha256": "99C9BC0E02EBF5757E19647F630841301479E07A21EB5673F7F2B212615E76AA"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/HelpersTest.cs",
+    "sha256": "8E500EAA47B860DE926F45ED8EB163BE0A4B758BE86770E6B23B3DE961BCB09B"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ImplementationEntryTest.cs",
+    "sha256": "1812437337D8C5A527113E71B4B2CB78AA6207BE922A4260DC6630DA84B01DB6"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ImplementationTypeTest.cs",
+    "sha256": "DF793104DA7C4B25B1395C8A41F74B0CE3431DB120988D209C9B2B7A3304CAFC"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/InfraTest.cs",
+    "sha256": "E12109F2C1EE18DB25DC96E9618E200E3D1225ED4330357944C457C797BB7473"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/MissedServiceExceptionTest.cs",
+    "sha256": "D76774E7B4C5FEC920FA8DE29BFA6069BE1C473362B76ADE5265B48F6BD22A23"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ModuleTest.cs",
+    "sha256": "5B66F32CAD52C5A9ED8B61CAFCBAECE5C10F72B8EAF2AC2D9CFB78A5659036B0"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/NullabilityHelperTest.cs",
+    "sha256": "BFA267D8155BB10689E83C6154B2DB78BBE41F02726FC59AC36452589BBA5B7E"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ObjectsBinTest.cs",
+    "sha256": "408FA231E17FADF2C0B23FF83EE91B7EB372F2E84379B81A4207020078250CCB"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/OptionExtensionsTest.cs",
+    "sha256": "80D6BFD5F7339BF8D9F7831C0AA4EB25561636910BCF01FC035D6623FF80295F"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/RequiredPropertyTest.cs",
+    "sha256": "AFAF244C6BD65E8F2285A02FA8F0AD2301A5E4B5558F6A63D206217CC04679D3"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ResourcesLocalizationTest.cs",
+    "sha256": "E8BF35CB8E041A239F9D06730EB425E378C3A78E45855395BE8121BD65C91FE2"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ResourcesThreadCultureTest.cs",
+    "sha256": "B79186C8819C056104F5103EAFF147D067136ED4EDBFEA4C815D12411974BBEF"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ScopeTest.cs",
+    "sha256": "86ED0097A068564CD658993F1490541029BFF9A28A4EBAAF4629BA537E1750A0"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceCollectionExtensionsTest.cs",
+    "sha256": "86E99F70EAC1F345DF86CC801DC1E329306DA75031B73BC9394ED21F7B8ADDCD"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceCollectionTest.cs",
+    "sha256": "B1A74FF88B3DB73FBD26AEA6D8E91D1FF63911058B8FA8A5BEEF64FD7653A9BB"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceImplementationTest.cs",
+    "sha256": "15F3BA95404FFB2E2F69D6546EC450FC9F618DB4051980DD8DDD6871E814D99E"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceProviderActionsTest.cs",
+    "sha256": "B72B01A692A997276D91B40C464A7805535BE2AEA917C221F830D0BF928DFD76"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceProviderDebuggerTest.cs",
+    "sha256": "4A2BEE999BEB17D93D81C16CC5E36F986A3B0C14BCD1AFA2AEDA2F45FE4E254A"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceProviderExtensionsTest.cs",
+    "sha256": "E3C0CFB035E9B81D388F17C5A432A331F7025D62CBAB7D2DF02016F028B31BEC"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceProviderTest.cs",
+    "sha256": "130D81491BC386F283963443BDA0BD186078FB5F1A40519A9C1F3B1C358F7EB7"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ServiceTypeTest.cs",
+    "sha256": "64230F0AB4E38A8EEE15DF18C3739CAA07F2963E6DFEB9F64B7BD6A0AA3D1482"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/StubTypeTest.cs",
+    "sha256": "B1717F921765AC4D65413F198F5ACACB7F22DC4146F36673E5CB20BB7D0C68BF"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/TupleHelperTest.cs",
+    "sha256": "108D0731593C6DAD1E7DEA18FAD7DF3130210394F9860E27F9B6F062F72AC0A2"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/TypeKeyTest.cs",
+    "sha256": "2FF91D78002FA795F00E765D9C2B2CB396481BC30049D36062D648B3D74D8027"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/ValueTypeTest.cs",
+    "sha256": "16DEC6FA8FC8C579DE4D06B7C980337D4465A0C721DDE5D714D7611E288E75B4"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/WeakGCHandleTest.cs",
+    "sha256": "D533186C887523932E4124ACEFFC85B215E3827C47CBB19076BB1570EBB9C94C"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Tests/WeakReferenceSetTest.cs",
+    "sha256": "DFEFFAAC1176BBA5B6B00434E42475790E6C40255D93A11296D9DD8958A6BDB1"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Xtate.IoC.Test.csproj",
+    "sha256": "C9A0D2FFE0DFE44B7E13372741EE79F911E8EAFDDD87BE78FC9A049092DED2EA"
+  },
+  {
+    "path": "test/Xtate.IoC.Test/Xtate.IoC.Test.csproj.DotSettings",
+    "sha256": "031E6C6772E4CF6FD50F4C886F9B8DBFB317EA0721BBBFAFFCB442ED1AD90441"
+  },
+  {
+    "path": "Version.props",
+    "sha256": "A21729577BF4ACD2DE437369CDA4C4664467FCD428657A765387EF6797E13A7A"
+  },
+  {
+    "path": "Xtate.IoC.sln",
+    "sha256": "3BE76A8FABD99B5482FEEEF9F441EA1D2FCCA51EB0F9925456D7CE4E6DB7209C"
+  },
+  {
+    "path": "Xtate.IoC.sln.DotSettings",
+    "sha256": "2D1281968B9F14E3EBB8125B896081442843236107DA43EA619CD7DC9BA1A842"
+  }
+]

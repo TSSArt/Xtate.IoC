@@ -1,0 +1,460 @@
+[
+  {
+    "criterion": "C01",
+    "applicable": 116,
+    "compliant": 112,
+    "deviation": 4,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-002",
+      "CONS-013",
+      "CONS-014"
+    ]
+  },
+  {
+    "criterion": "C02",
+    "applicable": 95,
+    "compliant": 95,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 1,
+    "tasks": []
+  },
+  {
+    "criterion": "C03",
+    "applicable": 90,
+    "compliant": 90,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 6,
+    "tasks": []
+  },
+  {
+    "criterion": "C04",
+    "applicable": 90,
+    "compliant": 90,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 6,
+    "tasks": []
+  },
+  {
+    "criterion": "C05",
+    "applicable": 96,
+    "compliant": 96,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C07",
+    "applicable": 158,
+    "compliant": 158,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C08",
+    "applicable": 158,
+    "compliant": 148,
+    "deviation": 0,
+    "exceptions": 10,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C09",
+    "applicable": 17,
+    "compliant": 17,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 79,
+    "tasks": []
+  },
+  {
+    "criterion": "C10",
+    "applicable": 96,
+    "compliant": 96,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C12",
+    "applicable": 13,
+    "compliant": 12,
+    "deviation": 0,
+    "exceptions": 1,
+    "unreviewed": 0,
+    "not_applicable": 83,
+    "tasks": []
+  },
+  {
+    "criterion": "C14",
+    "applicable": 96,
+    "compliant": 96,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C16",
+    "applicable": 9,
+    "compliant": 9,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 87,
+    "tasks": []
+  },
+  {
+    "criterion": "C17",
+    "applicable": 95,
+    "compliant": 95,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 1,
+    "tasks": []
+  },
+  {
+    "criterion": "C18",
+    "applicable": 8,
+    "compliant": 8,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 7,
+    "tasks": []
+  },
+  {
+    "criterion": "C19",
+    "applicable": 96,
+    "compliant": 96,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C20",
+    "applicable": 23,
+    "compliant": 21,
+    "deviation": 2,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 73,
+    "tasks": [
+      "CONS-001"
+    ]
+  },
+  {
+    "criterion": "C21",
+    "applicable": 15,
+    "compliant": 15,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 81,
+    "tasks": []
+  },
+  {
+    "criterion": "C22",
+    "applicable": 96,
+    "compliant": 96,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C23",
+    "applicable": 151,
+    "compliant": 149,
+    "deviation": 2,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 7,
+    "tasks": [
+      "CONS-016"
+    ]
+  },
+  {
+    "criterion": "C24",
+    "applicable": 90,
+    "compliant": 90,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 6,
+    "tasks": []
+  },
+  {
+    "criterion": "C25",
+    "applicable": 32,
+    "compliant": 32,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 64,
+    "tasks": []
+  },
+  {
+    "criterion": "C26",
+    "applicable": 95,
+    "compliant": 95,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 1,
+    "tasks": []
+  },
+  {
+    "criterion": "C27",
+    "applicable": 87,
+    "compliant": 87,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 9,
+    "tasks": []
+  },
+  {
+    "criterion": "C28",
+    "applicable": 96,
+    "compliant": 96,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C29",
+    "applicable": 96,
+    "compliant": 95,
+    "deviation": 1,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-012"
+    ]
+  },
+  {
+    "criterion": "C30",
+    "applicable": 90,
+    "compliant": 90,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 6,
+    "tasks": []
+  },
+  {
+    "criterion": "C31",
+    "applicable": 90,
+    "compliant": 90,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 6,
+    "tasks": []
+  },
+  {
+    "criterion": "C32",
+    "applicable": 60,
+    "compliant": 58,
+    "deviation": 0,
+    "exceptions": 2,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C33",
+    "applicable": 58,
+    "compliant": 51,
+    "deviation": 3,
+    "exceptions": 4,
+    "unreviewed": 0,
+    "not_applicable": 2,
+    "tasks": [
+      "CONS-003",
+      "CONS-015"
+    ]
+  },
+  {
+    "criterion": "C34",
+    "applicable": 60,
+    "compliant": 60,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C35",
+    "applicable": 58,
+    "compliant": 50,
+    "deviation": 4,
+    "exceptions": 4,
+    "unreviewed": 0,
+    "not_applicable": 2,
+    "tasks": [
+      "CONS-003",
+      "CONS-012",
+      "CONS-015"
+    ]
+  },
+  {
+    "criterion": "C37",
+    "applicable": 96,
+    "compliant": 94,
+    "deviation": 2,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-014"
+    ]
+  },
+  {
+    "criterion": "C38",
+    "applicable": 17,
+    "compliant": 14,
+    "deviation": 3,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-004",
+      "CONS-013"
+    ]
+  },
+  {
+    "criterion": "C39",
+    "applicable": 158,
+    "compliant": 94,
+    "deviation": 0,
+    "exceptions": 64,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C40",
+    "applicable": 158,
+    "compliant": 158,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C41",
+    "applicable": 158,
+    "compliant": 158,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C42",
+    "applicable": 15,
+    "compliant": 15,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C43",
+    "applicable": 173,
+    "compliant": 154,
+    "deviation": 19,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-017"
+    ]
+  },
+  {
+    "criterion": "C44",
+    "applicable": 8,
+    "compliant": 8,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 7,
+    "tasks": []
+  },
+  {
+    "criterion": "C47",
+    "applicable": 96,
+    "compliant": 94,
+    "deviation": 1,
+    "exceptions": 1,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-012"
+    ]
+  },
+  {
+    "criterion": "C48",
+    "applicable": 9,
+    "compliant": 8,
+    "deviation": 1,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": [
+      "CONS-002"
+    ]
+  },
+  {
+    "criterion": "C49",
+    "applicable": 63,
+    "compliant": 63,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  },
+  {
+    "criterion": "C50",
+    "applicable": 98,
+    "compliant": 98,
+    "deviation": 0,
+    "exceptions": 0,
+    "unreviewed": 0,
+    "not_applicable": 0,
+    "tasks": []
+  }
+]

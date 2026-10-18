@@ -67,7 +67,7 @@ internal static class ResourcesExtensions
 		/// <param name="type">The service type that requires the argument.</param>
 		/// <param name="argType">The type of the missing argument.</param>
 		/// <returns>A localized error message.</returns>
-		public static string Exception_ServiceArgMissedInContainer(Type type, ArgumentType argType) => Format(Resources.Exception_ServiceMissedInContainer, type.FriendlyName, argType);
+		public static string Exception_ServiceArgMissedInContainer(Type type, ArgumentType argType) => Format(Resources.Exception_ServiceArgMissedInContainer, type.FriendlyName, argType);
 
 		/// <summary>
 		///     Creates an error message indicating that a value of type <paramref name="fromType" /> cannot be cast to

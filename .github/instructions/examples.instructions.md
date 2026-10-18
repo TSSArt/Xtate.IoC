@@ -11,7 +11,7 @@ Executable documentation examples that show intended public API usage patterns.
 ## Follow existing patterns
 
 - Keep examples minimal and readable: one feature focus per example class.
-- Preserve `Xtate.IoC.Examples` namespace and narrative comments that explain the scenario.
+- Preserve `Xtate.IoC.Test.Examples` namespace and narrative comments that explain the scenario.
 - Use real assertions so examples remain executable tests, not pseudo-code.
 
 ## Implementation rules

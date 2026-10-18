@@ -54,7 +54,7 @@ public abstract class AsyncInit
 	/// <exception cref="InvalidOperationException">The object has not been initialized.</exception>
 	protected void ThrowIfNotInitialized()
 	{
-		if (_tcs is not null)
+		if (Volatile.Read(ref _tcs) is not null)
 		{
 			throw new InvalidOperationException(Resources.Exception_ObjectMustBeInitialized);
 		}
@@ -72,7 +72,7 @@ public abstract class AsyncInit
 	{
 		while (true)
 		{
-			if (_tcs is not { } tcs)
+			if (Volatile.Read(ref _tcs) is not { } tcs)
 			{
 				return Task.CompletedTask;
 			}
@@ -125,12 +125,45 @@ public abstract class AsyncInit
 
 			Infra.Assert(tcs is not null && tcs != Waiting);
 
-			if (Interlocked.CompareExchange(ref _tcs, value: null, tcs) == tcs)
+			if (Interlocked.CompareExchange(ref _tcs, value: null, tcs) != tcs)
 			{
-				tcs.SetResult();
-
-				return;
+				continue;
 			}
+
+			tcs.SetResult();
+
+			return;
+		}
+	}
+
+	/// <summary>
+	///     Marks the initialization as failed and signals any waiting tasks with the provided exception.
+	///     This method uses lock-free interlocked operations to ensure thread-safety.
+	/// </summary>
+	/// <param name="exception">The exception that caused the initialization to fail.</param>
+	private protected void Failure(Exception exception)
+	{
+		TaskCompletionSource? failedTcs = null;
+
+		while (true)
+		{
+			var tcs = _tcs;
+
+			if (tcs == Running)
+			{
+				tcs = failedTcs ??= new TaskCompletionSource();
+
+				if (Interlocked.CompareExchange(ref _tcs, failedTcs, Running) != Running)
+				{
+					continue;
+				}
+			}
+
+			Infra.Assert(tcs is not null && tcs != Waiting);
+
+			tcs.SetException(exception);
+
+			return;
 		}
 	}
 
@@ -337,7 +370,18 @@ public class AsyncInit<T>(Func<T, ValueTask> initAction) : AsyncInit.Base<T>
 {
 	protected override ValueTask InitAction(T instance)
 	{
-		var valueTask = initAction(instance);
+		ValueTask valueTask;
+
+		try
+		{
+			valueTask = initAction(instance);
+		}
+		catch (Exception ex)
+		{
+			Failure(ex);
+
+			return ValueTask.FromException(ex);
+		}
 
 		if (!valueTask.IsCompletedSuccessfully)
 		{
@@ -351,9 +395,18 @@ public class AsyncInit<T>(Func<T, ValueTask> initAction) : AsyncInit.Base<T>
 
 	private async ValueTask InitActionWait(ValueTask valueTask)
 	{
-		await valueTask.ConfigureAwait(false);
+		try
+		{
+			await valueTask.ConfigureAwait(false);
 
-		Complete();
+			Complete();
+		}
+		catch (Exception ex)
+		{
+			Failure(ex);
+
+			throw;
+		}
 	}
 
 	public void EnsureInitialized() => ThrowIfNotInitialized();
@@ -377,7 +430,18 @@ public class AsyncInit<T, TResult>(Func<T, ValueTask<TResult>> initAction) : Asy
 
 	protected override ValueTask InitAction(T instance)
 	{
-		var valueTask = initAction(instance);
+		ValueTask<TResult> valueTask;
+
+		try
+		{
+			valueTask = initAction(instance);
+		}
+		catch (Exception ex)
+		{
+			Failure(ex);
+
+			return ValueTask.FromException(ex);
+		}
 
 		if (!valueTask.IsCompletedSuccessfully)
 		{
@@ -393,8 +457,17 @@ public class AsyncInit<T, TResult>(Func<T, ValueTask<TResult>> initAction) : Asy
 
 	private async ValueTask InitActionWait(ValueTask<TResult> valueTask)
 	{
-		_value = await valueTask.ConfigureAwait(false);
+		try
+		{
+			_value = await valueTask.ConfigureAwait(false);
 
-		Complete();
+			Complete();
+		}
+		catch (Exception ex)
+		{
+			Failure(ex);
+
+			throw;
+		}
 	}
 }

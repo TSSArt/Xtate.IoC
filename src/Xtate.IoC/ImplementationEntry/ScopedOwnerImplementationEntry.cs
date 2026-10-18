@@ -27,13 +27,13 @@ namespace Xtate.IoC;
 ///     </para>
 ///     <para>
 ///         Thread-safety: Instances of this type are used concurrently. Registration into
-///         <see cref="ObjectsBin" /> is performed using its thread-safe API.
+///         <see cref="ObjectsBin" /> supports concurrent additions; additions racing disposal have best-effort cleanup.
 ///     </para>
 /// </summary>
 public class ScopedOwnerImplementationEntry : ScopedImplementationEntry
 {
 	/// <summary>
-	///     Bin that tracks created transient instances for disposal when the owning <see cref="ServiceProvider" /> is
+	///     Bin that tracks created scoped instances for disposal when the owning <see cref="ServiceProvider" /> is
 	///     disposed.
 	/// </summary>
 	/// <remarks>

@@ -230,60 +230,69 @@ public class ImplementationTypeTest
 		Assert.ThrowsExactly<DependencyInjectionException>([ExcludeFromCodeCoverage]() => implType.GetMethodInfo<IService<string>, int>(false));
 	}
 
-	// ReSharper disable All
-	public interface IInterface { }
+	// Public fixtures are constructed through container reflection, including members unused by direct calls.
+	// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
+	public interface IInterface;
 
-	public class BaseBaseService<T> { }
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public class BaseBaseService<T>;
 
-	public class BaseService<T> : BaseBaseService<T> { }
+	public class BaseService<T> : BaseBaseService<T>;
 
-	public class Service<T> : BaseService<T>, IService2<T>, IService<T> { }
+	public class Service<T> : BaseService<T>, IService2<T>, IService<T>;
 
-	public interface IService<T> { }
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public interface IService<T>;
 
-	public interface IService2<T> { }
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public interface IService2<T>;
 
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
 	public class Factory<T>
 	{
 		[ExcludeFromCodeCoverage]
-		public IService<int> M1() => default!;
+		public IService<int> M1() => null!;
 
 		[ExcludeFromCodeCoverage]
-		public IService<string> M2(ref int _) => default!;
+		public IService<string> M2(ref int _) => null!;
 	}
 
 	public class FactoryObsolete
 	{
 		[ExcludeFromCodeCoverage]
 		[Obsolete("For test")]
-		public IService<int> M1() => default!;
+		public IService<int> M1() => null!;
 
 		[ExcludeFromCodeCoverage]
 		[Obsolete("For test")]
-		public IService<int> M2() => default!;
+		public IService<int> M2() => null!;
 
 		[ExcludeFromCodeCoverage]
-		public IService<int> M3() => default!;
+		public IService<int> M3() => null!;
 	}
 
 	public class FactoryMultiActual
 	{
 		[ExcludeFromCodeCoverage]
 		[Obsolete("For test")]
-		public IService<int> M1() => default!;
+		public IService<int> M1() => null!;
 
 		[ExcludeFromCodeCoverage]
-		public IService<int> M2() => default!;
+		public IService<int> M2() => null!;
 
 		[ExcludeFromCodeCoverage]
-		public IService<int> M3() => default!;
+		public IService<int> M3() => null!;
 	}
 
 	public class Factory2
 	{
 		[ExcludeFromCodeCoverage]
-		public IService<TM> M1<TM>() => default!;
+		public IService<TM> M1<TM>() => null!;
 	}
 
-	// ReSharper restore All
+	// ReSharper restore MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 }

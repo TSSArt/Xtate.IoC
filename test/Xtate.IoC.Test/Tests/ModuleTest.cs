@@ -22,13 +22,14 @@ public class ModuleTest
 {
 	[TestMethod]
 	[Obsolete(message: "Suppressing warning for AddConstant", error: true)]
-	public void AddConstant_ShouldAddValueTask()
+	public async Task AddConstant_ShouldAddValueTask()
 	{
 		// Arrange & Act
-		using var container = Container.Create(services => services.AddConstant(new ValueTask<int>()));
+		await using var container = Container.Create(services => services.AddConstant(new ValueTask<int>(42)));
 
 		// Assert
-		// No assertion needed as we are testing the AddConstant method
+		Assert.AreEqual(expected: 42, await container.GetRequiredService<int>());
+		Assert.AreEqual(expected: 42, await container.GetRequiredService<int>());
 	}
 
 	[TestMethod]

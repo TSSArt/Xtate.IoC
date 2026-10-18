@@ -1172,10 +1172,11 @@ public class ServiceCollectionExtensionsTest
 		public override string ToString() => "cn0";
 	}
 
-	// ReSharper disable All
-	private interface IService { }
+	// Public fixtures are constructed through container reflection, including members unused by direct calls.
+	// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
+	private interface IService;
 
-	private interface IDecor { }
+	private interface IDecor;
 
 	private class ClassDecoratedNoArg : IDecor
 	{
@@ -1275,26 +1276,31 @@ public class ServiceCollectionExtensionsTest
 
 	private class FactoryNoArg : IService
 	{
+		[UsedImplicitly] // Factory method selected through reflection.
 		public IService CreateService() => new ClassNoArg();
 	}
 
 	private class FactoryArg : IService
 	{
+		[UsedImplicitly] // Factory method selected through reflection.
 		public IService CreateService(Arg1 arg1) => new ClassArg(arg1);
 	}
 
 	private class FactoryMultiArg : IService
 	{
+		[UsedImplicitly] // Factory method selected through reflection.
 		public IService CreateService(Arg1 arg1, Arg2 arg2) => new ClassMultiArg(arg1, arg2);
 	}
 
 	private class FactoryMultiArg3 : IService
 	{
+		[UsedImplicitly] // Factory method selected through reflection.
 		public IService CreateService(Arg1 arg1, Arg2 arg2, Arg3 arg3) => new ClassMultiArg3(arg1, arg2, arg3);
 	}
 
 	private class FactoryMultiArg4 : IService
 	{
+		[UsedImplicitly] // Factory method selected through reflection.
 		public IService CreateService(Arg1 arg1,
 									  Arg2 arg2,
 									  Arg3 arg3,
@@ -1354,5 +1360,5 @@ public class ServiceCollectionExtensionsTest
 		public override string ToString() => _val;
 	}
 
-	// ReSharper restore All
+	// ReSharper restore MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 }

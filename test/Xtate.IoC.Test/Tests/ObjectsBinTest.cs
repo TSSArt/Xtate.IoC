@@ -88,37 +88,19 @@ public class ObjectsBinTest
 		await bin.DisposeAsync();
 
 		// Act
-		try
-		{
-			await bin.AddAsync(d);
-		}
-		catch (ObjectDisposedException)
-		{
-			// Assert
-			Assert.AreEqual(expected: 1, d.DisposeCount);
-		}
+		await Assert.ThrowsExactlyAsync<ObjectDisposedException>(() => bin.AddAsync(d).AsTask());
+		Assert.AreEqual(expected: 1, d.DisposeCount);
 	}
 
 	[TestMethod]
-	public async Task AddSync_AfterDisposed_ShouldEagerlyDisposeAndThrow()
+	public void AddSync_AfterDisposed_ShouldEagerlyDisposeAndThrow()
 	{
-		// Arrange
 		var bin = new ObjectsBin();
-		var d = new AsyncDisposable();
+		var d = new SyncDisposable();
+		bin.Dispose();
 
-		await bin.DisposeAsync();
-
-		// Act
-		try
-		{
-			await bin.AddAsync(d);
-			Assert.Fail("Expected ObjectDisposedException was not thrown.");
-		}
-		catch (ObjectDisposedException)
-		{
-			// Assert
-			Assert.AreEqual(expected: 1, d.DisposeCount);
-		}
+		Assert.ThrowsExactly<ObjectDisposedException>(() => bin.AddSync(d));
+		Assert.AreEqual(expected: 1, d.DisposeCount);
 	}
 
 	[TestMethod]
@@ -142,7 +124,7 @@ public class ObjectsBinTest
 	}
 
 	[TestMethod]
-	public async Task Dispose_IsIdempotent_WhenCalledMultipleTimes()
+	public void Dispose_IsIdempotent_WhenCalledMultipleTimes()
 	{
 		// Arrange
 		var bin = new ObjectsBin();
@@ -153,8 +135,8 @@ public class ObjectsBinTest
 		bin.AddSync(d2);
 
 		// Act
-		await bin.DisposeAsync();
-		await bin.DisposeAsync();
+		bin.Dispose();
+		bin.Dispose();
 
 		// Assert
 		Assert.AreEqual(expected: 1, d1.DisposeCount);

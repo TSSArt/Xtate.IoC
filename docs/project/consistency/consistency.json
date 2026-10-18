@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "workspace_id": "xtate-ioc-conventions",
+  "source_root": "../../..",
+  "files": {
+    "document_progress": "DOCUMENTING.progress.json",
+    "conventions": [
+      "CONVENTIONS.md"
+    ],
+    "inventory": "INVENTORY.json",
+    "todo": "TODO.md",
+    "coverage": "COVERAGE.md",
+    "todo_progress": "TODO.progress.json",
+    "audit_inventory": "AUDIT.inventory.json",
+    "audit_evidence": [
+      "AUDIT.inventory.json",
+      "AUDIT.structure.json",
+      "AUDIT.members.json",
+      "AUDIT.checks.json",
+      "AUDIT.coverage.json",
+      "AUDIT.summary.json",
+      "AUDIT.reproduction.json",
+      "AUDIT.checkpoint.ps1",
+      "AUDIT.format.log",
+      "AUDIT.whitespace.log",
+      "format-report.json"
+    ],
+    "implementation_evidence": "IMPLEMENTATION.P1.json",
+    "selected_lifecycle_policy": "../../lifecycle.md",
+    "latest_implementation_evidence": "TODO.md"
+  },
+  "conventions_revision": 52,
+  "conventions_digest": "7D8E0A20F332F49CEA6F5DCB7D51AB8345297781EEA8DD62A7F7EAEDA9613C08",
+  "freshness": {
+    "is_current": false,
+    "detected_at": "2026-10-18T01:09:24.5080406+02:00",
+    "reason": "Revision 52 repairs discovery cohort metadata and selects remaining policies. Historical audit inputs and results are stale after implementation.",
+    "changed_paths": [
+      "Global.Packages.props",
+      "README.md",
+      "src/Xtate.IoC/AsyncInitialization/AsyncInit.cs",
+      "src/Xtate.IoC/Helpers/WeakReferenceSet.cs",
+      "src/Xtate.IoC/ImplementationEntry/ImplementationEntry.cs",
+      "src/Xtate.IoC/IoC/ObjectsBin.cs",
+      "src/Xtate.IoC/IoC/ServiceProvider.cs",
+      "src/Xtate.IoC/IoC/SharedObjectsBin.cs",
+      "src/Xtate.IoC/Helpers/ExceptionHelper.cs",
+      "test/Xtate.IoC.Test/Tests/LifecycleFailureTest.cs",
+      "test/Xtate.IoC.Test/Tests/DiagnosticFailureTest.cs",
+      "docs/lifecycle.md"
+    ],
+    "selected_policy_overrides": [
+      "C13",
+      "C15",
+      "C46",
+      "C47"
+    ],
+    "implementation_evidence": "IMPLEMENTATION.P1.json",
+    "next_revalidation": "Re-audit against revision 52 when requested; implementation status is maintained in TODO.md.",
+    "latest_implementation_evidence": "TODO.md"
+  }
+}

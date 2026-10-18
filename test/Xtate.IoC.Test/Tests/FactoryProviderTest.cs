@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// ReSharper disable All
+// Public fixtures are constructed through container reflection, including members unused by direct calls.
+// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 
 namespace Xtate.IoC.Test;
 
@@ -24,7 +25,7 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class FactoryProviderTest
 {
-	private ServiceCollection _services = default!;
+	private ServiceCollection _services = null!;
 
 	[TestInitialize]
 	public void Initialization()
@@ -490,7 +491,7 @@ public class FactoryProviderTest
 		var obj = await sp.GetRequiredService<AsyncStaticFactoryClass>();
 
 		// Assert
-		Assert.AreEqual(expected: nameof(AsyncStaticFactoryClass), obj.ToString());
+		Assert.AreEqual(nameof(AsyncStaticFactoryClass), obj.ToString());
 	}
 
 	[TestMethod]
@@ -505,7 +506,7 @@ public class FactoryProviderTest
 		var obj = await sp.GetRequiredService<IDecor>();
 
 		// Assert
-		Assert.AreEqual(expected: nameof(DecoratorAsyncStaticFactoryClass), obj.ToString());
+		Assert.AreEqual(nameof(DecoratorAsyncStaticFactoryClass), obj.ToString());
 	}
 
 	public class Integer : IStub
@@ -529,12 +530,14 @@ public class FactoryProviderTest
 	#endregion
 	}
 
-	public interface IService<T> { }
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public interface IService<T>;
 
 	[ExcludeFromCodeCoverage]
 	public class ImplementationLong : IService<long>
 	{
-		public override string ToString() => typeof(long).Name;
+		public override string ToString() => nameof(Int64);
 	}
 
 	[ExcludeFromCodeCoverage]
@@ -550,7 +553,7 @@ public class FactoryProviderTest
 	}
 
 	[ExcludeFromCodeCoverage]
-	public class Class { }
+	public class Class;
 
 	[ExcludeFromCodeCoverage]
 	public class ContainerFuncArg(Func<int, Class> _)
@@ -571,16 +574,19 @@ public class FactoryProviderTest
 	[ExcludeFromCodeCoverage]
 	public class Factory
 	{
-		public IService<long> GetService(string _) => default!;
+		public IService<long> GetService(string _) => null!;
 	}
 
 	[ExcludeFromCodeCoverage]
 	public class Factory<T>
 	{
-		public IService<T> GetService(string _) => default!;
+		public IService<T> GetService(string _) => null!;
 	}
 
 	[ExcludeFromCodeCoverage]
+
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
 	public class Factory<T1, T2>
 	{
 		public IService<T1> GetService() => new Decorated<T1>();
@@ -603,40 +609,44 @@ public class FactoryProviderTest
 	[ExcludeFromCodeCoverage]
 	public class TwoConstructor
 	{
-		public TwoConstructor(int _) { }
+		public TwoConstructor([UsedImplicitly] int _) { }
 
-		public TwoConstructor(string _) { }
+		public TwoConstructor([UsedImplicitly] string _) { }
 	}
 
 	[ExcludeFromCodeCoverage]
 	public class ObsoleteConstructor
 	{
-		public ObsoleteConstructor(Class<int> _) { }
+		public ObsoleteConstructor([UsedImplicitly] Class<int> _) { }
 
 		[Obsolete("For test")]
-		public ObsoleteConstructor(Class<string> _) { }
+		public ObsoleteConstructor([UsedImplicitly] Class<string> _) { }
 	}
 
 	[ExcludeFromCodeCoverage]
 	public class MultipleObsoleteConstructor
 	{
-		public MultipleObsoleteConstructor(Class<int> _) { }
+		public MultipleObsoleteConstructor([UsedImplicitly] Class<int> _) { }
 
 		[Obsolete("For test")]
-		public MultipleObsoleteConstructor(Class<string> _) { }
+		public MultipleObsoleteConstructor([UsedImplicitly] Class<string> _) { }
 
 		[Obsolete("For test")]
-		public MultipleObsoleteConstructor(Class<long> _) { }
+		public MultipleObsoleteConstructor([UsedImplicitly] Class<long> _) { }
 	}
 
 	[ExcludeFromCodeCoverage]
+
+	// Intentionally has no public constructor to test rejection.
+	// ReSharper disable once ClassWithOnlyPrivateConstructors
+	[UsedImplicitly]
 	public class NoConstructor
 	{
 		private NoConstructor() { }
 	}
 
 	[ExcludeFromCodeCoverage]
-	public class AsyncClass { }
+	public class AsyncClass;
 
 	[ExcludeFromCodeCoverage]
 	public class SyncClass(AsyncClass _)
@@ -672,7 +682,7 @@ public class FactoryProviderTest
 	{
 		private DecoratorAsyncStaticFactoryClass() { }
 
-		public static async ValueTask<DecoratorAsyncStaticFactoryClass> CreateAsync(IDecor innerDecor)
+		public static async ValueTask<DecoratorAsyncStaticFactoryClass> CreateAsync([UsedImplicitly] IDecor innerDecor)
 		{
 			await Task.Yield();
 

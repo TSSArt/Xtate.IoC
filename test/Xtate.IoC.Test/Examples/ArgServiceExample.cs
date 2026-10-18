@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// ReSharper disable All
+// Public fixtures are constructed through container reflection, including members unused by direct calls.
+// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 
 namespace Xtate.IoC.Test.Examples;
 
@@ -48,13 +49,13 @@ public class MultiArgService
 // Arguments with same types can be provided via ValueTuple
 public class SameTypeArgService((string First, string Last) name)
 {
-	public (string First, string Last) Name { get; init; } = name;
+	public (string First, string Last) Name { get; } = name;
 }
 
 // Arguments with same types can be provided via ValueTuple
 public class MultiSameTypeArgService((string First, string Last) name)
 {
-	public (string First, string Last) Name { get; init; } = name;
+	public (string First, string Last) Name { get; } = name;
 
 	public required (int x, int y) Vector { get; init; }
 }

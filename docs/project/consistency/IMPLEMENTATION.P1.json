@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "action": "implementation",
+  "status": "complete",
+  "updated_at": "2026-10-18T01:10:07.940991+02:00",
+  "authorization": "User requested implementation of all P1 TODO items using antigravity-worker and csharp-engineering.",
+  "tasks": [
+    "CONS-012",
+    "CONS-005",
+    "CONS-006",
+    "CONS-007"
+  ],
+  "selected_policies": {
+    "C13": "Continue owned cleanup after errors; retain one failure or aggregate several; preserve established sync async-only behavior.",
+    "C15": "Preserve primary exception during Error reporting; attach secondary diagnostic errors best effort.",
+    "C46": "Support concurrent resolution, bin additions/disposal and scope-reference acquisition; reject closed providers; no concurrent registration mutation or service-use lease.",
+    "C47": "AsyncInit failure/cancellation is terminal and cached; every waiter terminates without publishing a value."
+  },
+  "policy_document": "../../lifecycle.md",
+  "original_conventions_revision": 51,
+  "baseline": {
+    "test_cases_net10": 641,
+    "inventory": "AUDIT.inventory.json",
+    "maintained_files": 194
+  },
+  "changed_baseline_inputs": [
+    {
+      "path": "Global.Packages.props",
+      "before": "F1FE9E15FF1825EE146AC7780A091D195A8123A4652B306433632E3DE7E11362",
+      "after": "9B7C1F6D7978883F9420AC4AE127705F59553F09F8C72A2438142BD5441FA3FD",
+      "ownership": "External staged change; preserved, not implementation"
+    },
+    {
+      "path": "README.md",
+      "before": "1F5E1FA24AACD3D46E4F4F219B131F3E422D184A60807AA4431F49BA7ED4013E",
+      "after": "BF54CEB3CE0E2E5A6D800D6EA53609DA8449E33782581A7CDC7442899DD8EFAE",
+      "ownership": "P1 implementation"
+    },
+    {
+      "path": "src/Xtate.IoC/AsyncInitialization/AsyncInit.cs",
+      "before": "1F0940EAFEACC00CAF53E72C6E2ED87D9189C4A0B307CCC156356617CBCD3FE9",
+      "after": "CA82B6913E658C5352F649A95108F3E3832E2D674A5908477716260F1CACB4FF",
+      "ownership": "P1 implementation"
+    },
+    {
+      "path": "src/Xtate.IoC/Helpers/WeakReferenceSet.cs",
+      "before": "40D99FE883D973240D5976B63925AA217242D913E31C99A535AE40114198FC05",
+      "after": "FD2DF57860B966CDFA83407C15571BD93D74CCB1F4358E29CC4FBB8EEBA25CDB",
+      "ownership": "P1 implementation"
+    },
+    {
+      "path": "src/Xtate.IoC/ImplementationEntry/ImplementationEntry.cs",
+      "before": "CA98B453524220D1994D0537AD3F5A6EA4B92ABB6CA18435C2D4F4C5301352D2",
+      "after": "B90E54C3E438A523A4DE6D746A2B1FBCB29A26034B0A292142C3FFF282A682B9",
+      "ownership": "P1 implementation"
+    },
+    {
+      "path": "src/Xtate.IoC/IoC/ObjectsBin.cs",
+      "before": "5FE2B45E5B8B8907B8080C8A5C90E3769F3F0EEC2F5E31AA22DD7B123801345E",
+      "after": "8E2BA7A0CD040F628852B2F6CB12F707DA7F003AD794CF384E44051EC4F0A126",
+      "ownership": "P1 implementation"
+    },
+    {
+      "path": "src/Xtate.IoC/IoC/ServiceProvider.cs",
+      "before": "EF0EB87C89EE27C4E1EE3209B8E05E9754897FB8DA81989AC6C519A1B9A1D88D",
+      "after": "01B34257FDF82E75613CE3B67961B349AF347EDD59336455B51E1E034E1F55CC",
+      "ownership": "P1 implementation"
+    },
+    {
+      "path": "src/Xtate.IoC/IoC/SharedObjectsBin.cs",
+      "before": "D41A5D1B049EF6ED71074C9E6B23840222B656047027647D3BDB73A2D32BDB01",
+      "after": "889B68B00C97AF5D296DB7A9BDA5CB6EB73FC1B358C88691F4045E5B33474019",
+      "ownership": "P1 implementation"
+    }
+  ],
+  "added_files": [
+    {
+      "path": "src/Xtate.IoC/Helpers/ExceptionHelper.cs",
+      "sha256": "11F129B2A35D18A73178CA20B7AF5DDD0943A964A3CB938DC7D9A59621AF8C31"
+    },
+    {
+      "path": "test/Xtate.IoC.Test/Tests/LifecycleFailureTest.cs",
+      "sha256": "35C034AA66ABB0418340FA2E328CA184A3F36BF98A1EC42C63FD553736CC9AD7"
+    },
+    {
+      "path": "test/Xtate.IoC.Test/Tests/DiagnosticFailureTest.cs",
+      "sha256": "A7E46CD93DE73987358E66DD62103AD5F5737E7900C6FB4E73CCEC1CA623DFAC"
+    },
+    {
+      "path": "docs/lifecycle.md",
+      "sha256": "07D59224D4F3A977F7D7FC3CB3EADD020F90575962461DEC76FC933B4271191C"
+    }
+  ],
+  "independent_review": {
+    "model": "claude-sonnet-4-6",
+    "mode": "plan --sandbox",
+    "result": "SUCCESS: nonempty JSON response, no reported errors or diagnostic categories on the isolated normal-permission retry",
+    "incorporated": [
+      "Terminal failure waiter and guarded-value tests",
+      "Addition/disposal race tests",
+      "Shared reference acquisition and cleanup failure tests",
+      "Primary vs diagnostic exception identity tests"
+    ],
+    "rejected": [
+      "Late additions should avoid ObjectDisposedException: contradicts chosen rejection contract",
+      "DisposeAsync after Dispose should await outstanding async-only cleanup: contradicts existing compatibility behavior",
+      "Unsubstantiated legacy-framework assertions"
+    ],
+    "scope": "Abstract initialization/lifetime failure protocols; no repository attachment, file access, tools or writes",
+    "tool": "agy",
+    "environment": "Initial sandbox attempt could not access normal state/sign-in; one isolated retry using normal permission mechanism succeeded."
+  },
+  "verification": {
+    "focused_cases_net10": 49,
+    "state": "passed",
+    "git_diff_check": "Passed on tracked implementation changes; untracked artifacts verified separately",
+    "commands": [
+      "dotnet test test/Xtate.IoC.Test/Xtate.IoC.Test.csproj -f net10.0 --no-restore --filter \"FullyQualifiedName~LifecycleFailureTest|FullyQualifiedName~DiagnosticFailureTest\" -m:1 -nodeReuse:false -p:UseSharedCompilation=false --verbosity minimal",
+      "dotnet build Xtate.IoC.sln --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false --verbosity minimal",
+      "dotnet test Xtate.IoC.sln --no-build --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false --verbosity minimal",
+      "git diff --check"
+    ],
+    "new_regression_cases": 49,
+    "build": {
+      "exit_code": 0,
+      "warnings": 0,
+      "library_frameworks": [
+        "net11.0",
+        "net10.0",
+        "net9.0",
+        "net8.0",
+        "netstandard2.0",
+        "net462"
+      ],
+      "includes": "Library, all test targets and benchmark project",
+      "errors": 0
+    },
+    "test_results": [
+      {
+        "passed": 690,
+        "failed": 0,
+        "framework": "net11.0",
+        "skipped": 0
+      },
+      {
+        "passed": 690,
+        "failed": 0,
+        "framework": "net10.0",
+        "skipped": 0
+      },
+      {
+        "passed": 690,
+        "failed": 0,
+        "framework": "net9.0",
+        "skipped": 0
+      },
+      {
+        "passed": 690,
+        "failed": 0,
+        "framework": "net8.0",
+        "skipped": 0
+      },
+      {
+        "passed": 690,
+        "failed": 0,
+        "framework": "net462",
+        "skipped": 0
+      }
+    ],
+    "environment": "DOTNET_CLI_TELEMETRY_OPTOUT=1; DOTNET_CLI_USE_MSBUILD_SERVER=0; normal local permissions required for VSTest host connection. Initial sandbox test run aborted before executing tests; the normal-permission runs passed.",
+    "checked_restored_packages": {
+      "Moq": "4.21.0",
+      "MSTest.TestFramework": "4.5.1",
+      "Microsoft.NET.Test.Sdk": "18.11.0"
+    },
+    "final_review": "Shared reference release occurs after scoped cleanup, including pending asynchronous disposal. Regression verifies concurrent child disposal cannot release the dependency early."
+  },
+  "preserved_external_changes": [
+    "Staged Global.Packages.props dependency changes (also changed since the audit inventory)",
+    "Staged Xtate.IoC.sln.DotSettings changes"
+  ],
+  "limits": [
+    "Historical convention discovery and audit records are stale; this is implementation verification, not a full re-audit.",
+    "No performance improvement or benchmark result claimed.",
+    "Concurrent registration mutation and uncoordinated service use during disposal are unsupported.",
+    "Use winning DisposeAsync for complete async cleanup; repeated disposal does not join prior cleanup.",
+    "Verification uses existing restored assets (--no-restore); test package versions were checked against current generated package settings."
+  ],
+  "remaining": {
+    "P2": 12,
+    "open_decisions": [
+      "C06",
+      "C11",
+      "C36",
+      "C45"
+    ],
+    "P3": 1,
+    "P1": 0
+  },
+  "freshness": {
+    "is_current": false,
+    "current_evidence": "IMPLEMENTATION.WeakReferenceSet.json",
+    "superseded_aspects": [
+      "Bin synchronization / best-effort in-flight addition contract",
+      "Changed source fingerprints and current verification totals"
+    ],
+    "superseded_at": "2026-10-18T13:16:35.4381032+02:00",
+    "note": "P1 completion and original verification are historical facts; later owner clarification supersedes the original stronger bin-addition policy."
+  }
+}

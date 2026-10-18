@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// ReSharper disable All
+// Public fixtures are constructed through container reflection, including members unused by direct calls.
+// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 
 namespace Xtate.IoC.Test.Examples;
 
@@ -61,8 +62,6 @@ public class UpperFormatter(IMessageFormatter inner) : IMessageFormatter
 // Async decorator example (simulates async initialization) -- shows that async decorator is awaited automatically.
 public class AsyncSuffixFormatter(IMessageFormatter inner) : IMessageFormatter, IAsyncInitialization
 {
-	private readonly IMessageFormatter _inner = inner;
-
 	private string _suffix = string.Empty;
 
 #region Interface IAsyncInitialization
@@ -77,7 +76,7 @@ public class AsyncSuffixFormatter(IMessageFormatter inner) : IMessageFormatter, 
 
 #region Interface IMessageFormatter
 
-	public string Format(string message) => _inner.Format(message) + _suffix;
+	public string Format(string message) => inner.Format(message) + _suffix;
 
 #endregion
 }

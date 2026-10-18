@@ -1,0 +1,23 @@
+[
+  {
+    "second_is_completed": false,
+    "first_outcome": "InvalidOperationException",
+    "mode": "synchronous-throw",
+    "proof": "Bounded sequential calls via the same Base<T>.Run used by Builder.Run; no waits or source edits",
+    "second_task_status": "WaitingForActivation"
+  },
+  {
+    "second_is_completed": false,
+    "first_outcome": "InvalidOperationException",
+    "mode": "faulted-valuetask",
+    "proof": "Bounded sequential calls via the same Base<T>.Run used by Builder.Run; no waits or source edits",
+    "second_task_status": "WaitingForActivation"
+  },
+  {
+    "second_is_completed": false,
+    "first_outcome": "TaskCanceledException",
+    "mode": "canceled-valuetask",
+    "proof": "Bounded sequential calls via the same Base<T>.Run used by Builder.Run; no waits or source edits",
+    "second_task_status": "WaitingForActivation"
+  }
+]

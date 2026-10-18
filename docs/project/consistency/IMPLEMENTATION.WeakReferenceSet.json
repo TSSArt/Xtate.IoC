@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "action": "owner-directed synchronization simplification and weak-reference review",
+  "status": "complete",
+  "updated_at": "2026-10-18T13:16:35.4381032+02:00",
+  "authorization": "User accepted missed object disposal for additions racing with bin disposal and requested avoiding unnecessary synchronization in ObjectsBin/SharedObjectsBin while reviewing WeakReferenceSet.",
+  "contract": "Object disposal for in-flight additions is best effort. Storage handle ownership must remain safe under concurrent Add, TryTake, compaction and disposal.",
+  "findings": [
+    {
+      "location": "WeakReferenceSet.Add / FreeHandles",
+      "problem": "An addition could pass the open check, pause through final queue draining, then publish a handle after the cleaner handle had been freed and finalization suppressed.",
+      "resolution": "Hold the existing read lock through allocation/reuse and queue publication; hold the write lock through closure and both drains."
+    },
+    {
+      "location": "WeakReferenceSet.TryTake / Clean / FreeHandles",
+      "problem": "A handle removed from a queue could be recycled after concurrent disposal had already drained the queues. Previous partial lock scopes did not protect the whole ownership transfer.",
+      "resolution": "Protect retrieval and recycling as one read-locked operation, and complete compaction/disposal as write-locked operations."
+    },
+    {
+      "location": "WeakReferenceSet.Clean",
+      "problem": "Compaction could process and republish handles across disposal; cleaner lifetime documentation also incorrectly denied its strong owner reference.",
+      "resolution": "Check closed state under the write lock before processing or scheduling a new cleaner; correct reference-direction comments."
+    }
+  ],
+  "simplifications": [
+    "Remove ObjectsBin._syncRoot and the outer addition/disposal gate.",
+    "Retain only Interlocked.Exchange to claim bin storage once; ordinary additions capture the storage directly.",
+    "Replace SharedObjectsBin CAS/Volatile loop with Interlocked.Increment; retain atomic decrement.",
+    "Keep the existing ServiceProvider live-parent acquisition gate, which already prevents shared-count resurrection.",
+    "Remove WeakReferenceSet.TryDequeueSafe; retrieval now owns its read lock for the complete handle operation."
+  ],
+  "limitations": [
+    "No performance improvement claimed or benchmark run. Add/TryTake now take the existing storage read lock; compaction holds the write lock for its complete pass and can delay operations on large sets.",
+    "A racing bin addition may be rejected without disposing its supplied object, or may be accepted after the object-drain pass; this is explicitly accepted by the owner.",
+    "The reader/writer lock is intentionally not disposed while pending cleaner finalizers may still enter it.",
+    "Concurrency stress covers interleavings but is not an exhaustive scheduler proof; lock-scope ownership was also reviewed directly."
+  ],
+  "source_fingerprints": [
+    {
+      "sha256": "9C2C87E51C0984EA13ED0DA6A41331BDF992A20ED3F41AEA792211243FA5524E",
+      "path": "src/Xtate.IoC/Helpers/WeakReferenceSet.cs"
+    },
+    {
+      "sha256": "BB80B8E240A2E24FE36CFA759800434CDD7F491814A09CA05E889490E4BE80C1",
+      "path": "src/Xtate.IoC/IoC/ObjectsBin.cs"
+    },
+    {
+      "sha256": "6E4B514E01F531AA4974D3C75637B21ABE6664115B3F2B59670C8384616BA73C",
+      "path": "src/Xtate.IoC/IoC/SharedObjectsBin.cs"
+    },
+    {
+      "sha256": "AF3947E6DE6047AA3A91D1CABF9A674993E205FDB74B4D9846B7ABBC10475B7A",
+      "path": "test/Xtate.IoC.Test/Tests/LifecycleFailureTest.cs"
+    },
+    {
+      "sha256": "7FA118F7C611C0BADC0607DB24D7C8AA7D8AEC7097A1C7FE40B9EBA67C31810E",
+      "path": "test/Xtate.IoC.Test/Tests/WeakReferenceSetLifecycleTest.cs"
+    },
+    {
+      "sha256": "7C87EC328AF3D5D906693D76630FF4DD919C386B5A3475229218898C5F37CFA2",
+      "path": "docs/lifecycle.md"
+    }
+  ],
+  "verification": {
+    "full": {
+      "command": "dotnet test Xtate.IoC.sln --no-build --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false --verbosity minimal",
+      "results": [
+        {
+          "framework": "net11.0",
+          "passed": 693,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "framework": "net10.0",
+          "passed": 693,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "framework": "net9.0",
+          "passed": 693,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "framework": "net8.0",
+          "passed": 693,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "framework": "net462",
+          "passed": 693,
+          "failed": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    "git_diff_check": "Passed; Git reported only an existing LF/CRLF normalization notice.",
+    "focused": {
+      "passed": 65,
+      "cases": 65,
+      "command": "dotnet test test/Xtate.IoC.Test/Xtate.IoC.Test.csproj -f net10.0 --no-restore --filter \"FullyQualifiedName~WeakReferenceSet|FullyQualifiedName~ObjectsBinTest|FullyQualifiedName~LifecycleFailureTest\" -m:1 -nodeReuse:false -p:UseSharedCompilation=false --verbosity minimal"
+    },
+    "build": {
+      "library_frameworks": [
+        "net11.0",
+        "net10.0",
+        "net9.0",
+        "net8.0",
+        "netstandard2.0",
+        "net462"
+      ],
+      "errors": 0,
+      "command": "dotnet build Xtate.IoC.sln --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false --verbosity minimal",
+      "exit_code": 0,
+      "warnings": 0
+    }
+  },
+  "coverage": [
+    "Compaction after disposal cannot recreate cleaner/resources.",
+    "Concurrent compaction/retrieval preserves every strongly reachable entry exactly once.",
+    "Concurrent add/take/compaction/repeated disposal leave both handle queues empty and the cleaner handle unallocated.",
+    "Existing bin, failure cleanup, ownership and scope acquisition tests remain green.",
+    "Racing bin addition test now asserts no double disposal and permits zero disposal calls under the revised contract."
+  ],
+  "prior_evidence": "IMPLEMENTATION.P1.json remains a historical result; its original strong bin-addition policy and source fingerprints are superseded here."
+}

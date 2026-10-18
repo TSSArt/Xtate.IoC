@@ -31,27 +31,54 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 	{
 		_sourceServiceProvider = null;
 		_sharedObjectsBin = new SharedObjectsBin();
-
-		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
 		_disposeTokenSource = new CancellationTokenSource();
 		DisposeToken = _disposeTokenSource.Token;
 
-		Initialization(services);
+		try
+		{
+			_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(services));
+			Initialization(services);
+		}
+		catch
+		{
+			using var disposeTokenSource = _disposeTokenSource;
+			using var sharedObjectsBin = _sharedObjectsBin;
+			using var objectsBin = ObjectsBin;
+
+			_disposeTokenSource = null;
+			disposeTokenSource.Cancel();
+
+			throw;
+		}
 	}
 
 	protected ServiceProvider(ServiceProvider sourceServiceProvider, IServiceCollection? additionalServices = null)
 	{
 		_sourceServiceProvider = sourceServiceProvider;
 		_sharedObjectsBin = sourceServiceProvider._sharedObjectsBin;
-		_sharedObjectsBin.AddReference();
-
-		_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(additionalServices));
 		_disposeTokenSource = new CancellationTokenSource();
 		DisposeToken = _disposeTokenSource.Token;
 
-		if (additionalServices is not null)
+		try
 		{
-			Initialization(additionalServices);
+			_services = new Cache<TypeKey, ImplementationEntry?>(GroupServices(additionalServices));
+
+			if (additionalServices is not null)
+			{
+				Initialization(additionalServices);
+			}
+
+			_sharedObjectsBin.AddReference();
+		}
+		catch
+		{
+			using var disposeTokenSource = _disposeTokenSource;
+			using var objectsBin = ObjectsBin;
+
+			_disposeTokenSource = null;
+			disposeTokenSource.Cancel();
+
+			throw;
 		}
 	}
 
@@ -300,40 +327,46 @@ public class ServiceProvider : IServiceProvider, IServiceScopeFactory, ITypeKeyA
 
 	protected virtual void Dispose(bool disposing)
 	{
-		if (Interlocked.Exchange(ref _disposeTokenSource, value: null) is { } disposeTokenSource)
+		if (Interlocked.Exchange(ref _disposeTokenSource, value: null) is not { } disposeTokenSource)
 		{
-			var isLastReference = _sharedObjectsBin.RemoveReference();
-
-			if (disposing)
-			{
-				disposeTokenSource.Cancel();
-
-				ObjectsBin.Dispose();
-
-				if (isLastReference)
-				{
-					_sharedObjectsBin.Dispose();
-				}
-
-				disposeTokenSource.Dispose();
-			}
+			return;
 		}
+
+		var isLastReference = _sharedObjectsBin.RemoveReference();
+
+		if (!disposing)
+		{
+			return;
+		}
+
+		using var source = disposeTokenSource;
+		using var sharedObjectsBin = isLastReference ? _sharedObjectsBin : null;
+		using var objectsBin = ObjectsBin;
+
+		source.Cancel();
 	}
 
 	protected virtual async ValueTask DisposeAsyncCore()
 	{
-		if (Interlocked.Exchange(ref _disposeTokenSource, value: null) is { } disposeTokenSource)
+		if (Interlocked.Exchange(ref _disposeTokenSource, value: null) is not { } disposeTokenSource)
 		{
-			await disposeTokenSource.CancelAsync().ConfigureAwait(false);
+			return;
+		}
 
-			await ObjectsBin.DisposeAsync().ConfigureAwait(false);
+		using var source = disposeTokenSource;
 
+		try
+		{
+			await using var objectsBin = ObjectsBin.ConfigureAwait(false);
+
+			await source.CancelAsync().ConfigureAwait(false);
+		}
+		finally
+		{
 			if (_sharedObjectsBin.RemoveReference())
 			{
 				await _sharedObjectsBin.DisposeAsync().ConfigureAwait(false);
 			}
-
-			disposeTokenSource.Dispose();
 		}
 	}
 

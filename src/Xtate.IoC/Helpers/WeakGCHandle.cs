@@ -16,7 +16,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #if !NET10_0_OR_GREATER
+#pragma warning disable IDE0130
 namespace System.Runtime.InteropServices;
+#pragma warning restore IDE0130
 
 internal struct WeakGCHandle<T>(T target) where T : class
 {

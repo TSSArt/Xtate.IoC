@@ -411,6 +411,8 @@ public abstract class ImplementationEntry
 	/// <returns>The service or null if not found.</returns>
 	private T? GetServiceSyncNoActions<T, TArg>(TArg argument)
 	{
+		ObjectDisposedException.ThrowIf(_serviceProvider.DisposeToken.IsCancellationRequested, _serviceProvider);
+
 		var instance = ExecuteFactorySync<T, TArg>(argument);
 
 		if (instance is null)

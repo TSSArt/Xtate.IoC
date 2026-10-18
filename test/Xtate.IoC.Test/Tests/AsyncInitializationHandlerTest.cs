@@ -63,8 +63,9 @@ public class AsyncInitializationHandlerTest
 		Assert.IsFalse(init);
 	}
 
-	// ReSharper disable All
-	public class Class { }
+	// Public fixtures are constructed through container reflection, including members unused by direct calls.
+	// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
+	public class Class;
 
 	public class ClassAsyncInit : IAsyncInitialization
 	{
@@ -82,5 +83,5 @@ public class AsyncInitializationHandlerTest
 	#endregion
 	}
 
-	// ReSharper restore All
+	// ReSharper restore MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 }

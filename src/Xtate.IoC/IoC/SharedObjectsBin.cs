@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2026 Sergii Artemenko
+// Copyright © 2019-2026 Sergii Artemenko
 // 
 // This file is part of the Xtate project. <https://xtate.net/>
 // 
@@ -19,9 +19,9 @@ namespace Xtate.IoC;
 
 internal class SharedObjectsBin : ObjectsBin
 {
-	private int _referenceCount;
+	private int _referenceCount = 1;
 
 	internal void AddReference() => Interlocked.Increment(ref _referenceCount);
 
-	internal bool RemoveReference() => Interlocked.Decrement(ref _referenceCount) == -1;
+	internal bool RemoveReference() => Interlocked.Decrement(ref _referenceCount) == 0;
 }

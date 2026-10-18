@@ -27,6 +27,12 @@ internal static class ValueTaskExtensions
 		[ExcludeFromCodeCoverage]
 		public static ValueTask CompletedTask => new();
 
+		/// <summary>Creates a <see cref="ValueTask" /> that has completed with the specified exception.</summary>
+		/// <param name="exception">The exception with which to complete the task.</param>
+		/// <returns>The faulted task.</returns>
+		[ExcludeFromCodeCoverage]
+		public static ValueTask FromException(Exception exception) => new(Task.FromException(exception));
+
 		/// <summary>Creates a <see cref="ValueTask{TResult}" /> that has completed with the specified exception.</summary>
 		/// <param name="exception">The exception with which to complete the task.</param>
 		/// <returns>The faulted task.</returns>

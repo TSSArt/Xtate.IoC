@@ -15,11 +15,38 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Globalization;
+using System.Threading;
+
 namespace Xtate.IoC.Test;
 
 [TestClass]
 public class MissedServiceExceptionTest
 {
+	[TestMethod]
+	[DataRow("en")]
+	[DataRow("de")]
+	[DataRow("es")]
+	[DataRow("fr")]
+	[DataRow("pl")]
+	[DataRow("uk")]
+	public void MissingArgumentService_MessageIncludesArgument(string culture)
+	{
+		var previous = Thread.CurrentThread.CurrentUICulture;
+
+		try
+		{
+			Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+			var exception = MissedServiceException.Create<string, int>();
+			StringAssert.Contains(exception.Message, substring: "string");
+			StringAssert.Contains(exception.Message, substring: "int");
+		}
+		finally
+		{
+			Thread.CurrentThread.CurrentUICulture = previous;
+		}
+	}
+
 	[TestMethod]
 	public void MissedServiceException_DefaultConstructor_ShouldInitializeCorrectly()
 	{

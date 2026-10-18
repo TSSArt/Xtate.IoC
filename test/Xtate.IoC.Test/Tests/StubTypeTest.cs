@@ -100,8 +100,11 @@ public class StubTypeTest
 		Assert.AreEqual(typeof(void), args[0]);
 	}
 
-	// ReSharper disable All
-	public class GenericClass<T> { }
+	// Public fixtures are constructed through container reflection, including members unused by direct calls.
+	// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public class GenericClass<[UsedImplicitly] T>;
 
-	// ReSharper restore All
+	// ReSharper restore MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 }

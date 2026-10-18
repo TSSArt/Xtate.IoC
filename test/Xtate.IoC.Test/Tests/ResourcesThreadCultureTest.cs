@@ -23,8 +23,6 @@ namespace Xtate.IoC.Test;
 [TestClass]
 public class ResourcesThreadCultureTest
 {
-	private class ServiceX;
-
 	[TestMethod]
 	public void French_Resources_ShouldRespect_Thread_CurrentUICulture()
 	{
@@ -49,4 +47,6 @@ public class ResourcesThreadCultureTest
 			Thread.CurrentThread.CurrentUICulture = prevUi;
 		}
 	}
+
+	private class ServiceX;
 }

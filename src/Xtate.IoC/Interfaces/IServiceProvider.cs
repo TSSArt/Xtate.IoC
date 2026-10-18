@@ -17,13 +17,19 @@
 
 namespace Xtate.IoC;
 
+/// <summary>Provides registration lookup, initialization and resolution callbacks for the container extensions.</summary>
 public interface IServiceProvider
 {
+	/// <summary>Signals that provider disposal has started; it does not wait for in-flight service use.</summary>
 	CancellationToken DisposeToken { get; }
 
+	/// <summary>Gets the optional handler used to initialize resolved instances.</summary>
 	IInitializationHandler? InitializationHandler { get; }
 
+	/// <summary>Gets optional resolution callbacks. Callback exceptions can replace the failure being reported.</summary>
 	IServiceProviderActions[]? Actions { get; }
 
+	/// <summary>Gets the registration chain for a key, or null when absent. Lookup remains available after disposal.</summary>
+	/// <remarks>Lookup may create cached entries; it does not create or initialize service instances.</remarks>
 	ImplementationEntry? GetImplementationEntry(TypeKey typeKey);
 }

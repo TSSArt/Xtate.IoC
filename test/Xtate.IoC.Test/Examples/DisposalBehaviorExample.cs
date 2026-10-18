@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// ReSharper disable All
+// Public fixtures are constructed through container reflection, including members unused by direct calls.
+// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 
 namespace Xtate.IoC.Test.Examples;
 
@@ -94,7 +95,7 @@ public class DisposalBehaviorExample
 
 		await using (var container = Container.Create(services =>
 													  {
-														  // Constant, Forwarding lambda, Shared lambda registrations (container does not own disposal)
+														  // Constant and Forwarding lambda registrations (container does not own disposal)
 														  services.AddConstant(new ConstantService());
 														  services.AddForwarding(_ => new ForwardedService());
 

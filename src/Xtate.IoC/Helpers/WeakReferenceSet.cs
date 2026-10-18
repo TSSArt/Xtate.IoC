@@ -31,6 +31,8 @@ namespace Xtate.IoC;
 ///     references.
 ///     A lightweight finalizer-based <see cref="Cleaner" /> triggers cleanup and handle reuse without requiring explicit
 ///     calls.
+///     The owner must serialize disposal against additions and retrieval; inner queue concurrency does not protect
+///     the lifetime of the set's synchronization and handle resources. <see cref="ObjectsBin" /> supplies that boundary.
 /// </remarks>
 internal sealed class WeakReferenceSet : IDisposable
 {
@@ -99,13 +101,27 @@ internal sealed class WeakReferenceSet : IDisposable
 		if (_freeHandles.TryDequeue(out var handle))
 		{
 			handle.SetTarget(instance);
-			_handles.Enqueue(handle);
 		}
 		else
 		{
-			ObjectDisposedException.ThrowIf(!_cleanerHandle.IsAllocated, this);
+			handle = new WeakGCHandle<object>(instance);
+		}
 
-			_handles.Enqueue(new WeakGCHandle<object>(instance));
+		_handles.Enqueue(handle);
+
+		CleanAndThrowIfDisposed();
+	}
+
+	private void CleanAndThrowIfDisposed()
+	{
+		if (!_cleanerHandle.IsAllocated)
+		{
+			while (TryDequeueSafe(out var handle))
+			{
+				handle.Dispose();
+			}
+
+			ObjectDisposedException.ThrowIf(condition: true, this);
 		}
 	}
 

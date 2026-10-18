@@ -23,12 +23,12 @@ namespace Xtate.IoC;
 public class SingletonOwnerImplementationEntry : SingletonImplementationEntry
 {
 	/// <summary>
-	///     Bin that tracks created transient instances for disposal when the owning <see cref="ServiceProvider" /> is
+	///     Bin that tracks created singleton instances for disposal when the last sharing <see cref="ServiceProvider" /> is
 	///     disposed.
 	/// </summary>
 	/// <remarks>
 	///     Non‑disposable instances are ignored by the bin. Disposable instances are registered so their lifetime is tied to
-	///     the service provider even though they are transient.
+	///     all providers sharing the container bin.
 	/// </remarks>
 	private readonly ObjectsBin _objectsBin;
 

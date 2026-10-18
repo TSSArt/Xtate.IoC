@@ -4,7 +4,7 @@
 [![CodeQL](https://github.com/TSSArt/Xtate.IoC/actions/workflows/codeql.yml/badge.svg)](https://github.com/TSSArt/Xtate.IoC/actions/workflows/codeql.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE)
 
-A modern, async-first, attribute-light Inversion of Control (IoC) / Dependency Injection (DI) container for .NET with explicit lifetime semantics, argument-aware service resolution, rich decorator and factory patterns, and fine‑grained disposal tracking. Targets `net10.0`, `net9.0`, `net8.0`, `netstandard2.0`, and `net462`.
+A modern, async-first, attribute-light Inversion of Control (IoC) / Dependency Injection (DI) container for .NET with explicit lifetime semantics, argument-aware service resolution, rich decorator and factory patterns, and fine‑grained disposal tracking. See the supported frameworks below.
 
 ## Table of Contents
 - Motivation
@@ -74,12 +74,15 @@ using Xtate.IoC;
 
 await using var container = Container.Create(services =>
 {
-    services.AddType<MyService>();                                // Transient
+    services.AddImplementation<MyService>().For<IMyService>();                                // Transient
     services.AddSharedType<MyRepository>(SharedWithin.Container); // Singleton
-    services.AddDecorator<MyLogic>().For<IMyLogic>();               // Decorator
 });
 
-var service = container.GetService<IMyService>(); // Resolves transient instance
+var service = await container.GetRequiredService<IMyService>(); // Resolves transient instance
+
+public interface IMyService { }
+public sealed class MyService : IMyService { public required MyRepository Repository { get; init; } }
+public sealed class MyRepository { }
 ```
 Use `Container.Create<TModule>()` to load a module class implementing `IModule`.
 
@@ -111,7 +114,7 @@ Each method has sync and async variants (`AddTypeSync`, `AddSharedTypeSync`, etc
 Many methods accept `Option.IfNotRegistered` to prevent duplicate registration.
 
 ## Lifetimes & Ownership Model
-Internal enum `InstanceScope` drives behavior:
+Public enum `InstanceScope` drives behavior:
 - `Transient`: New instance per resolution, tracked for disposal in current provider.
 - `Scoped` / `ScopedExternal`: Instance shared within a scope, owned vs externally owned.
 - `Singleton` / `SingletonExternal`: Shared across container lifetime, owned vs externally owned.
@@ -122,14 +125,14 @@ External variants avoid disposing instances the container did not create.
 Service identity may include an argument type (`TArg`). APIs have forms like `AddType<T, TArg>()` allowing resolution with contextual argument data. Under the hood, `TypeKey.ServiceKey<T, TArg>()` differentiates them.
 Tuple arguments (`(TArg1, TArg2)`) are supported via helper overloads.
 
-Example:
+Fragment inside a registration/resolution method; assumes a `Renderer(RenderSettings)` constructor and local `services`, `sp`, and `settings`:
 ```csharp
 services.AddTypeSync<Renderer, RenderSettings>();
-var renderer = sp.Get<Renderer, RenderSettings>(settings);
+var renderer = sp.GetRequiredServiceSync<Renderer, RenderSettings>(settings);
 ```
 
 ## Decorators
-Decorators wrap existing implementations in a chain. Order of registration determines wrapping sequence (last added executes outermost). Async and sync delegates supported:
+Decorators wrap existing implementations in a chain. Order of registration determines wrapping sequence (last added executes outermost). Async and sync delegates supported. This registration fragment assumes a registered `IMyLogic` implementation and decorators accepting `IMyLogic`:
 ```csharp
 services.AddDecorator<LoggingLogic>().For<IMyLogic>();
 services.AddDecorator<CachingLogic>().For<IMyLogic>();
@@ -138,14 +141,16 @@ services.AddDecorator<CachingLogic>().For<IMyLogic>();
 Decorators respect target lifetime; a shared decorator over a singleton yields one decorated chain instance.
 
 ## Factories
+`GetServices<T>()` and `GetServicesSync<T>()` return lazy enumerations: service creation starts on MoveNextAsync/MoveNext, so no zero-argument Func wrapper is needed. IEnumerable<T> and IAsyncEnumerable<T> can be injected directly.
+
 `AddFactory<T>()` exposes a factory abstraction allowing on-demand creation while preserving container construction semantics and disposal tracking.
 
 ## Modules
-Implement `IModule`:
+Derive from `Module` (which implements `IModule`). This fragment assumes application types `ConfigProvider` and `Worker`:
 ```csharp
-class CoreModule : IModule
+class CoreModule : Module
 {
-    public void AddServices()
+    protected override void AddServices()
     {
         Services.AddSharedType<ConfigProvider>(SharedWithin.Container);
         Services.AddType<Worker>();
@@ -157,11 +162,11 @@ await using var container = Container.Create<CoreModule>();
 Modules auto-register themselves as `IModule` (once) via `AddModule<TModule>()`.
 
 ## Scopes
-Create nested scopes via `IServiceScopeFactory`:
+Create nested scopes via `IServiceScopeFactory` (fragment assuming application classes `Context` and `RequestHandler`):
 ```csharp
 await using var container = Container.Create(s => s.AddSharedTypeSync<Context>(SharedWithin.Scope));
-var serviceScopeFacory = await container.GetService<IServiceScopeFactory>();
-using var scope = serviceScopeFacory.CreateScope(scopeServices =>
+var serviceScopeFactory = await container.GetRequiredService<IServiceScopeFactory>();
+await using var scope = serviceScopeFactory.CreateScope(scopeServices =>
 {
     scopeServices.AddType<RequestHandler>();
 });
@@ -170,13 +175,19 @@ var handler = await scope.ServiceProvider.GetService<RequestHandler>();
 Scope overlay services can add or decorate without mutating parent.
 
 ## Asynchronous Initialization & Disposal
-Async factories (`Func<IServiceProvider, TArg, ValueTask<T>>`) supported everywhere. Disposal is async-aware (`IAsyncDisposable` respected). `IAsyncInitializationHandler` (exposed internally as `IInitializationHandler`) may perform container-level initialization steps.
+Async factories (`Func<IServiceProvider, TArg, ValueTask<T>>`) supported everywhere. Disposal is async-aware (`IAsyncDisposable` respected). `IInitializationHandler` may perform container-level initialization steps.
+
+`AsyncInit` runs once and caches failure or cancellation for every current and later caller. Failed initialization never exposes a value. Owned instances already returned by a factory remain tracked for provider cleanup even if initialization fails.
+
+A bin stops at its first disposer failure. Provider cleanup still releases the shared reference and attempts subsequent cleanup phases; the latest exception wins. Use `await using` or await `DisposeAsync()` to finish asynchronous cleanup. Synchronous `Dispose()` retains its nonblocking behavior for incomplete async-only disposers.
+
+Concurrent resolution is supported after registration. Disposal does not wait for in-flight factories or service use. Registration lookup remains available after disposal; service use and scope creation must be coordinated with disposal. Existing child scopes may outlive their parent. See the [lifecycle and failure contract](docs/lifecycle.md) for the supported operation matrix and race behavior.
 
 ## Forwarding & Constants
-Forwarding allows exposing existing provider values without new lifetime ownership:
+Forwarding allows exposing existing provider values without new lifetime ownership (registration fragment assuming `AppVersion`, `IRuntimeEnv`, and a registered `RuntimeEnv : IRuntimeEnv`):
 ```csharp
 services.AddConstant(new AppVersion("1.2.3"));
-services.AddForwarding<IRuntimeEnv>(sp => sp.Get<RuntimeEnv>()); // adapter
+services.AddForwarding<IRuntimeEnv>(async sp => await sp.GetRequiredService<RuntimeEnv>()); // adapter
 ```
 
 ## Comparison with Microsoft.Extensions.DependencyInjection
@@ -203,9 +214,10 @@ services.AddForwarding<IRuntimeEnv>(sp => sp.Get<RuntimeEnv>()); // adapter
 - Extend via factories returning higher-order delegates (`DelegateFactory`).
 
 ## Error Handling
-- Missing service resolution triggers `MissedServiceException`.
+- Required resolution of a missing service throws `MissedServiceException`; optional resolution returns the generic default value.
 - Lifetime violations or invalid options throw `DependencyInjectionException` variants.
 - Disposal after use guarded by `ObjectDisposedException.ThrowIf` calls.
+- A throwing Error callback replaces the exception being reported; the latest exception wins.
 
 ## Testing
 For tests, construct minimal `ServiceCollection`, then `new ServiceProvider(services)` or use `Container.Create(...)`. Register fakes via `AddTransient` / `AddConstant`.
@@ -215,6 +227,8 @@ For tests, construct minimal `ServiceCollection`, then `new ServiceProvider(serv
 - Diagnostics hooks for resolution tracing.
 - Benchmark suite publishing.
 - Optional integration layer for `IHostedService` style apps.
+
+Repository [conventions](docs/project/consistency/CONVENTIONS.md) and the [consistency TODO](docs/project/consistency/TODO.md) describe current review policies and verification status.
 
 ## Contributing
 1. Fork the repository.

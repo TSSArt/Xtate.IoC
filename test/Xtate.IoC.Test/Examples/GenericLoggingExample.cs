@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// ReSharper disable All
+// Public fixtures are constructed through container reflection, including members unused by direct calls.
+// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 
 namespace Xtate.IoC.Test.Examples;
 
@@ -25,6 +26,8 @@ namespace Xtate.IoC.Test.Examples;
 // Resolving ILog<MyType> gives Log<MyType> with MyType substituted in place of Any.
 // This mirrors typical scenarios like ILogger<TCategory> / Log<TSource>.
 
+// Generic parameters distinguish service keys and reflection-matching test cases.
+// ReSharper disable once UnusedTypeParameter
 public interface ILog<TSource>
 {
 	string Category { get; }

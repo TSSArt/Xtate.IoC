@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-// ReSharper disable All
+// Public fixtures are constructed through container reflection, including members unused by direct calls.
+// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 
 namespace Xtate.IoC.Test.Examples;
 
@@ -36,16 +37,12 @@ public class SharedDepService
 
 public class ConsumerService(Func<ValueTask<DepService>> depFactory)
 {
-	private readonly Func<ValueTask<DepService>> _depFactory = depFactory;
-
-	public async ValueTask<DepService> GetDependencyAsync() => await _depFactory();
+	public async ValueTask<DepService> GetDependencyAsync() => await depFactory();
 }
 
 public class SharedConsumerService(Func<ValueTask<SharedDepService>> depFactory)
 {
-	private readonly Func<ValueTask<SharedDepService>> _depFactory = depFactory;
-
-	public async ValueTask<SharedDepService> GetDependencyAsync() => await _depFactory();
+	public async ValueTask<SharedDepService> GetDependencyAsync() => await depFactory();
 }
 
 [TestClass]

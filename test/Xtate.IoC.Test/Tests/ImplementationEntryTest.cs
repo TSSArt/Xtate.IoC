@@ -796,8 +796,9 @@ public class ImplementationEntryTest
 	#endregion
 	}
 
-	// ReSharper disable All
-	public class Class { }
+	// Public fixtures are constructed through container reflection, including members unused by direct calls.
+	// ReSharper disable MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
+	public class Class;
 
 	public class ClassAsyncInit : IAsyncInitialization
 	{
@@ -870,7 +871,9 @@ public class ImplementationEntryTest
 	#endregion
 	}
 
-	public class ClassGeneric<T> { }
+	// Generic parameters distinguish service keys and reflection-matching test cases.
+	// ReSharper disable once UnusedTypeParameter
+	public class ClassGeneric<T>;
 
-	// ReSharper restore All
+	// ReSharper restore MemberCanBePrivate.Global, ClassNeverInstantiated.Global, UnusedMember.Global, UnusedAutoPropertyAccessor.Global
 }
