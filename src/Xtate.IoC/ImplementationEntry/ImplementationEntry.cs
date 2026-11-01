@@ -266,10 +266,10 @@ public abstract class ImplementationEntry
 
 			if (valueTask.IsCompleted)
 			{
-				context.Instance = valueTask.Result;
+				var instance = context.Instance = valueTask.Result;
 				CallEvent(actions, eventType | ActionsEventType.Exit, ref context);
 
-				return valueTask;
+				return new ValueTask<T?>(instance);
 			}
 
 			container = new DataActionsContext<T, TArg>.Container { Context = context };

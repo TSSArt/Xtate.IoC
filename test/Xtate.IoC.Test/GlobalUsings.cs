@@ -18,8 +18,8 @@
 global using System;
 global using System.Collections;
 global using System.Collections.Generic;
-global using System.Linq.Expressions;
 global using System.Diagnostics.CodeAnalysis;
+global using System.Linq.Expressions;
 global using System.Threading.Tasks;
 global using JetBrains.Annotations;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;

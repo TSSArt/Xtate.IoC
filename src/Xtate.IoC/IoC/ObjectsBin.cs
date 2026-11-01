@@ -23,18 +23,17 @@ namespace Xtate.IoC;
 /// <remarks>
 ///     <para>
 ///         This bin tracks disposable instances (implementing <see cref="IDisposable" /> or
-///         <see cref="IAsyncDisposable" />) via a weak-reference stack. Non‑disposable instances are ignored but still
+///         <see cref="IAsyncDisposable" />) via a weak-reference set. Non‑disposable instances are ignored but still
 ///         validate disposal state.
 ///     </para>
 ///     <para>
-///         Calling <see cref="Dispose" /> or <see cref="DisposeAsync" /> transitions the bin to a disposed state. Any
-///         subsequent attempt to add an object results in an <see cref="ObjectDisposedException" /> (after eagerly
-///         disposing the
-///         provided instance if it is disposable).
+///         Disposal closes the bin before cleaning up tracked instances and stops at the first cleanup failure.
+///         An addition that observes the closed bin attempts immediate cleanup: successful cleanup is followed by
+///         <see cref="ObjectDisposedException" />; a cleanup failure propagates instead.
 ///     </para>
 ///     <para>
-///         Thread-safety: All public and internal members are safe for concurrent use. Disposal is performed exactly once
-///         using an atomic exchange on the underlying storage field.
+///         Callers must coordinate direct concurrent disposal. In-flight additions have best-effort cleanup; closing
+///         the storage does not guarantee disposal of every racing instance. See docs/lifecycle.md for the full contract.
 ///     </para>
 /// </remarks>
 public class ObjectsBin : IDisposable, IAsyncDisposable
@@ -69,8 +68,8 @@ public class ObjectsBin : IDisposable, IAsyncDisposable
 	///     Asynchronously disposes all tracked instances and marks the bin as disposed.
 	/// </summary>
 	/// <remarks>
-	///     Each instance is disposed using <see cref="Disposer.DisposeAsync" />. If multiple threads race to dispose,
-	///     only the first succeeds; others observe a no-op. After completion the bin rejects further additions.
+	///     Each instance is disposed using <see cref="Disposer.DisposeAsync" />. Cleanup stops at the first failure.
+	///     The bin is closed before cleanup; subsequent coordinated disposal calls do not retry remaining instances.
 	/// </remarks>
 	/// <returns>A task representing the asynchronous disposal operation.</returns>
 	protected virtual ValueTask DisposeAsyncCore()
@@ -114,7 +113,7 @@ public class ObjectsBin : IDisposable, IAsyncDisposable
 	/// </summary>
 	/// <remarks>
 	///     Each instance is disposed using <see cref="Disposer.Dispose" />. After completion the bin rejects further
-	///     additions. Safe to call multiple times; only the first call performs work.
+	///     additions. Cleanup stops at the first failure; subsequent coordinated calls do not retry remaining instances.
 	/// </remarks>
 	protected virtual void Dispose(bool disposing)
 	{
@@ -141,11 +140,12 @@ public class ObjectsBin : IDisposable, IAsyncDisposable
 	///     or a task representing asynchronous immediate disposal followed by an exception if the bin is already disposed.
 	/// </returns>
 	/// <exception cref="ObjectDisposedException">
-	///     Thrown if the bin has already been disposed. If the instance is disposable it is disposed prior to throwing.
+	///     Thrown when the addition observes a closed bin and immediate cleanup succeeds, or when captured storage rejects
+	///     an in-flight addition. Immediate cleanup failures propagate instead; an in-flight rejection need not clean up.
 	/// </exception>
 	/// <remarks>
 	///     Non‑disposable instances are skipped but still validate that the bin is not disposed.
-	///     Disposable instances are stored on a weak-reference stack allowing garbage collection
+	///     Disposable instances are stored on a weak-reference set allowing garbage collection
 	///     if they become otherwise unreachable before bin disposal.
 	/// </remarks>
 	public ValueTask AddAsync<T>(T instance)
@@ -184,7 +184,8 @@ public class ObjectsBin : IDisposable, IAsyncDisposable
 	/// <typeparam name="T">Type of the instance being added.</typeparam>
 	/// <param name="instance">The instance to track.</param>
 	/// <exception cref="ObjectDisposedException">
-	///     Thrown if the bin has already been disposed. If the instance is disposable it is disposed prior to throwing.
+	///     Thrown when the addition observes a closed bin and immediate cleanup succeeds, or when captured storage rejects
+	///     an in-flight addition. Immediate cleanup failures propagate instead; an in-flight rejection need not clean up.
 	/// </exception>
 	/// <remarks>
 	///     Mirrors <see cref="AddAsync{T}" /> but uses synchronous disposal operations. Non‑disposable instances are ignored

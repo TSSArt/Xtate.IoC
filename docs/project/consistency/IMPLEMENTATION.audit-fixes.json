@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-30",
+  "status": "complete",
+  "tasks": [
+    "CONS-017",
+    "CONS-018",
+    "CONS-019",
+    "CONS-020",
+    "CONS-021"
+  ],
+  "source_hashes": {
+    "src/Xtate.IoC/Helpers/WeakReferenceSet.cs": "AAAD79BD20075C227B5270D372CF5CAF6C68EF3B739F11262623202766EA5768",
+    "src/Xtate.IoC/ImplementationEntry/ImplementationEntry.cs": "B5553E3D1AE58386CB76499D0198CECA7346F3A28B256BA742060D6418CC3C4B",
+    "src/Xtate.IoC/IoC/ObjectsBin.cs": "7466185FD111E065B4EA15F7EE2C6ECF2769D12DFC368C87D57B256667FEB219",
+    "src/Xtate.IoC/Properties/GlobalUsings.cs": "B832CF18DCDAE5367618E7DBF9323DB5FC330F8DD37CDFB07633B496DCDFBD44",
+    "test/Xtate.IoC.Test/GlobalUsings.cs": "93120CED343823BA9B437585E8B4E2BF9416E240CF8BDDFC75FA56D9242D2880",
+    "test/Xtate.IoC.Test/Examples/DocumentationFeaturesExample.cs": "2CB3C202A7A3DA2DAEB050D5E7A1021D932BEB25FBC0EB33066D38AB4B04D0E0",
+    "test/Xtate.IoC.Test/Examples/DocumentationJobExample.cs": "F5EC112569B5AC3EB157CFA688D80CF919F628C6295DD6E572ECF4EB0FD7C15D",
+    "test/Xtate.IoC.Test/Tests/DiagnosticValueTaskTest.cs": "FD3F48B2A56F7EE32CEC75DDA71D019B4945CF254059E279B4219DA83F452AAD",
+    "test/Xtate.IoC.Test/Tests/WeakReferenceSetLifecycleTest.cs": "D2CE0C2E6B8B996C0DA0EE1805A66F832277875463118427422F8C86B848D000",
+    "docs/lifecycle.md": "1F304A8CE41FC456F0992EABE72ACD170FC748D191F38D14DA71F59E905EAF58"
+  },
+  "tests": {
+    "focused": "32 passed on net10.0",
+    "full_solution": {
+      "net11.0": {
+        "passed": 754,
+        "failed": 0,
+        "skipped": 0
+      },
+      "net10.0": {
+        "passed": 754,
+        "failed": 0,
+        "skipped": 0
+      },
+      "net9.0": {
+        "passed": 754,
+        "failed": 0,
+        "skipped": 0
+      },
+      "net8.0": {
+        "passed": 754,
+        "failed": 0,
+        "skipped": 0
+      },
+      "net462": {
+        "passed": 754,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "console": "C:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: You are using a preview version of .NET. See: https://aka.ms/dotnet-support-policy [T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj::TargetFramework=net11.0]\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net11.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net10.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net9.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net8.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\netstandard2.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net462\\Xtate.IoC.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net11.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net10.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net9.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net8.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net462\\Xtate.IoC.Test.dll\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net11.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v11.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   754, Skipped:     0, Total:   754, Duration: 228 ms - Xtate.IoC.Test.dll (net11.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net10.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   754, Skipped:     0, Total:   754, Duration: 216 ms - Xtate.IoC.Test.dll (net10.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net9.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v9.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   754, Skipped:     0, Total:   754, Duration: 182 ms - Xtate.IoC.Test.dll (net9.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net8.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v8.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   754, Skipped:     0, Total:   754, Duration: 196 ms - Xtate.IoC.Test.dll (net8.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net462\\Xtate.IoC.Test.dll (.NETFramework,Version=v4.6.2)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   754, Skipped:     0, Total:   754, Duration: 2 s - Xtate.IoC.Test.dll (net462)\n"
+  },
+  "imports": {
+    "exit_code": 0,
+    "report": "IMPLEMENTATION.imports.json"
+  },
+  "performance": {
+    "method": "Isolated Release net10.0 microbenchmark; original HEAD WeakReferenceSet and current source compiled side by side; 20,000 warmup cycles, median of seven alternating passes, 200,000 total Add/TryTake pairs per pass; same live object, 1 and 4 workers. Measures storage operations, not whole-container throughput or compaction latency.",
+    "baseline_revision": "88d74702ce1685dd4544cfe68abbd776f6cc44a1",
+    "output": "workers=1; baseline median=5.76ms; synchronized median=14.87ms; ratio=2.58\nworkers=4; baseline median=42.98ms; synchronized median=36.97ms; ratio=0.86\n",
+    "interpretation": "Uncontended median increased from 5.76ms to 14.87ms per 200,000 pairs (~46ns per pair). Four-worker results are noisy; no general speedup claimed. Exclusive compaction may delay concurrent operations.",
+    "driver_source": "global using System.Diagnostics.CodeAnalysis;\nusing System.Diagnostics;\nusing Xtate.IoC;\nforeach (var workers in new[] { 1, 4 })\n{\n    using var baseline = new BaselineWeakReferenceSet();\n    using var current = new WeakReferenceSet();\n    var instance = new object();\n    Action oldCycle = () => { baseline.Add(instance); baseline.TryTake(out _); };\n    Action newCycle = () => { current.Add(instance); current.TryTake(out _); };\n    for (var i = 0; i < 20000; i++) { oldCycle(); newCycle(); }\n    var oldTimes = new List<double>(); var newTimes = new List<double>();\n    for (var run = 0; run < 7; run++)\n    {\n        if (run % 2 == 0) { oldTimes.Add(Measure(oldCycle, workers)); newTimes.Add(Measure(newCycle, workers)); }\n        else { newTimes.Add(Measure(newCycle, workers)); oldTimes.Add(Measure(oldCycle, workers)); }\n    }\n    oldTimes.Sort(); newTimes.Sort();\n    Console.WriteLine($\"workers={workers}; baseline median={oldTimes[3]:F2}ms; synchronized median={newTimes[3]:F2}ms; ratio={newTimes[3]/oldTimes[3]:F2}\");\n    GC.KeepAlive(instance);\n}\nstatic double Measure(Action cycle, int workers)\n{\n    var timer = Stopwatch.StartNew();\n    Parallel.For(0, workers, _ => { for (var i = 0; i < 200000 / workers; i++) cycle(); });\n    return timer.Elapsed.TotalMilliseconds;\n}\n",
+    "project_source": "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup></Project>\n"
+  },
+  "behavior": "ValueTask callbacks retain event/error precedence and return a result-backed ValueTask after consuming the source. Handle read leases span dequeue/target access/recycle; exclusive cleanup prevents publication after final drain. Object-disposal best-effort policy remains unchanged.",
+  "inspection": {
+    "tool": "JetBrains.ReSharper.GlobalTools 2026.2.3.1",
+    "scope": "Whole solution, net10.0, repository shared settings, minimum severity SUGGESTION",
+    "exit_code": 0,
+    "issues": 0,
+    "report": "IMPLEMENTATION.inspection.xml",
+    "command": "jb inspectcode Xtate.IoC.sln --toolset-path=\"C:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\MSBuild.dll\" --caches-home=<temporary clean cache> --target-framework=net10.0 --no-build --no-updates --jobs=2 --format=Xml --output=docs/project/consistency/IMPLEMENTATION.inspection.xml --verbosity=WARN",
+    "environment": "MSBuildEnableWorkloadResolver=false",
+    "initial_attempts": "Automatic toolset selection failed workload resolution; a subsequent cached report contained invalid unresolved symbols. Explicit .NET MSBuild and a clean cache produced a valid report (six relevant findings), then zero after the final scoped fixes."
+  },
+  "verification_hashes": {
+    "IMPLEMENTATION.inspection.xml": "A0497D518C68BDB9666047B3A021FA0E0C0F45B9369A0E04883F5A33D50242A5",
+    "IMPLEMENTATION.imports.json": "4F53CDA18C2BAA0C0354BB5F9A3ECBE5ED12AB4D8E11BA873C2F11161202B945"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "updated_at": "2026-10-30T08:05:56.956762+00:00",
+  "verification_date": "2026-10-30",
+  "source_revision": "88d74702ce1685dd4544cfe68abbd776f6cc44a1",
+  "source_identity": "Dirty worktree identified by AUDIT.inventory.json, not HEAD alone. Existing package edits and two documentation examples included.",
+  "test_command": "dotnet test Xtate.IoC.sln --no-restore -m:1 -nodeReuse:false -p:UseSharedCompilation=false",
+  "test_exit_code": 0,
+  "tests": {
+    "net11.0": {
+      "passed": 739,
+      "failed": 0,
+      "skipped": 0
+    },
+    "net10.0": {
+      "passed": 739,
+      "failed": 0,
+      "skipped": 0
+    },
+    "net9.0": {
+      "passed": 739,
+      "failed": 0,
+      "skipped": 0
+    },
+    "net8.0": {
+      "passed": 739,
+      "failed": 0,
+      "skipped": 0
+    },
+    "net462": {
+      "passed": 739,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "library_targets": [
+    "net11.0",
+    "net10.0",
+    "net9.0",
+    "net8.0",
+    "netstandard2.0",
+    "net462"
+  ],
+  "logs": {
+    "AUDIT.test-current.log": "C:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: You are using a preview version of .NET. See: https://aka.ms/dotnet-support-policy [T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj::TargetFramework=net11.0]\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net11.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net10.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net9.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net8.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\netstandard2.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net462\\Xtate.IoC.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net11.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net10.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net9.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net8.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net462\\Xtate.IoC.Test.dll\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net11.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v11.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 214 ms - Xtate.IoC.Test.dll (net11.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net10.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 235 ms - Xtate.IoC.Test.dll (net10.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net9.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v9.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 198 ms - Xtate.IoC.Test.dll (net9.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net8.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v8.0)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 192 ms - Xtate.IoC.Test.dll (net8.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net462\\Xtate.IoC.Test.dll (.NETFramework,Version=v4.6.2)\nA total of 1 test files matched the specified pattern.\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 2 s - Xtate.IoC.Test.dll (net462)\n",
+    "AUDIT.test-all.log": "C:\\Program Files\\dotnet\\sdk\\11.0.100-rc.3.26522.148\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: You are using a preview version of .NET. See: https://aka.ms/dotnet-support-policy [T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj::TargetFramework=net11.0]\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net11.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net10.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net9.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net8.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\netstandard2.0\\Xtate.IoC.dll\n  Xtate.IoC -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\bin\\Debug\\net462\\Xtate.IoC.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net11.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net10.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net9.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net8.0\\Xtate.IoC.Test.dll\n  Xtate.IoC.Test -> T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net462\\Xtate.IoC.Test.dll\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net11.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v11.0)\nA total of 1 test files matched the specified pattern.\nResults File: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 224 ms - Xtate.IoC.Test.dll (net11.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net10.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\nWARNING: Overwriting results file: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\nResults File: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 213 ms - Xtate.IoC.Test.dll (net10.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net9.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v9.0)\nA total of 1 test files matched the specified pattern.\nWARNING: Overwriting results file: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\nResults File: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 194 ms - Xtate.IoC.Test.dll (net9.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net8.0\\Xtate.IoC.Test.dll (.NETCoreApp,Version=v8.0)\nA total of 1 test files matched the specified pattern.\nWARNING: Overwriting results file: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\nResults File: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 196 ms - Xtate.IoC.Test.dll (net8.0)\nTest run for T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\bin\\Debug\\net462\\Xtate.IoC.Test.dll (.NETFramework,Version=v4.6.2)\nA total of 1 test files matched the specified pattern.\nWARNING: Overwriting results file: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\nResults File: T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\TestResults\\consistency-restart.trx\n\nPassed!  - Failed:     0, Passed:   739, Skipped:     0, Total:   739, Duration: 1 s - Xtate.IoC.Test.dll (net462)\n",
+    "AUDIT.ValueTaskProbe.log": "actions=False; result=resolved; GetResult calls=1\nactions=True; exception=InvalidOperationException: ValueTask consumed more than once; GetResult calls=2\n"
+  },
+  "log_hashes": {
+    "AUDIT.test-current.log": "1CFEB9A248E680EE843611040A782A33FB372AD504EC64D29652AB788B178310",
+    "AUDIT.test-all.log": "226BE5DC0D653B3CA388B49AAAC5955A227A1715E911DA13BB1BE90A68EBD950",
+    "AUDIT.ValueTaskProbe.log": "6AF8254C0838C85E109794A14E27B1602333184224FB0D0C4BE26980F8B153C7"
+  },
+  "probe": "Earlier isolated net10.0 probe uses AUDIT.ValueTaskProbe.cs and the unchanged runtime. No-op callbacks consume a source-backed ValueTask twice. No production test was added.",
+  "format": "Earlier read-only dotnet format --verify-no-changes --no-restore --severity info exited 2. Report predates the latest two example edits; it remains diagnostic evidence, not current clean-formatter certification.",
+  "limits": [
+    "ReSharper CLI inspection not run; CONS-017 acceptance remains outstanding.",
+    "Syntax extraction uses default symbols; branch review and all-target builds supplement it.",
+    "Passing stress tests do not disprove a possible race.",
+    "No benchmark measurements."
+  ]
+}

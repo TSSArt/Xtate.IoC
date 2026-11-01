@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Globalization;
 using System.Text;
 using ValueTuple = System.ValueTuple;
 
@@ -124,7 +125,7 @@ internal readonly struct ArgumentType : IFormattable
 
 	public static ArgumentType TypeOf<T>() => Container<T>.Instance;
 
-	public override string ToString() => ToString(format: null, formatProvider: null);
+	public override string ToString() => ToString(format: null, formatProvider: CultureInfo.CurrentCulture);
 
 	private static class Container<T>
 	{

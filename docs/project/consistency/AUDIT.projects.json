@@ -1,0 +1,280 @@
+[
+  {
+    "project": "src/Xtate.IoC/Xtate.IoC.csproj",
+    "result": {
+      "Properties": {
+        "TargetFrameworks": "net11.0;net10.0;net9.0;net8.0;netstandard2.0;net462",
+        "TargetFramework": "net10.0",
+        "IsPackable": "true",
+        "Nullable": "enable",
+        "LangVersion": "preview",
+        "EnableNETAnalyzers": "true",
+        "EnforceCodeStyleInBuild": "true",
+        "TreatWarningsAsErrors": "true",
+        "ManagePackageVersionsCentrally": "true"
+      },
+      "Items": {
+        "ProjectReference": [],
+        "PackageReference": [
+          {
+            "Identity": "Xtate.SharedContent",
+            "PrivateAssets": "all",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.SharedContent",
+            "RootDir": "T:\\",
+            "Filename": "Xtate",
+            "Extension": ".SharedContent",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\",
+            "DefiningProjectName": "Xtate.IoC",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "ConfigureAwaitChecker.Analyzer",
+            "PrivateAssets": "all",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\ConfigureAwaitChecker.Analyzer",
+            "RootDir": "T:\\",
+            "Filename": "ConfigureAwaitChecker",
+            "Extension": ".Analyzer",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\",
+            "DefiningProjectName": "Xtate.IoC",
+            "DefiningProjectExtension": ".csproj"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "project": "test/Xtate.IoC.Test/Xtate.IoC.Test.csproj",
+    "result": {
+      "Properties": {
+        "TargetFrameworks": "net11.0;net10.0;net9.0;net8.0;net462",
+        "TargetFramework": "net10.0",
+        "IsPackable": "false",
+        "Nullable": "enable",
+        "LangVersion": "preview",
+        "EnableNETAnalyzers": "true",
+        "EnforceCodeStyleInBuild": "true",
+        "TreatWarningsAsErrors": "false",
+        "ManagePackageVersionsCentrally": "true"
+      },
+      "Items": {
+        "ProjectReference": [
+          {
+            "Identity": "..\\..\\src\\Xtate.IoC\\Xtate.IoC.csproj",
+            "ReferenceSourceTarget": "ProjectReference",
+            "OutputItemType": "",
+            "Targets": "",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj",
+            "RootDir": "T:\\",
+            "Filename": "Xtate.IoC",
+            "Extension": ".csproj",
+            "RelativeDir": "..\\..\\src\\Xtate.IoC\\",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Xtate.IoC.Test.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "DefiningProjectName": "Xtate.IoC.Test",
+            "DefiningProjectExtension": ".csproj"
+          }
+        ],
+        "PackageReference": [
+          {
+            "Identity": "Microsoft.NET.Test.Sdk",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Microsoft.NET.Test.Sdk",
+            "RootDir": "T:\\",
+            "Filename": "Microsoft.NET.Test",
+            "Extension": ".Sdk",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Xtate.IoC.Test.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "DefiningProjectName": "Xtate.IoC.Test",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "MSTest.TestAdapter",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\MSTest.TestAdapter",
+            "RootDir": "T:\\",
+            "Filename": "MSTest",
+            "Extension": ".TestAdapter",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Xtate.IoC.Test.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "DefiningProjectName": "Xtate.IoC.Test",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "MSTest.TestFramework",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\MSTest.TestFramework",
+            "RootDir": "T:\\",
+            "Filename": "MSTest",
+            "Extension": ".TestFramework",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Xtate.IoC.Test.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "DefiningProjectName": "Xtate.IoC.Test",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "Moq",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Moq",
+            "RootDir": "T:\\",
+            "Filename": "Moq",
+            "Extension": "",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Xtate.IoC.Test.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "DefiningProjectName": "Xtate.IoC.Test",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "coverlet.collector",
+            "PrivateAssets": "all",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\coverlet.collector",
+            "RootDir": "T:\\",
+            "Filename": "coverlet",
+            "Extension": ".collector",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\Xtate.IoC.Test.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Test\\",
+            "DefiningProjectName": "Xtate.IoC.Test",
+            "DefiningProjectExtension": ".csproj"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "project": "test/Xtate.IoC.Benchmark/Xtate.IoC.Benchmark.csproj",
+    "result": {
+      "Properties": {
+        "TargetFrameworks": "",
+        "TargetFramework": "net10.0",
+        "IsPackable": "false",
+        "Nullable": "enable",
+        "LangVersion": "preview",
+        "EnableNETAnalyzers": "true",
+        "EnforceCodeStyleInBuild": "true",
+        "TreatWarningsAsErrors": "false",
+        "ManagePackageVersionsCentrally": "true"
+      },
+      "Items": {
+        "ProjectReference": [
+          {
+            "Identity": "..\\..\\src\\Xtate.IoC\\Xtate.IoC.csproj",
+            "ReferenceSourceTarget": "ProjectReference",
+            "OutputItemType": "",
+            "Targets": "",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\Xtate.IoC.csproj",
+            "RootDir": "T:\\",
+            "Filename": "Xtate.IoC",
+            "Extension": ".csproj",
+            "RelativeDir": "..\\..\\src\\Xtate.IoC\\",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\src\\Xtate.IoC\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\Xtate.IoC.Benchmark.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "DefiningProjectName": "Xtate.IoC.Benchmark",
+            "DefiningProjectExtension": ".csproj"
+          }
+        ],
+        "PackageReference": [
+          {
+            "Identity": "Xtate.SharedContent",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\Xtate.SharedContent",
+            "RootDir": "T:\\",
+            "Filename": "Xtate",
+            "Extension": ".SharedContent",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\Xtate.IoC.Benchmark.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "DefiningProjectName": "Xtate.IoC.Benchmark",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "BenchmarkDotNet",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\BenchmarkDotNet",
+            "RootDir": "T:\\",
+            "Filename": "BenchmarkDotNet",
+            "Extension": "",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\Xtate.IoC.Benchmark.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "DefiningProjectName": "Xtate.IoC.Benchmark",
+            "DefiningProjectExtension": ".csproj"
+          },
+          {
+            "Identity": "Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers",
+            "FullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers",
+            "RootDir": "T:\\",
+            "Filename": "Microsoft.VisualStudio.DiagnosticsHub",
+            "Extension": ".BenchmarkDotNetDiagnosers",
+            "RelativeDir": "",
+            "Directory": "Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "RecursiveDir": "",
+            "ModifiedTime": "",
+            "CreatedTime": "",
+            "AccessedTime": "",
+            "DefiningProjectFullPath": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\Xtate.IoC.Benchmark.csproj",
+            "DefiningProjectDirectory": "T:\\Projects\\TSSArt\\xtate.dev\\src\\Xtate.IoC\\test\\Xtate.IoC.Benchmark\\",
+            "DefiningProjectName": "Xtate.IoC.Benchmark",
+            "DefiningProjectExtension": ".csproj"
+          }
+        ]
+      }
+    }
+  }
+]

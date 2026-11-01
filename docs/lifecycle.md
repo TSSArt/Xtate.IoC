@@ -20,7 +20,7 @@ Successful synchronous initialization keeps its completed `ValueTask` path. Conc
 | Child-scope acquisition racing with parent disposal | Unsupported; coordinate scope creation with disposal. No acquisition gate is implemented. |
 | Existing child with a disposed ancestor | The child remains usable, including lazy lookup of inherited registrations. Shared objects are released by the last provider reference. Create children before disposing their parent. |
 
-An accepted in-flight resolution can still return a service that disposal has begun cleaning. Object disposal racing with additions is best effort. A known WeakReferenceSet disposal race can leave a recycled handle queued; its regression test is retained. A shared singleton can remain owned while another child is alive. No service-use lease, wait-for-factories or wait-for-all-disposers guarantee is added.
+An accepted in-flight resolution can still return a service that disposal has begun cleaning. Object disposal racing with additions is best effort. WeakReferenceSet serializes handle transfers with compaction and final disposal so recycled handles cannot be queued after the final drain. This protects native storage, not the disposal of every racing object. A shared singleton can remain owned while another child is alive. No service-use lease, wait-for-factories or wait-for-all-disposers guarantee is added.
 
 Bins retain weak references and track additions, not unique object identities. Keep required instances alive; do not register the same disposable instance under several independent owners. Directly disposing the public bins independently of their provider requires caller coordination.
 
@@ -38,7 +38,7 @@ Provider construction failure attempts local cleanup; a failed child does not ac
 
 An addition that observes a closed bin before capturing storage attempts immediate cleanup. If that cleanup succeeds, the caller receives `ObjectDisposedException`; if cleanup itself fails, its exception is propagated. This does not extend to an in-flight addition rejected by its captured storage. Synchronous additions retain the same async-only completion limitation as synchronous disposal.
 
-`SharedObjectsBin` uses atomic increments/decrements. ObjectsBin has no outer lock. WeakReferenceSet currently has partial internal synchronization; the known handle race is not a stronger object-disposal guarantee.
+`SharedObjectsBin` uses atomic increments/decrements. ObjectsBin has no outer lock. WeakReferenceSet protects additions/retrieval with read locks and compaction/disposal with the write lock. It invokes no user disposal callbacks under that lock; this does not strengthen object-disposal guarantees.
 
 ## Diagnostic failures
 

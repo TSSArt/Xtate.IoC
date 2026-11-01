@@ -13,25 +13,46 @@
     "todo_progress": "TODO.progress.json",
     "audit_inventory": "AUDIT.inventory.json",
     "audit_evidence": [
-      "AUDIT.inventory.json",
-      "AUDIT.structure.json",
-      "AUDIT.members.json",
       "AUDIT.checks.json",
       "AUDIT.coverage.json",
+      "AUDIT.finalize.py",
+      "AUDIT.inspect.py",
+      "AUDIT.inventory.json",
+      "AUDIT.layout.ps1",
+      "AUDIT.members.json",
+      "AUDIT.presentation.py",
+      "AUDIT.projects.json",
+      "AUDIT.publish.py",
+      "AUDIT.restart.ps1",
+      "AUDIT.review.py",
+      "AUDIT.runtime.py",
+      "AUDIT.structure.json",
       "AUDIT.summary.json",
-      "AUDIT.reproduction.json",
-      "AUDIT.checkpoint.ps1",
-      "AUDIT.format.log",
-      "AUDIT.whitespace.log",
+      "AUDIT.ValueTaskProbe.cs",
+      "AUDIT.verification.json",
       "format-report.json"
     ],
     "implementation_evidence": "IMPLEMENTATION.P1.json",
     "selected_lifecycle_policy": "../../lifecycle.md",
-    "latest_implementation_evidence": "TODO.md"
+    "latest_implementation_evidence": "IMPLEMENTATION.audit-fixes.json",
+    "historical_audit_evidence": [
+      "AUDIT.reproduction.json",
+      "AUDIT.checkpoint.ps1",
+      "AUDIT.whitespace.log"
+    ],
+    "implementation_verification": [
+      "IMPLEMENTATION.inspection.xml",
+      "IMPLEMENTATION.imports.json"
+    ]
   },
   "conventions_revision": 52,
   "conventions_digest": "7D8E0A20F332F49CEA6F5DCB7D51AB8345297781EEA8DD62A7F7EAEDA9613C08",
   "freshness": {
+    "is_current": false,
+    "reason": "Generation 2 coverage is the preserved pre-remediation baseline. All five recorded deviations are implemented; final changed-source hashes and verification are in IMPLEMENTATION.audit-fixes.json.",
+    "next_revalidation": "A future requested full audit should rebuild coverage for the modified source, including DiagnosticValueTaskTest.cs."
+  },
+  "previous_freshness": {
     "is_current": false,
     "detected_at": "2026-10-18T01:09:24.5080406+02:00",
     "reason": "Revision 52 repairs discovery cohort metadata and selects remaining policies. Historical audit inputs and results are stale after implementation.",

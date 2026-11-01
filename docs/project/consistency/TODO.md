@@ -1,5 +1,67 @@
 # Consistency TODO
 
+Remediation completed on 2026-10-30: all five generation-2 findings are implemented. [Implementation evidence](IMPLEMENTATION.audit-fixes.json) records final source fingerprints, tests, inspection and the synchronization cost measurement. All 754 tests pass on each of five test frameworks; six library targets build. ReSharper inspection of the solution for net10.0 reports zero findings at suggestion severity and above; import verification passes.
+
+The findings below retain their original evidence and acceptance criteria as history. The generation-2 inventory/coverage describes the pre-fix audit baseline; it is not a fresh audit of the modified source. The original conventions remain unchanged.
+
+## Implemented audit findings
+
+<a id="cons-019"></a>
+- [x] **CONS-019 [P1] Consume completed factory ValueTasks once when diagnostics are enabled.**
+  - Implemented and verified (2026-10-30): WithActions returns a fresh result-backed ValueTask after reading the source. DiagnosticValueTaskTest covers success, fault and cancellation, completed/pending operations, zero/one/two callbacks and ordinary/data callbacks; each source is consumed once. Existing exception-precedence tests pass.
+  - Criteria: [C47](CONVENTIONS.md#c47), [C16](CONVENTIONS.md#c16), [C29](CONVENTIONS.md#c29), [C35](CONVENTIONS.md#c35), [C50](CONVENTIONS.md#c50).
+  - Affected: `src/Xtate.IoC/ImplementationEntry/ImplementationEntry.cs:WithActions`, its caller `GetServiceNoActions`, and `WithActionsWait`; regression destination: `test/Xtate.IoC.Test/Tests/ServiceProviderActionsTest.cs` or `DiagnosticFailureTest.cs`.
+  - Evidence: the completed branch reads `valueTask.Result` into the context and returns the original valueTask. The caller then consumes it again. [Probe source](AUDIT.ValueTaskProbe.cs) and [actual output](AUDIT.verification.json): no actions resolves with one GetResult call; no-op actions cause InvalidOperationException with two GetResult calls. The probe uses a completed, single-consumption IValueTaskSource-backed forwarding factory, not an incomplete operation incorrectly blocked by the caller.
+  - Required: after consuming a completed result, return a fresh result-backed ValueTask; preserve action ordering and the selected callback-exception precedence. Review all completed/pending nested action paths for single consumption.
+  - Dependencies: none. Risk: medium; diagnostic exception/event timing is observable. Effort: small implementation, medium regression coverage. No public signature or parameter rename.
+  - Acceptance: source-backed success/fault/cancellation tests, with zero/one/multiple ordinary and data callbacks; count GetResult exactly once per supplied operation. Preserve existing callback-failure tests; run `dotnet test test/Xtate.IoC.Test/Xtate.IoC.Test.csproj -f net10.0 --filter "FullyQualifiedName~ServiceProviderActionsTest|FullyQualifiedName~DiagnosticFailureTest"`, then all supported TFMs.
+
+<a id="cons-018"></a>
+- [x] **CONS-018 [P1] Close the native-handle recycling race after WeakReferenceSet disposal.**
+  - Implemented and verified (2026-10-30): Add/TryTake hold read locks across complete handle transfers; Clean/FreeHandles hold the write lock across recycling/draining. Deterministic lock-boundary tests and the existing stress regression pass on native and legacy targets. A microbenchmark records the uncontended cost (~46 ns per Add/TryTake pair); no speedup claim. Object-disposal guarantees are unchanged.
+  - Criteria: [C46](CONVENTIONS.md#c46), [C13](CONVENTIONS.md#c13).
+  - Affected: `src/Xtate.IoC/Helpers/WeakReferenceSet.cs:TryTake`, `Clean`, `FreeHandles`, and `CleanAndThrowIfDisposed`; legacy/native handle branches in `Helpers/WeakGCHandle.cs`; regression: `test/Xtate.IoC.Test/Tests/WeakReferenceSetLifecycleTest.cs:AddTakeCompactionAndDisposal_LeaveNoHandlesInEitherQueue`.
+  - Evidence: TryTake can remove an active handle, then FreeHandles marks the set disposed and drains both queues, then TryTake enqueues that still-owned handle in `_freeHandles`. Clean also recycles outside its write-lock section. Subsequent FreeHandles returns early because `_cleanerHandle` is no longer allocated. This is the known regression explicitly excluded from accepted best-effort object disposal in [lifecycle.md](../../lifecycle.md). The stress regression passed in this run; the source interleaving remains possible.
+  - Required: give each active/recycled handle one owner and prevent enqueue after the final drain, or dispose handles whose recycle loses closure. Preserve best-effort instance disposal and avoid invoking user disposal callbacks under a storage lock.
+  - Dependencies: none; selected policy CONS-005 is already decided. Risk: medium/high synchronization and finalizer behavior; benchmark any hot-path locking change. Effort: medium.
+  - Acceptance: deterministic coverage of recycle-versus-drain and compaction-versus-drain; both queues empty and cleaner unallocated after workers finish; no lost/double-freed handles, invalid native handle access, or deadlock. Preserve the existing stress test and run it on modern native WeakGCHandle and legacy shim targets; then run the full solution tests.
+
+<a id="cons-020"></a>
+- [x] **CONS-020 [P2] Correct ObjectsBin XML documentation to the selected lifecycle contract.**
+  - Implemented and verified (2026-10-30): ObjectsBin XML now describes weak-set storage, coordinated direct disposal, stop-on-first-failure cleanup and closed-addition exception precedence. WeakReferenceSet and lifecycle.md document the corrected storage synchronization.
+  - Criteria: [C36](CONVENTIONS.md#c36), [C37](CONVENTIONS.md#c37).
+  - Affected: `src/Xtate.IoC/IoC/ObjectsBin.cs`, class remarks at lines 24–38 and AddAsync/AddSync exception prose. Required text belongs in those existing XML comments, referring to `docs/lifecycle.md` for the full matrix.
+  - Evidence: class remarks promise all members are safe concurrently and exactly-once disposal via atomic exchange. Both disposal methods use a plain read followed by `_instancesForDispose = null`; the selected contract requires coordination for direct concurrent bin disposal. Closed additions can propagate a cleanup failure rather than always ObjectDisposedException. The storage is a set implemented with queues, not the claimed weak-reference stack.
+  - Required: document caller coordination, best-effort in-flight additions, stop-on-first-failure cleanup, and exception precedence accurately. Do not change runtime behavior to match the stale comment.
+  - Dependencies: none; independent of CONS-018. Risk/effort: low, documentation only; no new lifetime guarantees.
+  - Acceptance: compare XML against both completed/pending disposal paths and lifecycle.md; existing lifecycle tests remain unchanged and pass; no universal atomic/exactly-once claim remains on the bin.
+
+<a id="cons-017"></a>
+- [x] **CONS-017 [P2] Finish validating narrow inspection suppressions, including new documentation examples.**
+  - Implemented and verified (2026-10-30): Removed broad behavior-sensitive suppressions in the two examples; retained fixture-role rationale and narrowly scoped intentional closure/using cases. Installed ReSharper CLI in a temporary tools directory and completed solution inspection for net10.0: zero reported issues at suggestion severity and above.
+  - Criterion: [C43](CONVENTIONS.md#c43). Original implementation history is retained below. No `ReSharper disable All` remains in maintained source.
+  - Current affected set: every suppression site is enumerated with exact path/line/text in [AUDIT.checks.json](AUDIT.checks.json), `suppressions`. Existing fixture-member suppressions have role rationale. Newly added `Examples/DocumentationFeaturesExample.cs` disables seven ReSharper inspections at file scope (including AccessToDisposedClosure and UseAwaitUsing) and IDE0200 without a local rationale; `Examples/DocumentationJobExample.cs` disables fixture-member inspections and UseAwaitUsing at file scope without explaining the scope.
+  - Required: explain each retained rule, scope behavior-sensitive suppressions to intentional operations, and verify the original named replacements with ReSharper. Do not reintroduce blanket suppression or rewrite reflection-constructed fixtures merely to remove unused-member suggestions.
+  - Dependencies: none. Risk: low behavior risk, medium analyzer churn. Effort: small/medium. No public type renames.
+  - Acceptance: ReSharper inspection run recorded with the repository settings; each suppressed finding has an explicit role/operation rationale and the narrowest practical scope; all existing tests remain green. Roslyn/formatter success is not ReSharper verification. The earlier CLI-availability limitation is resolved by the implementation verification above.
+
+<a id="cons-021"></a>
+- [x] **CONS-021 [P3] Sort both global-using lists according to the explicit import rule.**
+  - Implemented and verified (2026-10-30): Both global-using lists are System-first and alphabetic with aliases preserved. Read-only dotnet format style verification for these files exits 0 with an empty report.
+  - Criterion: [C40](CONVENTIONS.md#c40).
+  - Exact affected set: `src/Xtate.IoC/Properties/GlobalUsings.cs` and `test/Xtate.IoC.Test/GlobalUsings.cs`. No moves or renames.
+  - Evidence: System.Threading precedes System.Linq/System.Diagnostics in the library, and System.Linq.Expressions precedes System.Diagnostics in tests. `.editorconfig` requires alphabetical System-first ordering; [format-report.json](format-report.json) contains IMPORTS diagnostics for exactly these files.
+  - Required: sort ordinary global imports while preserving the Empty/NotNullAttribute aliases and their separate role. Do not mix this with broad formatter-default churn.
+  - Dependencies: none. Risk/effort: low/small; preserve aliases and conditional compilation.
+  - Acceptance: import-order verification has no IMPORTS changes for these two files, alias bindings are unchanged, and the solution builds.
+
+## Preserved implementation history (previous generation)
+
+These records preserve owner decisions and verified past implementation. Old evidence paragraphs describe the earlier audit, not current defects. Current deviations are listed above. Checked policy decisions do not imply the native-handle regression was fixed.
+
+
+# Consistency TODO
+
 Remaining-TODO implementation (2026-10-18): 12 of the 13 previously open items are complete. CONS-017 has its suppression changes in place but remains open for ReSharper inspection verification; no inspection CLI is installed locally.
 
 The zero-argument collection factory additions were removed by owner decision: existing enumerable APIs already defer service creation. The remaining runtime fix is the argument-aware resource key. Existing validation timing, exception precedence and post-disposal lookup behavior are preserved. Documentation and tests now reflect the owner's reviewed lifecycle decisions, superseding the original P1 implementation descriptions below.
@@ -115,16 +177,6 @@ The historical discovery inventory is preserved. Revision 52 repairs its normali
   - Dependencies: CONS-003 addresses separate post-disposal tests; CONS-012 adds missing initialization failure coverage. Risk: low, tests only. Effort: small/medium.
   - Acceptance: tests fail if the asserted operation is removed/broken; no placeholder assertion text or discarded disposal task remains in this exact set. Run the corresponding test classes on net10.0.
 
-<a id="cons-017"></a>
-- [ ] **CONS-017 [P2] Replace blanket inspection suppression with specific justified rules.**
-  - Implemented: replaced all 19 blanket directives with named fixture-member inspections and rationale, retaining fixture-section boundaries. Pending: run ReSharper inspections to validate the exact rule set; no local CLI is installed. Roslyn builds and tests are not substitutes for that verification.
-  - Criterion: [C43](CONVENTIONS.md#c43).
-  - Affected: all 12 `test/Xtate.IoC.Test/Examples/*.cs`; and `Tests/AsyncInitializationHandlerTest.cs`, `FactoryProviderTest.cs`, `ImplementationEntryTest.cs`, `ImplementationTypeTest.cs`, `ServiceCollectionExtensionsTest.cs`, `ServiceProviderTest.cs`, `StubTypeTest.cs` under the same test project. Exact suppression locations are recorded in `AUDIT.checks.json:suppressions` (filter `ReSharper disable All`).
-  - Evidence: these 19 maintained files have blanket `ReSharper disable All` directives, sometimes around fixture sections, which mask unrelated inspections as well as expected demonstration/test-double warnings.
-  - Required: retain only named suppressions needed for public demonstration collaborators, reflection-created fixtures or deliberate test constructs; scope each narrowly and explain its reason. Do not rewrite useful examples merely to silence unused-member suggestions.
-  - Dependencies: none; preserve the example namespace decision CONS-008. Risk: low behavior risk, medium analyzer churn. Effort: medium.
-  - Acceptance: no blanket suppression remains in the exact affected set; documented narrow exceptions are reviewed, relevant IDE inspections run, and all existing net10.0 tests still pass. Roslyn build success alone cannot validate ReSharper inspections.
-
 <a id="cons-016"></a>
 - [x] **CONS-016 [P3] Move local culture fixture types after test members.**
   - Implementation: Moved both ServiceX fixtures to the end of their test classes without changing type identities.
@@ -134,4 +186,21 @@ The historical discovery inventory is preserved. Revision 52 repairs its normali
   - Required: move only these declarations; preserve nested names, access, culture strings and test behavior. No namespace or public type rename is needed.
   - Dependencies: none. Risk: low; inspect metadata-sensitive strings and preserve type identity. Effort: small.
   - Acceptance: configured default ordering applies and localized expected type names remain unchanged; run both Resources test classes.
+
+
+
+
+### Earlier CONS-017 implementation record
+
+
+**Previous CONS-017 record (historical):**
+
+**CONS-017 [P2] Replace blanket inspection suppression with specific justified rules.**
+  - Implemented: replaced all 19 blanket directives with named fixture-member inspections and rationale, retaining fixture-section boundaries. Pending: run ReSharper inspections to validate the exact rule set; no local CLI is installed. Roslyn builds and tests are not substitutes for that verification.
+  - Criterion: [C43](CONVENTIONS.md#c43).
+  - Affected: all 12 `test/Xtate.IoC.Test/Examples/*.cs`; and `Tests/AsyncInitializationHandlerTest.cs`, `FactoryProviderTest.cs`, `ImplementationEntryTest.cs`, `ImplementationTypeTest.cs`, `ServiceCollectionExtensionsTest.cs`, `ServiceProviderTest.cs`, `StubTypeTest.cs` under the same test project. Exact suppression locations are recorded in `AUDIT.checks.json:suppressions` (filter `ReSharper disable All`).
+  - Evidence: these 19 maintained files have blanket `ReSharper disable All` directives, sometimes around fixture sections, which mask unrelated inspections as well as expected demonstration/test-double warnings.
+  - Required: retain only named suppressions needed for public demonstration collaborators, reflection-created fixtures or deliberate test constructs; scope each narrowly and explain its reason. Do not rewrite useful examples merely to silence unused-member suggestions.
+  - Dependencies: none; preserve the example namespace decision CONS-008. Risk: low behavior risk, medium analyzer churn. Effort: medium.
+  - Acceptance: no blanket suppression remains in the exact affected set; documented narrow exceptions are reviewed, relevant IDE inspections run, and all existing net10.0 tests still pass. Roslyn build success alone cannot validate ReSharper inspections.
 
